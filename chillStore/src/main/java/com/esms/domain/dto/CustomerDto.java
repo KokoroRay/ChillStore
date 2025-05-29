@@ -1,17 +1,9 @@
-package com.esms.domain.entity;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+package com.esms.domain.dto;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Entity
-@Table(name = "customers")
-public class Customer {
-    @Id @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+public class CustomerDto {
     private Integer customerId;
     private String name;
     private String display_name;
@@ -23,7 +15,11 @@ public class Customer {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 
-    public Customer(Integer customerId, String name, String display_name, String email, String password, String phone, String address, Date birth_date, LocalDateTime created_at, LocalDateTime updated_at) {
+
+    public CustomerDto() {
+    }
+
+    public CustomerDto(Integer customerId, String name, String display_name, String email, String password, String phone, String address, Date birth_date, LocalDateTime created_at, LocalDateTime updated_at) {
         this.customerId = customerId;
         this.name = name;
         this.display_name = display_name;
@@ -31,11 +27,6 @@ public class Customer {
         this.password = password;
         this.phone = phone;
         this.address = address;
-        this.birth_date = birth_date;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-    }
-    public Customer() {
     }
 
     public Integer getCustomerId() {
@@ -117,4 +108,6 @@ public class Customer {
     public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
     }
+
+
 }

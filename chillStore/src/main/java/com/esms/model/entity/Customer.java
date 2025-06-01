@@ -1,4 +1,4 @@
-package com.esms.domain.entity;
+package com.esms.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

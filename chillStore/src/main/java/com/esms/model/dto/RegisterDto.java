@@ -1,14 +1,34 @@
-package com.esms.domain.dto;
+package com.esms.model.dto;
+
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public class CustomerDto {
+public class RegisterDto {
     private Integer customerId;
+
+    @NotBlank(message = "tên đăng nhập không chứa khoản trắng nhá")
+    @NotEmpty @Size(min = 6, max = 12)
+    @Pattern(regexp = "(?=.*[a-zA-Z])[a-zA-Z0-9]+$",
+            message = "Chỉ được chứa chữ cái và số, không có khoảng trắng hoặc ký tự đặc biệt, chuỗi phải có chữ không được chỉ số")
     private String name;
+
+    @NotBlank
+    @Size(min = 6, max = 12)
     private String display_name;
+
+    @Email(message = "email invalid format")
     private String email;
+
+    @NotEmpty(message = "chuỗi không được tồn tịa khoảng trống ")
+    @Size(min = 6, max = 16, message = "chuỗi có độ dài tối thiểu là 6 và tối đa là 16")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$",
+            message = "chuỗi đầu vào không có khoảng trắng, chuỗi có ít nhất 1 kí tự đặt biệt, hoa, thường")
     private String password;
+
+    @NotBlank(message = "số điện thoại không được rổng")
+    @Pattern(regexp = "^[0-9]{10}$", message = "số điện thoại đúng 10 số và từ 0 đến 9")
     private String phone;
     private String address;
     private Date birth_date;
@@ -16,10 +36,10 @@ public class CustomerDto {
     private LocalDateTime updated_at;
 
 
-    public CustomerDto() {
+    public RegisterDto() {
     }
 
-    public CustomerDto(Integer customerId, String name, String display_name, String email, String password, String phone, String address, Date birth_date, LocalDateTime created_at, LocalDateTime updated_at) {
+    public RegisterDto(Integer customerId, String name, String display_name, String email, String password, String phone, String address, Date birth_date, LocalDateTime created_at, LocalDateTime updated_at) {
         this.customerId = customerId;
         this.name = name;
         this.display_name = display_name;

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang Chủ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    h1 {
+      color: #0056b3;
+    }
+    p {
+      font-size: 1.1em;
+    }
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: inline-block;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Chào mừng bạn đến với Ứng dụng ChillStore!</h1>
+  <p>Ứng dụng của bạn đã được triển khai và hoạt động thành công.</p>
+  <p>Đây là trang chủ mẫu.</p>
+  <p>Bạn có thể thử truy cập trang đăng ký: <a th:href="@{/auth/register}">Đăng ký tài khoản</a></p>
+  <p>Hoặc truy cập trang đăng nhập: <a th:href="@{/auth/login}">Đăng nhập</a></p>
+</div>
+</body>
+</html>

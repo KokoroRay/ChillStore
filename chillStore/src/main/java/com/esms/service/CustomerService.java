@@ -1,8 +1,8 @@
 package com.esms.service;
 
-import com.esms.domain.dto.CustomerDto;
-import com.esms.domain.entity.Customer;
+import com.esms.model.dto.RegisterDto;
 
 public interface CustomerService {
-    CustomerDto register(CustomerDto customerDto);
+    void register(RegisterDto dto);
+    // Thêm nếu cần: findByEmail, getProfile, v.v.
 }

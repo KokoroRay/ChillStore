@@ -1,6 +1,6 @@
 package com.esms.repository;
 
-import com.esms.domain.entity.Customer;
+import com.esms.model.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

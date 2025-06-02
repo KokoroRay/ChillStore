@@ -5,7 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -19,11 +21,11 @@ public class Customer {
     private String password;
     private String phone;
     private String address;
-    private Date birth_date;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDate birth_date = LocalDate.now();
+    private LocalDateTime  created_at=LocalDateTime.now();
+    private LocalDateTime updated_at = LocalDateTime.now();
 
-    public Customer(Integer customerId, String name, String display_name, String email, String password, String phone, String address, Date birth_date, LocalDateTime created_at, LocalDateTime updated_at) {
+    public Customer(Integer customerId, String name, String display_name, String email, String password, String phone, String address, LocalDate birth_date, LocalDateTime  created_at, LocalDateTime updated_at) {
         this.customerId = customerId;
         this.name = name;
         this.display_name = display_name;
@@ -94,19 +96,19 @@ public class Customer {
         this.address = address;
     }
 
-    public Date getBirth_date() {
+    public LocalDate  getBirth_date() {
         return birth_date;
     }
 
-    public void setBirth_date(Date birth_date) {
+    public void setBirth_date(LocalDate  birth_date) {
         this.birth_date = birth_date;
     }
 
-    public LocalDateTime getCreated_at() {
+    public LocalDateTime  getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
+    public void setCreated_at(LocalDateTime  created_at) {
         this.created_at = created_at;
     }
 

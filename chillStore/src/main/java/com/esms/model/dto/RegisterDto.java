@@ -14,8 +14,8 @@ public class RegisterDto {
             message = "Chỉ được chứa chữ cái và số, không có khoảng trắng hoặc ký tự đặc biệt, chuỗi phải có chữ không được chỉ số")
     private String name;
 
-    @NotBlank
-    @Size(min = 6, max = 12)
+//    @NotBlank(message = "tên không được có khoảng trắng")
+//    @Size(min = 6, max = 12)
     private String display_name;
 
     @Email(message = "email invalid format")

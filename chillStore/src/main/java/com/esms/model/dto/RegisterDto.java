@@ -1,29 +1,45 @@
-package com.esms.domain.entity;
+package com.esms.model.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Entity
-@Table(name = "customers")
-public class Customer {
-    @Id @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+public class RegisterDto {
     private Integer customerId;
+
+    @NotBlank(message = "tên đăng nhập không chứa khoản trắng nhá")
+    @NotEmpty @Size(min = 6, max = 12)
+    @Pattern(regexp = "(?=.*[a-zA-Z])[a-zA-Z0-9]+$",
+            message = "Chỉ được chứa chữ cái và số, không có khoảng trắng hoặc ký tự đặc biệt, chuỗi phải có chữ không được chỉ số")
     private String name;
+
+//    @NotBlank(message = "tên không được có khoảng trắng")
+//    @Size(min = 6, max = 12)
     private String display_name;
+
+    @Email(message = "email invalid format")
     private String email;
+
+    @NotEmpty(message = "chuỗi không được tồn tịa khoảng trống ")
+    @Size(min = 6, max = 16, message = "chuỗi có độ dài tối thiểu là 6 và tối đa là 16")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$",
+            message = "chuỗi đầu vào không có khoảng trắng, chuỗi có ít nhất 1 kí tự đặt biệt, hoa, thường")
     private String password;
+
+    @NotBlank(message = "số điện thoại không được rổng")
+    @Pattern(regexp = "^[0-9]{10}$", message = "số điện thoại đúng 10 số và từ 0 đến 9")
     private String phone;
     private String address;
     private Date birth_date;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 
-    public Customer(Integer customerId, String name, String display_name, String email, String password, String phone, String address, Date birth_date, LocalDateTime created_at, LocalDateTime updated_at) {
+
+    public RegisterDto() {
+    }
+
+    public RegisterDto(Integer customerId, String name, String display_name, String email, String password, String phone, String address, Date birth_date, LocalDateTime created_at, LocalDateTime updated_at) {
         this.customerId = customerId;
         this.name = name;
         this.display_name = display_name;
@@ -31,11 +47,6 @@ public class Customer {
         this.password = password;
         this.phone = phone;
         this.address = address;
-        this.birth_date = birth_date;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-    }
-    public Customer() {
     }
 
     public Integer getCustomerId() {
@@ -117,4 +128,6 @@ public class Customer {
     public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
     }
+
+
 }

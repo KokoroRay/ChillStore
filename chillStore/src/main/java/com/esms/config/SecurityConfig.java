@@ -24,46 +24,35 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // TẠM THỜI tắt CSRF để test
-                .csrf(csrf -> csrf.disable()) // Vô hiệu hóa bảo vệ CSRF
-
-                // Cho phép HTTP Basic Authentication (nếu cần)
-                // Điều này hữu ích cho việc kiểm tra bằng Postman hoặc các client API
-                .httpBasic(Customizer.withDefaults()) // Sử dụng Customizer để cấu hình mặc định
-
-
-                // 1. Cấu hình ủy quyền HTTP
-                .authorizeHttpRequests(authorize -> authorize // Sử dụng lambda expression để cấu hình
-                        // Cho phép truy cập tĩnh và trang auth (login, register) mà không cần authenticate
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/auth/**", "/").permitAll() // Thêm "/" (trang home) vào permitAll
-                        // Ví dụ: Cho phép truy cập "/home" nếu bạn muốn nó công khai ngay cả khi chưa đăng nhập
-                        .requestMatchers("/home").permitAll() // Đảm bảo trang home được truy cập tự do
-                        .anyRequest().authenticated() // Tất cả các request khác yêu cầu xác thực
+                .authorizeHttpRequests(authorize -> authorize
+                        // Cho phép truy cập các trang công khai (Guest Home, CSS, JS, Auth flows)
+                        .requestMatchers( "/", "/home", "/css/**", "/js/**",
+                                "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
+                                "/auth/login", "/auth/register", "/auth/resend-otp").permitAll() // Thêm /auth/resend-otp vào đây
+                        // Bất kỳ request nào khác đều yêu cầu xác thực
+                        .anyRequest().authenticated()
                 )
-                // 2. Cấu hình Form Login
-                .formLogin(form -> form // Sử dụng lambda expression để cấu hình formLogin
-                        .loginPage("/auth/login")
-                        .loginProcessingUrl("/auth/login")  // URL Spring Security tự xử lý POST
-                        .defaultSuccessUrl("/home", true) // Chuyển hướng đến /home sau khi đăng nhập thành công
-                        .failureUrl("/auth/login?error=true") // Chuyển hướng đến /auth/login?error=true nếu đăng nhập thất bại
-                        .permitAll() // Cho phép tất cả mọi người truy cập trang login
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/auth/login") // Trang đăng nhập tùy chỉnh
+                        .loginProcessingUrl("/auth/login") // URL mà form đăng nhập POST đến
+                        .defaultSuccessUrl("/home", true) // Khi đăng nhập thành công, chuyển hướng đến /home
+                        .failureUrl("/auth/login?error=true") // Khi đăng nhập thất bại
+                        .permitAll() // Cho phép tất cả truy cập trang login
                 )
-                // 3. Cấu hình Logout
-                .logout(logout -> logout // Sử dụng lambda expression để cấu hình logout
-                        .logoutUrl("/auth/logout") // URL xử lý đăng xuất (nên dùng POST)
-                        .logoutSuccessUrl("/auth/login?logout=true") // Chuyển hướng sau khi đăng xuất thành công
-                        .permitAll() // Cho phép tất cả mọi người truy cập URL logout
-                )
-                .httpBasic(httpBasicConfigurer -> httpBasicConfigurer.disable());
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout") // URL để kích hoạt logout
+                        .logoutSuccessUrl("/") // <-- CHỈNH SỬA: Đưa về trang chủ (guest view)
+                        .invalidateHttpSession(true) // Hủy bỏ session hiện tại
+                        .deleteCookies("JSESSIONID") // Xóa cookie phiên
+                        .permitAll() // Cho phép tất cả truy cập URL logout
+                );
         return http.build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

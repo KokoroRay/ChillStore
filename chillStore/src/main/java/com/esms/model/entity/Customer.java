@@ -1,9 +1,6 @@
 package com.esms.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +21,8 @@ public class Customer {
     private LocalDate birth_date = LocalDate.now();
     private LocalDateTime  created_at=LocalDateTime.now();
     private LocalDateTime updated_at = LocalDateTime.now();
+
+
 
     public Customer(Integer customerId, String name, String display_name, String email, String password, String phone, String address, LocalDate birth_date, LocalDateTime  created_at, LocalDateTime updated_at) {
         this.customerId = customerId;
@@ -119,4 +118,6 @@ public class Customer {
     public void setUpdated_at(LocalDateTime updated_at) {
         this.updated_at = updated_at;
     }
+
+
 }

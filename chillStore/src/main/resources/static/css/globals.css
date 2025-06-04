@@ -1,0 +1,23 @@
+/* ---------------- Reset + Global Styles ---------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Nút chung có thể tái sử dụng nếu cần */
+.btn {
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.2s ease;
+}

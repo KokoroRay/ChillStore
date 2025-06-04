@@ -1,5 +1,6 @@
 package com.esms.model.dto;
 
+import com.esms.validation.StrongPassword;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
@@ -21,10 +22,8 @@ public class RegisterDto {
     @Email(message = "email invalid format")
     private String email;
 
-    @NotEmpty(message = "chuỗi không được tồn tịa khoảng trống ")
-    @Size(min = 6, max = 16, message = "chuỗi có độ dài tối thiểu là 6 và tối đa là 16")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$",
-            message = "chuỗi đầu vào không có khoảng trắng, chuỗi có ít nhất 1 kí tự đặt biệt, hoa, thường")
+    //kiểm tra format code
+    @StrongPassword
     private String password;
 
     @NotBlank(message = "số điện thoại không được rổng")

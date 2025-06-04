@@ -9,6 +9,7 @@
 <h2>Đăng nhập</h2>
 <form th:action="@{/auth/login}" method="post">
   <!-- Spring Security mặc định gửi username + password -->
+  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
   <div>
     <label>Email:</label>
     <input type="text" name="username" placeholder="Nhập email..." />

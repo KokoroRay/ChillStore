@@ -1,45 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Trang Chủ</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-      background-color: #f4f4f4;
-      color: #333;
-    }
-    h1 {
-      color: #0056b3;
-    }
-    p {
-      font-size: 1.1em;
-    }
-    .container {
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      display: inline-block;
-    }
-    a {
-      color: #007bff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
-<div class="container">
-  <h1>Chào mừng bạn đến với Ứng dụng ChillStore!</h1>
-  <p>Ứng dụng của bạn đã được triển khai và hoạt động thành công.</p>
-  <p>Đây là trang chủ mẫu.</p>
-  <p>Bạn có thể thử truy cập trang đăng ký: <a th:href="@{/auth/register}">Đăng ký tài khoản</a></p>
-  <p>Hoặc truy cập trang đăng nhập: <a th:href="@{/auth/login}">Đăng nhập</a></p>
+<h1>Chào mừng đến với Chill Store!</h1>
+
+<div sec:authorize="isAuthenticated()">
+  <p>Xin chào, <span sec:authentication="name"></span>!</p>
+  <p>Bạn đã đăng nhập thành công với vai trò Customer.</p>
+  <a th:href="@{/profile}">Xem hồ sơ của bạn</a> |
+  <form th:action="@{/auth/logout}" method="post" style="display:inline;">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button type="submit">Đăng xuất</button>
+  </form>
 </div>
+
+<div sec:authorize="isAnonymous()">
+  <p>Bạn đang ở chế độ khách.</p>
+  <p>Vui lòng đăng nhập hoặc đăng ký để trải nghiệm đầy đủ tính năng.</p>
+  <a th:href="@{/auth/login}">Đăng nhập</a> |
+  <a th:href="@{/auth/register}">Đăng ký</a>
+</div>
+
+<p>Khám phá các sản phẩm tuyệt vời của chúng tôi!</p>
 </body>
 </html>

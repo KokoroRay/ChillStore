@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+  <h2>Manage Categories</h2>
+
+  <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+  <form method="get" class="mb-3">
+    <div class="input-group">
+      <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Search...">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+  </form>
+
+  <a th:href="@{/admin/category/add}" class="btn btn-success mb-3">Add New Category</a>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Parent</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="category : ${categories}">
+      <td th:text="${category.id}"></td>
+      <td th:text="${category.name}"></td>
+      <td th:text="${category.parent?.name} ?: 'None'"></td>
+      <td>
+        <a th:href="@{/admin/category/edit/{id}(id=${category.id})}" class="btn btn-sm btn-primary">Edit</a>
+        <a th:href="@{/admin/category/delete/{id}(id=${category.id})}" class="btn btn-sm btn-danger">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

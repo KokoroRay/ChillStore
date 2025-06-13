@@ -1,0 +1,37 @@
+/* custom.css */
+.sidebar {
+    width: 200px;
+    background-color: #d4f1f9; /* màu xanh nhạt tương tự */
+    position: fixed;
+    height: 100%;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar ul li a {
+    display: block;
+    padding: 10px 15px;
+    color: #000;
+    text-decoration: none;
+}
+.sidebar ul li.active a {
+    background-color: #b3e0f2;
+    font-weight: bold;
+}
+.main-content {
+    margin-left: 200px; /* bù cho sidebar */
+}
+.btn-add { background-color: #a8f0a3; color: #000; }
+.btn-update { background-color: #c0e4f3; color: #000; }
+.btn-delete { background-color: #f38c8c; color: #000; }
+/* Card style giống mẫu */
+.card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.placeholder-img {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}

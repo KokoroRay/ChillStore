@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${categoryDto.id} != null ? 'Edit Category' : 'Add Category'">Category Form</title>
+</head>
+<body>
+<div th:replace="~{layout :: layout(
+    pageTitle=(${categoryDto.id} != null ? 'Edit Category' : 'Add Category'),
+    content=~{admin/category/form-content :: content(categoryDto=${categoryDto}, parentOptions=${parentOptions}, errorMessage=${errorMessage})}
+)}">
+</div>
+</body>
+</html>

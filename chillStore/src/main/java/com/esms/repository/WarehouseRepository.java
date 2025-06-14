@@ -12,4 +12,6 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Integer> {
     // Tìm kiếm warehouse theo tên sản phẩm (không phân biệt hoa thường)
     @Query("SELECT w FROM Warehouse w JOIN w.product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :productName, '%'))")
     List<Warehouse> searchByProductName(@Param("productName") String productName);
+
+    List<Warehouse> findByProductId(Integer productId);
 }

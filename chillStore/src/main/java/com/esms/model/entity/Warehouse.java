@@ -8,24 +8,22 @@ import java.time.LocalDateTime;
 @Table(name = "warehouse")
 public class Warehouse {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //auto tăng
-    private Integer transId; //Mã giao dịch kho(PK)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "warehouse_id")
+    private Integer id;
 
-    @ManyToOne(fetch = FetchType.EAGER) // Liên kết đến product, luôn load ngay
-    @JoinColumn(name="product_id", nullable = false)// Chỉ rõ rằng cột product_id là (FK) and mỗi giao dịch phải gắn 1 product
-    private Product product; //Sản phẩm liên quan đến giao dịch kho
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
-    @Column(name = "quantity_change", nullable = false)
-    private Integer quantityChange; //Số lượng thay đổi (+ or - tồn kho)
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
 
-    @Column(name = "stock_after", nullable = false)
-    private Integer stockAfter; // Số lượng tồn kho sau giao dịch
+    @Column(name = "transaction_type", nullable = false)
+    private String transactionType; // "IN" or "OUT"
 
-    @Column(name = "type", nullable = false, length = 10)
-    private String type; //Loại giao dịch
-
-    @Column(name = "trans_date")
-    private LocalDateTime transDate; //Thời điểm thực hiện giao dịch kho
+    @Column(name = "transaction_date", nullable = false)
+    private LocalDateTime transactionDate;
 
     @ManyToOne(fetch = FetchType.EAGER)// Liên kết đến Admin xử lý (Có thể null)
     @JoinColumn(name = "admin_id")
@@ -37,12 +35,12 @@ public class Warehouse {
     public Warehouse() {
     }
 
-    public Integer getTransId() {
-        return transId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setTransId(Integer transId) {
-        this.transId = transId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Product getProduct() {
@@ -53,36 +51,28 @@ public class Warehouse {
         this.product = product;
     }
 
-    public Integer getQuantityChange() {
-        return quantityChange;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setQuantityChange(Integer quantityChange) {
-        this.quantityChange = quantityChange;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
-    public Integer getStockAfter() {
-        return stockAfter;
+    public String getTransactionType() {
+        return transactionType;
     }
 
-    public void setStockAfter(Integer stockAfter) {
-        this.stockAfter = stockAfter;
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
     }
 
-    public String getType() {
-        return type;
+    public LocalDateTime getTransactionDate() {
+        return transactionDate;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public LocalDateTime getTransDate() {
-        return transDate;
-    }
-
-    public void setTransDate(LocalDateTime transDate) {
-        this.transDate = transDate;
+    public void setTransactionDate(LocalDateTime transactionDate) {
+        this.transactionDate = transactionDate;
     }
 
     public Admin getAdmin() {

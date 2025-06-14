@@ -17,4 +17,9 @@ public interface WarehouseService {
     List<Warehouse> getAllWarehouseTransactions();
     List<Warehouse> searchWarehouseByProductName(String productName);
     //update
+
+    List<Warehouse> getWarehouseTransactionsByProductId(Integer productId);
+    Warehouse addWarehouseTransaction(Warehouse warehouse);
+    Warehouse updateWarehouseTransaction(Integer id, Warehouse warehouse);
+    void deleteWarehouseTransaction(Integer id);
 }

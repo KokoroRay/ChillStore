@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -23,8 +24,8 @@ public class ProductController {
 
     // View single product
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Integer productId) {
+        return ResponseEntity.ok(productService.getProductById(productId));
     }
 
     // Search products
@@ -33,18 +34,24 @@ public class ProductController {
         return ResponseEntity.ok(productService.searchProducts(keyword));
     }
 
-    // Filter products by category
-    @GetMapping("/filter/category")
-    public ResponseEntity<List<Product>> filterByCategory(@RequestParam String category) {
-        return ResponseEntity.ok(productService.filterByCategory(category));
+    // Filter products by status
+    @GetMapping("/filter/status")
+    public ResponseEntity<List<Product>> filterByStatus(@RequestParam boolean status) {
+        return ResponseEntity.ok(productService.filterByStatus(status));
     }
 
     // Filter products by price range
     @GetMapping("/filter/price")
     public ResponseEntity<List<Product>> filterByPriceRange(
-            @RequestParam Double minPrice,
-            @RequestParam Double maxPrice) {
+            @RequestParam BigDecimal minPrice,
+            @RequestParam BigDecimal maxPrice) {
         return ResponseEntity.ok(productService.filterByPriceRange(minPrice, maxPrice));
+    }
+
+    // Get available products
+    @GetMapping("/available")
+    public ResponseEntity<List<Product>> getAvailableProducts() {
+        return ResponseEntity.ok(productService.getAvailableProducts());
     }
 
     // Add new product
@@ -56,15 +63,24 @@ public class ProductController {
     // Update product
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(
-            @PathVariable Long id,
+            @PathVariable("id") Integer productId,
             @RequestBody Product product) {
-        return ResponseEntity.ok(productService.updateProduct(id, product));
+        return ResponseEntity.ok(productService.updateProduct(productId, product));
     }
 
     // Delete product (soft delete)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") Integer productId) {
+        productService.deleteProduct(productId);
+        return ResponseEntity.ok().build();
+    }
+
+    // Update stock
+    @PutMapping("/{id}/stock")
+    public ResponseEntity<Void> updateStock(
+            @PathVariable("id") Integer productId,
+            @RequestParam Integer quantity) {
+        productService.updateStock(productId, quantity);
         return ResponseEntity.ok().build();
     }
 } 

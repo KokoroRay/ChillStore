@@ -1,31 +1,42 @@
-<!-- templates/admin/categories/form-content.html hoặc bên trong form.html -->
+<!-- templates/admin/category/form.html (nếu đây là form đầy đủ) -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${categoryDto.id != null} ? 'Edit Category' : 'Add Category'">Category Form</title>
+  <!-- include CSS/JS nếu có -->
+</head>
 <body>
-<div th:fragment="content(categoryDto, parentOptions, errorMessage)">
-  <h1 th:text="${categoryDto.id} != null ? 'Edit Category' : 'Add Category'"></h1>
+<div th:fragment="content">
+  <div class="mb-3">
+    <a th:href="@{/admin/category}" class="btn btn-light">
+      <i class="bi bi-arrow-left"></i> Back
+    </a>
+  </div>
   <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-
-  <form th:action="@{/admin/category/add}" th:object="${categoryDto}" method="post">
-    <div class="mb-3">
-      <label for="name" class="form-label">Name</label>
-      <input type="text" th:field="*{name}" class="form-control" id="name" />
-      <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}"></div>
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <form th:action="${categoryDto.id != null}
+                          ? @{/admin/category/edit/{id}(id=${categoryDto.id})}
+                          : @{/admin/category/add}"
+            th:object="${categoryDto}" method="post">
+        <div class="row">
+          <div class="col-md-6 mb-3" th:if="${categoryDto.id != null}">
+            <label for="id" class="form-label">ID:</label>
+            <input type="text" id="id" class="form-control" th:value="${categoryDto.id}" disabled />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Enter category name" />
+            <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}"></div>
+          </div>
+        </div>
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
     </div>
-    <div class="mb-3">
-      <label for="parentId" class="form-label">Parent Category</label>
-      <select th:field="*{parentId}" class="form-select" id="parentId">
-        <option th:value="">-- None --</option>
-        <option th:each="opt : ${parentOptions}"
-                th:value="${opt.id}"
-                th:text="${opt.name}"
-                th:if="${opt.id != categoryDto.id}"> <!-- tránh chọn self nếu edit -->
-        </option>
-      </select>
-      <div th:if="${#fields.hasErrors('parentId')}" class="text-danger" th:errors="*{parentId}"></div>
-    </div>
-    <button type="submit" class="btn btn-primary">Save</button>
-  </form>
+  </div>
 </div>
 </body>
 </html>

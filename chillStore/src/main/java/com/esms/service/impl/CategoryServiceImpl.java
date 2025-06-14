@@ -38,11 +38,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category createCategory(CategoryDto categoryDto) {
+        if(categoryDto.getName() == null || categoryDto.getName().trim().isEmpty()){
+            throw new RuntimeException("Tên thư mục không được để trống");
+        }
         Category category = new Category();
+        category.setName(categoryDto.getName().trim());
         if (categoryDto.getParentId() != null) {
-            categoryRepository.findById(categoryDto.getParentId()).ifPresent(category::setParent);
-        } else {
-            category.setParent(null);
+            Category parent = categoryRepository.findById(categoryDto.getParentId())
+                    .orElseThrow(() -> new RuntimeException("Parent category not found"));
+            category.setParent(parent);
         }
         return categoryRepository.save(category);
     }
@@ -54,7 +58,9 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryDto.getParentId() != null && categoryDto.getParentId().equals(id)) {
             throw new RuntimeException("Cannot set self as parent");
         }
-
+        if (categoryDto.getName() != null && categoryDto.getName().trim().isEmpty()) {
+            throw new RuntimeException("Name cannot be blank");
+        }
         category.setName(categoryDto.getName());
         if (categoryDto.getParentId() != null) {
             Category parent = categoryRepository.findById(categoryDto.getParentId())

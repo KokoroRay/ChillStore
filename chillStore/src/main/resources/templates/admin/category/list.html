@@ -1,11 +1,12 @@
+<!-- file: templates/admin/category/list.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
 </head>
 <body>
 <div th:replace="layout :: layout(~{admin/category/list-content :: content})"
-     th:with="pageTitle='Manage Category'">
+     th:with="pageTitle='Manage Category', keyword=${keyword}">
 </div>
 </body>
 </html>

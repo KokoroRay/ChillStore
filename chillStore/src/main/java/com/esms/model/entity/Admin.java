@@ -11,7 +11,7 @@ public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "admin_id")
-    private Integer admin_id;
+    private Integer adminId;
 
     @Column(name = "name")
     private String name;
@@ -32,29 +32,30 @@ public class Admin {
     private String gender;
 
     @Column(name = "national_id")
-    private String national_id;
+    private String nationalId;
 
     @Column(name = "start_date")
-    private LocalDate start_date;
+    private LocalDate startDate;
 
     @Column(name = "privileges")
     private String privileges;
 
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
     public Admin() {
     }
 
-    public Integer getAdmin_id() {
-        return admin_id;
+
+    public Integer getAdminId() {
+        return adminId;
     }
 
-    public void setAdmin_id(Integer admin_id) {
-        this.admin_id = admin_id;
+    public void setAdminId(Integer adminId) {
+        this.adminId = adminId;
     }
 
     public String getName() {
@@ -105,20 +106,20 @@ public class Admin {
         this.gender = gender;
     }
 
-    public String getNational_id() {
-        return national_id;
+    public String getNationalId() {
+        return nationalId;
     }
 
-    public void setNational_id(String national_id) {
-        this.national_id = national_id;
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
     }
 
-    public LocalDate getStart_date() {
-        return start_date;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setStart_date(LocalDate start_date) {
-        this.start_date = start_date;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     public String getPrivileges() {
@@ -129,20 +130,19 @@ public class Admin {
         this.privileges = privileges;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
-    //update
 }

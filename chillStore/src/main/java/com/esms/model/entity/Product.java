@@ -15,7 +15,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //ID auto tăng
     @Column(name = "product_id")
-    private int product_id;
+    private int productId;
 
     @Column(name = "name")
     private String name; // Name product
@@ -27,7 +27,7 @@ public class Product {
     private BigDecimal price; //price of the product(Dùng Bigdecimal để xác định số thapaj phân )
 
     @Column(name = "stock_qty")
-    private Integer stock_qty; // Quantity hàng tồn kho
+    private Integer stockQty; // Quantity hàng tồn kho
 
     @Column(name = "status")
     private String status; //Trạng thái product<<active/inactive>>
@@ -41,12 +41,12 @@ public class Product {
     @OneToMany(mappedBy = "products")
     private List<Warehouse> warehouseTransactions;
 
-    public int getProduct_id() {
-        return product_id;
+    public int getProductId() {
+        return productId;
     }
 
-    public void setProduct_id(int product_id) {
-        this.product_id = product_id;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     public String getName() {
@@ -73,12 +73,12 @@ public class Product {
         this.price = price;
     }
 
-    public Integer getStock_qty() {
-        return stock_qty;
+    public Integer getStockQty() {
+        return stockQty;
     }
 
-    public void setStock_qty(Integer stock_qty) {
-        this.stock_qty = stock_qty;
+    public void setStockQty(Integer stockQty) {
+        this.stockQty = stockQty;
     }
 
     public String getStatus() {

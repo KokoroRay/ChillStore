@@ -96,4 +96,5 @@ public class Product {
     public void setWarehouseTransactions(List<Warehouse> warehouseTransactions) {
         this.warehouseTransactions = warehouseTransactions;
     }
+    //update
 }

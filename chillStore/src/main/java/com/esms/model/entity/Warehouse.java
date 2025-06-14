@@ -100,4 +100,5 @@ public class Warehouse {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+    //update
 }

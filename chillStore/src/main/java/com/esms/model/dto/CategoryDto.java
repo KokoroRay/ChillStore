@@ -3,12 +3,12 @@ package com.esms.model.dto;
 public class CategoryDto {
     private Integer id;
     private String name;
-    private Integer parent_id;
+    private Integer parentId;
 
-    public CategoryDto(Integer id, String name, Integer parent_id) {
+    public CategoryDto(Integer id, String name, Integer parentId) {
         this.id = id;
         this.name = name;
-        this.parent_id = parent_id;
+        this.parentId = parentId;
     }
     public CategoryDto() {
     }
@@ -29,11 +29,11 @@ public class CategoryDto {
         this.name = name;
     }
 
-    public Integer getParent_id() {
-        return parent_id;
+    public Integer getParentId() {
+        return parentId;
     }
 
-    public void setParent_id(Integer parent_id) {
-        this.parent_id = parent_id;
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 }

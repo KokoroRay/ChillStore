@@ -39,8 +39,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category createCategory(CategoryDto categoryDto) {
         Category category = new Category();
-        if (categoryDto.getParent_id() != null) {
-            categoryRepository.findById(categoryDto.getParent_id()).ifPresent(category::setParent);
+        if (categoryDto.getParentId() != null) {
+            categoryRepository.findById(categoryDto.getParentId()).ifPresent(category::setParent);
         } else {
             category.setParent(null);
         }
@@ -51,14 +51,15 @@ public class CategoryServiceImpl implements CategoryService {
     public Category updateCategory(Integer id, CategoryDto categoryDto) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Categorry không tồn tại" + id));
-        if (categoryDto.getParent_id() != null) {
-            category.setName(categoryDto.getName());
-            if (categoryDto.equals(id)) {
-                throw new RuntimeException("Không thể thay đổi thư mục cha");
-            }
-            categoryRepository.findById(categoryDto.getParent_id()).ifPresent(parentCat -> {
-                category.setParent(parentCat);
-            });
+        if (categoryDto.getParentId() != null && categoryDto.getParentId().equals(id)) {
+            throw new RuntimeException("Cannot set self as parent");
+        }
+
+        category.setName(categoryDto.getName());
+        if (categoryDto.getParentId() != null) {
+            Category parent = categoryRepository.findById(categoryDto.getParentId())
+                    .orElseThrow(() -> new RuntimeException("Parent category not found"));
+            category.setParent(parent);
         } else {
             category.setParent(null);
         }

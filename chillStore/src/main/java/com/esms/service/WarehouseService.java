@@ -17,4 +17,5 @@ public interface WarehouseService {
     void deleteById(Integer id); //Xóa một giao dch warehouse dựa trên ID của nó
     List<Warehouse> getAllWarehouseTransactions();
     List<Warehouse> searchWarehouseByProductName(String productName);
+    //update
 }

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public class WarehouseDto {
     private Integer transId;
-    private String productId;//Id product liên quan đến giao dịch
+    private Integer productId;//Id product liên quan đến giao dịch
     private String productName;//name product
     private Integer quantityChange; //Quantity thay đổi trong giao dịch
     private Integer stockAfter;// Số Product tồn kho
@@ -30,11 +30,11 @@ public class WarehouseDto {
         this.transId = transId;
     }
 
-    public String getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
@@ -101,5 +101,4 @@ public class WarehouseDto {
     public void setNotes(String notes) {
         this.notes = notes;
     }
-    //update
 }

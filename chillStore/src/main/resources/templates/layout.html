@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${pageTitle}">Default Title</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+  <link rel="stylesheet" th:href="@{/css/custom.css}" />
+</head>
+<body>
+<div th:fragment="layout(content)">
+  <div th:replace="fragments/sidebar :: sidebar(activeMenu='categories')"></div>
+  <div class="main-content">
+    <div th:replace="fragments/header :: header"></div>
+    <div class="container-fluid p-4">
+      <div th:insert="${content}"></div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/custom.js}"></script>
+</body>
+</html>

@@ -1,7 +1,6 @@
 package com.esms.model.entity;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //ID auto tăng
     @Column(name = "product_id")
-    private int productId;
+    private Integer productId;
 
     @Column(name = "name")
     private String name; // Name product
@@ -37,15 +36,14 @@ public class Product {
      * Một sản phẩm có thể liên kết với nhiều giao dịch trong kho (nhập/xuất).
      * mappedBy = "product" nghĩa là bảng Warehouse có trường `product` là khóa ngoại.
      */
-
-    @OneToMany(mappedBy = "products")
+    @OneToMany(mappedBy = "product")
     private List<Warehouse> warehouseTransactions;
 
-    public int getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
@@ -96,5 +94,4 @@ public class Product {
     public void setWarehouseTransactions(List<Warehouse> warehouseTransactions) {
         this.warehouseTransactions = warehouseTransactions;
     }
-    //update
 }

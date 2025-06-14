@@ -12,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/category")
@@ -23,7 +22,11 @@ public class CategoryController {
 
     @GetMapping
     public String listCategory(
-            @RequestParam(value = "keyword", required = false) String keyword, Model model) {
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "error", required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
         List<Category> categories = categoryService.searchCategory(keyword);
         model.addAttribute("categories", categories);
         model.addAttribute("keyword", keyword);
@@ -66,7 +69,7 @@ public class CategoryController {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setId(category.getId());
         categoryDto.setName(category.getName());
-        categoryDto.setParent_id(category.getParent() != null ? category.getParent().getId() : null);
+        categoryDto.setParentId(category.getParent() != null ? category.getParent().getId() : null);
         List<Category> parenOptions = categoryService.getAllParentOptions();
         parenOptions.removeIf(c -> c.getId().equals(id));
         model.addAttribute("categoryDto", categoryDto);
@@ -101,11 +104,11 @@ public class CategoryController {
 
     @GetMapping("/delete/{id}")
     public String deleteCategory(
-            @PathVariable("id") Integer id, Model model) {
+            @PathVariable("id") Integer id) {
         try {
             categoryService.deleteCategory(id);
         } catch (Exception e) {
-            return "redirect:/admin/category?error =" + e.getMessage();
+            return "redirect:/admin/category?error=" + e.getMessage();
         }
         return "redirect:/admin/category";
     }

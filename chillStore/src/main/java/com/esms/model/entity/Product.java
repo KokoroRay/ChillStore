@@ -28,8 +28,8 @@ public class Product {
     @Column(name = "stock_qty")
     private Integer stockQty; // Quantity hàng tồn kho
 
-    @Column(name = "status")
-    private String status; //Trạng thái product<<active/inactive>>
+    @Column(name = "active")
+    private boolean status; //Trạng thái product<<active/inactive>>
 
     /**
      * Quan hệ One-to-Many với bảng warehouse.
@@ -79,11 +79,11 @@ public class Product {
         this.stockQty = stockQty;
     }
 
-    public String getStatus() {
+    public boolean isStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 

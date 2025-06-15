@@ -1,52 +1,29 @@
-/* file: src/main/resources/static/css/custom.css */
-
-/* Tạo shadow nhẹ cho card */
-.card.shadow-sm {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.sidebar {
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
 }
 
-/* Customize button màu nhẹ hơn */
-.btn-info {
-    background-color: #ace7ef;
-    border-color: #ace7ef;
-    color: #000;
-}
-.btn-info:hover {
-    background-color: #8edce4;
-    border-color: #8edce4;
+.sidebar .nav-link {
+    transition: all 0.2s;
 }
 
-.btn-danger {
-    background-color: #f28b82;
-    border-color: #f28b82;
-    color: #000;
-}
-.btn-danger:hover {
-    background-color: #e0675e;
-    border-color: #e0675e;
+.sidebar .nav-link.active {
+    background-color: #e9ecef;
+    font-weight: 500;
 }
 
-/* Nút Add pill */
-.btn-success {
-    background-color: #a8e6a3;
-    border-color: #a8e6a3;
-    color: #000;
-}
-.btn-success:hover {
-    background-color: #8cd78a;
-    border-color: #8cd78a;
+.list-group-item {
+    transition: background-color 0.2s;
 }
 
-/* Sidebar active link */
-.nav-link.active {
-    background-color: #e9f5f5;
-    font-weight: bold;
+.list-group-item:hover {
+    background-color: #f8f9fa;
 }
 
-/* Placeholder image box */
-.placeholder-img {
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.btn-update {
+    min-width: 80px;
+}
+
+.btn-delete {
+    min-width: 80px;
 }

@@ -4,10 +4,10 @@ import com.esms.model.entity.Product;
 import com.esms.repository.ProductRepository;
 import com.esms.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -17,8 +17,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
     @Override
@@ -38,24 +38,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> filterByPriceRange(BigDecimal minPrice, BigDecimal maxPrice) {
-        return productRepository.findByPriceRange(minPrice, maxPrice);
-    }
-
-    @Override
-    public List<Product> getAvailableProducts() {
-        return productRepository.findAvailableProducts();
-    }
-
-    @Override
-    @Transactional
     public Product addProduct(Product product) {
         product.setStatus(true);
         return productRepository.save(product);
     }
 
     @Override
-    @Transactional
     public Product updateProduct(Integer productId, Product product) {
         Product existingProduct = getProductById(productId);
         existingProduct.setName(product.getName());
@@ -67,18 +55,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public void deleteProduct(Integer productId) {
         Product product = getProductById(productId);
         product.setStatus(false);
         productRepository.save(product);
     }
-
-    @Override
-    @Transactional
-    public void updateStock(Integer productId, Integer quantity) {
-        Product product = getProductById(productId);
-        product.setStockQty(product.getStockQty() + quantity);
-        productRepository.save(product);
-    }
 }
+

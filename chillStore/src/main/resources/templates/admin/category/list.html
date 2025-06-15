@@ -1,12 +1,14 @@
-<!-- file: templates/admin/category/list.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
+    <title>Manage Category</title>
 </head>
 <body>
-<div th:replace="layout :: layout(~{admin/category/list-content :: content})"
-     th:with="pageTitle='Manage Category', keyword=${keyword}">
-</div>
+<!-- Sử dụng th:replace đơn giản hơn -->
+<div th:replace="fragments/layout :: layout(
+        pageTitle='Manage Category',
+        activeMenu='category',
+        content=~{admin/category/list-content}
+    )"></div>
 </body>
 </html>

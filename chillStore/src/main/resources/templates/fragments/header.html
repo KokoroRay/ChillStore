@@ -1,24 +1,20 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-<div th:fragment="header">
-  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-    <div class="container-fluid">
-      <form class="d-flex" th:action="@{/admin/categories}" method="get">
-        <input class="form-control me-2" type="search" name="keyword" th:value="${keyword}" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-      <div class="d-flex align-items-center">
-        <a th:href="@{/admin/categories/add}" class="btn btn-success me-3">Add Category</a>
-        <!-- User icon -->
-        <div>
-          <a th:href="@{/profile}" class="btn btn-outline-primary">
-            <i class="bi bi-person-circle"></i> <!-- giả sử dùng Bootstrap Icons -->
-          </a>
+<header th:fragment="header" class="navbar navbar-expand-lg navbar-light bg-white border-bottom p-3">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center w-100">
+      <!-- Search Form -->
+      <form class="d-flex header-search" th:action="@{/admin/category}" method="get">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0">Search by</span>
+          <input class="form-control" type="search" name="keyword"
+                 th:value="${keyword}" placeholder="Enter search keyword" aria-label="Search">
+          <button class="btn btn-outline-primary" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
         </div>
-      </div>
+      </form>
+
+      <!-- Add Button -->
+      <a th:href="@{/admin/category/add}" class="btn btn-success">Add</a>
     </div>
-  </nav>
-</div>
-</body>
-</html>
+  </div>
+</header>

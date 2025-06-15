@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Import Warehouse</title>
+    <link rel="stylesheet" href="/css/styleWarehouse.css">
+</head>
+<body>
+<div class="container">
+    <aside class="sidebar">
+        <div class="logo">
+            <h1>ESMS</h1>
+            <p>ELECTRONICS STORE</p>
+        </div>
+        <nav class="nav-links">
+            <button>Manage Category</button>
+            <button>Manage User</button>
+            <button>Manage Staff</button>
+            <button>Manage Voucher</button>
+            <button>Manage revenue</button>
+            <button class="active">Manage warehouse</button>
+            <button>Manage product</button>
+            <button>Manage promotion</button>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="brand">ESMS<br /><small>ELECTRONICS STORE</small></div>
+            <div class="search-box">
+                <input type="text" placeholder="Search" />
+                <button>🔍</button>
+            </div>
+            <div class="user-icon">👤</div>
+        </header>
+
+        <section class="warehouse-section">
+            <h2>Import Warehouse</h2>
+            
+            <div class="import-form">
+                <form th:action="@{/warehouse/import}" method="post">
+                    <div class="form-group">
+                        <label for="productId">Product:</label>
+                        <select id="productId" name="productId" required>
+                            <option value="">Select Product</option>
+                            <option th:each="product : ${products}" 
+                                    th:value="${product.productId}"
+                                    th:text="${product.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" required min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Notes:</label>
+                        <textarea id="notes" name="notes" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="blue">Import</button>
+                        <a th:href="@{/warehouse}" class="cancel-btn">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html> 

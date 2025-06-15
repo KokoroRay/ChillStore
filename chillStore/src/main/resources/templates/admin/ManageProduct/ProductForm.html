@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Form - ESMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            width: 220px;
+            background-color: #e3f2fd;
+            padding: 20px;
+            height: 100vh;
+        }
+        .sidebar h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .sidebar button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>ESMS</h2>
+    <button class="btn btn-light">Manage Category</button>
+    <button class="btn btn-light">Manage User</button>
+    <button class="btn btn-light">Manage Staff</button>
+    <button class="btn btn-light">Manage Voucher</button>
+    <button class="btn btn-light">Manage Revenue</button>
+    <button class="btn btn-light">Manage Warehouse</button>
+    <button class="btn btn-primary">Manage Product</button>
+    <button class="btn btn-light">Manage Promotion</button>
+</div>
+
+<div class="main-content">
+    <div class="topbar">
+        <h4 th:text="${product.productId == null ? 'Add New Product' : 'Edit Product'}"></h4>
+        <div>
+            <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
+        </div>
+    </div>
+
+    <div class="form-container">
+        <form th:action="${product.productId == null ? '/admin/products/add' : '/admin/products/' + product.productId + '/edit'}"
+              method="post"
+              enctype="multipart/form-data">
+            
+            <div class="form-group">
+                <label for="name">Product Name</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="name" 
+                       name="name" 
+                       th:value="${product.name}"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" 
+                          id="description" 
+                          name="description" 
+                          rows="3"
+                          th:text="${product.description}"
+                          required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" 
+                       class="form-control" 
+                       id="price" 
+                       name="price" 
+                       th:value="${product.price}"
+                       step="0.01"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="stockQty">Stock Quantity</label>
+                <input type="number" 
+                       class="form-control" 
+                       id="stockQty" 
+                       name="stockQty" 
+                       th:value="${product.stockQty}"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Product Image</label>
+                <input type="file" 
+                       class="form-control" 
+                       id="image" 
+                       name="image"
+                       accept="image/*"
+                       th:required="${product.productId == null}">
+                <img th:if="${product.imageUrl}" 
+                     th:src="${product.imageUrl}" 
+                     class="preview-image mt-2"
+                     alt="Product Image">
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input type="checkbox" 
+                           class="form-check-input" 
+                           id="status" 
+                           name="status"
+                           th:checked="${product.status}">
+                    <label class="form-check-label" for="status">Đang bán</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <a th:href="@{/admin/products}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Preview image before upload
+    document.getElementById('image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.querySelector('.preview-image');
+                if (preview) {
+                    preview.src = e.target.result;
+                } else {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'preview-image mt-2';
+                    document.getElementById('image').parentNode.appendChild(img);
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+</body>
+</html> 

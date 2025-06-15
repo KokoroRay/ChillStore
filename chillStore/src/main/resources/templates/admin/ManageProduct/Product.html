@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Product - ESMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            width: 220px;
+            background-color: #e3f2fd;
+            padding: 20px;
+            height: 100vh;
+        }
+        .sidebar h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .sidebar button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .product-card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .product-card img {
+            width: 100px;
+            height: auto;
+            border-radius: 10px;
+        }
+        .product-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        /* CSS cho phân trang */
+        .pagination {
+            margin-top: 20px;
+        }
+        .pagination .page-link {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        .pagination .page-item {
+            margin: 0 2px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>ESMS</h2>
+    <button class="btn btn-light">Manage Category</button>
+    <button class="btn btn-light">Manage User</button>
+    <button class="btn btn-light">Manage Staff</button>
+    <button class="btn btn-light">Manage Voucher</button>
+    <button class="btn btn-light">Manage Revenue</button>
+    <button class="btn btn-light">Manage Warehouse</button>
+    <button class="btn btn-primary">Manage Product</button>
+    <button class="btn btn-light">Manage Promotion</button>
+</div>
+
+<div class="main-content">
+    <div class="topbar">
+        <h4>Manage Product</h4>
+        <div>
+            <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="filter-section">
+        <form th:action="@{/admin/products}" method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" 
+                       class="form-control" 
+                       name="keyword" 
+                       th:value="${keyword}"
+                       placeholder="Tìm kiếm sản phẩm...">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="categoryId">
+                    <option value="">Tất cả danh mục</option>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.id}"
+                            th:text="${category.name}"
+                            th:selected="${categoryId == category.id}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="status">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">Đang bán</option>
+                    <option value="INACTIVE" th:selected="${status == 'INACTIVE'}">Ngừng bán</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add Product Button -->
+    <div class="mb-3">
+        <a th:href="@{/admin/products/add}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Thêm sản phẩm mới
+        </a>
+    </div>
+
+    <!-- Products List -->
+    <div th:each="product : ${products}" class="product-card">
+        <img th:if="${product.imageUrl}" 
+             th:src="${product.imageUrl}" 
+             th:alt="${product.name}"
+             style="width: 100px; height: auto; border-radius: 10px;">
+        <div>
+            <h5 th:text="${product.name}"></h5>
+            <div class="d-flex gap-3">
+                <span>Giá: <span th:text="${#numbers.formatCurrency(product.price)}"></span></span>
+                <span>Số lượng: <span th:text="${product.stockQty}"></span></span>
+            </div>
+        </div>
+        <div class="product-controls">
+            <a th:href="@{/admin/products/{id}(id=${product.productId})}" 
+               class="btn btn-info">
+                <i class="fas fa-eye"></i> Chi tiết
+            </a>
+            <a th:href="@{/admin/products/{id}/edit(id=${product.productId})}" 
+               class="btn btn-warning">
+                <i class="fas fa-edit"></i> Sửa
+            </a>
+            <button type="button" 
+                    class="btn btn-danger"
+                    th:onclick="'confirmDelete(' + ${product.productId} + ')'">
+                <i class="fas fa-trash"></i> Xóa
+            </button>
+        </div>
+    </div>
+
+    <!-- Phân trang -->
+    <div class="container mt-4">
+        <nav th:if="${totalPages > 1}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/products(page=${currentPage - 1})}">Trước</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${currentPage == i} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/products(page=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/products(page=${currentPage + 1})}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa sản phẩm này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Custom JavaScript -->
+<script th:inline="javascript">
+    function confirmDelete(productId) {
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = `/admin/products/${productId}/delete`;
+        modal.show();
+    }
+</script>
+
+</body>
+</html> 

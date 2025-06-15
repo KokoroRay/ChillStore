@@ -29,7 +29,10 @@ public class Product {
     private Integer stockQty; // Quantity hàng tồn kho
 
     @Column(name = "active")
-    private boolean status; //Trạng thái product<<active/inactive>>
+    private boolean status;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     /**
      * Quan hệ One-to-Many với bảng warehouse.
@@ -85,6 +88,14 @@ public class Product {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public List<Warehouse> getWarehouseTransactions() {

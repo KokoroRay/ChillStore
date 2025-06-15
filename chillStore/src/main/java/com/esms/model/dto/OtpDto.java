@@ -1,11 +1,13 @@
 package com.esms.model.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 public class OtpDto {
 
     @NotBlank(message = "Email khong de trong nha")
+    @Email(message = "Email khong hop le")
     private String email;
 
     @NotBlank(message = "Otp khong de trong nha")

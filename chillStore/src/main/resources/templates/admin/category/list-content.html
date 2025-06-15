@@ -7,7 +7,7 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="m-0">Manage Category</h2>
     <!-- Nút Add mới ở phía trên phải -->
-    <a th:href="@{/admin/category/add}" class="btn btn-success rounded-pill px-4">
+    <a th:href="@{/templates/admin/admin/add}" class="btn btn-success rounded-pill px-4">
       Add
     </a>
   </div>
@@ -51,12 +51,12 @@
               <h5 class="card-title mb-0" th:text="${category.name}">Category Name</h5>
               <!-- Nút Update và Delete -->
               <div>
-                <a th:href="@{/admin/category/edit/{id}(id=${category.id})}"
+                <a th:href="@{/templates/admin/admin/edit/{id}(id=${category.id})}"
                    class="btn btn-sm btn-info me-2"
                    style="background-color: #ace7ef; border-color: #ace7ef; color: #000;">
                   Update
                 </a>
-                <a th:href="@{/admin/category/delete/{id}(id=${category.id})}"
+                <a th:href="@{/templates/admin/admin/delete/{id}(id=${category.id})}"
                    class="btn btn-sm btn-danger"
                    style="background-color: #f28b82; border-color: #f28b82; color: #000;"
                    onclick="return confirm('Are you sure you want to delete this category?')">

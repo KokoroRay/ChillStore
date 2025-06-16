@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
 
-    List<Voucher> findByCodeContainingIgnoreCaseDescriptionContainingIgnoreCase(String codeKeyword, String descKeyword);
+    List<Voucher> findByCodeContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String codeKeyword, String descKeyword);
     Optional<Voucher> findByCode(String code);
 }

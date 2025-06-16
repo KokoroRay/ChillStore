@@ -1,48 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="content">
-  <div class="mb-3">
-    <a th:href="@{/admin/category}" class="btn btn-light">
-      <i class="bi bi-arrow-left"></i> Back
-    </a>
-  </div>
+<div th:fragment="content(categoryDto, parentOptions, errorMessage)">
+  <h2 th:text="${categoryDto.id} != null ? 'Edit Category' : 'Add Category'"></h2>
   <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-      <form th:action="${categoryDto.id != null} ? @{/admin/category/edit/{id}(id=${categoryDto.id})} : @{/admin/category/add}"
-            th:object="${categoryDto}" method="post">
-        <div class="row">
-          <div class="col-md-6 mb-3" th:if="${categoryDto.id != null}">
-            <label for="id" class="form-label">ID:</label>
-            <input type="text" id="id" class="form-control" th:value="${categoryDto.id}" disabled/>
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="name" class="form-label">Name:</label>
-            <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Enter category name"/>
-            <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}"></div>
-          </div>
-        </div>
-        <div class="row" th:if="${parentOptions != null}">
-          <div class="col-md-6 mb-3">
-            <label for="parentId" class="form-label">Parent Category</label>
-            <select th:field="*{parentId}" class="form-select" id="parentId">
-              <option value="">-- None --</option>
-              <option th:each="opt : ${parentOptions}"
-                      th:if="${opt.id != categoryDto.id}"
-                      th:value="${opt.id}"
-                      th:text="${opt.name}">
-              </option>
-            </select>
-            <div th:if="${#fields.hasErrors('parentId')}" class="text-danger" th:errors="*{parentId}"></div>
-          </div>
-        </div>
-        <div class="text-end">
-          <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-      </form>
+  <form th:action="${categoryDto.id} != null ? @{'/admin/categories/edit/' + ${categoryDto.id}} : @{/admin/categories/add}"
+        th:object="${categoryDto}" method="post">
+    <div class="mb-3">
+      <label for="name" class="form-label">Category Name</label>
+      <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Enter category name" required/>
+      <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
     </div>
-  </div>
+    <div class="mb-3">
+      <label for="parentId" class="form-label">Parent Category</label>
+      <select th:field="*{parentId}" class="form-select" id="parentId">
+        <option th:value="">-- None --</option>
+        <option th:each="p : ${parentOptions}"
+                th:value="${p.id}"
+                th:text="${p.name}"
+                th:selected="${categoryDto.parentId} != null and ${p.id} == ${categoryDto.parentId}">
+        </option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary" th:text="${categoryDto.id} != null ? 'Update' : 'Add'"></button>
+    <a th:href="@{/admin/categories}" class="btn btn-secondary">Cancel</a>
+  </form>
 </div>
 </body>
 </html>

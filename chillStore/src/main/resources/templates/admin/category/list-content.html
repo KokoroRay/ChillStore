@@ -1,19 +1,34 @@
-<!-- Bỏ th:fragment, sử dụng toàn bộ nội dung file -->
-<div class="mt-4">
-  <div th:each="category : ${categories}" class="category-item">
-    <h5 class="mb-0" th:text="${category.name}">Category Name</h5>
-    <div>
-      <a th:href="@{/admin/category/edit/{id}(id=${category.id})}"
-         class="btn btn-sm btn-outline-primary me-1">Update</a>
-      <a th:href="@{/admin/category/delete/{id}(id=${category.id})}"
-         class="btn btn-sm btn-outline-danger"
-         onclick="return confirm('Are you sure to delete?')">Delete</a>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content(keyword, categories, errorMessage)">
+  <h2>Manage Category</h2>
+  <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+  <div th:if="${#lists.isEmpty(categories)}">
+    <p>No categories found.</p>
+  </div>
+  <div th:each="cat : ${categories}" class="card mb-3">
+    <div class="row g-0 align-items-center">
+      <div class="col-md-1">
+        <!-- Nếu có ảnh icon: <img th:src="@{${cat.imageUrl}}"...> -->
+        <div class="placeholder-img" style="width:60px; height:60px;"></div>
+      </div>
+      <div class="col-md-7">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${cat.name}">Category Name</h5>
+          <p class="card-text text-muted" th:if="${cat.parent != null}">
+            Parent: <span th:text="${cat.parent.name}">ParentName</span>
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 text-end pe-4">
+        <a th:href="@{/admin/categories/edit/{id}(id=${cat.id})}" class="btn btn-update me-2">Update</a>
+        <a th:href="@{/admin/categories/delete/{id}(id=${cat.id})}"
+           onclick="return confirm('Bạn có chắc chắn muốn xóa category này?');"
+           class="btn btn-delete">Delete</a>
+      </div>
     </div>
   </div>
 </div>
-
-<!-- Empty State -->
-<div th:if="${#lists.isEmpty(categories)}" class="empty-state">
-  <i class="bi bi-folder-x"></i>
-  <p class="mt-2">No categories found</p>
-</div>
+</body>
+</html>

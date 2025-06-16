@@ -34,7 +34,7 @@ public class VoucherServiceImpl implements VoucherService {
             return voucherRepository.findAll();
         }
         String kw = keyword.trim();
-        return voucherRepository.findByCodeContainingIgnoreCaseDescriptionContainingIgnoreCase(kw, kw);
+        return voucherRepository.findByCodeContainingIgnoreCaseOrDescriptionContainingIgnoreCase(kw, kw);
     }
 
     @Override

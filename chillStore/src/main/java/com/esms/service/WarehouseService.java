@@ -1,6 +1,9 @@
 package com.esms.service;
 
 import com.esms.model.entity.Warehouse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 /**
@@ -8,18 +11,41 @@ import java.util.List;
  * Đây là nơi khai báo các hành động chính như thêm, sửa, xóa, tìm kiếm và truy vấn các giao dịch warehouse.
  */
 public interface WarehouseService {
-    // Basic CRUD operations
+    //Các method CRUD cơ bản
+
+    Warehouse save(Warehouse warehouse); //Lưu or cập nhật 1 giao dịch warehouse vào DB
+    Warehouse findById(Integer id); //Search 1 giao dịch
+    List<Warehouse> findAll(); //Lấy tất cả giao dịch warehouse từ DB
+    void deleteById(Integer id); //Xóa một giao dch warehouse dựa trên ID của nó
     List<Warehouse> getAllWarehouseTransactions();
-    Warehouse getWarehouseTransactionById(Integer id);
-    List<Warehouse> getWarehouseTransactionsByProductId(Integer productId);
-    Warehouse addWarehouseTransaction(Warehouse warehouse);
-    Warehouse updateWarehouseTransaction(Integer id, Warehouse warehouse);
-    void deleteWarehouseTransaction(Integer id);
-    
-    // Search operations
     List<Warehouse> searchWarehouseByProductName(String productName);
+    List<Warehouse> findByProductId(Integer productId);
+    List<Warehouse> findByType(String type);
+    List<Warehouse> findByAdminId(Integer adminId);
+    //update
+
+    /**
+     * Nhập sản phẩm vào kho
+     * @param productId ID của sản phẩm
+     * @param quantity Số lượng nhập
+     * @param notes Ghi chú
+     * @return Warehouse transaction đã tạo
+     */
+    Warehouse importProduct(Integer productId, Integer quantity, String notes);
+
+    /**
+     * Xuất sản phẩm từ kho
+     * @param productId ID của sản phẩm
+     * @param quantity Số lượng xuất
+     * @param notes Ghi chú
+     * @return Warehouse transaction đã tạo
+     * @throws RuntimeException nếu số lượng xuất lớn hơn số lượng tồn kho
+     */
+    Warehouse exportProduct(Integer productId, Integer quantity, String notes);
+
+    // Lấy tất cả giao dịch kho với phân trang
+    Page<Warehouse> getAllWarehouseTransactions(Pageable pageable);
     
-    // Additional operations
-    List<Warehouse> findByTransactionType(String transactionType);
-    List<Warehouse> findByDateRange(String startDate, String endDate);
+    // Tìm kiếm theo tên sản phẩm với phân trang
+    Page<Warehouse> searchWarehouseByProductName(String keyword, Pageable pageable);
 }

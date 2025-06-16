@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="/css/header.css">
+
+<div th:fragment="headerContent">
+
+  <header class="container-fluid px-4 py-2 border-bottom">
+    <div class="header-container">
+
+      <div class="center-logo">
+        <img th:src="@{/images/logo.png}" alt="FsMs Logo" class="logo-image">
+      </div>
+
+      <a href="/profile" class="position-absolute top-50 end-0 translate-middle-y me-3">
+        <div class="profile-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5.121 17.804A9 9 0 0112 15a9 9 0 016.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+  </header>
+</div>

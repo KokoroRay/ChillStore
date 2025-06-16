@@ -29,7 +29,18 @@ public class Product {
     private Integer stockQty; // Quantity hàng tồn kho
 
     @Column(name = "active")
-    private boolean status; //Trạng thái product<<active/inactive>>
+    private boolean status;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
 
     /**
      * Quan hệ One-to-Many với bảng warehouse.
@@ -38,6 +49,9 @@ public class Product {
      */
     @OneToMany(mappedBy = "product")
     private List<Warehouse> warehouseTransactions;
+
+    public Product() {
+    }
 
     public Integer getProductId() {
         return productId;
@@ -85,6 +99,30 @@ public class Product {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
     }
 
     public List<Warehouse> getWarehouseTransactions() {

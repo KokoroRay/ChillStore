@@ -3,7 +3,6 @@ package com.esms.config;
 import com.esms.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,7 +27,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         // Cho phép truy cập các trang công khai (Guest Home, CSS, JS, Auth flows)
-                        .requestMatchers( "/", "/home", "/css/**", "/js/**",
+                        .requestMatchers( "/", "/home", "/static/css/**", "/js/**",
                                 "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
                                 "/auth/login", "/auth/register", "/auth/resend-otp").permitAll() // Thêm /auth/resend-otp vào đây
                         // Bất kỳ request nào khác đều yêu cầu xác thực

@@ -15,7 +15,6 @@
 </p>
 
 <form th:action="@{/auth/register}" th:object="${registerDto}" method="post">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <div>
         <label>Tên:</label>
         <input type="text" th:field="*{name}" placeholder="Nhập tên..." />
@@ -44,7 +43,6 @@
     <div>
         <button type="submit">Đăng ký</button>
     </div>
-
 </form>
 <p>
     Đã có tài khoản? <a th:href="@{/auth/login}">Đăng nhập</a>.

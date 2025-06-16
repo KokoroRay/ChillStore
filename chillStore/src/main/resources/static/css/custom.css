@@ -27,3 +27,52 @@
 .btn-delete {
     min-width: 80px;
 }
+
+/* Sidebar */
+.sidebar {
+    width: 200px;
+    background-color: #d4f1f9;
+    position: fixed;
+    height: 100%;
+}
+.sidebar .nav-link {
+    color: #000;
+    padding: 10px;
+}
+.sidebar .active > .nav-link {
+    background-color: #b3e0f2;
+    font-weight: bold;
+}
+
+/* Main content bù sidebar */
+.main-content, .flex-grow-1 {
+    margin-left: 200px;
+}
+
+/* Card style */
+.card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Placeholder image */
+.placeholder-img {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+}
+
+/* Buttons */
+.btn-add {
+    background-color: #a8f0a3;
+    color: #000;
+}
+.btn-update {
+    background-color: #c0e4f3;
+    color: #000;
+}
+.btn-delete {
+    background-color: #f38c8c;
+    color: #000;
+}

@@ -1,5 +1,6 @@
-package com.esms.model.dto;
+package com.esms.controller;
 
+import com.esms.model.dto.VoucherDto;
 import com.esms.model.entity.Voucher;
 import com.esms.service.VoucherService;
 import jakarta.validation.Valid;
@@ -39,7 +40,10 @@ public class VoucherController {
     public String showAddForm(Model model) {
         VoucherDto voucherDto = new VoucherDto();
         model.addAttribute("voucher", voucherDto);
-        return "admin/vouchers/add";
+        model.addAttribute("activeMenu", "vouchers");
+        model.addAttribute("currentSection", "voucher");
+        model.addAttribute("keyword", "");
+        return "admin/vouchers/form";
     }
 
     @PostMapping("/add")
@@ -48,13 +52,21 @@ public class VoucherController {
             VoucherDto voucherDto, BindingResult bindingResult,
             Model model, Authentication  authentication) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("voucher", voucherDto);
+            model.addAttribute("activeMenu", "vouchers");
+            model.addAttribute("currentSection", "voucher");
+            model.addAttribute("keyword", "");
             return "admin/vouchers/form";
         }
         try {
             String adminEmail = authentication.getName();
             voucherService.createVoucher(voucherDto, adminEmail);
         } catch (Exception e) {
-            model.addAttribute("error Message", e.getMessage());
+            model.addAttribute("voucherDto", voucherDto);
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("activeMenu", "vouchers");
+            model.addAttribute("currentSection", "voucher");
+            model.addAttribute("keyword", "");
             return "admin/vouchers/form";
         }
         return "redirect:/admin/vouchers";

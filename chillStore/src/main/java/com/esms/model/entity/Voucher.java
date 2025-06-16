@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "vouchers")
@@ -43,15 +44,15 @@ public class Voucher {
     private boolean active = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ceated_by")
+    @JoinColumn(name = "created_by")
     private Admin created_by;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDate created_at;
+    private LocalDateTime created_at;
 
     @PrePersist
     protected void prePersist() {
-        created_at = LocalDate.now();
+        created_at = LocalDateTime.now();
     }
 
     public Integer getVoucher_id() {
@@ -102,7 +103,7 @@ public class Voucher {
         this.min_order_amount = min_order_amount;
     }
 
-    public Integer Quantity_available() {
+    public Integer getQuantity_available() {
         return quantity_available;
     }
 
@@ -142,11 +143,11 @@ public class Voucher {
         this.created_by = created_by;
     }
 
-    public LocalDate getCreated_at() {
+    public LocalDateTime getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(LocalDate created_at) {
+    public void setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 }

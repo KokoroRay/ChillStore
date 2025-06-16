@@ -220,7 +220,15 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         // Cập nhật các trường
-
+        existingCustomer.setName(customerDto.getName());
+        existingCustomer.setDisplay_name(customerDto.getDisplayName());
+        existingCustomer.setEmail(customerDto.getEmail());
+        if (customerDto.getPassword() != null && !customerDto.getPassword().isEmpty()) {
+            existingCustomer.setPassword(passwordEncoder.encode(customerDto.getPassword()));
+        }
+        existingCustomer.setPhone(customerDto.getPhone());
+        existingCustomer.setAddress(customerDto.getAddress());
+        existingCustomer.setBirth_date(customerDto.getBirthDate());
         existingCustomer.setUpdated_at(LocalDateTime.now());
 
         customerRepository.save(existingCustomer);
@@ -229,6 +237,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteCustomer(Integer id) {
         Customer customer = getCustomerById(id);
-        customerRepository.delete(customer);
+        customer.setLocked(true);
+        customerRepository.save(customer);
     }
 }

@@ -27,36 +27,34 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public String getAllCustomers(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "") String search,
             Model model) {
-
         Pageable pageable = PageRequest.of(page - 1, 10);
         Page<Customer> customerPage = search.isEmpty()
                 ? customerService.getAllCustomers(pageable)
                 : customerService.searchCustomers(search, pageable);
-
+        System.out.println("📢 Controller đã được gọi!");
         model.addAttribute("customers", customerPage.getContent());
         model.addAttribute("totalPages", customerPage.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("search", search);
-
         return "admin/customer/list";
     }
 
-    @GetMapping("/form")
+    @GetMapping("/addform")
     public String showCreateForm(Model model) {
         model.addAttribute("customerDto", new CustomerDto());
-        return "admin/customer/form";
+        return "admin/customer/addform";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Integer id, Model model) {
         Customer customer = customerService.getCustomerById(id);
         model.addAttribute("customerDto", convertToDto(customer));
-        return "admin/customer/form";
+        return "admin/customer/editform";
     }
 
     @PostMapping("/save")
@@ -65,20 +63,17 @@ public class CustomerController {
             BindingResult result,
             Model model,
             RedirectAttributes redirectAttributes) {
-
         if (result.hasErrors()) {
-            return "admin/customer/form";
+            return "admin/customer/addform";
         }
-
         try {
             customerService.createCustomer(convertToEntity(customerDto));
             redirectAttributes.addFlashAttribute("success", "Thêm người dùng thành công!");
         } catch (EmailAlreadyUsedException e) {
             model.addAttribute("error", e.getMessage());
-            return "admin/customer/form";
+            return "admin/customer/addform";
         }
-
-        return "redirect:/admin/customer/list";
+        return "redirect:/admin/customer";
     }
 
     @PostMapping("/update/{id}")
@@ -88,35 +83,38 @@ public class CustomerController {
             BindingResult result,
             Model model,
             RedirectAttributes redirectAttributes) {
-
         if (result.hasErrors()) {
-            return "admin/customer/form";
+            return "admin/customer/editform";
         }
-
         try {
+            Customer customer = convertToEntity(customerDto);
+            customer.setCustomerId(id);
             customerService.updateCustomer(id, customerDto);
             redirectAttributes.addFlashAttribute("success", "Cập nhật thành công!");
         } catch (EmailAlreadyUsedException e) {
             model.addAttribute("error", e.getMessage());
-            return "admin/customer/form";
+            return "admin/customer/editform";
         }
-
-        return "redirect:/admin/customer/list";
+        return "redirect:/admin/customer";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteCustomer(
             @PathVariable Integer id,
             RedirectAttributes redirectAttributes) {
-
         try {
             customerService.deleteCustomer(id);
-            redirectAttributes.addFlashAttribute("success", "Xóa người dùng thành công!");
+            redirectAttributes.addFlashAttribute("success", "Khóa tài khoản thành công!");
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
+        return "redirect:/admin/customer";
+    }
 
-        return "redirect:/admin/customer/list";
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("customerDto", new CustomerDto());
+        return "admin/customer/addform";
     }
 
     private CustomerDto convertToDto(Customer customer) {
@@ -131,6 +129,7 @@ public class CustomerController {
         dto.setBirthDate(customer.getBirth_date());
         dto.setCreatedAt(customer.getCreated_at());
         dto.setUpdatedAt(customer.getUpdated_at());
+        dto.setLocked(customer.isLocked());
         return dto;
     }
 
@@ -145,6 +144,7 @@ public class CustomerController {
         customer.setBirth_date(dto.getBirthDate());
         customer.setCreated_at(dto.getCreatedAt() != null ? dto.getCreatedAt() : LocalDateTime.now());
         customer.setUpdated_at(LocalDateTime.now());
+        customer.setLocked(dto.isLocked());
         return customer;
     }
 }

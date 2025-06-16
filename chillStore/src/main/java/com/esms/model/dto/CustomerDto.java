@@ -36,6 +36,8 @@ public class CustomerDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    private boolean isLocked;
+
     public CustomerDto() {}
 
     public CustomerDto(Integer customerId, String name, String displayName, String email, String password,
@@ -121,5 +123,12 @@ public class CustomerDto {
     }
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 }

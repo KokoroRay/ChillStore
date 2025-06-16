@@ -1,0 +1,78 @@
+<div th:fragment="list-content">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Danh sách Người dùng</h2>
+            <a class="btn btn-success" th:href="@{/admin/customer/form}">
+                <i class="fas fa-plus"></i> Thêm mới
+            </a>
+        </div>
+
+        <div class="alert alert-success alert-dismissible fade show" th:if="${success}">
+            <span th:text="${success}"></span>
+            <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
+        </div>
+
+        <div class="alert alert-danger alert-dismissible fade show" th:if="${error}">
+            <span th:text="${error}"></span>
+            <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Ngày tạo</th>
+                    <th>Ngày cập nhật</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(customers)}">
+                    <td class="text-center text-muted py-4" colspan="6">Không có dữ liệu người dùng</td>
+                </tr>
+
+                <tr th:each="customer : ${customers}">
+                    <td th:text="${customer.customerId}">1</td>
+                    <td th:text="${customer.displayName}">Nguyễn Văn A</td>
+                    <td th:text="${customer.email}">email@example.com</td>
+                    <td th:text="${customer.createdAt != null} ? ${#temporals.format(customer.createdAt, 'dd/MM/yyyy')} : 'N/A'">01/01/2024</td>
+                    <td th:text="${customer.updatedAt != null} ? ${#temporals.format(customer.updatedAt, 'dd/MM/yyyy')} : 'N/A'">03/01/2024</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-sm btn-outline-primary"
+                               th:href="@{'/admin/customer/edit/' + ${customer.customerId}}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa?')"
+                               th:href="@{'/admin/customer/delete/' + ${customer.customerId}}">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/admin/customer/list(page=${currentPage - 1}, search=${search})}">Trước</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                    th:classappend="${i == currentPage ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/admin/customer/list(page=${i}, search=${search})}" th:text="${i}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages ? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/admin/customer/list(page=${currentPage + 1}, search=${search})}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

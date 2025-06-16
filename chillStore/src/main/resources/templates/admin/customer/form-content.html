@@ -1,0 +1,53 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="form-content">
+    <div class="container mt-4">
+        <!-- Kiểm tra customerDto tồn tại -->
+        <div th:if="${CustomerDto}">
+            <h2 th:text="${customerDto.customerId} ? 'Cập nhật người dùng #' + ${customerDto.customerId} : 'Thêm người dùng mới'"></h2>
+
+            <!-- Hiển thị lỗi -->
+            <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+
+            <form method="post"
+                  th:action="${customerDto.customerId} ?
+                             @{'/admin/customer/update/' + ${customerDto.customerId}} :
+                             @{/admin/customer/save}" th:object="${customerDto}">
+
+                <input th:field="*{customerId}" type="hidden">
+
+                <div class="mb-3">
+                    <label class="form-label">Tên đăng nhập</label>
+                    <input class="form-control" required th:field="*{name}" type="text">
+                    <div class="text-danger" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Họ và tên</label>
+                    <input class="form-control" required th:field="*{display_name}" type="text">
+                    <div class="text-danger" th:errors="*{display_name}"
+                         th:if="${#fields.hasErrors('display_name')}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" required th:field="*{email}" type="email">
+                    <div class="text-danger" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu</label>
+                    <input class="form-control" th:field="*{password}" th:required="${customerDto.customerId} == null"
+                           type="password">
+                    <div class="text-danger" th:errors="*{password}" th:if="${#fields.hasErrors('password')}"></div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button class="btn btn-primary" type="submit">
+                        <span th:text="${customerDto.customerId} ? 'Cập nhật' : 'Thêm mới'"></span>
+                    </button>
+                    <a class="btn btn-secondary" th:href="@{/admin/customer/list}">Hủy bỏ</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -3,26 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Quản lý Người dùng</title>
+    <title>Thêm Người dùng</title>
 </head>
 <body>
-<!-- Header -->
-<div th:replace="~{fragments/header :: header}"></div>
-
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
-
+        <div th:replace="~{fragments/sidebar :: sidebar('customer')}"></div>
         <!-- Main content -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            <div th:replace="~{admin/customer/form-content :: form-content}"></div>
+            <div th:replace="~{admin/customer/addform-content :: addform-content}"></div>
         </main>
     </div>
 </div>
-
-<!-- Scripts -->
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/script.js}"></script>
 </body>
-</html>
+</html> 

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${pageTitle}">Title</title>
+  <link rel="stylesheet" th:href="@{/css/custom.css}"/>
+</head>
+<body>
+<div th:fragment="layout(pageTitle, activeMenu, currentSection, keyword, bodyFragment)">
+  <div th:insert="fragments/sidebar :: sidebar(activeMenu=${activeMenu})"></div>
+  <div th:insert="fragments/header :: header(currentSection=${currentSection}, keyword=${keyword})"></div>
+  <div class="container mt-3">
+    <div th:insert="${bodyFragment}"></div>
+  </div>
+</div>
+
+</body>
+</html>

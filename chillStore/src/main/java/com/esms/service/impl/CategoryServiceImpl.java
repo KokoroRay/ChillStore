@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Category> getAllCategory() {
@@ -81,6 +85,8 @@ public class CategoryServiceImpl implements CategoryService {
                 throw new RuntimeException("Không thể xóa thư mục chứa thư mục con");
             }
             categoryRepository.delete(cat);
+            Integer maxId = categoryRepository.findMaxId();
+            reseedIdentityTo(maxId);
         }else {
             throw new RuntimeException("Category không tồn tại id" + id);
         }
@@ -90,4 +96,14 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getAllParentOptions() {
         return categoryRepository.findAll();
     }
+
+
+    private void reseedIdentityTo(Integer newSeed) {
+        String table = "categories";
+        int seed = (newSeed != null) ? newSeed : 0;
+        String sql = String.format("DBCC CHECKIDENT('%s', RESEED, %d)", table, seed);
+        jdbcTemplate.execute(sql);
+    }
+
+
 }

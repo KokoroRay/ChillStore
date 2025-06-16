@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content(keyword, vouchers, errorMessage)">
+    <h2>Manage Voucher</h2>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div th:if="${#lists.isEmpty(vouchers)}"><p>No vouchers found.</p></div>
+    <div th:each="v : ${vouchers}" class="card mb-3">
+        <div class="row g-0 align-items-center">
+            <div class="col-md-1">
+                <div class="placeholder-img" style="width:60px; height:60px; background:#f0f0f0;"></div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${v.code}">Voucher Code</h5>
+                    <p class="card-text" th:if="${v.description}" th:text="${v.description}"></p>
+                    <p class="card-text text-muted">
+                        <span th:if="${v.discountPct != null}">
+                            Discount: <span th:text="${v.discountPct} + '%'"></span>
+                        </span>
+                        <span th:if="${v.discountPct == null and v.discountAmount != null}">
+                            Discount: <span th:text="${v.discountAmount}"></span>
+                        </span>
+                        <span th:if="${v.minOrderAmount != null and v.minOrderAmount > 0}">
+                            , Min Order: <span th:text="${v.minOrderAmount}"></span>
+                        </span>
+                    </p>
+                    <p class="card-text text-muted">
+                        Valid: <span th:text="${v.startDate}"></span> → <span th:text="${v.endDate}"></span>,
+                        Qty: <span th:text="${v.quantityAvailable}"></span>,
+                        <span th:text="${v.active} ? 'Active' : 'Inactive'"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 text-end pe-4">
+                <a th:href="@{/admin/vouchers/edit/{id}(id=${v.id})}" class="btn btn-update me-2">Update</a>
+                <a th:href="@{/admin/vouchers/delete/{id}(id=${v.id})}"
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa voucher này?');"
+                   class="btn btn-delete">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

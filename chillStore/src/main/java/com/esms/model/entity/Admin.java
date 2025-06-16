@@ -8,51 +8,54 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "admins")
 public class Admin {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "admin_id", nullable = false)
-    private Integer admin_id;
+    @Column(name = "admin_id")
+    private Integer adminId;
 
-    @Column(name = "name", length = 100)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "email", length = 255, nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", length = 255)
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "phone", length = 20)
+    @Column(name = "phone")
     private String phone;
 
-    @Column(name = "address", length = 255)
+    @Column(name = "address")
     private String address;
 
-    @Column(name = "gender", length = 10)
+    @Column(name = "gender")
     private String gender;
 
-    @Column(name = "national_id", length = 20)
-    private String national_id;
+    @Column(name = "national_id")
+    private String nationalId;
 
-    @Column(name = "start_date", nullable = false)
-    private LocalDate start_date;
+    @Column(name = "start_date")
+    private LocalDate startDate;
 
-    @Column(name = "privileges", length = 100)
+    @Column(name = "privileges")
     private String privileges;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updated_at;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    public Integer getAdmin_id() {
-        return admin_id;
+    public Admin() {
     }
 
-    public void setAdmin_id(Integer admin_id) {
-        this.admin_id = admin_id;
+
+    public Integer getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(Integer adminId) {
+        this.adminId = adminId;
     }
 
     public String getName() {
@@ -103,20 +106,20 @@ public class Admin {
         this.gender = gender;
     }
 
-    public String getNational_id() {
-        return national_id;
+    public String getNationalId() {
+        return nationalId;
     }
 
-    public void setNational_id(String national_id) {
-        this.national_id = national_id;
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
     }
 
-    public LocalDate getStart_date() {
-        return start_date;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setStart_date(LocalDate start_date) {
-        this.start_date = start_date;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     public String getPrivileges() {
@@ -127,19 +130,19 @@ public class Admin {
         this.privileges = privileges;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

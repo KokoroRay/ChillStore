@@ -9,47 +9,199 @@
         body {
             display: flex;
             font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
         }
         .sidebar {
             width: 220px;
             background-color: #e3f2fd;
             padding: 20px;
             height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         }
         .sidebar h2 {
             font-size: 24px;
             margin-bottom: 30px;
             text-align: center;
+            color: #333;
         }
         .sidebar button {
             width: 100%;
             margin-bottom: 10px;
+            text-align: left;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .sidebar button:hover {
+            background-color: #bbdefb;
+        }
+        .sidebar button.active {
+            background-color: #2196f3;
+            color: white;
         }
         .main-content {
             flex-grow: 1;
             padding: 20px;
+            margin-left: 220px;
         }
         .topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .topbar h4 {
+            margin: 0;
+            color: #333;
+            font-weight: 600;
         }
         .form-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px;
             background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #2196f3;
+            box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
         }
         .preview-image {
             max-width: 200px;
             max-height: 200px;
             margin-top: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .form-check {
+            padding: 10px 0;
+        }
+        .form-check-input {
+            margin-right: 10px;
+        }
+        /* Custom toggle switch styles */
+        .status-toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        .status-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .status-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px;
+        }
+        .status-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .status-slider {
+            background-color: #2196f3;
+        }
+        input:checked + .status-slider:before {
+            transform: translateX(30px);
+        }
+        .status-label {
+            margin-left: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+        .status-container {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            font-weight: 500;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #2196f3;
+            border-color: #2196f3;
+        }
+        .btn-primary:hover {
+            background-color: #1976d2;
+            border-color: #1976d2;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        .image-upload-container {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        .image-upload-container:hover {
+            border-color: #2196f3;
+        }
+        .image-upload-container input[type="file"] {
+            display: none;
+        }
+        .image-upload-label {
+            cursor: pointer;
+            color: #2196f3;
+            font-weight: 500;
+        }
+        .image-upload-label:hover {
+            color: #1976d2;
         }
     </style>
 </head>
@@ -69,7 +221,7 @@
 
 <div class="main-content">
     <div class="topbar">
-        <h4 th:text="${product.productId == null ? 'Add New Product' : 'Edit Product'}"></h4>
+        <h4 th:text="${product.productId == null ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'}"></h4>
         <div>
             <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
         </div>
@@ -79,80 +231,105 @@
         <form th:action="${product.productId == null ? '/admin/products/add' : '/admin/products/' + product.productId + '/edit'}"
               method="post"
               enctype="multipart/form-data">
+            <input type="hidden" name="filterStatus" th:value="${filterStatus != null ? filterStatus : ''}" />
+            <input type="hidden" name="keyword" th:value="${keyword != null ? keyword : ''}" />
+            <input type="hidden" name="categoryId" th:value="${categoryId != null ? categoryId : ''}" />
+            <input type="hidden" name="brandId" th:value="${brandId != null ? brandId : ''}" />
+            <input type="hidden" name="page" th:value="${currentPage != null ? currentPage : ''}" />
+            <input type="hidden" name="size" th:value="${size != null ? size : ''}" />
             
-            <div class="form-group">
-                <label for="name">Product Name</label>
-                <input type="text" 
-                       class="form-control" 
-                       id="name" 
-                       name="name" 
-                       th:value="${product.name}"
-                       required>
-            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="name">Tên sản phẩm</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="name" 
+                               name="name" 
+                               th:value="${product.name}"
+                               required>
+                    </div>
 
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea class="form-control" 
-                          id="description" 
-                          name="description" 
-                          rows="3"
-                          th:text="${product.description}"
-                          required></textarea>
-            </div>
+                    <div class="form-group">
+                        <label for="description">Mô tả</label>
+                        <textarea class="form-control" 
+                                  id="description" 
+                                  name="description" 
+                                  rows="4"
+                                  th:text="${product.description}"
+                                  required></textarea>
+                    </div>
 
-            <div class="form-group">
-                <label for="price">Price</label>
-                <input type="number" 
-                       class="form-control" 
-                       id="price" 
-                       name="price" 
-                       th:value="${product.price}"
-                       step="0.01"
-                       required>
-            </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="price">Giá</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="price" 
+                                       name="price" 
+                                       th:value="${product.price}"
+                                       step="0.01"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="stockQty">Số lượng tồn kho</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="stockQty" 
+                                       name="stockQty" 
+                                       th:value="${product.stockQty}"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label for="stockQty">Stock Quantity</label>
-                <input type="number" 
-                       class="form-control" 
-                       id="stockQty" 
-                       name="stockQty" 
-                       th:value="${product.stockQty}"
-                       required>
-            </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Hình ảnh sản phẩm</label>
+                        <div class="image-upload-container">
+                            <input type="file" 
+                                   id="image" 
+                                   name="image"
+                                   accept="image/*"
+                                   th:required="${product.productId == null}">
+                            <label for="image" class="image-upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i> Chọn hình ảnh
+                            </label>
+                            <img th:if="${product.imageUrl}" 
+                                 th:src="${product.imageUrl}" 
+                                 class="preview-image mt-3"
+                                 alt="Product Image">
+                        </div>
+                    </div>
 
-            <div class="form-group">
-                <label for="image">Product Image</label>
-                <input type="file" 
-                       class="form-control" 
-                       id="image" 
-                       name="image"
-                       accept="image/*"
-                       th:required="${product.productId == null}">
-                <img th:if="${product.imageUrl}" 
-                     th:src="${product.imageUrl}" 
-                     class="preview-image mt-2"
-                     alt="Product Image">
-            </div>
-
-            <div class="form-group">
-                <div class="form-check">
-                    <input type="checkbox" 
-                           class="form-check-input" 
-                           id="status" 
-                           name="status"
-                           th:checked="${product.status}">
-                    <label class="form-check-label" for="status">Đang bán</label>
+                    <div class="form-group">
+                        <label>Trạng thái sản phẩm</label>
+                        <div class="status-container">
+                            <label class="status-toggle">
+                                <input type="checkbox" 
+                                       id="status" 
+                                       name="status"
+                                       th:checked="${product.status}" 
+                                       value="true">
+                                <span class="status-slider"></span>
+                            </label>
+                            <span class="status-label">Đang bán</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Save
-                </button>
+            <div class="form-actions">
                 <a th:href="@{/admin/products}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancel
+                    <i class="fas fa-times"></i> Hủy
                 </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
             </div>
         </form>
     </div>
@@ -172,8 +349,8 @@
                 } else {
                     const img = document.createElement('img');
                     img.src = e.target.result;
-                    img.className = 'preview-image mt-2';
-                    document.getElementById('image').parentNode.appendChild(img);
+                    img.className = 'preview-image mt-3';
+                    document.querySelector('.image-upload-container').appendChild(img);
                 }
             }
             reader.readAsDataURL(file);

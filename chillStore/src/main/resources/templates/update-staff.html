@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Staff</title>
+</head>
+<body>
+<h2>Update Staff</h2>
+
+<form method="post" th:action="@{/staff/update}" th:object="${staff}">
+  <!-- ID ẩn -->
+  <input type="hidden" th:field="*{id}" />
+
+  <label>Name:</label>
+  <input type="text" th:field="*{name}" required><br><br>
+
+  <label>Email:</label>
+  <input type="email" th:field="*{email}" required><br><br>
+
+  <label>Password:</label>
+  <input type="password" th:field="*{password}" required><br><br>
+
+  <label>Phone:</label>
+  <input type="text" th:field="*{phone}" required><br><br>
+
+  <label>Address:</label>
+  <input type="text" th:field="*{address}" required><br><br>
+
+  <label>Gender:</label>
+  <select th:field="*{gender}" required>
+    <option value="FEMALE">Female</option>
+    <option value="MALE">Male</option>
+    <option value="OTHER">Other</option>
+  </select><br><br>
+
+  <label>National ID:</label>
+  <input type="text" th:field="*{national_id}" required><br><br>
+
+  <button type="submit">Update</button>
+</form>
+
+</body>
+</html>

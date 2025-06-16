@@ -1,62 +1,167 @@
 package com.esms.controller;
 
+import com.esms.model.dto.WarehouseDto;
 import com.esms.model.entity.Warehouse;
+import com.esms.model.entity.Product;
 import com.esms.service.WarehouseService;
+import com.esms.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/admin/warehouse")
+@Controller
+@RequestMapping("/warehouse")
 public class WarehouseController {
-
     @Autowired
     private WarehouseService warehouseService;
+    
+    @Autowired
+    private ProductService productService;
 
-    // View all warehouse transactions
+    // Hiển thị tất cả các giao dịch kho với phân trang
     @GetMapping
-    public ResponseEntity<List<Warehouse>> getAllWarehouseTransactions() {
-        return ResponseEntity.ok(warehouseService.getAllWarehouseTransactions());
+    public String viewWarehouse(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("transDate").descending());
+        Page<Warehouse> warehousePage = warehouseService.getAllWarehouseTransactions(pageable);
+        List<WarehouseDto> transactions = warehousePage.getContent().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        
+        model.addAttribute("transactions", transactions);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", warehousePage.getTotalPages());
+        model.addAttribute("totalItems", warehousePage.getTotalElements());
+        return "warehouse/view";
     }
 
-    // View single warehouse transaction
-    @GetMapping("/{id}")
-    public ResponseEntity<Warehouse> getWarehouseTransactionById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(warehouseService.getWarehouseTransactionById(id));
-    }
-
-    // View warehouse transactions by product
-    @GetMapping("/product/{productId}")
-    public ResponseEntity<List<Warehouse>> getWarehouseTransactionsByProduct(@PathVariable("productId") Integer productId) {
-        return ResponseEntity.ok(warehouseService.getWarehouseTransactionsByProductId(productId));
-    }
-
-    // Add new warehouse transaction
-    @PostMapping
-    public ResponseEntity<Warehouse> addWarehouseTransaction(@RequestBody Warehouse warehouse) {
-        return ResponseEntity.ok(warehouseService.addWarehouseTransaction(warehouse));
-    }
-
-    // Update warehouse transaction
-    @PutMapping("/{id}")
-    public ResponseEntity<Warehouse> updateWarehouseTransaction(
-            @PathVariable("id") Integer id,
-            @RequestBody Warehouse warehouse) {
-        return ResponseEntity.ok(warehouseService.updateWarehouseTransaction(id, warehouse));
-    }
-
-    // Delete warehouse transaction
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWarehouseTransaction(@PathVariable("id") Integer id) {
-        warehouseService.deleteWarehouseTransaction(id);
-        return ResponseEntity.ok().build();
-    }
-
-    // Search warehouse transactions by product name
+    // Tìm kiếm theo tên sản phẩm với phân trang
     @GetMapping("/search")
-    public ResponseEntity<List<Warehouse>> searchWarehouseByProductName(@RequestParam String productName) {
-        return ResponseEntity.ok(warehouseService.searchWarehouseByProductName(productName));
+    public String searchByProductName(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("transDate").descending());
+        Page<Warehouse> warehousePage;
+        
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            warehousePage = warehouseService.searchWarehouseByProductName(keyword, pageable);
+        } else {
+            warehousePage = warehouseService.getAllWarehouseTransactions(pageable);
+        }
+        
+        List<WarehouseDto> transactions = warehousePage.getContent().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+                
+        model.addAttribute("transactions", transactions);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", warehousePage.getTotalPages());
+        model.addAttribute("totalItems", warehousePage.getTotalElements());
+        return "warehouse/view";
+    }
+
+    // Hiển thị form nhập kho
+    @GetMapping("/import")
+    public String showImportForm(Model model) {
+        List<Product> products = productService.findAll();
+        model.addAttribute("products", products);
+        return "warehouse/import";
+    }
+
+    // Xử lý nhập kho
+    @PostMapping("/import")
+    public String importWarehouse(
+            @RequestParam("productId") Integer productId,
+            @RequestParam("quantity") Integer quantity,
+            @RequestParam(value = "notes", required = false) String notes,
+            RedirectAttributes redirectAttributes) {
+        try {
+            warehouseService.importProduct(productId, quantity, notes);
+            redirectAttributes.addFlashAttribute("success", "Import successful!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Import failed: " + e.getMessage());
+        }
+        return "redirect:/warehouse";
+    }
+
+    // Hiển thị form xuất kho
+    @GetMapping("/export")
+    public String showExportForm(Model model) {
+        List<Product> products = productService.findAll();
+        model.addAttribute("products", products);
+        return "warehouse/export";
+    }
+
+    // Xử lý xuất kho
+    @PostMapping("/export")
+    public String exportWarehouse(
+            @RequestParam("productId") Integer productId,
+            @RequestParam("quantity") Integer quantity,
+            @RequestParam(value = "notes", required = false) String notes,
+            RedirectAttributes redirectAttributes) {
+        try {
+            warehouseService.exportProduct(productId, quantity, notes);
+            redirectAttributes.addFlashAttribute("success", "Export successful!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Export failed: " + e.getMessage());
+        }
+        return "redirect:/warehouse";
+    }
+
+    // Chuyển đổi từ Entity sang DTO
+    private WarehouseDto convertToDTO(Warehouse warehouse) {
+        WarehouseDto dto = new WarehouseDto();
+        dto.setTransId(warehouse.getTransId());
+        
+        if (warehouse.getProduct() != null) {
+            dto.setProductId(warehouse.getProduct().getProductId());
+            dto.setProductName(warehouse.getProduct().getName());
+        }
+        
+        dto.setQuantityChange(warehouse.getQuantityChange());
+        dto.setStockAfter(warehouse.getStockAfter());
+        dto.setType(warehouse.getType());
+        dto.setTransDate(warehouse.getTransDate());
+        
+        if (warehouse.getAdmin() != null) {
+            dto.setAdminId(warehouse.getAdmin().getAdminId());
+            dto.setAdminName(warehouse.getAdmin().getName());
+        }
+        
+        dto.setNotes(warehouse.getNotes());
+        return dto;
+    }
+
+    // Xem log với phân trang
+    @GetMapping("/log")
+    public String viewLog(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("transDate").descending());
+        Page<Warehouse> warehousePage = warehouseService.getAllWarehouseTransactions(pageable);
+        List<WarehouseDto> transactions = warehousePage.getContent().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        
+        model.addAttribute("transactions", transactions);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", warehousePage.getTotalPages());
+        model.addAttribute("totalItems", warehousePage.getTotalElements());
+        return "warehouse/log";
     }
 }

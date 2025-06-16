@@ -1,14 +1,19 @@
 package com.esms.service.impl;
 
 import com.esms.model.entity.Warehouse;
+import com.esms.model.entity.Product;
+import com.esms.model.entity.Admin;
 import com.esms.repository.WarehouseRepository;
+import com.esms.repository.ProductRepository;
+import com.esms.repository.AdminRepository;
 import com.esms.service.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -16,6 +21,37 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Autowired
     private WarehouseRepository warehouseRepository;
+    
+    @Autowired
+    private ProductRepository productRepository;
+    
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Override
+    public Warehouse save(Warehouse warehouse) {
+        return warehouseRepository.save(warehouse);
+    }
+
+    @Override
+    public Warehouse findById(Integer id) {
+        return warehouseRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Warehouse> findAll() {
+        return warehouseRepository.findAll();
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        warehouseRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Warehouse> getAllWarehouseTransactions(Pageable pageable) {
+        return warehouseRepository.findAll(pageable);
+    }
 
     @Override
     public List<Warehouse> getAllWarehouseTransactions() {
@@ -23,66 +59,82 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public Warehouse getWarehouseTransactionById(Integer id) {
-        return warehouseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Warehouse transaction not found with id: " + id));
+    public Page<Warehouse> searchWarehouseByProductName(String keyword, Pageable pageable) {
+        return warehouseRepository.findByProductNameContaining(keyword, pageable);
     }
 
     @Override
-    public List<Warehouse> getWarehouseTransactionsByProductId(Integer productId) {
+    public List<Warehouse> searchWarehouseByProductName(String keyword) {
+        return warehouseRepository.searchByProductName(keyword);
+    }
+
+    @Override
+    public List<Warehouse> findByProductId(Integer productId) {
         return warehouseRepository.findByProductId(productId);
     }
 
     @Override
+    public List<Warehouse> findByType(String type) {
+        return warehouseRepository.findByType(type);
+    }
+
+    @Override
+    public List<Warehouse> findByAdminId(Integer adminId) {
+        return warehouseRepository.findByAdminId(adminId);
+    }
+
+    @Override
     @Transactional
-    public Warehouse addWarehouseTransaction(Warehouse warehouse) {
-        if (warehouse.getTransDate() == null) {
-            warehouse.setTransDate(LocalDateTime.now());
-        }
+    public Warehouse importProduct(Integer productId, Integer quantity, String notes) {
+        // Kiểm tra sản phẩm tồn tại
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Tạo giao dịch warehouse mới
+        Warehouse warehouse = new Warehouse();
+        warehouse.setProduct(product);
+        warehouse.setQuantityChange(quantity);
+        warehouse.setType("IMPORT");
+        warehouse.setTransDate(LocalDateTime.now());
+        warehouse.setNotes(notes);
+
+        // Cập nhật số lượng tồn kho
+        int newStock = product.getStockQty() + quantity;
+        product.setStockQty(newStock);
+        warehouse.setStockAfter(newStock);
+
+        // Lưu giao dịch và cập nhật sản phẩm
+        productRepository.save(product);
         return warehouseRepository.save(warehouse);
     }
 
     @Override
     @Transactional
-    public Warehouse updateWarehouseTransaction(Integer id, Warehouse warehouse) {
-        Warehouse existingWarehouse = getWarehouseTransactionById(id);
-        existingWarehouse.setProduct(warehouse.getProduct());
-        existingWarehouse.setQuantityChange(warehouse.getQuantityChange());
-        existingWarehouse.setStockAfter(warehouse.getStockAfter());
-        existingWarehouse.setType(warehouse.getType());
-        existingWarehouse.setAdmin(warehouse.getAdmin());
-        existingWarehouse.setNotes(warehouse.getNotes());
-        return warehouseRepository.save(existingWarehouse);
-    }
+    public Warehouse exportProduct(Integer productId, Integer quantity, String notes) {
+        // Kiểm tra sản phẩm tồn tại
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-    @Override
-    @Transactional
-    public void deleteWarehouseTransaction(Integer id) {
-        if (!warehouseRepository.existsById(id)) {
-            throw new RuntimeException("Warehouse transaction not found with id: " + id);
+        // Kiểm tra số lượng tồn kho
+        if (product.getStockQty() < quantity) {
+            throw new RuntimeException("Insufficient stock. Current stock: " + product.getStockQty());
         }
-        warehouseRepository.deleteById(id);
-    }
 
-    @Override
-    public List<Warehouse> searchWarehouseByProductName(String productName) {
-        return warehouseRepository.searchByProductName(productName);
-    }
+        // Tạo giao dịch warehouse mới
+        Warehouse warehouse = new Warehouse();
+        warehouse.setProduct(product);
+        warehouse.setQuantityChange(-quantity); // Số lượng âm vì là xuất kho
+        warehouse.setType("EXPORT");
+        warehouse.setTransDate(LocalDateTime.now());
+        warehouse.setNotes(notes);
 
-    @Override
-    public List<Warehouse> findByTransactionType(String type) {
-        return warehouseRepository.findByType(type);
-    }
+        // Cập nhật số lượng tồn kho
+        int newStock = product.getStockQty() - quantity;
+        product.setStockQty(newStock);
+        warehouse.setStockAfter(newStock);
 
-    @Override
-    public List<Warehouse> findByDateRange(String startDate, String endDate) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime start = LocalDateTime.parse(startDate, formatter);
-            LocalDateTime end = LocalDateTime.parse(endDate, formatter);
-            return warehouseRepository.findByTransDateBetween(start, end);
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid date format. Please use yyyy-MM-dd HH:mm:ss format", e);
-        }
+        // Lưu giao dịch và cập nhật sản phẩm
+        productRepository.save(product);
+        return warehouseRepository.save(warehouse);
     }
-}
+} 

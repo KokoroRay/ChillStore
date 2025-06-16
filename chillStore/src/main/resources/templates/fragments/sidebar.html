@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="sidebar(activeMenu)">
+  <div class="sidebar bg-light">
+    <div class="sidebar-header p-3">
+      <h3>FSMS Electronics</h3>
+    </div>
+    <ul class="list-unstyled">
+      <li th:classappend="${activeMenu=='dashboard'}? 'active'">
+        <a th:href="@{/admin/dashboard}">Dashboard</a>
+      </li>
+      <li th:classappend="${activeMenu=='categories'}? 'active'">
+        <a th:href="@{/templates/admin/category}">Manage Category</a>
+      </li>
+      <li th:classappend="${activeMenu=='users'}? 'active'">
+        <a th:href="@{/admin/users}">Manage User</a>
+      </li>
+      <!-- Các mục khác tương tự: Manage Staff, Voucher, Revenue, Warehouse, Product, Promotion,... -->
+    </ul>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content(voucherDto, errorMessage)">
+  <h2 th:text="${voucherDto.id} != null ? 'Edit Voucher' : 'Add Voucher'"></h2>
+  <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+  <form th:action="${voucherDto.id} != null ? @{'/admin/vouchers/edit/' + ${voucherDto.id}} : @{/admin/vouchers/add}"
+        th:object="${voucherDto}" method="post">
+    <div class="mb-3">
+      <label for="code" class="form-label">Code</label>
+      <input type="text" th:field="*{code}" class="form-control" id="code" placeholder="Enter voucher code" required/>
+      <div class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea th:field="*{description}" class="form-control" id="description" rows="2" placeholder="Description (optional)"></textarea>
+      <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+    </div>
+    <div class="mb-3">
+      <label for="discountAmount" class="form-label">Discount Amount</label>
+      <input type="number" step="0.01" min="0" th:field="*{discountAmount}" class="form-control" id="discountAmount" placeholder="e.g., 100000"/>
+      <div class="text-danger" th:if="${#fields.hasErrors('discountAmount')}" th:errors="*{discountAmount}"></div>
+    </div>
+    <div class="mb-3">
+      <label for="discountPct" class="form-label">Discount Percent (%)</label>
+      <input type="number" step="0.01" min="0" max="100" th:field="*{discountPct}" class="form-control" id="discountPct" placeholder="e.g., 10"/>
+      <div class="text-danger" th:if="${#fields.hasErrors('discountPct')}" th:errors="*{discountPct}"></div>
+    </div>
+    <div class="mb-3">
+      <label for="minOrderAmount" class="form-label">Min Order Amount</label>
+      <input type="number" step="0.01" min="0" th:field="*{minOrderAmount}" class="form-control" id="minOrderAmount" placeholder="e.g., 500000"/>
+      <div class="text-danger" th:if="${#fields.hasErrors('minOrderAmount')}" th:errors="*{minOrderAmount}"></div>
+    </div>
+    <div class="mb-3">
+      <label for="quantityAvailable" class="form-label">Quantity Available</label>
+      <input type="number" min="0" th:field="*{quantityAvailable}" class="form-control" id="quantityAvailable" placeholder="e.g., 100"/>
+      <div class="text-danger" th:if="${#fields.hasErrors('quantityAvailable')}" th:errors="*{quantityAvailable}"></div>
+    </div>
+    <div class="mb-3">
+      <label for="startDate" class="form-label">Start Date</label>
+      <input type="date" th:field="*{startDate}" class="form-control" id="startDate" required/>
+      <div class="text-danger" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+    </div>
+    <div class="mb-3">
+      <label for="endDate" class="form-label">End Date</label>
+      <input type="date" th:field="*{endDate}" class="form-control" id="endDate" required/>
+      <div class="text-danger" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></div>
+    </div>
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" th:field="*{active}" id="active"/>
+      <label class="form-check-label" for="active">Active</label>
+    </div>
+    <button type="submit" class="btn btn-primary" th:text="${voucherDto.id} != null ? 'Update' : 'Add'"></button>
+    <a th:href="@{/admin/vouchers}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+</body>
+</html>

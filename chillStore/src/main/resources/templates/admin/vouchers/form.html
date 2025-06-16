@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${voucherDto.id} != null ? 'Edit Voucher' : 'Add Voucher'">Voucher Form</title>
+</head>
+<body>
+<div th:replace="fragments/layout :: layout(
+          ${voucherDto.id} != null ? 'Edit Voucher' : 'Add Voucher',
+          'vouchers',
+          'voucher',
+          ${keyword},
+          ~{admin/vouchers/form-content :: content(voucherDto=${voucherDto}, errorMessage=${errorMessage})}
+       )">
+</div>
+</body>
+</html>

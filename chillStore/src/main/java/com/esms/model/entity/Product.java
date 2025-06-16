@@ -34,6 +34,14 @@ public class Product {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
     /**
      * Quan hệ One-to-Many với bảng warehouse.
      * Một sản phẩm có thể liên kết với nhiều giao dịch trong kho (nhập/xuất).
@@ -41,6 +49,9 @@ public class Product {
      */
     @OneToMany(mappedBy = "product")
     private List<Warehouse> warehouseTransactions;
+
+    public Product() {
+    }
 
     public Integer getProductId() {
         return productId;
@@ -96,6 +107,22 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
     }
 
     public List<Warehouse> getWarehouseTransactions() {

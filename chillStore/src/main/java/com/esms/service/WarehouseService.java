@@ -1,6 +1,9 @@
 package com.esms.service;
 
 import com.esms.model.entity.Warehouse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 /**
@@ -16,5 +19,33 @@ public interface WarehouseService {
     void deleteById(Integer id); //Xóa một giao dch warehouse dựa trên ID của nó
     List<Warehouse> getAllWarehouseTransactions();
     List<Warehouse> searchWarehouseByProductName(String productName);
+    List<Warehouse> findByProductId(Integer productId);
+    List<Warehouse> findByType(String type);
+    List<Warehouse> findByAdminId(Integer adminId);
     //update
+
+    /**
+     * Nhập sản phẩm vào kho
+     * @param productId ID của sản phẩm
+     * @param quantity Số lượng nhập
+     * @param notes Ghi chú
+     * @return Warehouse transaction đã tạo
+     */
+    Warehouse importProduct(Integer productId, Integer quantity, String notes);
+
+    /**
+     * Xuất sản phẩm từ kho
+     * @param productId ID của sản phẩm
+     * @param quantity Số lượng xuất
+     * @param notes Ghi chú
+     * @return Warehouse transaction đã tạo
+     * @throws RuntimeException nếu số lượng xuất lớn hơn số lượng tồn kho
+     */
+    Warehouse exportProduct(Integer productId, Integer quantity, String notes);
+
+    // Lấy tất cả giao dịch kho với phân trang
+    Page<Warehouse> getAllWarehouseTransactions(Pageable pageable);
+    
+    // Tìm kiếm theo tên sản phẩm với phân trang
+    Page<Warehouse> searchWarehouseByProductName(String keyword, Pageable pageable);
 }

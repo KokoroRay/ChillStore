@@ -28,7 +28,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         // Cho phép truy cập các trang công khai (Guest Home, CSS, JS, Auth flows)
-                        .requestMatchers( "/admin/**","/", "/home", "/css/**", "/js/**",
+                        .requestMatchers( "/", "/home", "/css/**", "/js/**",
                                 "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
                                 "/auth/login", "/auth/register", "/auth/resend-otp").permitAll() // Thêm /auth/resend-otp vào đây
                         // Bất kỳ request nào khác đều yêu cầu xác thực

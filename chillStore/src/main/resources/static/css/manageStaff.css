@@ -1,0 +1,44 @@
+.staff-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.btn-update,
+.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    transition: 0.2s;
+    vertical-align: middle;
+    padding: 0;
+    line-height: 1;
+}
+
+/* Màu riêng */
+.btn-update {
+    background-color: #33c1f1;
+    color: white;
+}
+
+.btn-update:hover {
+    background-color: #29aee0;
+}
+
+.btn-delete {
+    background-color: #f16060;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #e74c3c;
+}

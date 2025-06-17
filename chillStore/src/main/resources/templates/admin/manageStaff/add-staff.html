@@ -10,7 +10,7 @@
 <div th:insert="~{fragments/header :: headerContent}"></div>
 
 <h2>Add New Staff</h2>
-<form method="post" th:action="@{/staff/add}" th:object="${staff}">
+<form method="post" th:action="@{/manageStaff/addStaff}" th:object="${staff}">
   <label>Name: </label>
   <input type="text" th:field="*{name}" required><br>
   <label>Email: </label>
@@ -29,9 +29,11 @@
     <option th:value="MALE">Male</option>
     <option th:value="OTHER">Other</option>
   </select><br>
+  <div class="form-buttons">
 
-  <button type="submit">Submit</button>
-  <a href="/staff/list" class="btn btn-secondary ms-2 btn-back">Back</a>
+  <button type="submit">Save</button>
+  <a href="/manageStaff/listStaff" class="btn btn-secondary ms-2 btn-back">Back</a>
+  </div>
 </form>
 </body>
 </html>

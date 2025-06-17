@@ -4,8 +4,12 @@
   <meta charset="UTF-8" />
   <title>Trang Chủ</title>
   <link rel="stylesheet" th:href="@{/static/style.css}" />
+  <link rel="stylesheet" href="/css/header.css">
+
 </head>
 <body>
+<div th:insert="~{fragments/header :: headerContent}"></div>
+
 <h1>Chào mừng đến với Chill Store!</h1>
 
 <div sec:authorize="isAuthenticated()">

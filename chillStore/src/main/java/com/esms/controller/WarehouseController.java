@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/warehouse")
+@RequestMapping("/admin/warehouse")
 public class WarehouseController {
     @Autowired
     private WarehouseService warehouseService;
@@ -43,7 +43,7 @@ public class WarehouseController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "warehouse/view";
+        return "admin/warehouse/view";
     }
 
     // Tìm kiếm theo tên sản phẩm với phân trang
@@ -71,7 +71,7 @@ public class WarehouseController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "warehouse/view";
+        return "admin/warehouse/view";
     }
 
     // Hiển thị form nhập kho
@@ -79,7 +79,7 @@ public class WarehouseController {
     public String showImportForm(Model model) {
         List<Product> products = productService.findAll();
         model.addAttribute("products", products);
-        return "warehouse/import";
+        return "/admin/warehouse/import";
     }
 
     // Xử lý nhập kho
@@ -95,7 +95,7 @@ public class WarehouseController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Import failed: " + e.getMessage());
         }
-        return "redirect:/warehouse";
+        return "redirect:/admin/warehouse/view";
     }
 
     // Hiển thị form xuất kho
@@ -103,7 +103,7 @@ public class WarehouseController {
     public String showExportForm(Model model) {
         List<Product> products = productService.findAll();
         model.addAttribute("products", products);
-        return "warehouse/export";
+        return "admin/warehouse/export";
     }
 
     // Xử lý xuất kho
@@ -119,7 +119,7 @@ public class WarehouseController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Export failed: " + e.getMessage());
         }
-        return "redirect:/warehouse";
+        return "redirect:/admin/warehouse";
     }
 
     // Chuyển đổi từ Entity sang DTO
@@ -162,6 +162,6 @@ public class WarehouseController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "warehouse/log";
+        return "admin/warehouse/log";
     }
 }

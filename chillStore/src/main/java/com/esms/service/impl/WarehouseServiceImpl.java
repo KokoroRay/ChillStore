@@ -21,10 +21,10 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Autowired
     private WarehouseRepository warehouseRepository;
-    
+
     @Autowired
     private ProductRepository productRepository;
-    
+
     @Autowired
     private AdminRepository adminRepository;
 

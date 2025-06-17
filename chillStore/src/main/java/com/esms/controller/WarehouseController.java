@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/warehouse")
+@RequestMapping("/admin/warehouse")
 public class WarehouseController {
     @Autowired
     private WarehouseService warehouseService;

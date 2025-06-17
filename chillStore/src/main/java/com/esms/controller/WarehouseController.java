@@ -95,7 +95,7 @@ public class WarehouseController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Import failed: " + e.getMessage());
         }
-        return "redirect:/warehouse";
+        return "redirect:/admin/warehouse";
     }
 
     // Hiển thị form xuất kho
@@ -119,7 +119,7 @@ public class WarehouseController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Export failed: " + e.getMessage());
         }
-        return "redirect:/warehouse";
+        return "redirect:/admin/warehouse";
     }
 
     // Chuyển đổi từ Entity sang DTO

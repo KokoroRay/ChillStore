@@ -1,31 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="content(keyword, categories, errorMessage)">
-  <h2>Manage Category</h2>
-  <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-  <div th:if="${#lists.isEmpty(categories)}">
-    <p>No categories found.</p>
+<div th:fragment="content(categories, keyword, error)">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <form th:action="@{/admin/category}" method="get" class="d-flex w-75">
+      <input type="text"
+             name="keyword"
+             class="form-control"
+             placeholder="Search Category"
+             th:value="${keyword}">
+      <button type="submit" class="btn btn-outline-primary ms-2">
+        <i class="fas fa-search"></i> Search
+      </button>
+    </form>
+    <a th:href="@{/admin/category/add}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Add Category
+    </a>
   </div>
-  <div th:each="cat : ${categories}" class="card mb-3">
-    <div class="row g-0 align-items-center">
-      <div class="col-md-1">
-        <!-- Nếu có ảnh icon: <img th:src="@{${cat.imageUrl}}"...> -->
-        <div class="placeholder-img" style="width:60px; height:60px;"></div>
-      </div>
-      <div class="col-md-7">
-        <div class="card-body">
-          <h5 class="card-title" th:text="${cat.name}">Category Name</h5>
-          <p class="card-text text-muted" th:if="${cat.parent != null}">
-            Parent: <span th:text="${cat.parent.name}">ParentName</span>
-          </p>
+
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <div th:if="${#lists.isEmpty(categories)}" class="text-center text-muted py-5">
+    <h4><i class="fas fa-inbox"></i> No categories found</h4>
+    <p>Try changing your search or add a new category</p>
+  </div>
+
+  <div th:if="${!#lists.isEmpty(categories)}" class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Category List</h5>
         </div>
-      </div>
-      <div class="col-md-4 text-end pe-4">
-        <a th:href="@{/admin/categories/edit/{id}(id=${cat.id})}" class="btn btn-update me-2">Update</a>
-        <a th:href="@{/admin/categories/delete/{id}(id=${cat.id})}"
-           onclick="return confirm('Bạn có chắc chắn muốn xóa category này?');"
-           class="btn btn-delete">Delete</a>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th class="text-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cat : ${categories}">
+              <td th:text="${cat.name}">Category Name</td>
+              <td class="text-end">
+                <a th:href="@{/admin/category/edit/{id}(id=${cat.id})}"
+                   class="btn btn-sm btn-outline-secondary me-2">
+                  <i class="fas fa-edit"></i> Update
+                </a>
+                <a th:href="@{/admin/category/delete/{id}(id=${cat.id})}"
+                   onclick="return confirm('Are you sure you want to delete this category?');"
+                   class="btn btn-sm btn-outline-danger">
+                  <i class="fas fa-trash"></i> Delete
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

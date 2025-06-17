@@ -405,17 +405,37 @@
             </div>
         </div>
         <div class="product-controls">
-            <a th:href="@{/admin/products/{id}(id=${product.productId})}"
+            <a th:href="@{/admin/products/{id}(id=${product.productId},
+                page=${currentPage},
+                size=${size},
+                keyword=${keyword},
+                categoryId=${categoryId},
+                brandId=${brandId},
+                filterStatus=${filterStatus},
+                minPrice=${minPrice},
+                maxPrice=${maxPrice},
+                minStock=${minStock},
+                sortOption=${sortOption})}"
                class="btn btn-info">
                 <i class="fas fa-eye"></i> Chi tiết
             </a>
-            <a th:href="@{/admin/products/{id}/edit(id=${product.productId})}"
+            <a th:href="@{/admin/products/{id}/edit(id=${product.productId},
+                page=${currentPage},
+                size=${size},
+                keyword=${keyword},
+                categoryId=${categoryId},
+                brandId=${brandId},
+                filterStatus=${filterStatus},
+                minPrice=${minPrice},
+                maxPrice=${maxPrice},
+                minStock=${minStock},
+                sortOption=${sortOption})}"
                class="btn btn-warning">
                 <i class="fas fa-edit"></i> Sửa
             </a>
             <button type="button"
                     class="btn btn-danger"
-                    th:onclick="'confirmDelete(' + ${product.productId} + ')'">
+                    th:onclick="'confirmDelete(' + ${product.productId} + ', ' + ${currentPage} + ')'">
                 <i class="fas fa-trash"></i> Xóa
             </button>
         </div>
@@ -564,10 +584,10 @@
 
 <!-- Custom JavaScript -->
 <script th:inline="javascript">
-    function confirmDelete(productId) {
+    function confirmDelete(productId, currentPage) {
         const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
         const deleteForm = document.getElementById('deleteForm');
-        deleteForm.action = `/admin/products/${productId}/delete`;
+        deleteForm.action = `/admin/products/${productId}/delete?page=${currentPage}`;
         modal.show();
     }
 </script>

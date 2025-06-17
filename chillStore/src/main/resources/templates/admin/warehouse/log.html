@@ -76,12 +76,12 @@
             <!-- Pagination -->
             <div class="pagination" th:if="${totalPages > 1}">
                 <a th:if="${currentPage > 0}"
-                   th:href="@{/templates/admin/warehouse/log(page=${currentPage - 1}, size=10)}"
+                   th:href="@{/admin/warehouse/log(page=${currentPage - 1}, size=10)}"
                    class="btn btn-page">&laquo; Previous</a>
 
                 <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
                     <a th:if="${i != currentPage}"
-                       th:href="@{/templates/admin/warehouse/log(page=${i}, size=10)}"
+                       th:href="@{/admin/warehouse/log(page=${i}, size=10)}"
                        class="btn btn-page"
                        th:text="${i + 1}"></a>
                     <span th:if="${i == currentPage}"
@@ -90,7 +90,7 @@
                 </span>
 
                 <a th:if="${currentPage < totalPages - 1}"
-                   th:href="@{/templates/admin/warehouse/log(page=${currentPage + 1}, size=10)}"
+                   th:href="@{/admin/warehouse/log(page=${currentPage + 1}, size=10)}"
                    class="btn btn-page">Next &raquo;</a>
             </div>
         </section>

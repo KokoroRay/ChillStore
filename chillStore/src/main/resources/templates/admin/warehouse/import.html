@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Export Warehouse</title>
+    <title>Import Warehouse</title>
     <link rel="stylesheet" href="/css/styleWarehouse.css">
 </head>
 <body>
@@ -27,18 +27,17 @@
 
     <main class="main-content">
         <section class="warehouse-section">
-            <h2>Export Warehouse</h2>
+            <h2>Import Warehouse</h2>
 
-            <!-- Bảng trắng -->
-            <div class="form-wrapper white-form">
-                <form th:action="@{/warehouse/export}" method="post">
+            <div class="form-wrapper">
+                <form th:action="@{/admin/warehouse/import}" method="post">
                     <div class="form-group">
                         <label for="productId">Product:</label>
                         <select id="productId" name="productId" required>
                             <option value="">Select Product</option>
                             <option th:each="product : ${products}"
                                     th:value="${product.productId}"
-                                    th:text="${product.name + ' (Stock: ' + product.stockQty + ')'}">
+                                    th:text="${product.name}">
                             </option>
                         </select>
                     </div>
@@ -54,8 +53,19 @@
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-export">Export</button>
-                        <a th:href="@{/warehouse}" class="btn btn-cancel text-center">Cancel</a>
+                        <button type="submit" class="btn btn-import">Import</button>
+                        <a th:href="@{/admin/warehouse}" class="btn btn-cancel">Cancel</a>
+                    </div>
+                </form>
+
+                <!-- ✅ Form Import File Excel -->
+                <form th:action="@{/admin/warehouse/import-excel}" method="post" enctype="multipart/form-data" style="margin-top: 30px;">
+                    <div class="form-group">
+                        <label for="file">Import via Excel file (.xlsx):</label>
+                        <input type="file" id="file" name="file" accept=".xlsx" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-import">Import Excel</button>
                     </div>
                 </form>
             </div>

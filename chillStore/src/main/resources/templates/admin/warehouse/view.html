@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="/css/header.css">
+<link rel="stylesheet" href="/css/sidebar.css">
+<link rel="stylesheet" href="/css/footer.css">
+<link rel="stylesheet" href="/css/layout.css">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,25 +11,10 @@
   <link rel="stylesheet" href="/css/styleWarehouse.css">
 </head>
 <body>
+<div th:insert="~{fragments/header :: headerContent}"></div>
+<div th:insert="~{fragments/sidebar :: sidebar(activeMenu)}"></div>
+
 <div class="container">
-  <aside class="sidebar">
-    <div class="logo">
-      <h1>ESMS</h1>
-      <p>ELECTRONICS STORE</p>
-    </div>
-
-    <nav class="nav-links">
-      <a href="#" class="nav-link">Manage Category</a>
-      <a href="#" class="nav-link">Manage User</a>
-      <a href="#" class="nav-link">Manage Staff</a>
-      <a href="#" class="nav-link">Manage Voucher</a>
-      <a href="#" class="nav-link">Manage Revenue</a>
-      <a href="#" class="nav-link active">Manage Warehouse</a>
-      <a href="#" class="nav-link">Manage Product</a>
-      <a href="#" class="nav-link">Manage Promotion</a>
-    </nav>
-  </aside>
-
   <main class="main-content">
     <section class="warehouse-section">
       <h2>Manage Warehouse</h2>

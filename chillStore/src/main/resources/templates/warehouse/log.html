@@ -35,10 +35,10 @@
 
             <!-- Action buttons -->
             <div class="action-buttons">
-                <a th:href="@{/warehouse}" class="btn btn-back">Back to Warehouse</a>
+                <a th:href="@{/admin/warehouse}" class="btn btn-back">Back to Warehouse</a>
 
                 <!-- ✅ Nút xuất file Excel -->
-                <form th:action="@{/warehouse/log/export-excel}" method="get" style="display: inline;">
+                <form th:action="@{/admin/warehouse/log/export-excel}" method="get" style="display: inline;">
                     <button type="submit" class="btn btn-export">Export Excel</button>
                 </form>
             </div>

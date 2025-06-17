@@ -1,6 +1,8 @@
 package com.esms.service;
 
 import com.esms.model.entity.Staff;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -20,6 +22,8 @@ public interface IStaffService {
     public Staff getOneStaff(int id);
 
     List<Staff> searchStaff(String keyword, String gender);
+    Page<Staff> getAllStaff(Pageable pageable);
+    Page<Staff> searchStaff(String keyword, String gender, Pageable pageable);
 
 
 }

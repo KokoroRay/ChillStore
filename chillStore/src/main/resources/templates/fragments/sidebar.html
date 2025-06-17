@@ -1,7 +1,9 @@
-<div th:fragment="sidebar(activeMenu)">
+<div class="main-container">
+
+<div th:fragment="sidebar">
   <div class="sidebar">
     <div class="p-3 border-bottom">
-      <h5 class="m-0">FSMS Electronics</h5>
+      <img th:src="@{/images/logo.png}" alt="FsMs Logo" class="logo-sidebar">
     </div>
     <ul class="nav flex-column p-2">
       <li class="nav-item mb-2">
@@ -54,4 +56,5 @@
       </li>
     </ul>
   </div>
+</div>
 </div>

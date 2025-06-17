@@ -231,12 +231,16 @@
         <form th:action="${product.productId == null ? '/admin/products/add' : '/admin/products/' + product.productId + '/edit'}"
               method="post"
               enctype="multipart/form-data">
-            <input type="hidden" name="filterStatus" th:value="${filterStatus != null ? filterStatus : ''}" />
-            <input type="hidden" name="keyword" th:value="${keyword != null ? keyword : ''}" />
-            <input type="hidden" name="categoryId" th:value="${categoryId != null ? categoryId : ''}" />
-            <input type="hidden" name="brandId" th:value="${brandId != null ? brandId : ''}" />
-            <input type="hidden" name="page" th:value="${currentPage != null ? currentPage : ''}" />
-            <input type="hidden" name="size" th:value="${size != null ? size : ''}" />
+            <input type="hidden" name="page" th:value="${currentPage}" />
+            <input type="hidden" name="size" th:value="${size}" />
+            <input type="hidden" name="keyword" th:value="${keyword}" />
+            <input type="hidden" name="categoryId" th:value="${categoryId}" />
+            <input type="hidden" name="brandId" th:value="${brandId}" />
+            <input type="hidden" name="filterStatus" th:value="${filterStatus}" />
+            <input type="hidden" name="minPrice" th:value="${minPrice}" />
+            <input type="hidden" name="maxPrice" th:value="${maxPrice}" />
+            <input type="hidden" name="minStock" th:value="${minStock}" />
+            <input type="hidden" name="sortOption" th:value="${sortOption}" />
             
             <div class="row">
                 <div class="col-md-8">

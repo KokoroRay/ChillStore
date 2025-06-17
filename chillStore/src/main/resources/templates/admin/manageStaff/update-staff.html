@@ -12,7 +12,7 @@
 
 <h2>Update Staff</h2>
 
-<form method="post" th:action="@{/staff/update}" th:object="${staff}">
+<form method="post" th:action="@{/manageStaff/updateStaff}" th:object="${staff}">
   <!-- ID ẩn -->
   <input type="hidden" th:field="*{id}" />
 
@@ -42,7 +42,7 @@
   <input type="text" th:field="*{national_id}" required><br><br>
 
   <button type="submit">Save</button>
-  <a th:href="@{/staff/list}" class="btn-back">← Back to List</a>
+  <a th:href="@{/manageStaff/listStaff}" class="btn-back">← Back to List</a>
 
 </form>
 

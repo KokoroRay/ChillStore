@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,7 @@ public class ProductController {
             @RequestParam(value = "filterStatus", required = false) Boolean filterStatus,
             @RequestParam(value = "minPrice", required = false) Double minPrice,
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false, defaultValue = "default") String sortOption,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size,
@@ -78,7 +81,7 @@ public class ProductController {
             pageable = PageRequest.of(page, size);
         }
         Page<Product> products = productService.searchProductsWithFilters(
-                keyword, categoryId, brandId, minPrice, maxPrice, sortBy, sortDir, pageable, filterStatus);
+                keyword, categoryId, brandId, minPrice, maxPrice, minStock, sortBy, sortDir, pageable, filterStatus);
         // Pagination logic for page numbers
         int totalPages = products.getTotalPages();
         int currentPage = page;
@@ -89,9 +92,11 @@ public class ProductController {
         model.addAttribute("brands", brands);
         model.addAttribute("keyword", keyword);
         model.addAttribute("categoryId", categoryId);
+        model.addAttribute("brandId", brandId);
         model.addAttribute("filterStatus", filterStatus);
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("minStock", minStock);
         model.addAttribute("sortOption", sortOption);
         model.addAttribute("sortOptions", sortOptions);
         model.addAttribute("size", size);
@@ -105,41 +110,117 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public String productDetail(@org.springframework.web.bind.annotation.PathVariable("id") Integer id, Model model) {
+    public String productDetail(
+            @PathVariable("id") Integer id,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "brandId", required = false) Integer brandId,
+            @RequestParam(value = "filterStatus", required = false) Boolean filterStatus,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "minStock", required = false) Integer minStock,
+            @RequestParam(value = "sortOption", required = false) String sortOption,
+            Model model) {
         Product product = productService.getProductById(id);
         model.addAttribute("product", product);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("size", size);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("brandId", brandId);
+        model.addAttribute("filterStatus", filterStatus);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("minStock", minStock);
+        model.addAttribute("sortOption", sortOption);
         return "admin/ManageProduct/ProductDetail";
     }
 
     @GetMapping("/{id}/edit")
-    public String editProduct(@org.springframework.web.bind.annotation.PathVariable("id") Integer id, Model model) {
+    public String editProduct(
+            @PathVariable("id") Integer id,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "brandId", required = false) Integer brandId,
+            @RequestParam(value = "filterStatus", required = false) Boolean filterStatus,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "minStock", required = false) Integer minStock,
+            @RequestParam(value = "sortOption", required = false) String sortOption,
+            Model model) {
         Product product = productService.getProductById(id);
         List<Category> categories = categoryService.getAllCategory();
         List<Brand> brands = brandService.getAllBrands();
         model.addAttribute("product", product);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("size", size);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("brandId", brandId);
+        model.addAttribute("filterStatus", filterStatus);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("minStock", minStock);
+        model.addAttribute("sortOption", sortOption);
         return "admin/ManageProduct/ProductForm";
     }
 
     @PostMapping("/{id}/edit")
-    public String updateProduct(@org.springframework.web.bind.annotation.PathVariable("id") Integer id,
-                                @org.springframework.web.bind.annotation.ModelAttribute("product") Product product,
-                                @org.springframework.web.bind.annotation.RequestParam(value = "filterStatus", required = false) Boolean filterStatus,
-                                @org.springframework.web.bind.annotation.RequestParam(value = "keyword", required = false) String keyword,
-                                @org.springframework.web.bind.annotation.RequestParam(value = "categoryId", required = false) Integer categoryId,
-                                @org.springframework.web.bind.annotation.RequestParam(value = "brandId", required = false) Integer brandId,
-                                @org.springframework.web.bind.annotation.RequestParam(value = "page", required = false) Integer page,
-                                @org.springframework.web.bind.annotation.RequestParam(value = "size", required = false) Integer size,
-                                org.springframework.ui.Model model) {
+    public String updateProduct(
+            @PathVariable("id") Integer id,
+            @ModelAttribute("product") Product product,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "brandId", required = false) Integer brandId,
+            @RequestParam(value = "filterStatus", required = false) Boolean filterStatus,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "minStock", required = false) Integer minStock,
+            @RequestParam(value = "sortOption", required = false) String sortOption) {
         productService.updateProduct(id, product);
-        String redirectUrl = String.format("redirect:/admin/products?filterStatus=%s&keyword=%s&categoryId=%s&brandId=%s&page=%s&size=%s",
-                filterStatus != null ? filterStatus : "",
+        return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
+                page, size,
                 keyword != null ? keyword : "",
                 categoryId != null ? categoryId : "",
                 brandId != null ? brandId : "",
-                page != null ? page : "",
-                size != null ? size : "");
-        return redirectUrl;
+                filterStatus != null ? filterStatus : "",
+                minPrice != null ? minPrice : "",
+                maxPrice != null ? maxPrice : "",
+                minStock != null ? minStock : "",
+                sortOption != null ? sortOption : "");
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteProduct(
+            @PathVariable("id") Integer id,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "brandId", required = false) Integer brandId,
+            @RequestParam(value = "filterStatus", required = false) Boolean filterStatus,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "minStock", required = false) Integer minStock,
+            @RequestParam(value = "sortOption", required = false) String sortOption) {
+        productService.deleteProduct(id);
+        return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
+                page, size,
+                keyword != null ? keyword : "",
+                categoryId != null ? categoryId : "",
+                brandId != null ? brandId : "",
+                filterStatus != null ? filterStatus : "",
+                minPrice != null ? minPrice : "",
+                maxPrice != null ? maxPrice : "",
+                minStock != null ? minStock : "",
+                sortOption != null ? sortOption : "");
     }
 }

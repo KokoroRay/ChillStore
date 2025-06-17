@@ -31,7 +31,7 @@
 
             <!-- Bảng trắng -->
             <div class="form-wrapper white-form">
-                <form th:action="@{/warehouse/export}" method="post">
+                <form th:action="@{/templates/admin/warehouse/export}" method="post">
                     <div class="form-group">
                         <label for="productId">Product:</label>
                         <select id="productId" name="productId" required>
@@ -55,7 +55,7 @@
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-export">Export</button>
-                        <a th:href="@{/warehouse}" class="btn btn-cancel text-center">Cancel</a>
+                        <a th:href="@{/templates/admin/warehouse}" class="btn btn-cancel text-center">Cancel</a>
                     </div>
                 </form>
             </div>

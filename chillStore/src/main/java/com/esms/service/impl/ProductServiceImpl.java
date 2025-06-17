@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.text.Normalizer;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -45,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
             Integer brandId,
             Double minPrice,
             Double maxPrice,
+            Integer minStock,
             String sortBy,
             String sortDir,
             Pageable pageable,
@@ -52,11 +54,18 @@ public class ProductServiceImpl implements ProductService {
 
         List<Product> products = productRepository.findAll();
 
-        // Filter by keyword
+        // Filter by keyword (tên sản phẩm, tên danh mục, mô tả)
         if (keyword != null && !keyword.trim().isEmpty()) {
-            String finalKeyword = keyword.trim().toLowerCase();
+            String finalKeyword = removeDiacritics(keyword.trim().toLowerCase());
             products = products.stream()
-                    .filter(p -> p.getName().toLowerCase().contains(finalKeyword))
+                    .filter(p -> {
+                        String productName = removeDiacritics(p.getName() != null ? p.getName().toLowerCase() : "");
+                        String productDesc = removeDiacritics(p.getDescription() != null ? p.getDescription().toLowerCase() : "");
+                        String categoryName = removeDiacritics(p.getCategory() != null && p.getCategory().getName() != null ? p.getCategory().getName().toLowerCase() : "");
+                        return productName.contains(finalKeyword)
+                                || productDesc.contains(finalKeyword)
+                                || categoryName.contains(finalKeyword);
+                    })
                     .collect(Collectors.toList());
         }
 
@@ -83,6 +92,13 @@ public class ProductServiceImpl implements ProductService {
         if (maxPrice != null) {
             products = products.stream()
                     .filter(p -> p.getPrice().doubleValue() <= maxPrice)
+                    .collect(Collectors.toList());
+        }
+
+        // Filter by minStock
+        if (minStock != null) {
+            products = products.stream()
+                    .filter(p -> p.getStockQty() >= minStock)
                     .collect(Collectors.toList());
         }
 
@@ -133,12 +149,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product addProduct(Product product) {
-        product.setStatus(true);
-        return productRepository.save(product);
-    }
-
-    @Override
     public Product updateProduct(Integer productId, Product product) {
         Product existingProduct = getProductById(productId);
 
@@ -170,6 +180,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Integer productId) {
         productRepository.deleteById(productId);
+    }
+
+    private String removeDiacritics(String input) {
+        if (input == null) return null;
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
+        return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
 
 }

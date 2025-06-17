@@ -89,7 +89,21 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title">Chi tiết sản phẩm</h3>
-                <a th:href="@{/admin/products}" class="btn btn-secondary">Quay lại danh sách</a>
+                <form th:action="@{/admin/products}" method="get">
+                    <input type="hidden" name="page" th:value="${currentPage}" />
+                    <input type="hidden" name="size" th:value="${size}" />
+                    <input type="hidden" name="keyword" th:value="${keyword}" />
+                    <input type="hidden" name="categoryId" th:value="${categoryId}" />
+                    <input type="hidden" name="brandId" th:value="${brandId}" />
+                    <input type="hidden" name="filterStatus" th:value="${filterStatus}" />
+                    <input type="hidden" name="minPrice" th:value="${minPrice}" />
+                    <input type="hidden" name="maxPrice" th:value="${maxPrice}" />
+                    <input type="hidden" name="minStock" th:value="${minStock}" />
+                    <input type="hidden" name="sortOption" th:value="${sortOption}" />
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </button>
+                </form>
             </div>
             <div class="card-body">
                 <div class="row">

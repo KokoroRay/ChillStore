@@ -17,13 +17,13 @@ public interface ProductService {
             Integer brandId,
             Double minPrice,
             Double maxPrice,
+            Integer minStock,
             String sortBy,
             String sortDir,
             Pageable pageable,
             Boolean status
     );
     List<Product> filterByStatus(boolean status);
-    Product addProduct(Product product);
     Product updateProduct(Integer productId, Product product);
     void deleteProduct(Integer productId);
 

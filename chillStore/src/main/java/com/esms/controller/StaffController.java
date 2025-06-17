@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/staff")
+@RequestMapping("/manageStaff")
 public class StaffController {
     @Autowired
     private IStaffService iStaffService;
@@ -19,38 +19,39 @@ public class StaffController {
     public String test() {
         return "test";
     }
+
     @GetMapping("/add-form")
     public String addForm(Model model) {
         model.addAttribute("staff", new Staff());
-        return "add-staff";
+        return "admin/manageStaff/add-staff";
     }
     //API add staff
-    @PostMapping("/add")
+    @PostMapping("/addStaff")
     public String addStaff(@ModelAttribute Staff staff, Model  model) {
         iStaffService.addStaff(staff);
-        return "redirect:/staff/list";
+        return "redirect:/manageStaff/listStaff";
     }
     @GetMapping("/update-form")
     public String showUpdateForm(@RequestParam("id") int id, Model model) {
         Staff staff = iStaffService.getOneStaff(id);
         model.addAttribute("staff", staff);
-        return "update-staff";
+        return "admin/manageStaff/update-staff";
     }
 
 
     // API update staff
-    @PostMapping("/update")
+    @PostMapping("/updateStaff")
     public String updateStaff(@RequestParam("id") int id, @ModelAttribute Staff staff) {
         iStaffService.updateStaff(id, staff);
-        return "redirect:/staff/list";
+        return "redirect:/manageStaff/listStaff";
     }
     //API delete staff
-    @GetMapping("/delete/{id}")
+    @GetMapping("/deleteStaff/{id}")
     public String deleteStaff(@PathVariable("id") int id) {
         iStaffService.deleteStaff(id);
-        return "redirect:/staff/list";    }
+        return "redirect:/manageStaff/listStaff";    }
     //API get list
-    @GetMapping("/list")
+    @GetMapping("/listStaff")
     public String showStaffList(@RequestParam(value = "keyword", required = false) String keyword,
                                 @RequestParam(value = "gender", required = false) String gender,
                                 Model model) {
@@ -65,7 +66,7 @@ public class StaffController {
         model.addAttribute("staffList", staffList);
         model.addAttribute("keyword", keyword);
         model.addAttribute("gender", gender);
-        return "manageStaff";
+        return "admin/manageStaff/manageStaff";
         }
     }
 

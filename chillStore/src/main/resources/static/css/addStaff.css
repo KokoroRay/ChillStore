@@ -1,6 +1,5 @@
 /* addStaff.css */
 
-/* Toàn bộ trang */
 body {
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
@@ -27,7 +26,7 @@ form {
 
 /* Label */
 form label,
-form lable { /* Lưu ý: bạn gõ sai chữ "label" thành "lable", nên thêm cả cái này để tránh lỗi CSS */
+form lable {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;

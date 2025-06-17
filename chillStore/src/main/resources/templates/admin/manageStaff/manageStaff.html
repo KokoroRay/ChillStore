@@ -17,7 +17,7 @@
   <h2 class="mb-4">Staff List</h2>
 
 
-  <form class="row g-3 mb-3" th:action="@{/staff/list}" method="get">
+  <form class="row g-3 mb-3" th:action="@{/manageStaff/listStaff}" method="get">
     <div class="col-md-4">
       <input type="text" name="keyword" class="form-control" placeholder="Search by name or email"
              th:value="${keyword}">
@@ -34,7 +34,7 @@
       <button type="submit" class="btn btn-success w-100">Search</button>
     </div>
   </form>
-  <a href="/staff/add-form" class="btn btn-primary mb-3">Add</a>
+  <a href="/manageStaff/add-form" class="btn btn-primary mb-3">Add</a>
 
 
   <table class="table table-bordered table-hover">
@@ -53,19 +53,19 @@
     </thead>
     <tbody>
     <tr th:each="staff : ${staffList}">
-      <td th:text="${staff.id}">1</td>
-      <td th:text="${staff.name}">Nguyen Van A</td>
-      <td th:text="${staff.gender}">MALE</td>
-      <td th:text="${staff.email}">a@gmail.com</td>
-      <td th:text="${staff.password}">••••••</td>
-      <td th:text="${staff.phone}">0123456789</td>
-      <td th:text="${staff.address}">HCM</td>
-      <td th:text="${staff.national_id}">123456789</td>
+      <td th:text="${staff.id}"></td>
+      <td th:text="${staff.name}"></td>
+      <td th:text="${staff.gender}"></td>
+      <td th:text="${staff.email}"></td>
+      <td th:text="${staff.password}"></td>
+      <td th:text="${staff.phone}"></td>
+      <td th:text="${staff.address}"></td>
+      <td th:text="${staff.national_id}"></td>
       <td>
         <div class="staff-buttons">
-        <a th:href="@{'/staff/update-form?id=' + ${staff.id}}"
+        <a th:href="@{'/manageStaff/update-form?id=' + ${staff.id}}"
          class="btn-update">Update</a>
-        <a th:href="@{'/staff/delete/' + ${staff.id}}"
+        <a th:href="@{'/manageStaff/deleteStaff/' + ${staff.id}}"
            onclick="return confirm('Are you sure to delete this staff?')"
            class="btn btn-sm btn-danger btn-delete">
           Delete

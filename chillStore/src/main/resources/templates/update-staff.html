@@ -2,9 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+
   <title>Update Staff</title>
+  <link rel="stylesheet" th:href="@{/css/update-staff.css}" />
+  <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
+<div th:insert="~{fragments/header :: headerContent}"></div>
+
 <h2>Update Staff</h2>
 
 <form method="post" th:action="@{/staff/update}" th:object="${staff}">
@@ -37,6 +42,8 @@
   <input type="text" th:field="*{national_id}" required><br><br>
 
   <button type="submit">Update</button>
+  <a th:href="@{/staff/list}" class="btn-back">← Back to List</a>
+
 </form>
 
 </body>

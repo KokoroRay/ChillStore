@@ -45,7 +45,7 @@ public interface WarehouseService {
 
     // Lấy tất cả giao dịch kho với phân trang
     Page<Warehouse> getAllWarehouseTransactions(Pageable pageable);
-    
+
     // Tìm kiếm theo tên sản phẩm với phân trang
     Page<Warehouse> searchWarehouseByProductName(String keyword, Pageable pageable);
 }

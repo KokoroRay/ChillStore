@@ -59,7 +59,7 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setQuantity_available(voucherDto.getQuantity_available());
         voucher.setStart_date(voucherDto.getStart_date());
         voucher.setEnd_date(voucherDto.getEnd_date());
-        voucher.setActive(Boolean.TRUE.equals(voucherDto.isActive()));
+        voucher.setActive(voucherDto.isActive());
 
         Admin admin = adminRepository.findByEmail(createdByEmail).orElseThrow(() -> new RuntimeException("Admin not found"));
         voucher.setCreated_by(admin);
@@ -86,7 +86,7 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setQuantity_available(voucherDto.getQuantity_available());
         voucher.setStart_date(voucherDto.getStart_date());
         voucher.setEnd_date(voucherDto.getEnd_date());
-        voucher.setActive(Boolean.TRUE.equals(voucherDto.isActive()));
+        voucher.setActive(voucherDto.isActive());
 
         return voucherRepository.save(voucher);
     }

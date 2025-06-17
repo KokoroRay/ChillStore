@@ -43,7 +43,7 @@ public class WarehouseController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "admin/warehouse/view";
+        return "warehouse/view";
     }
 
     // Tìm kiếm theo tên sản phẩm với phân trang
@@ -71,7 +71,7 @@ public class WarehouseController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "admin/warehouse/view";
+        return "warehouse/view";
     }
 
     // Hiển thị form nhập kho
@@ -79,7 +79,7 @@ public class WarehouseController {
     public String showImportForm(Model model) {
         List<Product> products = productService.findAll();
         model.addAttribute("products", products);
-        return "/admin/warehouse/import";
+        return "warehouse/import";
     }
 
     // Xử lý nhập kho
@@ -95,7 +95,7 @@ public class WarehouseController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Import failed: " + e.getMessage());
         }
-        return "redirect:/admin/warehouse/view";
+        return "redirect:/admin/warehouse";
     }
 
     // Hiển thị form xuất kho
@@ -103,7 +103,7 @@ public class WarehouseController {
     public String showExportForm(Model model) {
         List<Product> products = productService.findAll();
         model.addAttribute("products", products);
-        return "admin/warehouse/export";
+        return "warehouse/export";
     }
 
     // Xử lý xuất kho
@@ -162,6 +162,6 @@ public class WarehouseController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "admin/warehouse/log";
+        return "warehouse/log";
     }
 }

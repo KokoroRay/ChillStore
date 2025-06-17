@@ -1,0 +1,58 @@
+<div th:fragment="list-content">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Người dùng</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-sky-100 min-h-screen">
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="fixed left-0 top-0 bottom-0 w-[220px] bg-slate-800 text-white flex flex-col pt-8 z-10 h-full">
+            <h2 class="text-2xl text-center mb-8 tracking-widest font-bold">EMSM</h2>
+            <a class="py-3 px-8 hover:bg-slate-700 border-l-4 border-transparent hover:border-cyan-400 transition" href="#">Manage User</a>
+            <a class="py-3 px-8 hover:bg-slate-700 border-l-4 border-transparent hover:border-cyan-400 transition" href="#">Manage Staff</a>
+            <a class="py-3 px-8 hover:bg-slate-700 border-l-4 border-transparent hover:border-cyan-400 transition" href="#">Manage Category</a>
+            <a class="py-3 px-8 hover:bg-slate-700 border-l-4 border-transparent hover:border-cyan-400 transition" href="#">Manage Voucher</a>
+            <a class="py-3 px-8 hover:bg-slate-700 border-l-4 border-transparent hover:border-cyan-400 transition" href="#">Manage Warehouse</a>
+            <a class="py-3 px-8 hover:bg-slate-700 border-l-4 border-transparent hover:border-cyan-400 transition" href="#">Manage Product</a>
+            <a class="py-3 px-8 hover:bg-slate-700 border-l-4 border-transparent hover:border-cyan-400 transition" href="#">Manage Promotion</a>
+        </aside>
+        <!-- Main content -->
+        <main class="ml-[220px] w-full max-w-5xl px-6 py-8">
+            <div class="flex flex-wrap items-center gap-4 mb-6 w-full">
+                <h1 class="text-3xl font-bold text-slate-800">Danh sách Người dùng</h1>
+                <a th:href="@{/admin/customer/addform}" class="bg-cyan-400 text-white px-5 py-2 rounded hover:bg-cyan-500 transition">Thêm mới</a>
+                <form th:action="@{/admin/customer}" method="get" class="flex flex-1 gap-2 min-w-[220px]">
+                    <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm theo tên hoặc email..." class="flex-1 px-3 py-2 rounded border border-cyan-200" />
+                    <button type="submit" class="bg-slate-700 text-white px-4 py-2 rounded hover:bg-slate-900 transition">Tìm kiếm</button>
+                </form>
+            </div>
+            <div th:if="${success}" class="bg-green-100 text-green-800 px-4 py-2 rounded mb-2" th:text="${success}"></div>
+            <div th:if="${error}" class="bg-red-100 text-red-800 px-4 py-2 rounded mb-2" th:text="${error}"></div>
+            <div>
+                <div th:if="${#lists.isEmpty(customers)}" class="text-center text-gray-500">Không có dữ liệu người dùng</div>
+                <div th:each="customer : ${customers}" class="bg-white rounded-xl shadow p-6 mb-6 w-full">
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">ID:</span> <span th:text="${customer.customerId}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Họ tên:</span> <span th:text="${customer.display_name}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Email:</span> <span th:text="${customer.email}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Mật khẩu:</span> <span th:text="${customer.password != null ? (#strings.substring(customer.password,0,4) + '****') : '****'}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">SĐT:</span> <span th:text="${customer.phone}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Ngày tạo:</span> <span th:text="${#temporals.format(customer.created_at, 'dd/MM/yyyy')}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Ngày cập nhật:</span> <span th:text="${#temporals.format(customer.updated_at, 'dd/MM/yyyy')}"></span></div>
+                  <div class="flex gap-3 items-center"><span class="font-semibold text-cyan-700 min-w-[90px]">Trạng thái:</span>
+                    <span th:if="${customer.locked}" class="text-red-600 font-bold">Đã khóa</span>
+                    <span th:unless="${customer.locked}" class="text-green-600 font-bold">Hoạt động</span>
+                  </div>
+                  <div class="flex gap-3 mt-3">
+                    <a th:href="@{/admin/customer/edit/{id}(id=${customer.customerId})}" class="bg-cyan-400 text-white px-4 py-2 rounded hover:bg-cyan-500 transition">Sửa</a>
+                    <a th:href="@{/admin/customer/delete/{id}(id=${customer.customerId})}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition" onclick="return confirm('Bạn có chắc muốn KHÓA tài khoản người dùng này?')">Khóa</a>
+                  </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+</div>

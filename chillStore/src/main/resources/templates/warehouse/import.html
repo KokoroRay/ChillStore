@@ -30,7 +30,7 @@
             <h2>Import Warehouse</h2>
 
             <div class="form-wrapper">
-                <form th:action="@{/warehouse/import}" method="post">
+                <form th:action="@{/admin/warehouse/import}" method="post">
                     <div class="form-group">
                         <label for="productId">Product:</label>
                         <select id="productId" name="productId" required>
@@ -54,12 +54,12 @@
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-import">Import</button>
-                        <a th:href="@{/warehouse}" class="btn btn-cancel">Cancel</a>
+                        <a th:href="@{/admin/warehouse}" class="btn btn-cancel">Cancel</a>
                     </div>
                 </form>
 
                 <!-- ✅ Form Import File Excel -->
-                <form th:action="@{/warehouse/import-excel}" method="post" enctype="multipart/form-data" style="margin-top: 30px;">
+                <form th:action="@{/admin/warehouse/import-excel}" method="post" enctype="multipart/form-data" style="margin-top: 30px;">
                     <div class="form-group">
                         <label for="file">Import via Excel file (.xlsx):</label>
                         <input type="file" id="file" name="file" accept=".xlsx" required>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="group4_swp_chillStore_Final10@localhost" uuid="c7973c16-330b-4452-a922-76e85b8db876">
       <driver-ref>sqlserver.ms</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

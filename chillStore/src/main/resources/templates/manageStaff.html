@@ -62,6 +62,7 @@
       <td th:text="${staff.address}">HCM</td>
       <td th:text="${staff.national_id}">123456789</td>
       <td>
+        <div class="staff-buttons">
         <a th:href="@{'/staff/update-form?id=' + ${staff.id}}"
          class="btn-update">Update</a>
         <a th:href="@{'/staff/delete/' + ${staff.id}}"
@@ -69,7 +70,7 @@
            class="btn btn-sm btn-danger btn-delete">
           Delete
         </a>
-
+</div>
       </td>
     </tr>
     </tbody>

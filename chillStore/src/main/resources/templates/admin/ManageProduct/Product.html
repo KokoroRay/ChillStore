@@ -329,14 +329,19 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <select class="form-select" name="status">
+                <select class="form-select" name="filterStatus">
                     <option value="">Tất cả trạng thái</option>
-                    <option value="true" th:selected="${status == true}">Đang bán</option>
-                    <option value="false" th:selected="${status == false}">Ngừng bán</option>
+                    <option value="true" th:selected="${filterStatus == true}">Đang bán</option>
+                    <option value="false" th:selected="${filterStatus == false}">Ngừng bán</option>
                 </select>
             </div>
-            <div class="col-md-2 d-grid">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Lọc</button>
+            <div class="col-md-2 d-flex align-items-center justify-content-end" style="gap: 10px;">
+                <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">
+                    <i class="fas fa-filter me-2"></i> Lọc
+                </button>
+                <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center" style="height: 40px; padding: 0.375rem 0.75rem; font-size: 0.875rem;" onclick="resetFilters()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
             </div>
 
             <!-- Advanced Filters -->
@@ -347,14 +352,14 @@
                         <div class="col-md-3">
                             <label class="form-label">Giá từ</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" name="minPrice" th:value="${minPrice}" step="0.01" min="0" placeholder="Min">
+                                <input type="number" class="form-control" name="minPrice" th:value="${minPrice != null ? #numbers.formatDecimal(minPrice, 0, 'COMMA', 0, 'POINT') : ''}" step="0.01" min="0" placeholder="Min">
                                 <span class="input-group-text">₫</span>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">đến</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" name="maxPrice" th:value="${maxPrice}" step="0.01" min="0" placeholder="Max">
+                                <input type="number" class="form-control" name="maxPrice" th:value="${maxPrice != null ? #numbers.formatDecimal(maxPrice, 0, 'COMMA', 0, 'POINT') : ''}" step="0.01" min="0" placeholder="Max">
                                 <span class="input-group-text">₫</span>
                             </div>
                         </div>
@@ -400,17 +405,37 @@
             </div>
         </div>
         <div class="product-controls">
-            <a th:href="@{/admin/products/{id}(id=${product.productId})}"
+            <a th:href="@{/admin/products/{id}(id=${product.productId},
+                page=${currentPage},
+                size=${size},
+                keyword=${keyword},
+                categoryId=${categoryId},
+                brandId=${brandId},
+                filterStatus=${filterStatus},
+                minPrice=${minPrice},
+                maxPrice=${maxPrice},
+                minStock=${minStock},
+                sortOption=${sortOption})}"
                class="btn btn-info">
                 <i class="fas fa-eye"></i> Chi tiết
             </a>
-            <a th:href="@{/admin/products/{id}/edit(id=${product.productId})}"
+            <a th:href="@{/admin/products/{id}/edit(id=${product.productId},
+                page=${currentPage},
+                size=${size},
+                keyword=${keyword},
+                categoryId=${categoryId},
+                brandId=${brandId},
+                filterStatus=${filterStatus},
+                minPrice=${minPrice},
+                maxPrice=${maxPrice},
+                minStock=${minStock},
+                sortOption=${sortOption})}"
                class="btn btn-warning">
                 <i class="fas fa-edit"></i> Sửa
             </a>
             <button type="button"
                     class="btn btn-danger"
-                    th:onclick="'confirmDelete(' + ${product.productId} + ')'">
+                    th:onclick="'confirmDelete(' + ${product.productId} + ', ' + ${currentPage} + ')'">
                 <i class="fas fa-trash"></i> Xóa
             </button>
         </div>
@@ -424,17 +449,6 @@
                 Hiển thị <span th:text="${products.numberOfElements}"></span> / 
                 <span th:text="${totalItems}"></span> sản phẩm
             </div>
-            <div class="page-size-selector">
-                <label class="me-2">Số sản phẩm mỗi trang:</label>
-                <select class="form-select form-select-sm d-inline-block w-auto" 
-                        onchange="changePageSize(this.value)">
-                    <option th:each="pageSize : ${availablePageSizes}"
-                            th:value="${pageSize}"
-                            th:text="${pageSize}"
-                            th:selected="${pageSize == size}">
-                    </option>
-                </select>
-            </div>
         </div>
 
         <!-- Pagination Navigation -->
@@ -442,38 +456,89 @@
             <ul class="pagination justify-content-center">
                 <!-- First Page -->
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/products(page=0, size=${size}, keyword=${keyword}, status=${status}, categoryId=${categoryId})}">
+                    <a class="page-link" th:href="@{/admin/products(
+                        page=0,
+                        size=${size},
+                        keyword=${keyword},
+                        categoryId=${categoryId},
+                        brandId=${brandId},
+                        filterStatus=${filterStatus},
+                        minPrice=${minPrice},
+                        maxPrice=${maxPrice},
+                        minStock=${minStock},
+                        sortOption=${sortOption}
+                    )}">
                         <i class="fas fa-angle-double-left"></i>
                     </a>
                 </li>
-                
                 <!-- Previous Page -->
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/products(page=${currentPage - 1}, size=${size}, keyword=${keyword}, status=${status}, categoryId=${categoryId})}">
+                    <a class="page-link" th:href="@{/admin/products(
+                        page=${currentPage - 1},
+                        size=${size},
+                        keyword=${keyword},
+                        categoryId=${categoryId},
+                        brandId=${brandId},
+                        filterStatus=${filterStatus},
+                        minPrice=${minPrice},
+                        maxPrice=${maxPrice},
+                        minStock=${minStock},
+                        sortOption=${sortOption}
+                    )}">
                         <i class="fas fa-angle-left"></i>
                     </a>
                 </li>
-
                 <!-- Page Numbers -->
-                <li class="page-item" 
+                <li class="page-item"
                     th:each="i : ${#numbers.sequence(startPage, endPage)}"
                     th:classappend="${currentPage == i} ? 'active'">
-                    <a class="page-link" 
-                       th:href="@{/admin/products(page=${i}, size=${size}, keyword=${keyword}, status=${status}, categoryId=${categoryId})}" 
+                    <a class="page-link"
+                       th:href="@{/admin/products(
+                            page=${i},
+                            size=${size},
+                            keyword=${keyword},
+                            categoryId=${categoryId},
+                            brandId=${brandId},
+                            filterStatus=${filterStatus},
+                            minPrice=${minPrice},
+                            maxPrice=${maxPrice},
+                            minStock=${minStock},
+                            sortOption=${sortOption}
+                       )}"
                        th:text="${i + 1}">
                     </a>
                 </li>
-
                 <!-- Next Page -->
                 <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/products(page=${currentPage + 1}, size=${size}, keyword=${keyword}, status=${status}, categoryId=${categoryId})}">
+                    <a class="page-link" th:href="@{/admin/products(
+                        page=${currentPage + 1},
+                        size=${size},
+                        keyword=${keyword},
+                        categoryId=${categoryId},
+                        brandId=${brandId},
+                        filterStatus=${filterStatus},
+                        minPrice=${minPrice},
+                        maxPrice=${maxPrice},
+                        minStock=${minStock},
+                        sortOption=${sortOption}
+                    )}">
                         <i class="fas fa-angle-right"></i>
                     </a>
                 </li>
-
                 <!-- Last Page -->
                 <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/products(page=${totalPages - 1}, size=${size}, keyword=${keyword}, status=${status}, categoryId=${categoryId})}">
+                    <a class="page-link" th:href="@{/admin/products(
+                        page=${totalPages - 1},
+                        size=${size},
+                        keyword=${keyword},
+                        categoryId=${categoryId},
+                        brandId=${brandId},
+                        filterStatus=${filterStatus},
+                        minPrice=${minPrice},
+                        maxPrice=${maxPrice},
+                        minStock=${minStock},
+                        sortOption=${sortOption}
+                    )}">
                         <i class="fas fa-angle-double-right"></i>
                     </a>
                 </li>
@@ -519,12 +584,18 @@
 
 <!-- Custom JavaScript -->
 <script th:inline="javascript">
-    function confirmDelete(productId) {
+    function confirmDelete(productId, currentPage) {
         const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
         const deleteForm = document.getElementById('deleteForm');
-        deleteForm.action = `/admin/products/${productId}/delete`;
+        deleteForm.action = `/admin/products/${productId}/delete?page=${currentPage}`;
         modal.show();
     }
+</script>
+
+<script>
+function resetFilters() {
+    window.location.href = '/admin/products';
+}
 </script>
 
 </body>

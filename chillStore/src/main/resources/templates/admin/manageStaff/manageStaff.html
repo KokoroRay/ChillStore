@@ -75,6 +75,33 @@
     </tr>
     </tbody>
   </table>
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center mt-4">
+    <nav>
+      <ul class="pagination">
+        <!-- Previous -->
+        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+          <a class="page-link"
+             th:href="@{/manageStaff/listStaff(page=${currentPage - 1}, size=10, keyword=${keyword}, gender=${gender})}">Previous</a>
+        </li>
+
+        <!-- Page Numbers -->
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+            th:classappend="${i == currentPage} ? 'active'">
+          <a class="page-link"
+             th:href="@{/manageStaff/listStaff(page=${i}, size=10, keyword=${keyword}, gender=${gender})}"
+             th:text="${i + 1}">1</a>
+        </li>
+
+        <!-- Next -->
+        <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+          <a class="page-link"
+             th:href="@{/manageStaff/listStaff(page=${currentPage + 1}, size=10, keyword=${keyword}, gender=${gender})}">Next</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </div>
 </div>
 </body>

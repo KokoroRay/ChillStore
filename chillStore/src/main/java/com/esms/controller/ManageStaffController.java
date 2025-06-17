@@ -2,6 +2,9 @@ package com.esms.controller;
 import com.esms.model.entity.Staff;
 import com.esms.service.IStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +13,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/manageStaff")
-public class StaffController {
+public class ManageStaffController {
     @Autowired
     private IStaffService iStaffService;
 
@@ -54,16 +57,22 @@ public class StaffController {
     @GetMapping("/listStaff")
     public String showStaffList(@RequestParam(value = "keyword", required = false) String keyword,
                                 @RequestParam(value = "gender", required = false) String gender,
+                                @RequestParam(value = "page", defaultValue = "0") int page,
+                                @RequestParam(value = "size", defaultValue = "10") int size,
                                 Model model) {
-        List<Staff> staffList;
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Staff> staffPage;
 
         if ((keyword != null && !keyword.isBlank()) || (gender != null && !gender.isBlank())) {
-            staffList = iStaffService.searchStaff(keyword, gender);
+            staffPage = iStaffService.searchStaff(keyword, gender, pageable);
         } else {
-            staffList = iStaffService.getAllStaff();
+            staffPage = iStaffService.getAllStaff(pageable);
         }
 
-        model.addAttribute("staffList", staffList);
+        model.addAttribute("staffList", staffPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", staffPage.getTotalPages());
         model.addAttribute("keyword", keyword);
         model.addAttribute("gender", gender);
         return "admin/manageStaff/manageStaff";

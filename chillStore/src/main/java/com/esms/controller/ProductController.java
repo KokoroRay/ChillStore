@@ -42,6 +42,7 @@ public class ProductController {
             @RequestParam(value = "filterStatus", required = false) Boolean filterStatus,
             @RequestParam(value = "minPrice", required = false) Double minPrice,
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false, defaultValue = "default") String sortOption,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size,
@@ -78,7 +79,7 @@ public class ProductController {
             pageable = PageRequest.of(page, size);
         }
         Page<Product> products = productService.searchProductsWithFilters(
-                keyword, categoryId, brandId, minPrice, maxPrice, sortBy, sortDir, pageable, filterStatus);
+                keyword, categoryId, brandId, minPrice, maxPrice, minStock, sortBy, sortDir, pageable, filterStatus);
         // Pagination logic for page numbers
         int totalPages = products.getTotalPages();
         int currentPage = page;
@@ -89,9 +90,11 @@ public class ProductController {
         model.addAttribute("brands", brands);
         model.addAttribute("keyword", keyword);
         model.addAttribute("categoryId", categoryId);
+        model.addAttribute("brandId", brandId);
         model.addAttribute("filterStatus", filterStatus);
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("minStock", minStock);
         model.addAttribute("sortOption", sortOption);
         model.addAttribute("sortOptions", sortOptions);
         model.addAttribute("size", size);

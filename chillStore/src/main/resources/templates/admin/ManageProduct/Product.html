@@ -284,15 +284,20 @@
             padding: 20px;
         }
     </style>
-
-    <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/sidebar.css">
-    <link rel="stylesheet" href="/css/footer.css">
-    <link rel="stylesheet" href="/css/layout.css">
 </head>
 <body>
-<div th:insert="~{fragments/header :: headerContent}"></div>
-<div th:insert="~{fragments/sidebar :: sidebar(activeMenu)}"></div>
+
+<div class="sidebar">
+    <h2>ESMS</h2>
+    <a th:href="@{/admin/category}" class="btn btn-light">Manage Category</a>
+    <a th:href="@{/admin/user}" class="btn btn-light">Manage User</a>
+    <a th:href="@{/admin/staff}" class="btn btn-light">Manage Staff</a>
+    <a th:href="@{/admin/voucher}" class="btn btn-light">Manage Voucher</a>
+    <a th:href="@{/admin/revenue}" class="btn btn-light">Manage Revenue</a>
+    <a th:href="@{/admin/warehouse}" class="btn btn-light">Manage Warehouse</a>
+    <a th:href="@{/admin/products}" class="btn btn-primary">Manage Product</a>
+    <a th:href="@{/admin/promotion}" class="btn btn-light">Manage Promotion</a>
+</div>
 
 <div class="main-content">
     <div class="topbar">

@@ -28,10 +28,13 @@ public class StaffServiceImpl implements IStaffService {
         if (staff != null) {
             Staff staff1 = staffRepository.getById(id);
             if (staff1 != null) {
+                Staff existingStaff = staffRepository.getById(id);
+
                 staff1.setName(staff.getName());
                 staff1.setEmail(staff.getEmail());
-                staff1.setPassword(staff.getPassword());
-                staff1.setPhone(staff.getPhone());
+                if (staff.getPassword() != null && !staff.getPassword().isBlank()) {
+                    existingStaff.setPassword(staff.getPassword());
+                }                staff1.setPhone(staff.getPhone());
                 staff1.setAddress(staff.getAddress());
                 staff1.setGender(staff.getGender());
                 staff1.setNational_id(staff.getNational_id());

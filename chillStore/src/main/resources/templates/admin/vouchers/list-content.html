@@ -1,42 +1,155 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        .voucher-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .voucher-card:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .voucher-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .voucher-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .voucher-details {
+            margin-bottom: 10px;
+        }
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .detail-label {
+            font-weight: 500;
+            color: #555;
+        }
+        .detail-value {
+            color: #333;
+        }
+        .voucher-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .btn-action {
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .btn-update {
+            background-color: #f0ad4e;
+            border-color: #eea236;
+            color: white;
+        }
+        .btn-delete {
+            background-color: #d9534f;
+            border-color: #d43f3a;
+            color: white;
+        }
+    </style>
+</head>
 <body>
-<div th:fragment="content(keyword, vouchers, errorMessage)">
-    <h2>Manage Voucher</h2>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-    <div th:if="${#lists.isEmpty(vouchers)}"><p>No vouchers found.</p></div>
-    <div th:each="v : ${vouchers}" class="card mb-3">
-        <div class="row g-0 align-items-center">
-            <div class="col-md-1">
-                <div class="placeholder-img" style="width:60px; height:60px; background:#f0f0f0;"></div>
-            </div>
-            <div class="col-md-7">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${v.code}">Voucher Code</h5>
-                    <p class="card-text" th:if="${v.description}" th:text="${v.description}"></p>
-                    <p class="card-text text-muted">
-                        <span th:if="${v.discountPct != null}">
-                            Discount: <span th:text="${v.discountPct} + '%'"></span>
-                        </span>
-                        <span th:if="${v.discountPct == null and v.discountAmount != null}">
-                            Discount: <span th:text="${v.discountAmount}"></span>
-                        </span>
-                        <span th:if="${v.minOrderAmount != null and v.minOrderAmount > 0}">
-                            , Min Order: <span th:text="${v.minOrderAmount}"></span>
-                        </span>
-                    </p>
-                    <p class="card-text text-muted">
-                        Valid: <span th:text="${v.startDate}"></span> → <span th:text="${v.endDate}"></span>,
-                        Qty: <span th:text="${v.quantityAvailable}"></span>,
-                        <span th:text="${v.active} ? 'Active' : 'Inactive'"></span>
-                    </p>
+<div th:fragment="content(keyword, vouchers, error)">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Manage Voucher</h2>
+        <a th:href="@{/admin/vouchers/add}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Voucher
+        </a>
+    </div>
+
+    <div class="d-flex mb-4">
+        <form th:action="@{/admin/vouchers}" method="get" class="d-flex w-100">
+            <input type="text"
+                   name="keyword"
+                   class="form-control me-2"
+                   placeholder="Search Voucher"
+                   th:value="${keyword}">
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </form>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div th:if="${#lists.isEmpty(vouchers)}" class="text-center py-5">
+        <h4 class="text-muted"><i class="fas fa-inbox"></i> No vouchers found</h4>
+        <p class="text-muted">Try changing your search or add a new voucher</p>
+    </div>
+
+    <div class="row" th:if="${!#lists.isEmpty(vouchers)}">
+        <div th:each="v : ${vouchers}" class="col-md-6">
+            <div class="voucher-card">
+                <div class="voucher-header">
+                    <div class="voucher-title" th:text="${v.code}">CODE</div>
                 </div>
-            </div>
-            <div class="col-md-4 text-end pe-4">
-                <a th:href="@{/admin/vouchers/edit/{id}(id=${v.id})}" class="btn btn-update me-2">Update</a>
-                <a th:href="@{/admin/vouchers/delete/{id}(id=${v.id})}"
-                   onclick="return confirm('Bạn có chắc chắn muốn xóa voucher này?');"
-                   class="btn btn-delete">Delete</a>
+
+                <div class="voucher-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Description:</div>
+                        <div class="detail-value" th:text="${v.description}">Description</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Quantity:</div>
+                        <!-- entity getter là getQuantity_available(), nên dùng v.quantity_available -->
+                        <div class="detail-value" th:text="${v.quantity_available}">0</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Promotion Value:</div>
+                        <div class="detail-value">
+                            <!-- discount_pct và discount_amount theo entity -->
+                            <span th:if="${v.discount_pct != null}" th:text="${v.discount_pct} + '%'">10%</span>
+                            <span th:if="${v.discount_amount != null}"
+                                  th:text="${#numbers.formatDecimal(v.discount_amount, 0, 'COMMA', 0, 'POINT')} + 'đ'">50,000đ</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Min Order Amount:</div>
+                        <div class="detail-value"
+                             th:text="${v.min_order_amount != null} ? ${#numbers.formatDecimal(v.min_order_amount, 0, 'COMMA', 0, 'POINT')} + 'đ' : '0đ'">
+                            0đ
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Start Date:</div>
+                        <div class="detail-value" th:text="${v.start_date}">2025-01-01</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">End Date:</div>
+                        <div class="detail-value" th:text="${v.end_date}">2025-12-31</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Active:</div>
+                        <div class="detail-value" th:text="${v.active} ? 'Yes' : 'No'">Yes</div>
+                    </div>
+                </div>
+
+                <div class="voucher-actions">
+                    <!-- Dùng voucher_id theo entity -->
+                    <a th:href="@{/admin/vouchers/edit/{id}(id=${v.voucher_id})}" class="btn btn-update btn-action">
+                        <i class="fas fa-edit"></i> Update
+                    </a>
+                    <a th:href="@{/admin/vouchers/delete/{id}(id=${v.voucher_id})}"
+                       onclick="return confirm('Are you sure you want to delete this voucher?');"
+                       class="btn btn-delete btn-action">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </div>
             </div>
         </div>
     </div>

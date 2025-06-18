@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ import java.util.Random;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
+    @Autowired
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
     private final PasswordEncoder passwordEncoder;
@@ -202,6 +204,39 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerRepository.save(customer);
     }
+
+    @Override
+    public Optional<Customer> findCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
+
+    @Override
+    public Optional<Customer> findCustomerByProviderAndProviderId(String provider, String providerId) {
+        return customerRepository.findByProviderAndProviderId(provider, providerId);
+    }
+
+    @Override
+    public Customer processOAuth2User(String provider, OAuth2User oAuth2User) {
+        String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
+        String providerId = oAuth2User.getName();
+
+        Optional<Customer> existingCustomer = findCustomerByEmail(email);
+
+        Customer customer;
+        if (existingCustomer.isPresent()) {
+            customer = existingCustomer.get();
+            customer.setName(name);
+            customer.setDisplay_name(name);
+            customer.setProvider(provider);
+            customer.setProviderId(providerId);
+            customer.setUpdated_at(LocalDateTime.now());
+        } else {
+            customer = new Customer(email, name, provider, providerId);
+        }
+        return null;
+    }
+
     @Override
     public Customer getCustomerById(Integer id) {
         return customerRepository.findById(id)

@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
     private Integer customerId;
-
     private String name;
     private String display_name;
     private String email;
@@ -20,25 +20,34 @@ public class Customer {
     private LocalDate birth_date = LocalDate.now();
     private LocalDateTime created_at = LocalDateTime.now();
     private LocalDateTime updated_at = LocalDateTime.now();
+    @Column(name = "is_locked")
     private boolean isLocked = false;
+    private String provider;
+    @Column(name = "provider_id")
+    private String providerId;
 
-    public Customer(Integer customerId, String name, String display_name, String email, String password,
-                    String phone, String address, LocalDate birth_date, LocalDateTime created_at,
-                    LocalDateTime updated_at, String imageUrl, boolean isLocked) {
-        this.customerId = customerId;
-        this.name = name;
-        this.display_name = display_name;
-        this.email = email;
-        this.password = password;
-        this.phone = phone;
-        this.address = address;
-        this.birth_date = birth_date;
+    public Customer() {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.isLocked = isLocked;
     }
 
-    public Customer() {}
+    public Customer(String name, String email, String provider, String providerId) {
+        this();
+        this.name = name;
+        this.email = email;
+        this.provider = "local";
+        this.providerId = providerId;
+    }
+
+    public Customer(String name, String email, String password, String phone, String address, LocalDate birth_date) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.address = address;
+        this.birth_date = birth_date;
+    }
 
     public Integer getCustomerId() { return customerId; }
     public void setCustomerId(Integer customerId) { this.customerId = customerId; }
@@ -71,4 +80,12 @@ public class Customer {
 
     public boolean isLocked() { return isLocked; }
     public void setLocked(boolean locked) { isLocked = locked; }
+
+    public String getProvider() { return provider; }
+
+    public void setProvider(String provider) { this.provider = provider; }
+
+    public String getProviderId() { return providerId; }
+
+    public void setProviderId(String providerId) { this.providerId = providerId; }
 }

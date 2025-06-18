@@ -39,7 +39,8 @@ public class VoucherController {
     @GetMapping("/add")
     public String showAddForm(Model model) {
         VoucherDto voucherDto = new VoucherDto();
-        model.addAttribute("voucher", voucherDto);
+        model.addAttribute("voucherDto", voucherDto);
+
         model.addAttribute("activeMenu", "vouchers");
         model.addAttribute("currentSection", "voucher");
         model.addAttribute("keyword", "");

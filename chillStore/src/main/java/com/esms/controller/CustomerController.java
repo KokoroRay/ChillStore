@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/customer")
@@ -30,17 +31,25 @@ public class CustomerController {
     @GetMapping
     public String getAllCustomers(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "") String search,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) Boolean locked,
             Model model) {
         Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<Customer> customerPage = search.isEmpty()
-                ? customerService.getAllCustomers(pageable)
-                : customerService.searchCustomers(search, pageable);
-        System.out.println("📢 Controller đã được gọi!");
+        Page<Customer> customerPage;
+        if (search == null || search.isBlank()) {
+            customerPage = customerService.getAllCustomers(pageable);
+        } else if ("email".equalsIgnoreCase(type)) {
+            customerPage = customerService.searchCustomersByEmail(search, pageable);
+        } else {
+            customerPage = customerService.searchCustomersByName(search, pageable);
+        }
         model.addAttribute("customers", customerPage.getContent());
         model.addAttribute("totalPages", customerPage.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("search", search);
+        model.addAttribute("type", type);
+        model.addAttribute("locked", locked);
         return "admin/customer/list";
     }
 
@@ -115,6 +124,26 @@ public class CustomerController {
     public String showAddForm(Model model) {
         model.addAttribute("customerDto", new CustomerDto());
         return "admin/customer/addform";
+    }
+
+    @GetMapping("/suggest")
+    @ResponseBody
+    public List<String> suggestCustomer(@RequestParam("keyword") String keyword,
+                                        @RequestParam("type") String type) {
+        return customerService.suggestCustomerByType(keyword, type, 5);
+    }
+
+    @GetMapping("/unlock/{id}")
+    public String unlockCustomer(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            Customer customer = customerService.getCustomerById(id);
+            customer.setLocked(false);
+            customerService.updateCustomer(id, convertToDto(customer));
+            redirectAttributes.addFlashAttribute("success", "Mở khóa tài khoản thành công!");
+        } catch (UserNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/admin/customer";
     }
 
     private CustomerDto convertToDto(Customer customer) {

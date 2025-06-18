@@ -76,11 +76,13 @@ public class StaffServiceImpl implements IStaffService {
     public Page<Staff> getAllStaff(Pageable pageable) {
         return staffRepository.findAll(pageable);
     }
-
     @Override
-    public Page<Staff> searchStaff(String keyword, String gender, Pageable pageable) {
+    public Page<Staff> searchStaff(String keyword, Staff.Gender gender, Pageable pageable) {
         return staffRepository.searchStaff(keyword, gender, pageable);
     }
+
+
+
 
 
 }

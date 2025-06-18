@@ -1,8 +1,9 @@
-/* addStaff.css */
+/* update-staff.css */
 
+/* Toàn bộ phần thân */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
+    background-color: #f2f2f2;
     margin: 0;
     padding: 40px;
 }
@@ -14,7 +15,7 @@ h2 {
     margin-bottom: 30px;
 }
 
-/* Form chính */
+/* Form */
 form {
     max-width: 500px;
     margin: 0 auto;
@@ -25,15 +26,14 @@ form {
 }
 
 /* Label */
-form label,
-form lable {
+form label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
     color: #555;
 }
 
-/* Các input và select */
+/* Input và select */
 form input[type="text"],
 form input[type="email"],
 form input[type="password"],
@@ -47,17 +47,10 @@ form select {
     font-size: 16px;
 }
 
-/* Container chứa hai nút */
-.form-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-/* Nút Save */
+/* Button */
 form button[type="submit"] {
-    flex: 1;
-    background-color: #28a745;
+    width: 100%;
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 12px;
@@ -65,27 +58,22 @@ form button[type="submit"] {
     cursor: pointer;
     border-radius: 8px;
     transition: background-color 0.3s ease;
-    text-align: center;
 }
 
 form button[type="submit"]:hover {
-    background-color: #218838;
+    background-color: #0056b3;
 }
-
-/* Nút Back */
 .btn-back {
-    flex: 1;
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+    text-decoration: none;
     background-color: #6c757d;
     color: white;
-    padding: 12px;
+    padding: 10px;
     border-radius: 8px;
-    text-decoration: none;
-    font-size: 16px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     transition: background-color 0.3s ease;
+    font-size: 16px;
 }
 
 .btn-back:hover {

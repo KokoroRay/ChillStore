@@ -7,11 +7,13 @@
 body {
     font-family: 'Segoe UI', sans-serif;
     background-color: #ecf0f1;
+    position: relative;
 }
 
 .container {
     display: flex;
     min-height: 100vh;
+    position: relative;
 }
 
 /* Sidebar */
@@ -20,6 +22,12 @@ body {
     background-color: #2c3e50;
     color: white;
     padding: 20px;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 
 .logo {
@@ -65,6 +73,8 @@ body {
 .main-content {
     flex: 1;
     padding: 30px;
+    margin-left: 250px; /* Add margin equal to sidebar width */
+    width: calc(100% - 250px); /* Subtract sidebar width from total width */
 }
 
 .warehouse-section {
@@ -125,14 +135,16 @@ body {
     background-color: #2ecc71;
     color: white;
 }
+
 .btn-import:hover {
     background-color: #27ae60;
 }
 
 .btn-export {
-    background-color: #e67e22;
+    background-color: #e74c3c;
     color: white;
 }
+
 .btn-export:hover {
     background-color: #c0392b;
 }
@@ -141,15 +153,8 @@ body {
     background-color: #3498db;
     color: white;
 }
-.btn-log:hover {
-    background-color: #2980b9;
-}
 
-.btn-search {
-    background-color: #3498db;
-    color: white;
-}
-.btn-search:hover {
+.btn-log:hover {
     background-color: #2980b9;
 }
 
@@ -162,51 +167,42 @@ body {
     background-color: #7f8c8d;
 }
 
-/* Pagination */
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 20px;
-    padding: 20px 0;
-}
-
-.btn-page {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    color: #333;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    background-color: white;
-}
-
-.btn-page:hover {
-    background-color: #f5f5f5;
-    border-color: #999;
-}
-
-.btn-page.active {
-    background-color: #3498db;
+.btn-cancel {
+    background-color: #95a5a6;
     color: white;
-    border-color: #3498db;
-    cursor: default;
 }
 
-/* Search Form */
+.btn-cancel:hover {
+    background-color: #7f8c8d;
+}
+
+/* Search */
+.search-bar {
+    margin-bottom: 30px;
+}
+
 .search-form {
     display: flex;
-    align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
+    align-items: center;
 }
 
 .search-form input {
     flex: 1;
-    padding: 10px 16px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.btn-search {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+}
+
+.btn-search:hover {
+    background-color: #2980b9;
 }
 
 /* Table */
@@ -217,52 +213,90 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
 th {
-    background-color: #3498db;
-    color: white;
-    padding: 12px;
-    text-align: center;
-}
-
-td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
+    background-color: #f8f9fa;
+    font-weight: bold;
     color: #2c3e50;
 }
 
 tr:hover {
-    background-color: #f0f8ff;
+    background-color: #f8f9fa;
 }
 
-/* Import Form Card */
-.import-form {
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.btn-page {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    color: #2c3e50;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-page:hover {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.btn-page.active {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: #fff;
+    cursor: default;
+}
+
+.pagination span.btn-page.active {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Previous and Next buttons */
+.pagination a[rel="prev"],
+.pagination a[rel="next"] {
+    padding: 0 20px;
+    font-weight: 600;
+}
+
+/* Form */
+.form-wrapper {
     max-width: 600px;
     margin: 0 auto;
-    background-color: #dff5eb; /* Màu xanh nhạt dịu mắt */
+    background-color: white;
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-left: 8px solid #2ecc71;
-    animation: fadeIn 0.4s ease-in-out;
-}
-
-/* Animation khi xuất hiện */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.import-form h3 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .form-group {
@@ -271,28 +305,19 @@ tr:hover {
 
 .form-group label {
     display: block;
-    font-weight: bold;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     color: #2c3e50;
+    font-weight: bold;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
+    border: 1px solid #ddd;
     border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 15px;
-    background-color: #ffffff;
-    transition: border-color 0.3s;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #2ecc71;
+    font-size: 16px;
 }
 
 .form-group textarea {
@@ -300,103 +325,42 @@ tr:hover {
     min-height: 100px;
 }
 
-/* Form Actions */
 .form-actions {
     display: flex;
+    gap: 16px;
     justify-content: flex-end;
-    gap: 15px;
-    margin-top: 25px;
+    margin-top: 30px;
 }
 
-.btn-cancel {
-    background-color: #95a5a6;
-    color: white;
-}
-.btn-cancel:hover {
-    background-color: #7f8c8d;
-}
-
-/* Export Form Container */
-.export-form {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #fef3e2;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-left: 8px solid #e67e22;
-    animation: fadeIn 0.4s ease-in-out;
-}
-
-/* (Optional) Nếu muốn dùng chung animation với import */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.export-form h3 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 20px;
-}
-
-.export-form .form-group {
-    margin-bottom: 20px;
-}
-
-.export-form .form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 6px;
-    color: #2c3e50;
-}
-
-.export-form .form-group input,
-.export-form .form-group select,
-.export-form .form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 15px;
-    background-color: #ffffff;
-    transition: border-color 0.3s;
-}
-
-.export-form .form-group input:focus,
-.export-form .form-group select:focus,
-.export-form .form-group textarea:focus {
-    outline: none;
-    border-color: #e67e22;
-}
-
-.export-form .form-group textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-/* Export-specific action buttons */
-.export-form .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 25px;
-}
-
-.btn-export {
-    background-color: #e67e22;
-    color: white;
-}
-
-.btn-export:hover {
-    background-color: #cf711c;
-}
-
-.btn-cancel {
-    background-color: #95a5a6;
-    color: white;
-}
-.btn-cancel:hover {
-    background-color: #7f8c8d;
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+    
+    .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    .search-form {
+        flex-direction: column;
+    }
+    
+    .search-form input {
+        width: 100%;
+    }
+    
+    .btn-search {
+        width: 100%;
+    }
 }
 

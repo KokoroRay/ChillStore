@@ -4,6 +4,8 @@ import com.esms.model.entity.Staff;
 import com.esms.repository.StaffRepository;
 import com.esms.service.IStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,6 +71,15 @@ public class StaffServiceImpl implements IStaffService {
             gender = Staff.Gender.valueOf(genderStr);
         }
         return staffRepository.findByKeywordAndGender(keyword, gender);
+    }
+    @Override
+    public Page<Staff> getAllStaff(Pageable pageable) {
+        return staffRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Staff> searchStaff(String keyword, String gender, Pageable pageable) {
+        return staffRepository.searchStaff(keyword, gender, pageable);
     }
 
 

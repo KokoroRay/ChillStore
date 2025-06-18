@@ -8,54 +8,65 @@
             padding: 15px;
             margin-bottom: 15px;
             background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
         }
+
         .voucher-card:hover {
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transform: translateY(-2px);
         }
+
         .voucher-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
+
         .voucher-title {
             font-size: 1.25rem;
             font-weight: bold;
             color: #333;
         }
+
         .voucher-details {
             margin-bottom: 10px;
         }
+
         .detail-item {
             display: flex;
             justify-content: space-between;
             margin-bottom: 5px;
         }
+
         .detail-label {
             font-weight: 500;
             color: #555;
         }
+
         .detail-value {
             color: #333;
         }
+
         .voucher-actions {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
         }
+
         .btn-action {
             padding: 5px 15px;
             border-radius: 4px;
             font-size: 0.9rem;
         }
+
         .btn-update {
             background-color: #f0ad4e;
             border-color: #eea236;
             color: white;
         }
+
         .btn-delete {
             background-color: #d9534f;
             border-color: #d43f3a;
@@ -116,6 +127,28 @@
                             <span th:if="${v.discount_pct != null}" th:text="${v.discount_pct} + '%'">10%</span>
                             <span th:if="${v.discount_amount != null}"
                                   th:text="${#numbers.formatDecimal(v.discount_amount, 0, 'COMMA', 0, 'POINT')} + 'đ'">50,000đ</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Categories:</div>
+                        <div class="detail-value">
+                            <span th:if="${v.categories == null or v.categories.isEmpty()}">All Categories</span>
+                            <span th:if="${v.categories != null and !v.categories.isEmpty()}">
+            <span th:each="cat, stat : ${v.categories}">
+                <span th:text="${cat.name}">Category Name</span><span th:if="${!stat.last}">, </span>
+            </span>
+        </span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Brands:</div>
+                        <div class="detail-value">
+                            <span th:if="${v.brands == null or v.brands.isEmpty()}">All Brands</span>
+                            <span th:if="${v.brands != null and !v.brands.isEmpty()}">
+            <span th:each="br, stat : ${v.brands}">
+                <span th:text="${br.name}">Brand Name</span><span th:if="${!stat.last}">, </span>
+            </span>
+        </span>
                         </div>
                     </div>
                     <div class="detail-item">

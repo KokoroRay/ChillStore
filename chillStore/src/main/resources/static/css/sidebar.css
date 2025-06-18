@@ -1,0 +1,59 @@
+/* Bọc toàn bộ layout */
+.main-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background-color: #00688B;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+}
+
+.logo-sidebar {
+    width: 120px;
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+}
+
+/* Khoảng trống bên phải để không đè content */
+.content {
+    margin-left: 220px;
+    padding: 20px;
+    flex: 1;
+    background-color: #f8f9fa;
+}
+
+/* Nút menu trong sidebar */
+.sidebar a {
+    display: block;
+    background-color: white;
+    color: black;
+    padding: 5px;
+    margin: 8px 0;
+    width: 100%;
+    text-align: left;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sidebar a.active {
+    background-color: #e0e0ff;
+    color: #007bff;
+}
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+

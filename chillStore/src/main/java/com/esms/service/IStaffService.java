@@ -23,7 +23,7 @@ public interface IStaffService {
 
     List<Staff> searchStaff(String keyword, String gender);
     Page<Staff> getAllStaff(Pageable pageable);
-    Page<Staff> searchStaff(String keyword, String gender, Pageable pageable);
+    Page<Staff> searchStaff(String keyword, Staff.Gender gender, Pageable pageable);
 
 
 }

@@ -1,14 +1,21 @@
 .header-container {
     height: 80px;
-    position: relative;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 1rem;
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
 }
 
 .logo-image {
-    height: 60px; /* nhỏ hơn để hợp lý khi thu phóng */
+    height: 70px;
     max-height: 100%;
     width: auto;
 }
@@ -40,4 +47,11 @@
     width: 20px;
     height: 20px;
     color: #6a1b9a;
+}
+.content {
+    margin-top: 80px;
+    margin-left: 220px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    flex: 1;
 }

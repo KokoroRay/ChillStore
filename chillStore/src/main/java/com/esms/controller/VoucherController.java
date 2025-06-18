@@ -179,7 +179,7 @@ public class VoucherController {
         if (q == null || q.isBlank()) {
             pg = categoryRepository.findAll(pageable);
         } else {
-            pg = categoryRepository.findByNameContainingIgnoreCase(q);
+            pg = categoryRepository.findByNameContainingIgnoreCase(q, pageable);
         }
         Map<String, Object> result = new HashMap<>();
 
@@ -193,6 +193,33 @@ public class VoucherController {
                 .collect(Collectors.toList());
         result.put("results", items);
         result.put("pagination", Map.of("more", pg.hasNext()));
+        return result;
+    }
+
+    @GetMapping("/brands/search")
+    @ResponseBody
+    public Map<String, Object> searchBrands(
+            @RequestParam(name = "q", required = false) String q,
+            @RequestParam(name = "page", defaultValue = "1") int page) {
+        int pageSize = 50;
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("name").ascending());
+        Page<Brand> pageResult;
+        if (q == null || q.isBlank()) {
+            pageResult = brandRepository.findAll(pageable);
+        } else {
+            pageResult = brandRepository.findByNameContainingIgnoreCase(q, pageable);
+        }
+        List<Map<String, Object>> items = pageResult.getContent().stream()
+                .map(b -> {
+                    Map<String, Object> m = new HashMap<>();
+                    m.put("id", b.getId());
+                    m.put("text", b.getName());
+                    return m;
+                })
+                .collect(Collectors.toList());
+        Map<String, Object> result = new HashMap<>();
+        result.put("results", items);
+        result.put("pagination", Map.of("more", pageResult.hasNext()));
         return result;
     }
 

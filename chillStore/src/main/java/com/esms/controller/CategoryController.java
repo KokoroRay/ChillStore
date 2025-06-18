@@ -6,6 +6,8 @@ import com.esms.model.entity.Category;
 import com.esms.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,11 +25,11 @@ public class CategoryController {
     @GetMapping
     public String listCategory(
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "error", required = false) String error, Model model) {
+            @RequestParam(value = "error", required = false) String error, Model model, Pageable pa) {
         if (error != null) {
             model.addAttribute("error", error);
         }
-        List<Category> categories = categoryService.searchCategory(keyword);
+        Page<Category> categories = categoryService.searchCategory(keyword, pa);
         model.addAttribute("categories", categories);
         model.addAttribute("keyword", keyword);
         return "admin/category/list";

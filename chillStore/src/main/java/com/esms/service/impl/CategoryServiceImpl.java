@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +30,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> searchCategory(String keyword) {
+    public Page<Category> searchCategory(String keyword, Pageable pa) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            return categoryRepository.findAll();
+            return categoryRepository.findAll(pa);
         }
-        return categoryRepository.findByNameContainingIgnoreCase(keyword.trim());
+        return categoryRepository.findByNameContainingIgnoreCase(keyword.trim(), pa);
     }
 
     @Override

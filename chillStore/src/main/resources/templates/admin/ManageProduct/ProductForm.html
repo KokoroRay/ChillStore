@@ -241,24 +241,24 @@
             <input type="hidden" name="maxPrice" th:value="${maxPrice}" />
             <input type="hidden" name="minStock" th:value="${minStock}" />
             <input type="hidden" name="sortOption" th:value="${sortOption}" />
-            
+
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group">
                         <label for="name">Tên sản phẩm</label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="name" 
-                               name="name" 
+                        <input type="text"
+                               class="form-control"
+                               id="name"
+                               name="name"
                                th:value="${product.name}"
                                required>
                     </div>
 
                     <div class="form-group">
                         <label for="description">Mô tả</label>
-                        <textarea class="form-control" 
-                                  id="description" 
-                                  name="description" 
+                        <textarea class="form-control"
+                                  id="description"
+                                  name="description"
                                   rows="4"
                                   th:text="${product.description}"
                                   required></textarea>
@@ -268,10 +268,10 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="price">Giá</label>
-                                <input type="number" 
-                                       class="form-control" 
-                                       id="price" 
-                                       name="price" 
+                                <input type="number"
+                                       class="form-control"
+                                       id="price"
+                                       name="price"
                                        th:value="${product.price}"
                                        step="0.01"
                                        required>
@@ -280,10 +280,10 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="stockQty">Số lượng tồn kho</label>
-                                <input type="number" 
-                                       class="form-control" 
-                                       id="stockQty" 
-                                       name="stockQty" 
+                                <input type="number"
+                                       class="form-control"
+                                       id="stockQty"
+                                       name="stockQty"
                                        th:value="${product.stockQty}"
                                        readonly
                                        style="background-color: #f8f9fa;">
@@ -296,16 +296,16 @@
                     <div class="form-group">
                         <label>Hình ảnh sản phẩm</label>
                         <div class="image-upload-container">
-                            <input type="file" 
-                                   id="image" 
+                            <input type="file"
+                                   id="image"
                                    name="image"
                                    accept="image/*"
                                    th:required="${product.productId == null}">
                             <label for="image" class="image-upload-label">
                                 <i class="fas fa-cloud-upload-alt"></i> Chọn hình ảnh
                             </label>
-                            <img th:if="${product.imageUrl}" 
-                                 th:src="${product.imageUrl}" 
+                            <img th:if="${product.imageUrl}"
+                                 th:src="${product.imageUrl}"
                                  class="preview-image mt-3"
                                  alt="Product Image">
                         </div>
@@ -315,10 +315,10 @@
                         <label>Trạng thái sản phẩm</label>
                         <div class="status-container">
                             <label class="status-toggle">
-                                <input type="checkbox" 
-                                       id="status" 
+                                <input type="checkbox"
+                                       id="status"
                                        name="status"
-                                       th:checked="${product.status}" 
+                                       th:checked="${product.status}"
                                        value="true">
                                 <span class="status-slider"></span>
                             </label>

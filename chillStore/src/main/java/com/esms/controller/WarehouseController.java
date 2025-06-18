@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class WarehouseController {
     @Autowired
     private WarehouseService warehouseService;
-    
+
     @Autowired
     private ProductService productService;
 
@@ -38,7 +38,7 @@ public class WarehouseController {
         List<WarehouseDto> transactions = warehousePage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
-        
+
         model.addAttribute("transactions", transactions);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
@@ -55,17 +55,17 @@ public class WarehouseController {
             Model model) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("transDate").descending());
         Page<Warehouse> warehousePage;
-        
+
         if (keyword != null && !keyword.trim().isEmpty()) {
             warehousePage = warehouseService.searchWarehouseByProductName(keyword, pageable);
         } else {
             warehousePage = warehouseService.getAllWarehouseTransactions(pageable);
         }
-        
+
         List<WarehouseDto> transactions = warehousePage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
-                
+
         model.addAttribute("transactions", transactions);
         model.addAttribute("keyword", keyword);
         model.addAttribute("currentPage", page);
@@ -126,22 +126,22 @@ public class WarehouseController {
     private WarehouseDto convertToDTO(Warehouse warehouse) {
         WarehouseDto dto = new WarehouseDto();
         dto.setTransId(warehouse.getTransId());
-        
+
         if (warehouse.getProduct() != null) {
             dto.setProductId(warehouse.getProduct().getProductId());
             dto.setProductName(warehouse.getProduct().getName());
         }
-        
+
         dto.setQuantityChange(warehouse.getQuantityChange());
         dto.setStockAfter(warehouse.getStockAfter());
         dto.setType(warehouse.getType());
         dto.setTransDate(warehouse.getTransDate());
-        
+
         if (warehouse.getAdmin() != null) {
             dto.setAdminId(warehouse.getAdmin().getAdminId());
             dto.setAdminName(warehouse.getAdmin().getName());
         }
-        
+
         dto.setNotes(warehouse.getNotes());
         return dto;
     }
@@ -157,7 +157,7 @@ public class WarehouseController {
         List<WarehouseDto> transactions = warehousePage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
-        
+
         model.addAttribute("transactions", transactions);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());

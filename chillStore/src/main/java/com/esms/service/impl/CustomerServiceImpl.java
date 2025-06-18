@@ -15,14 +15,17 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -182,6 +185,16 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search, pageable);
     }
 
+    @Override
+    public Page<Customer> searchCustomersWithFilters(String keyword, String gender, Boolean locked, Pageable pageable) {
+        return customerRepository.searchCustomersWithFilters(
+            (keyword == null || keyword.isBlank()) ? null : keyword.trim(),
+            (gender == null || gender.isBlank()) ? null : gender,
+            locked,
+            pageable
+        );
+    }
+
     @Transactional
     @Override
     public void createCustomer(Customer customer) {
@@ -239,5 +252,37 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = getCustomerById(id);
         customer.setLocked(true);
         customerRepository.save(customer);
+    }
+
+    @Override
+    public List<String> suggestCustomer(String keyword, int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        Page<Customer> page = customerRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
+        return page.getContent().stream()
+            .map(c -> c.getDisplay_name() + " (" + c.getEmail() + ")")
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> suggestCustomerByType(String keyword, String type, int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        Page<Customer> page;
+        if ("email".equalsIgnoreCase(type)) {
+            page = customerRepository.findByEmailContainingIgnoreCase(keyword, pageable);
+            return page.getContent().stream().map(Customer::getEmail).collect(Collectors.toList());
+        } else {
+            page = customerRepository.findByNameContainingIgnoreCase(keyword, pageable);
+            return page.getContent().stream().map(Customer::getDisplay_name).collect(Collectors.toList());
+        }
+    }
+
+    @Override
+    public Page<Customer> searchCustomersByName(String name, Pageable pageable) {
+        return customerRepository.searchByDisplayName(name, pageable);
+    }
+
+    @Override
+    public Page<Customer> searchCustomersByEmail(String email, Pageable pageable) {
+        return customerRepository.findByEmailContainingIgnoreCase(email, pageable);
     }
 }

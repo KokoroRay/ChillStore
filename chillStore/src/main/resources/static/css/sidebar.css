@@ -27,6 +27,9 @@
 
 /* Khoảng trống bên phải để không đè content */
 .content {
+    width: 80%;
+    max-width: 1000px;
+    margin: 40px auto;
     margin-left: 220px;
     padding: 20px;
     flex: 1;

@@ -9,7 +9,7 @@
 </head>
 <body>
 <div th:insert="~{fragments/header :: headerContent}"></div>
-
+<div class="content body ">
 <h2>Update Staff</h2>
 
 <form method="post" th:action="@{/manageStaff/updateStaff}" th:object="${staff}">
@@ -45,6 +45,6 @@
   <a th:href="@{/manageStaff/listStaff}" class="btn-back">← Back to List</a>
 
 </form>
-
+</div>
 </body>
 </html>

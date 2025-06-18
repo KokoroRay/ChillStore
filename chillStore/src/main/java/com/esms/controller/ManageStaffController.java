@@ -84,5 +84,6 @@ public class ManageStaffController {
         model.addAttribute("gender", gender);
         return "admin/manageStaff/manageStaff";
         }
+
     }
 

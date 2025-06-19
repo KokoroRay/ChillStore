@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Staff</title>
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/addStaff.css">
+</head>
+<body>
+<div th:insert="~{fragments/header :: headerContent}"></div>
+
+<h2 style="padding-top: 100px;">Add New Staff</h2>
+<form method="post" th:action="@{/manageStaff/addStaff}" th:object="${staff}">
+  <label>Name: </label>
+  <input type="text" th:field="*{name}" required pattern="^[A-Za-z\s]+$" title="Name must not contain numbers or special characters."><br>
+  <label>Email: </label>
+  <input type="email" th:field="*{email}" required><br>
+  <label>Password: </label>
+  <input type="text" th:field="*{password}" required><br>
+  <label>Phone: </label>
+  <input type="text" th:field="*{phone}" required pattern="^[0-9]{10}$" title="Phone number must be exactly 10 digits."><br><br>
+  <label>Address: </label>
+  <input type="text" th:field="*{address}" required><br>
+  <label>National Id: </label>
+  <input type="text" th:field="*{national_id}" required pattern="^[0-9]{12}$" title="National ID must be exactly 12 digits."><br>
+  <lable>Gender: </lable>
+  <select th:field="*{gender}" required>
+    <option th:value="FEMALE">Female</option>
+    <option th:value="MALE">Male</option>
+    <option th:value="OTHER">Other</option>
+  </select><br>
+  <div class="form-buttons">
+
+  <button type="submit">Save</button>
+  <a href="/manageStaff/listStaff" class="btn btn-secondary ms-2 btn-back">Back</a>
+  </div>
+</form>
+</body>
+</html>

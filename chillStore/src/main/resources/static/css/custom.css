@@ -1,16 +1,3 @@
-.sidebar {
-    background-color: #f8f9fa;
-    border-right: 1px solid #dee2e6;
-}
-
-.sidebar .nav-link {
-    transition: all 0.2s;
-}
-
-.sidebar .nav-link.active {
-    background-color: #e9ecef;
-    font-weight: 500;
-}
 
 .list-group-item {
     transition: background-color 0.2s;
@@ -28,21 +15,7 @@
     min-width: 80px;
 }
 
-/* Sidebar */
-.sidebar {
-    width: 200px;
-    background-color: #d4f1f9;
-    position: fixed;
-    height: 100%;
-}
-.sidebar .nav-link {
-    color: #000;
-    padding: 10px;
-}
-.sidebar .active > .nav-link {
-    background-color: #b3e0f2;
-    font-weight: bold;
-}
+
 
 /* Main content bù sidebar */
 .main-content, .flex-grow-1 {

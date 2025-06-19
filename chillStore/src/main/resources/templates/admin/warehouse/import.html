@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Import Warehouse</title>
+    <link rel="stylesheet" href="/css/styleWarehouse.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+</head>
+<body>
+<div class="main-container1">
+    <div th:insert="~{fragments/header :: headerContent}"></div>
+    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+    <main class="main-content">
+        <section class="warehouse-section">
+            <h2>Import Warehouse</h2>
+
+            <div class="form-wrapper">
+                <form th:action="@{/admin/warehouse/import}" method="post">
+                    <div class="form-group">
+                        <label for="productId">Product:</label>
+                        <select id="productId" name="productId" required>
+                            <option value="">Select Product</option>
+                            <option th:each="product : ${products}"
+                                    th:value="${product.productId}"
+                                    th:text="${product.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" required min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Notes:</label>
+                        <textarea id="notes" name="notes" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-import">Import</button>
+                        <a th:href="@{/admin/warehouse}" class="btn btn-cancel">Cancel</a>
+                    </div>
+                </form>
+
+                <!-- ✅ Form Import File Excel -->
+                <form th:action="@{/admin/warehouse/import-excel}" method="post" enctype="multipart/form-data" style="margin-top: 30px;">
+                    <div class="form-group">
+                        <label for="file">Import via Excel file (.xlsx):</label>
+                        <input type="file" id="file" name="file" accept=".xlsx" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-import">Import Excel</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<div th:fragment="list-content">
+        <!-- Main content -->
+        <main class="ml-[220px] w-full max-w-5xl px-6 py-8">
+            <div class="flex flex-wrap items-center gap-4 mb-6 w-full">
+                <h1 class="text-3xl font-bold text-slate-800">Danh sách Người dùng</h1>
+                <a th:href="@{/admin/customer/addform}" class="bg-cyan-400 text-white px-5 py-2 rounded hover:bg-cyan-500 transition">Thêm mới</a>
+                <form th:action="@{/admin/customer}" method="get" class="flex flex-1 gap-2 min-w-[220px] relative">
+                    <select id="searchType" name="type" class="px-2 py-2 rounded border border-cyan-200">
+                        <option value="name">Tên</option>
+                        <option value="email">Email</option>
+                    </select>
+                    <input id="searchInput" type="text" name="search" th:value="${search}" placeholder="Tìm kiếm theo tên hoặc email..." class="flex-1 px-3 py-2 rounded border border-cyan-200" autocomplete="off" />
+                    <button type="submit" class="bg-slate-700 text-white px-4 py-2 rounded hover:bg-slate-900 transition">Tìm kiếm</button>
+                    <ul id="suggestionList" class="absolute left-0 top-12 w-full bg-white border border-cyan-200 rounded shadow z-20"></ul>
+                </form>
+            </div>
+            <div th:if="${success}" class="bg-green-100 text-green-800 px-4 py-2 rounded mb-2" th:text="${success}"></div>
+            <div th:if="${error}" class="bg-red-100 text-red-800 px-4 py-2 rounded mb-2" th:text="${error}"></div>
+            <div>
+                <div th:if="${#lists.isEmpty(customers)}" class="text-center text-gray-500">Không có dữ liệu người dùng</div>
+                <div th:each="customer : ${customers}" class="bg-white rounded-xl shadow p-6 mb-6 w-full">
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">ID:</span> <span th:text="${customer.customerId}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Họ tên:</span> <span th:text="${customer.display_name}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Email:</span> <span th:text="${customer.email}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Mật khẩu:</span> <span th:text="${customer.password != null ? (#strings.substring(customer.password,0,4) + '****') : '****'}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">SĐT:</span> <span th:text="${customer.phone}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Ngày tạo:</span> <span th:text="${#temporals.format(customer.created_at, 'dd/MM/yyyy')}"></span></div>
+                  <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Ngày cập nhật:</span> <span th:text="${#temporals.format(customer.updated_at, 'dd/MM/yyyy')}"></span></div>
+                  <div class="flex gap-3 items-center"><span class="font-semibold text-cyan-700 min-w-[90px]">Trạng thái:</span>
+                    <span th:if="${customer.locked}" class="text-red-600 font-bold">Đã khóa</span>
+                    <span th:unless="${customer.locked}" class="text-green-600 font-bold">Hoạt động</span>
+                  </div>
+                  <div class="flex gap-3 mt-3">
+                    <a th:href="@{/admin/customer/edit/{id}(id=${customer.customerId})}" class="bg-cyan-400 text-white px-4 py-2 rounded hover:bg-cyan-500 transition">Sửa</a>
+                    <a th:if="${!customer.locked}" th:href="@{/admin/customer/delete/{id}(id=${customer.customerId})}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition" onclick="return confirm('Bạn có chắc muốn KHÓA tài khoản người dùng này?')">Khóa</a>
+                    <a th:if="${customer.locked}" th:href="@{/admin/customer/unlock/{id}(id=${customer.customerId})}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition" onclick="return confirm('Bạn có chắc muốn MỞ KHÓA tài khoản người dùng này?')">Mở khóa</a>
+                  </div>
+                </div>
+            </div>
+            <!-- PHÂN TRANG -->
+            <div class="flex justify-center mt-6" th:if="${totalPages > 1}">
+                <ul class="inline-flex -space-x-px">
+                    <li th:if="${currentPage > 1}">
+                        <a th:href="@{/admin/customer(page=${currentPage - 1}, search=${search}, locked=${locked})}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">«</a>
+                    </li>
+                    <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                        th:classappend="${i == currentPage} ? 'bg-cyan-400 text-white' : 'bg-white text-gray-500'">
+                        <a th:href="@{/admin/customer(page=${i}, search=${search}, locked=${locked})}"
+                           th:text="${i}"
+                           class="px-3 py-2 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700"></a>
+                    </li>
+                    <li th:if="${currentPage < totalPages}">
+                        <a th:href="@{/admin/customer(page=${currentPage + 1}, search=${search}, locked=${locked})}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">»</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- END PHÂN TRANG -->
+        </main>
+    </div>
+    <script>
+    const input = document.getElementById('searchInput');
+    const suggestionList = document.getElementById('suggestionList');
+    const searchType = document.getElementById('searchType');
+
+    input.addEventListener('input', function() {
+        const keyword = input.value.trim();
+        const type = searchType.value;
+        if (keyword.length === 0) {
+            suggestionList.innerHTML = '';
+            return;
+        }
+        fetch(`/admin/customer/suggest?keyword=${encodeURIComponent(keyword)}&type=${type}`)
+            .then(res => res.json())
+            .then(data => {
+                suggestionList.innerHTML = '';
+                data.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    li.className = 'px-3 py-2 hover:bg-cyan-100 cursor-pointer';
+                    li.onclick = () => {
+                        input.value = item;
+                        suggestionList.innerHTML = '';
+                    };
+                    suggestionList.appendChild(li);
+                });
+            });
+    });
+    // Ẩn suggestion khi click ra ngoài
+    input.addEventListener('blur', function() {
+        setTimeout(() => suggestionList.innerHTML = '', 200);
+    });
+    </script>
+</div>

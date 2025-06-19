@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Manage Voucher</title></head>
+<head><meta charset="UTF-8"/>
+    <title>Manage Voucher</title>
+
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+</head>
 <body>
+
+<div th:insert="~{fragments/header :: headerContent}"></div>
+
+<div class="container mt-4 main-container">
 <div th:replace="fragments/layout :: layout(
         'Manage Voucher',
         'vouchers',

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Người dùng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+
+</head>
+<body class="bg-sky-100 min-h-screen">
+<div th:insert="~{fragments/header :: headerContent}"></div>
+
+        <div class="container mt-4 main-container flex">
+            <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+        <!-- Main content -->
+        <main class="col-md-12 px-md-4 py-4">
+            <div th:replace="~{admin/customer/list-content :: list-content}"></div>
+        </main>
+    </div>
+
+
+<!-- Scripts -->
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

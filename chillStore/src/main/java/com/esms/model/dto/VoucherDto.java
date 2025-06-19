@@ -1,11 +1,10 @@
 package com.esms.model.dto;
 
-import com.esms.model.entity.Admin;
 import jakarta.validation.constraints.*;
 
-import java.io.DataInput;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class VoucherDto {
 
@@ -37,6 +36,9 @@ public class VoucherDto {
     private LocalDate end_date;
 
     private boolean active;
+
+    private List<Integer> categoryIds;
+    private List<Integer> brandIds;
 
     public Integer getVoucher_id() {
         return voucher_id;
@@ -116,5 +118,21 @@ public class VoucherDto {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public List<Integer> getCategoryIds() {
+        return categoryIds;
+    }
+
+    public void setCategoryIds(List<Integer> categoryIds) {
+        this.categoryIds = categoryIds;
+    }
+
+    public List<Integer> getBrandIds() {
+        return brandIds;
+    }
+
+    public void setBrandIds(List<Integer> brandIds) {
+        this.brandIds = brandIds;
     }
 }

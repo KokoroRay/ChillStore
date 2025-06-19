@@ -61,11 +61,18 @@ public class ManageStaffController {
                                 @RequestParam(value = "size", defaultValue = "10") int size,
                                 Model model) {
         Pageable pageable = PageRequest.of(page, size);
+        Page<Staff> staffPage = null;
 
-        Page<Staff> staffPage;
-
-        if ((keyword != null && !keyword.isBlank()) || (gender != null && !gender.isBlank())) {
-            staffPage = iStaffService.searchStaff(keyword, gender, pageable);
+        Staff.Gender genderEnum = null;
+        if (gender != null && !gender.isBlank()) {
+            try {
+                genderEnum = Staff.Gender.valueOf(gender.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                genderEnum = null; // hoặc log lỗi nếu cần
+            }
+        }
+        if ((keyword != null && !keyword.isBlank()) || genderEnum != null) {
+            staffPage = iStaffService.searchStaff(keyword, genderEnum, pageable);
         } else {
             staffPage = iStaffService.getAllStaff(pageable);
         }
@@ -77,5 +84,6 @@ public class ManageStaffController {
         model.addAttribute("gender", gender);
         return "admin/manageStaff/manageStaff";
         }
+
     }
 

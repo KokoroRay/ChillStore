@@ -5,26 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Product Log</title>
     <link rel="stylesheet" href="/css/styleWarehouse.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
 </head>
 <body>
-<div class="container">
-    <aside class="sidebar">
-        <div class="logo">
-            <h1>ESMS</h1>
-            <p>ELECTRONICS STORE</p>
-        </div>
-        <nav class="nav-links">
-            <a href="#" class="nav-link">Manage Category</a>
-            <a href="#" class="nav-link">Manage User</a>
-            <a href="#" class="nav-link">Manage Staff</a>
-            <a href="#" class="nav-link">Manage Voucher</a>
-            <a href="#" class="nav-link">Manage Revenue</a>
-            <a href="#" class="nav-link active">Manage Warehouse</a>
-            <a href="#" class="nav-link">Manage Product</a>
-            <a href="#" class="nav-link">Manage Promotion</a>
-        </nav>
-    </aside>
-
+<div class="main-container1">
+    <div th:insert="~{fragments/header :: headerContent}"></div>
+    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
     <main class="main-content">
         <section class="warehouse-section">
             <h2>Product Log</h2>
@@ -35,10 +22,10 @@
 
             <!-- Action buttons -->
             <div class="action-buttons">
-                <a th:href="@{/warehouse}" class="btn btn-back">Back to Warehouse</a>
+                <a th:href="@{/admin/warehouse}" class="btn btn-back">Back to Warehouse</a>
 
                 <!-- ✅ Nút xuất file Excel -->
-                <form th:action="@{/warehouse/log/export-excel}" method="get" style="display: inline;">
+                <form th:action="@{/admin/warehouse/log/export-excel}" method="get" style="display: inline;">
                     <button type="submit" class="btn btn-export">Export Excel</button>
                 </form>
             </div>
@@ -76,12 +63,12 @@
             <!-- Pagination -->
             <div class="pagination" th:if="${totalPages > 1}">
                 <a th:if="${currentPage > 0}"
-                   th:href="@{/warehouse/log(page=${currentPage - 1}, size=10)}"
+                   th:href="@{/admin/warehouse/log(page=${currentPage - 1}, size=10)}"
                    class="btn btn-page">&laquo; Previous</a>
 
                 <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
                     <a th:if="${i != currentPage}"
-                       th:href="@{/warehouse/log(page=${i}, size=10)}"
+                       th:href="@{/admin/warehouse/log(page=${i}, size=10)}"
                        class="btn btn-page"
                        th:text="${i + 1}"></a>
                     <span th:if="${i == currentPage}"
@@ -90,7 +77,7 @@
                 </span>
 
                 <a th:if="${currentPage < totalPages - 1}"
-                   th:href="@{/warehouse/log(page=${currentPage + 1}, size=10)}"
+                   th:href="@{/admin/warehouse/log(page=${currentPage + 1}, size=10)}"
                    class="btn btn-page">Next &raquo;</a>
             </div>
         </section>

@@ -5,25 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Export Warehouse</title>
     <link rel="stylesheet" href="/css/styleWarehouse.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
 </head>
 <body>
-<div class="container">
-    <aside class="sidebar">
-        <div class="logo">
-            <h1>ESMS</h1>
-            <p>ELECTRONICS STORE</p>
-        </div>
-        <nav class="nav-links">
-            <a href="#" class="nav-link">Manage Category</a>
-            <a href="#" class="nav-link">Manage User</a>
-            <a href="#" class="nav-link">Manage Staff</a>
-            <a href="#" class="nav-link">Manage Voucher</a>
-            <a href="#" class="nav-link">Manage Revenue</a>
-            <a href="#" class="nav-link active">Manage Warehouse</a>
-            <a href="#" class="nav-link">Manage Product</a>
-            <a href="#" class="nav-link">Manage Promotion</a>
-        </nav>
-    </aside>
+<div class="main-container1">
+    <div th:insert="~{fragments/header :: headerContent}"></div>
+    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
 
     <main class="main-content">
         <section class="warehouse-section">
@@ -31,7 +19,7 @@
 
             <!-- Bảng trắng -->
             <div class="form-wrapper white-form">
-                <form th:action="@{/warehouse/export}" method="post">
+                <form th:action="@{/admin/warehouse/export}" method="post">
                     <div class="form-group">
                         <label for="productId">Product:</label>
                         <select id="productId" name="productId" required>
@@ -55,7 +43,7 @@
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-export">Export</button>
-                        <a th:href="@{/warehouse}" class="btn btn-cancel text-center">Cancel</a>
+                        <a th:href="@{/admin/warehouse}" class="btn btn-cancel text-center">Cancel</a>
                     </div>
                 </form>
             </div>

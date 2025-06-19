@@ -9,7 +9,7 @@
 </head>
 <body>
 <div th:insert="~{fragments/header :: headerContent}"></div>
-
+<div class="content body ">
 <h2>Update Staff</h2>
 
 <form method="post" th:action="@{/manageStaff/updateStaff}" th:object="${staff}">
@@ -17,16 +17,16 @@
   <input type="hidden" th:field="*{id}" />
 
   <label>Name:</label>
-  <input type="text" th:field="*{name}" required><br><br>
+  <input type="text" th:field="*{name}" required pattern="^[A-Za-z\s]+$" title="Name must not contain numbers or special characters."><br><br>
 
   <label>Email:</label>
   <input type="email" th:field="*{email}" required><br><br>
 
   <label>Password:</label>
-  <input type="password" th:field="*{password}" required><br><br>
+  <input type="password" th:field="*{password}"><br><br>
 
   <label>Phone:</label>
-  <input type="text" th:field="*{phone}" required><br><br>
+  <input type="text" th:field="*{phone}" required pattern="^[0-9]{10}$" title="Phone number must be exactly 10 digits."><br><br>
 
   <label>Address:</label>
   <input type="text" th:field="*{address}" required><br><br>
@@ -39,12 +39,12 @@
   </select><br><br>
 
   <label>National ID:</label>
-  <input type="text" th:field="*{national_id}" required><br><br>
+  <input type="text" th:field="*{national_id}" required pattern="^[0-9]{12}$" title="National ID must be exactly 12 digits."><br><br>
 
   <button type="submit">Save</button>
   <a th:href="@{/manageStaff/listStaff}" class="btn-back">← Back to List</a>
 
 </form>
-
+</div>
 </body>
 </html>

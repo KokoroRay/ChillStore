@@ -55,11 +55,11 @@ public class ProductController {
         List<Integer> availablePageSizes = List.of(5, 9, 15, 30);
         // Define sort options for the dropdown
         List<Map<String, String>> sortOptions = List.of(
-            Map.of("value", "default", "label", "Mặc định"),
-            Map.of("value", "name_asc", "label", "Tên (A-Z)"),
-            Map.of("value", "name_desc", "label", "Tên (Z-A)"),
-            Map.of("value", "price_asc", "label", "Giá tăng dần"),
-            Map.of("value", "price_desc", "label", "Giá giảm dần")
+                Map.of("value", "default", "label", "Mặc định"),
+                Map.of("value", "name_asc", "label", "Tên (A-Z)"),
+                Map.of("value", "name_desc", "label", "Tên (Z-A)"),
+                Map.of("value", "price_asc", "label", "Giá tăng dần"),
+                Map.of("value", "price_desc", "label", "Giá giảm dần")
         );
         // Parse sortBy and sortDir from sortOption
         String sortBy = null;

@@ -5,28 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manage Warehouse</title>
   <link rel="stylesheet" href="/css/styleWarehouse.css">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/sidebar.css">
 </head>
 <body>
-<div class="container">
-  <aside class="sidebar">
-    <div class="logo">
-      <h1>ESMS</h1>
-      <p>ELECTRONICS STORE</p>
-    </div>
-
-    <nav class="nav-links">
-      <a href="#" class="nav-link">Manage Category</a>
-      <a href="#" class="nav-link">Manage User</a>
-      <a href="#" class="nav-link">Manage Staff</a>
-      <a href="#" class="nav-link">Manage Voucher</a>
-      <a href="#" class="nav-link">Manage Revenue</a>
-      <a href="#" class="nav-link active">Manage Warehouse</a>
-      <a href="#" class="nav-link">Manage Product</a>
-      <a href="#" class="nav-link">Manage Promotion</a>
-    </nav>
-  </aside>
-
-  <main class="main-content">
+<div class="container mt-4 main-container">
+  <div th:insert="~{fragments/header :: headerContent}"></div>
+  <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+  <main class="content">
     <section class="warehouse-section">
       <h2>Manage Warehouse</h2>
 
@@ -36,14 +22,14 @@
 
       <!-- Action buttons -->
       <div class="action-buttons">
-        <a th:href="@{/warehouse/import}" class="btn btn-import">Import</a>
-        <a th:href="@{/warehouse/export}" class="btn btn-export">Export</a>
-        <a th:href="@{/warehouse/log}" class="btn btn-log">Log</a>
+        <a th:href="@{/admin/warehouse/import}" class="btn btn-import">Import</a>
+        <a th:href="@{/admin/warehouse/export}" class="btn btn-export">Export</a>
+        <a th:href="@{/admin/warehouse/log}" class="btn btn-log">Log</a>
       </div>
 
       <!-- Search -->
       <div class="search-bar">
-        <form th:action="@{/warehouse/search}" method="get" class="search-form">
+        <form th:action="@{/admin/warehouse/search}" method="get" class="search-form">
           <label for="search">Search by product name:</label>
           <input type="text" id="search" name="keyword" th:value="${keyword}" placeholder="🔍 Search product..." />
           <button type="submit" class="btn btn-search">Search</button>
@@ -82,22 +68,22 @@
 
       <!-- Pagination -->
       <div class="pagination" th:if="${totalPages > 1}">
-        <a th:if="${currentPage > 0}" 
-           th:href="@{/warehouse(page=${currentPage - 1}, size=10)}" 
+        <a th:if="${currentPage > 0}"
+           th:href="@{/admin/warehouse(page=${currentPage - 1}, size=10)}"
            class="btn btn-page">&laquo; Previous</a>
-        
+
         <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
           <a th:if="${i != currentPage}"
-             th:href="@{/warehouse(page=${i}, size=10)}"
-             class="btn btn-page" 
+             th:href="@{/admin/warehouse(page=${i}, size=10)}"
+             class="btn btn-page"
              th:text="${i + 1}"></a>
-          <span th:if="${i == currentPage}" 
-                class="btn btn-page active" 
+          <span th:if="${i == currentPage}"
+                class="btn btn-page active"
                 th:text="${i + 1}"></span>
         </span>
-        
-        <a th:if="${currentPage < totalPages - 1}" 
-           th:href="@{/warehouse(page=${currentPage + 1}, size=10)}" 
+
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/admin/warehouse(page=${currentPage + 1}, size=10)}"
            class="btn btn-page">Next &raquo;</a>
       </div>
     </section>

@@ -5,9 +5,8 @@ import com.esms.model.entity.Customer;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface CustomerService {
     void register(RegisterDto dto);
@@ -25,7 +24,12 @@ public interface CustomerService {
     @Transactional
     void createCustomer(Customer customer);
 
-    Optional<Customer> findCustomerByEmail(String email);
-    Optional<Customer> findCustomerByProviderAndProviderId(String provider, String providerId);
-    Customer processOAuth2User(String provider, OAuth2User oAuth2User);
+    Page<Customer> searchCustomersWithFilters(String keyword, String gender, Boolean locked, Pageable pageable);
+
+    List<String> suggestCustomer(String keyword, int limit);
+
+    List<String> suggestCustomerByType(String keyword, String type, int limit);
+
+    Page<Customer> searchCustomersByName(String name, Pageable pageable);
+    Page<Customer> searchCustomersByEmail(String email, Pageable pageable);
 }

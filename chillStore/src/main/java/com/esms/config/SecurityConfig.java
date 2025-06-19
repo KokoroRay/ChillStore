@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/auth/login") // Trang đăng nhập tùy chỉnh
                         .loginProcessingUrl("/auth/login") // URL mà form đăng nhập POST đến
-                        .defaultSuccessUrl("/home", true) // Khi đăng nhập thành công, chuyển hướng đến /home
+                        .defaultSuccessUrl("/admin/category", true) // Khi đăng nhập thành công, chuyển hướng đến /home
                         .failureUrl("/auth/login?error=true") // Khi đăng nhập thất bại
                         .permitAll() // Cho phép tất cả truy cập trang login
                 )

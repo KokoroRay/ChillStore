@@ -117,12 +117,8 @@ public class VoucherController {
         List<Category> selCats = voucher.getCategories() != null ? new ArrayList<>(voucher.getCategories()) : List.of();
         List<Brand> selBrands = voucher.getBrands() != null ? new ArrayList<>(voucher.getBrands()) : List.of();
 
-        if (!selCats.isEmpty()) {
-            voucherDto.setCategoryIds(selCats.stream().map(Category::getId).toList());
-        }
-        if (!selBrands.isEmpty()) {
-            voucherDto.setBrandIds(selBrands.stream().map(Brand::getId).toList());
-        }
+        voucherDto.setCategoryIds(selCats.stream().map(Category::getId).toList());
+        voucherDto.setBrandIds(selBrands.stream().map(Brand::getId).toList());
 
         model.addAttribute("voucherDto", voucherDto);
         model.addAttribute("selectedCategories", selCats);

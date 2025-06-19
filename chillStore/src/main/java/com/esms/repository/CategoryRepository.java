@@ -14,11 +14,12 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Page<Category> findByNameContainingIgnoreCase(String name, Pageable pageable);
-
-    Optional<Category> findById(Integer id);
     @Query("SELECT MAX(c.id) FROM Category c")
     Integer findMaxId();
 
     Page<Category> findAll(Pageable pageable);
 
+    List<Category> findAllByIdIn(List<Integer> ids);
+
+    Optional<Category> findById(Integer parentId);
 }

@@ -1,26 +1,431 @@
-<!-- templates/admin/vouchers/form.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <!-- Title đặt tạm, trong fragment layout sẽ hiển thị -->
-    <title>Voucher Form</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Edit Voucher' : 'Create New Voucher'">Voucher Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome nếu cần -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css"
+          rel="stylesheet" />
+
+    <!-- CSS custom -->
+    <style>
+        html, body {
+            height: 100%;
+        }
+        .d-flex-fullheight {
+            min-height: 100vh;
+        }
+        /* Nếu sidebar fixed: */
+        .sidebar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            overflow-y: auto;
+            /* background-color: #2d6a88;  Nếu bạn đã có CSS riêng cho sidebar, không cần đặt lại */
+        }
+        .main-with-sidebar {
+            margin-left: 250px; /* phù hợp với width sidebar */
+            padding: 20px;
+        }
+
+        /* Form container styling */
+        .form-container {
+            /* Bạn có thể giảm max-width hoặc để fluid tùy ý */
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .form-section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4361ee;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .form-section-title i {
+            margin-right: 10px;
+        }
+        .clear-all-btn {
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .clear-all-btn:hover {
+            color: #dc3545;
+        }
+        /* Select2 height */
+        .select2-container--bootstrap4 .select2-selection--multiple {
+            min-height: calc(2.25rem + 2px);
+            border: 1px solid #ced4da;
+            border-radius: 0.5rem;
+            background-color: #fff;
+            cursor: text;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 0.375rem 0.75rem;
+            gap: 0.2rem;
+        }
+        .select2-selection__choice {
+            background-color: #e0f7fa;
+            border: 1px solid #80deea;
+            border-radius: 0.25rem;
+            padding: 0.2rem 0.6rem;
+            color: #007bff;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        /* Nếu muốn nút Save/Cancel luôn ở cuối form, có thể sticky */
+        /* .form-actions { position: sticky; bottom: 0; background: white; padding-top: 10px; } */
+    </style>
 </head>
+
 <body>
-<!-- Kiểm tra voucherDto có null không trước khi dùng voucherDto.voucher_id -->
-<th:block th:with="isEdit=${voucherDto != null and voucherDto.voucher_id != null}">
-    <div th:replace="fragments/layout :: layout(
-        ${voucherDto != null and voucherDto.voucher_id != null} ? 'Edit Voucher' : 'Add Voucher',
-        'vouchers',
-        'voucher',
-        ${keyword},
-        ~{admin/vouchers/form-content :: content(voucherDto=${voucherDto}, errorMessage=${errorMessage})}
-    )"></div>
+<!-- Nếu sidebar là fragment riêng -->
+<div th:insert="~{fragments/sidebar :: sidebar}" class="sidebar-fixed"></div>
+<main class="main-with-sidebar">
+    <div th:fragment="content">
+        <div id="voucherForm" class="form-container">
+            <h2 class="mb-4"
+                th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Edit Voucher' : 'Create New Voucher'">
+                Voucher Form
+            </h2>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
+            <form th:action="${voucherDto != null and voucherDto.voucher_id != null}
+                                 ? @{/admin/vouchers/edit/{id}(id=${voucherDto.voucher_id})}
+                                 : @{/admin/vouchers/add}"
+                  th:object="${voucherDto}" method="post" novalidate>
+                <!-- Hidden ID nếu edit -->
+                <input type="hidden" th:field="*{voucher_id}"
+                       th:if="${voucherDto != null and voucherDto.voucher_id != null}"/>
+
+                <!-- Voucher Information -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-info-circle"></i> Voucher Information
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="code" class="form-label">Code <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{code}" class="form-control" id="code"
+                                   placeholder="Enter voucher code" required/>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('code')}"
+                                 th:errors="*{code}"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="quantity_available" class="form-label">Quantity <span class="text-danger">*</span></label>
+                            <input type="number" min="0" th:field="*{quantity_available}" class="form-control"
+                                   id="quantity_available" placeholder="e.g., 100" required/>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity_available')}"
+                                 th:errors="*{quantity_available}"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea th:field="*{description}" class="form-control" id="description" rows="2"
+                                  placeholder="Description (optional)"></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
+                             th:errors="*{description}"></div>
+                    </div>
+                </div>
+
+                <!-- Applicable Categories and Brands -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-tags"></i> Applicable Products
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Select categories and brands that this voucher will apply to.
+                            Leave both blank to apply to all products.
+                        </label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span>Categories</span>
+                                    <button type="button" id="clearCategories" class="clear-all-btn">
+                                        <i class="fas fa-times"></i> Clear All
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <select id="categoryIds" name="categoryIds" multiple="multiple"
+                                            class="form-control"
+                                            th:classappend="${#fields.hasErrors('categoryIds')}? 'is-invalid' : ''">
+                                        <option th:each="cat : ${selectedCategories}"
+                                                th:value="${cat.id}"
+                                                th:text="${cat.name}"
+                                                selected="selected">
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryIds')}"
+                                         th:errors="*{categoryIds}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span>Brands</span>
+                                    <button type="button" id="clearBrands" class="clear-all-btn">
+                                        <i class="fas fa-times"></i> Clear All
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <select id="brandIds" name="brandIds" multiple="multiple"
+                                            class="form-control"
+                                            th:classappend="${#fields.hasErrors('brandIds')}? 'is-invalid' : ''">
+                                        <option th:each="br : ${selectedBrands}"
+                                                th:value="${br.id}"
+                                                th:text="${br.name}"
+                                                selected="selected">
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('brandIds')}"
+                                         th:errors="*{brandIds}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Promotion Details -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-percentage"></i> Promotion Details
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Discount Type <span class="text-danger">*</span></label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="discountType"
+                                           id="discountPercent" value="percent"
+                                           th:checked="${voucherDto != null and voucherDto.discount_pct != null}"/>
+                                    <label class="form-check-label" for="discountPercent">Percentage</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="discountType"
+                                           id="discountAmount" value="amount"
+                                           th:checked="${voucherDto != null and voucherDto.discount_amount != null}"/>
+                                    <label class="form-check-label" for="discountAmount">Fixed Amount</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="min_order_amount" class="form-label">Min Order Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₫</span>
+                                <input type="number" step="0.01" min="0" th:field="*{min_order_amount}"
+                                       class="form-control" id="min_order_amount"
+                                       placeholder="e.g., 500000"/>
+                            </div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('min_order_amount')}"
+                                 th:errors="*{min_order_amount}"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3" id="discountPctField">
+                            <label for="discount_pct" class="form-label">Discount Percent (%)</label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" min="0" max="100" th:field="*{discount_pct}"
+                                       class="form-control" id="discount_pct" placeholder="e.g., 10"/>
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('discount_pct')}"
+                                 th:errors="*{discount_pct}"></div>
+                        </div>
+                        <div class="col-md-6 mb-3" id="discountAmountField">
+                            <label for="discount_amount" class="form-label">Discount Amount (₫)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₫</span>
+                                <input type="number" step="1000" min="0" th:field="*{discount_amount}"
+                                       class="form-control" id="discount_amount" placeholder="e.g., 100000"/>
+                            </div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('discount_amount')}"
+                                 th:errors="*{discount_amount}"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
+                            <input type="date" th:field="*{start_date}" class="form-control" id="start_date" required/>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('start_date')}"
+                                 th:errors="*{start_date}"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="end_date" class="form-label">End Date <span class="text-danger">*</span></label>
+                            <input type="date" th:field="*{end_date}" class="form-control" id="end_date" required/>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('end_date')}"
+                                 th:errors="*{end_date}"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" th:field="*{active}" id="active"
+                                   role="switch"/>
+                            <label class="form-check-label" for="active">Activate this voucher immediately</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="form-actions mt-4 d-flex justify-content-end gap-2">
+                    <a th:href="@{/admin/vouchers}" class="btn btn-secondary">
+                        <i class="fas fa-times me-2"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>
+                        <span th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Update Voucher' : 'Create Voucher'">Save</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<!-- Scripts cuối body -->
+<th:block th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var contextPath = /*[[${#httpServletRequest.contextPath}]]*/ '';
+        /*]]>*/
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle discount type ban đầu
+            const initialType = document.querySelector('input[name="discountType"]:checked')?.value || 'percent';
+            toggleDiscountType(initialType);
+            // Lắng nghe change radio discountType
+            document.querySelectorAll('input[name="discountType"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    toggleDiscountType(this.value);
+                });
+            });
+
+            // Initialize Select2 cho categories
+            $('#categoryIds').select2({
+                theme: 'bootstrap4',
+                placeholder: "Search and select categories...",
+                closeOnSelect: false,
+                width: '100%',
+                ajax: {
+                    url: contextPath + '/admin/vouchers/categories/search',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return { q: params.term, page: params.page || 1 };
+                    },
+                    processResults: function(data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.results,
+                            pagination: { more: data.pagination.more }
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Initialize Select2 cho brands
+            $('#brandIds').select2({
+                theme: 'bootstrap4',
+                placeholder: "Search and select brands...",
+                closeOnSelect: false,
+                width: '100%',
+                ajax: {
+                    url: contextPath + '/admin/vouchers/brands/search',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return { q: params.term, page: params.page || 1 };
+                    },
+                    processResults: function(data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.results,
+                            pagination: { more: data.pagination.more }
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Clear all categories
+            $('#clearCategories').on('click', function() {
+                $('#categoryIds').val(null).trigger('change');
+            });
+            // Clear all brands
+            $('#clearBrands').on('click', function() {
+                $('#brandIds').val(null).trigger('change');
+            });
+
+            // Date logic: Set min end date dựa trên start date
+            $('#start_date').on('change', function() {
+                const startDate = new Date(this.value);
+                // end date phải > start date
+                if (!isNaN(startDate)) {
+                    startDate.setDate(startDate.getDate() + 1);
+                    const minEndDate = startDate.toISOString().split('T')[0];
+                    $('#end_date').attr('min', minEndDate);
+                }
+            });
+            // Set max start date dựa trên end date
+            $('#end_date').on('change', function() {
+                const endDate = new Date(this.value);
+                if (!isNaN(endDate)) {
+                    endDate.setDate(endDate.getDate() - 1);
+                    const maxStartDate = endDate.toISOString().split('T')[0];
+                    $('#start_date').attr('max', maxStartDate);
+                }
+            });
+        });
+
+        function toggleDiscountType(type) {
+            const pctField = document.getElementById('discountPctField');
+            const amtField = document.getElementById('discountAmountField');
+            const inputPct = document.getElementById('discount_pct');
+            const inputAmt = document.getElementById('discount_amount');
+
+            if (type === 'percent') {
+                if (pctField) pctField.style.display = 'block';
+                if (amtField) amtField.style.display = 'none';
+                if (inputPct) inputPct.required = true;
+                if (inputAmt) inputAmt.required = false;
+            } else {
+                if (amtField) amtField.style.display = 'block';
+                if (pctField) pctField.style.display = 'none';
+                if (inputAmt) inputAmt.required = true;
+                if (inputPct) inputPct.required = false;
+            }
+        }
+    </script>
 </th:block>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

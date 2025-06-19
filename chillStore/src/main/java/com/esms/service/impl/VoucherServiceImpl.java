@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Transient;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,11 +72,12 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setActive(voucherDto.isActive());
 
         if (voucherDto.getCategoryIds() != null && !voucherDto.getCategoryIds().isEmpty()) {
-            List<Category> categories  = categoryRepository.findAllById(voucherDto.getCategoryIds());
+            List<Category> categories = categoryRepository.findAllByIdIn(voucherDto.getCategoryIds());
             voucher.setCategories(new HashSet<>(categories));
         }
 
         if (voucherDto.getBrandIds() != null && !voucherDto.getBrandIds().isEmpty()) {
+
             List<Brand> brands = brandRepository.findAllById(voucherDto.getBrandIds());
             voucher.setBrands(new HashSet<>(brands));
         }
@@ -112,12 +110,12 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setActive(voucherDto.isActive());
         voucher.getCategories().clear();
         if (voucherDto.getCategoryIds() != null && !voucherDto.getCategoryIds().isEmpty()) {
-            List<Category> categories  = categoryRepository.findAllById(voucherDto.getCategoryIds());
+            List<Category> categories  = categoryRepository.findAllByIdIn(voucherDto.getCategoryIds());
             voucher.setCategories(new HashSet<>(categories));
         }
         voucher.getBrands().clear();
         if (voucherDto.getBrandIds() != null && !voucherDto.getBrandIds().isEmpty()) {
-            List<Brand> brands = brandRepository.findAllById(voucherDto.getBrandIds());
+            List<Brand> brands = brandRepository.findAllByIdIn(voucherDto.getBrandIds());
             voucher.setBrands(new HashSet<>(brands));
         }
         return voucherRepository.save(voucher);

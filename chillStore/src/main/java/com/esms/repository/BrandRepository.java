@@ -23,5 +23,4 @@ public interface BrandRepository extends JpaRepository<Brand, Integer> {
 
     boolean existsByName(String name);
 
-    List<Brand> findAllById(List<Long> brandIds);
-} 
+}

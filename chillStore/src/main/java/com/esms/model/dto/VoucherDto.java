@@ -37,8 +37,8 @@ public class VoucherDto {
 
     private boolean active;
 
-    private List<Long> categoryIds;
-    private List<Long> brandIds;
+    private List<Integer> categoryIds;
+    private List<Integer> brandIds;
 
     public Integer getVoucher_id() {
         return voucher_id;
@@ -120,7 +120,7 @@ public class VoucherDto {
         this.active = active;
     }
 
-    public List<Long> getCategoryIds() {
+    public List<Integer> getCategoryIds() {
         return categoryIds;
     }
 
@@ -128,7 +128,7 @@ public class VoucherDto {
         this.categoryIds = categoryIds;
     }
 
-    public List<Long> getBrandIds() {
+    public List<Integer> getBrandIds() {
         return brandIds;
     }
 

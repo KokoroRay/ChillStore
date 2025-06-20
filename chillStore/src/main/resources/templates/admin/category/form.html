@@ -1,10 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/></head>
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${categoryDto.id} != null ? 'Edit Category' : 'Add Category'">Category Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
 <body>
-<div th:replace="~{layout :: layout(~{admin/category/form-content :: content})}"
-     th:with="pageTitle=${categoryDto.id} != null ? 'Edit Category' : 'Add Category'">
+<div th:replace="~{fragments/layout :: layout(
+            ${categoryDto.id} != null ? 'Edit Category' : 'Add Category',
+            'category',
+            'category',
+            ${keyword},
+            ~{admin/category/form-content :: content(
+                categoryDto=${categoryDto},
+                errorMessage=${errorMessage}
+            )}
+         )}">
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

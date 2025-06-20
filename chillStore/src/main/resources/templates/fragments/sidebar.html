@@ -1,24 +1,59 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-<div th:fragment="sidebar(activeMenu)">
-  <div class="sidebar bg-light">
-    <div class="sidebar-header p-3">
-      <h3>FSMS Electronics</h3>
+
+<div th:fragment="sidebar">
+  <div class="sidebar">
+    <div class="p-3 border-bottom">
+      <img th:src="@{/images/logo.png}" alt="FsMs Logo" class="logo-sidebar">
     </div>
-    <ul class="list-unstyled">
-      <li th:classappend="${activeMenu=='dashboard'}? 'active'">
-        <a th:href="@{/admin/dashboard}">Dashboard</a>
+
+    <ul class="nav flex-column p-2">
+      <li class="nav-item mb-2">
+        <a th:href="@{/admin/category}"
+           th:classappend="${activeMenu=='category'} ? 'nav-link active' : 'nav-link'">
+          Manage Category
+        </a>
       </li>
-      <li th:classappend="${activeMenu=='categories'}? 'active'">
-        <a th:href="@{/templates/admin/category}">Manage Category</a>
+      <li class="nav-item mb-2">
+        <a th:href="@{/admin/customer}"
+           th:classappend="${activeMenu=='user'} ? 'nav-link active' : 'nav-link'">
+          Manage User
+        </a>
       </li>
-      <li th:classappend="${activeMenu=='users'}? 'active'">
-        <a th:href="@{/admin/users}">Manage User</a>
+      <li class="nav-item mb-2">
+        <a th:href="@{/manageStaff/listStaff}"
+           th:classappend="${activeMenu=='staff'} ? 'nav-link active' : 'nav-link'">
+          Manage Staff
+        </a>
       </li>
-      <!-- Các mục khác tương tự: Manage Staff, Voucher, Revenue, Warehouse, Product, Promotion,... -->
+      <li class="nav-item mb-2">
+        <a th:href="@{/admin/vouchers}"
+           th:classappend="${activeMenu=='voucher'} ? 'nav-link active' : 'nav-link'">
+          Manage Voucher
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a th:href="@{/admin/revenue}"
+           th:classappend="${activeMenu=='revenue'} ? 'nav-link active' : 'nav-link'">
+          Manage revenue
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a th:href="@{/admin/warehouse}"
+           th:classappend="${activeMenu=='warehouse'} ? 'nav-link active' : 'nav-link'">
+          Manage warehouse
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a th:href="@{/admin/products}"
+           th:classappend="${activeMenu=='products'} ? 'nav-link active' : 'nav-link'">
+          Manage product
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a th:href="@{/admin/promotion}"
+           th:classappend="${activeMenu=='promotion'} ? 'nav-link active' : 'nav-link'">
+          Manage promotion
+        </a>
+      </li>
     </ul>
   </div>
 </div>
-</body>
-</html>

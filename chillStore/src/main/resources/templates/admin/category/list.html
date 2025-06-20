@@ -1,12 +1,25 @@
-<!-- file: templates/admin/category/list.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <title>Manage Category</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+
 </head>
 <body>
-<div th:replace="layout :: layout(~{admin/category/list-content :: content})"
-     th:with="pageTitle='Manage Category', keyword=${keyword}">
-</div>
+    <!--content-->
+<div class="content flex-grow-1 mt-4" th:replace="~{fragments/layout :: layout(
+            'Manage Category',
+            'category',
+            'category',
+            ${keyword},
+            ~{admin/category/list-content :: content(categories=${categories}, keyword=${keyword}, error=${error})}
+         )}">
+</div><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

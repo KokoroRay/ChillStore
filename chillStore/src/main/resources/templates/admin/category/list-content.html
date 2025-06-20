@@ -1,78 +1,65 @@
-<!-- file: templates/admin/category/list-content.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="content">
-  <!-- Tiêu đề trang -->
+<div th:fragment="content(categories, keyword, error)">
+
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="m-0">Manage Category</h2>
-    <!-- Nút Add mới ở phía trên phải -->
-    <a th:href="@{/admin/category/add}" class="btn btn-success rounded-pill px-4">
-      Add
+    <form th:action="@{/admin/category}" method="get" class="d-flex w-75">
+      <input type="text"
+             name="keyword"
+             class="form-control"
+             placeholder="Search Category"
+             th:value="${keyword}">
+      <button type="submit" class="btn btn-outline-primary ms-2">
+        <i class="fas fa-search"></i> Search
+      </button>
+    </form>
+    <a th:href="@{/admin/category/add}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Add Category
     </a>
   </div>
 
-  <!-- Thông báo lỗi chung nếu có -->
   <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-  <!-- Thanh tìm kiếm -->
-  <form method="get" class="mb-4">
-    <div class="input-group">
-      <input type="text"
-             name="keyword"
-             th:value="${keyword}"
-             class="form-control"
-             placeholder="Search by">
-      <button type="submit" class="btn btn-primary">
-        <i class="bi bi-search"></i> <!-- nếu có icon bootstrap icons -->
-        Search
-      </button>
-    </div>
-  </form>
+  <div th:if="${#lists.isEmpty(categories)}" class="text-center text-muted py-5">
+    <h4><i class="fas fa-inbox"></i> No categories found</h4>
+    <p>Try changing your search or add a new category</p>
+  </div>
 
-  <!-- Danh sách category dưới dạng cards -->
-  <div class="row">
-    <!-- Ở đây mỗi thẻ card chiếm toàn chiều ngang; nếu muốn 2 cột trên desktop có thể dùng col-md-6 -->
-    <div class="col-12 mb-3" th:each="category : ${categories}">
+  <div th:if="${!#lists.isEmpty(categories)}" class="row">
+    <div class="col-12">
       <div class="card shadow-sm">
-        <div class="row g-0 align-items-center">
-          <!-- Phần hình ảnh placeholder -->
-          <div class="col-auto">
-            <div class="d-flex justify-content-center align-items-center"
-                 style="width: 100px; height: 80px; background-color: #f0f0f0;">
-              <!-- Nếu category có ảnh, bạn có thể dùng th:src; ở đây để placeholder -->
-              <i class="bi bi-image" style="font-size: 2rem; color: #ccc;"></i>
-            </div>
-          </div>
-          <!-- Phần content (tên) và nút -->
-          <div class="col">
-            <div class="card-body d-flex justify-content-between align-items-center py-3">
-              <!-- Tên category -->
-              <h5 class="card-title mb-0" th:text="${category.name}">Category Name</h5>
-              <!-- Nút Update và Delete -->
-              <div>
-                <a th:href="@{/admin/category/edit/{id}(id=${category.id})}"
-                   class="btn btn-sm btn-info me-2"
-                   style="background-color: #ace7ef; border-color: #ace7ef; color: #000;">
-                  Update
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Category List</h5>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th class="text-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cat : ${categories}">
+              <td th:text="${cat.name}">Category Name</td>
+              <td class="text-end">
+                <a th:href="@{/admin/category/edit/{id}(id=${cat.id})}"
+                   class="btn btn-sm btn-outline-secondary me-2">
+                  <i class="fas fa-edit"></i> Update
                 </a>
-                <a th:href="@{/admin/category/delete/{id}(id=${category.id})}"
-                   class="btn btn-sm btn-danger"
-                   style="background-color: #f28b82; border-color: #f28b82; color: #000;"
-                   onclick="return confirm('Are you sure you want to delete this category?')">
-                  Delete
+                <a th:href="@{/admin/category/delete/{id}(id=${cat.id})}"
+                   onclick="return confirm('Are you sure you want to delete this category?');"
+                   class="btn btn-sm btn-outline-danger">
+                  <i class="fas fa-trash"></i> Delete
                 </a>
-              </div>
-            </div>
-          </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-    </div> <!-- end each -->
-  </div> <!-- end row -->
-
-  <!-- Nếu danh sách trống, có thể hiển thị thông báo -->
-  <div th:if="${#lists.isEmpty(categories)}" class="text-center text-muted mt-4">
-    No categories found.
+    </div>
   </div>
 </div>
 </body>

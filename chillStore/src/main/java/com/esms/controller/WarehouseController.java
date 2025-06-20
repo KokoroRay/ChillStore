@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/warehouse")
+@RequestMapping("/admin/warehouse")
 public class WarehouseController {
     @Autowired
     private WarehouseService warehouseService;
-    
+
     @Autowired
     private ProductService productService;
 
@@ -38,12 +38,12 @@ public class WarehouseController {
         List<WarehouseDto> transactions = warehousePage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
-        
+
         model.addAttribute("transactions", transactions);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "warehouse/view";
+        return "admin/warehouse/view";
     }
 
     // Tìm kiếm theo tên sản phẩm với phân trang
@@ -55,23 +55,23 @@ public class WarehouseController {
             Model model) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("transDate").descending());
         Page<Warehouse> warehousePage;
-        
+
         if (keyword != null && !keyword.trim().isEmpty()) {
             warehousePage = warehouseService.searchWarehouseByProductName(keyword, pageable);
         } else {
             warehousePage = warehouseService.getAllWarehouseTransactions(pageable);
         }
-        
+
         List<WarehouseDto> transactions = warehousePage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
-                
+
         model.addAttribute("transactions", transactions);
         model.addAttribute("keyword", keyword);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "warehouse/view";
+        return "admin/warehouse/view";
     }
 
     // Hiển thị form nhập kho
@@ -79,7 +79,7 @@ public class WarehouseController {
     public String showImportForm(Model model) {
         List<Product> products = productService.findAll();
         model.addAttribute("products", products);
-        return "warehouse/import";
+        return "admin/warehouse/import";
     }
 
     // Xử lý nhập kho
@@ -95,7 +95,7 @@ public class WarehouseController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Import failed: " + e.getMessage());
         }
-        return "redirect:/warehouse";
+        return "redirect:/admin/warehouse";
     }
 
     // Hiển thị form xuất kho
@@ -103,7 +103,7 @@ public class WarehouseController {
     public String showExportForm(Model model) {
         List<Product> products = productService.findAll();
         model.addAttribute("products", products);
-        return "warehouse/export";
+        return "admin/warehouse/export";
     }
 
     // Xử lý xuất kho
@@ -119,29 +119,29 @@ public class WarehouseController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Export failed: " + e.getMessage());
         }
-        return "redirect:/warehouse";
+        return "redirect:/admin/warehouse";
     }
 
     // Chuyển đổi từ Entity sang DTO
     private WarehouseDto convertToDTO(Warehouse warehouse) {
         WarehouseDto dto = new WarehouseDto();
         dto.setTransId(warehouse.getTransId());
-        
+
         if (warehouse.getProduct() != null) {
             dto.setProductId(warehouse.getProduct().getProductId());
             dto.setProductName(warehouse.getProduct().getName());
         }
-        
+
         dto.setQuantityChange(warehouse.getQuantityChange());
         dto.setStockAfter(warehouse.getStockAfter());
         dto.setType(warehouse.getType());
         dto.setTransDate(warehouse.getTransDate());
-        
+
         if (warehouse.getAdmin() != null) {
             dto.setAdminId(warehouse.getAdmin().getAdminId());
             dto.setAdminName(warehouse.getAdmin().getName());
         }
-        
+
         dto.setNotes(warehouse.getNotes());
         return dto;
     }
@@ -157,11 +157,11 @@ public class WarehouseController {
         List<WarehouseDto> transactions = warehousePage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
-        
+
         model.addAttribute("transactions", transactions);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "warehouse/log";
+        return "admin/warehouse/log";
     }
 }

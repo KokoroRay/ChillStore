@@ -1,0 +1,118 @@
+.main-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #00688B;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
+    z-index: 1000;
+}
+.sidebar a {
+    display: block;
+    background-color: white;
+    color: black;
+    padding: 5px;
+    margin: 8px 0;
+    width: 100%;
+    text-align: left;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sidebar a.active {
+    background-color: #e0e0ff;
+    color: #007bff;
+}
+
+.main-content {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* HEADER */
+.header-container {
+    height: 80px;
+    position: fixed;
+    left: 220px; /* đẩy sang phải bằng đúng chiều rộng sidebar */
+    top: 0;
+    width: calc(100% - 220px);
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+.logo-image {
+    height: 70px;
+    max-height: 100%;
+    width: auto;
+}
+.logo-sidebar {
+    width: 120px;
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.center-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.profile-icon svg {
+    width: 20px;
+    height: 20px;
+    color: #6a1b9a;
+}
+
+/* CONTENT */
+.content {
+    margin-top: 80px; /* tránh bị header che */
+    padding: 20px;
+    flex: 1;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+.sidebar ul {
+    list-style: none;       /* Loại bỏ dấu chấm */
+    padding: 0;             /* Xoá padding mặc định */
+    margin: 0;              /* Xoá margin mặc định */
+}

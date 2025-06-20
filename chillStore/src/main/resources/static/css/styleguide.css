@@ -1,0 +1,317 @@
+:root {
+    --body-base-font-family: "Inter", Helvetica;
+    --body-base-font-size: 16px;
+    --body-base-font-style: normal;
+    --body-base-font-weight: 400;
+    --body-base-letter-spacing: 0px;
+    --body-base-line-height: 139.9999976158142%;
+    --color-background-brand-default: var(--color-primitives-brand-800);
+    --color-background-brand-hover: var(--color-primitives-brand-900);
+    --color-background-default-default: var(--color-primitives-white-1000);
+    --color-background-neutral-tertiary: var(--color-primitives-slate-200);
+    --color-background-neutral-tertiary-hover: var(--color-primitives-slate-300);
+    --color-border-brand-default: var(--color-primitives-brand-800);
+    --color-border-default-default: var(--color-primitives-gray-300);
+    --color-border-neutral-secondary: var(--color-primitives-slate-600);
+    --color-primitives-brand-100: rgba(245, 245, 245, 1);
+    --color-primitives-brand-300: rgba(217, 217, 217, 1);
+    --color-primitives-brand-800: rgba(44, 44, 44, 1);
+    --color-primitives-brand-900: rgba(30, 30, 30, 1);
+    --color-primitives-gray-300: rgba(217, 217, 217, 1);
+    --color-primitives-gray-500: rgba(117, 117, 117, 1);
+    --color-primitives-gray-600: rgba(68, 68, 68, 1);
+    --color-primitives-gray-900: rgba(30, 30, 30, 1);
+    --color-primitives-slate-1000: rgba(36, 36, 36, 1);
+    --color-primitives-slate-200: rgba(227, 227, 227, 1);
+    --color-primitives-slate-300: rgba(205, 205, 205, 1);
+    --color-primitives-slate-500: rgba(148, 148, 148, 1);
+    --color-primitives-slate-600: rgba(118, 118, 118, 1);
+    --color-primitives-slate-900: rgba(48, 48, 48, 1);
+    --color-primitives-white-1000: rgba(255, 255, 255, 1);
+    --color-primitives-white-500: rgba(255, 255, 255, 0.7);
+    --color-text-brand-on-brand: var(--color-primitives-brand-100);
+    --color-text-default-default: var(--color-primitives-gray-900);
+    --color-text-default-secondary: var(--color-primitives-gray-500);
+    --color-text-neutral-default: var(--color-primitives-slate-900);
+    --heading-font-family: "Inter", Helvetica;
+    --heading-font-size: 24px;
+    --heading-font-style: normal;
+    --heading-font-weight: 600;
+    --heading-letter-spacing: -0.48px;
+    --heading-line-height: 120.00000476837158%;
+    --m3-body-large-font-family: "Roboto", Helvetica;
+    --m3-body-large-font-size: 16px;
+    --m3-body-large-font-style: normal;
+    --m3-body-large-font-weight: 400;
+    --m3-body-large-letter-spacing: 0.5px;
+    --m3-body-large-line-height: 24px;
+    --m3-schemes-on-surface-variant: rgba(73, 69, 79, 1);
+    --m3-schemes-surface-container-high: rgba(236, 230, 240, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(73, 69, 79, 0.08);
+    --responsive-device-width: 1200px;
+    --single-line-body-base-font-family: "Inter", Helvetica;
+    --single-line-body-base-font-size: 16px;
+    --single-line-body-base-font-style: normal;
+    --single-line-body-base-font-weight: 400;
+    --single-line-body-base-letter-spacing: 0px;
+    --single-line-body-base-line-height: 100%;
+    --size-radius-200: 8px;
+    --size-space-1200: 48px;
+    --size-space-1600: 64px;
+    --size-space-200: 8px;
+    --size-space-300: 12px;
+    --size-space-400: 16px;
+    --size-space-600: 24px;
+    --subheading-font-family: "Inter", Helvetica;
+    --subheading-font-size: 20px;
+    --subheading-font-style: normal;
+    --subheading-font-weight: 400;
+    --subheading-letter-spacing: 0px;
+    --subheading-line-height: 120.00000476837158%;
+}
+
+/*
+
+To enable a theme in your HTML, simply add one of the following data attributes to an HTML element, like so:
+
+<body data-m3-mode="light">
+    <!-- the rest of your content -->
+</body>
+
+You can apply the theme on any DOM node, not just the `body`
+
+*/
+
+[data-m3-mode="light"] {
+    --m3-schemes-on-surface-variant: rgba(73, 69, 79, 1);
+    --m3-schemes-surface-container-high: rgba(236, 230, 240, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(73, 69, 79, 0.08);
+}
+
+[data-m3-mode="light-high-contrast"] {
+    --m3-schemes-on-surface-variant: rgba(37, 35, 43, 1);
+    --m3-schemes-surface-container-high: rgba(236, 230, 238, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(37, 35, 43, 0.08);
+}
+
+[data-m3-mode="light-medium-contrast"] {
+    --m3-schemes-on-surface-variant: rgba(69, 65, 74, 1);
+    --m3-schemes-surface-container-high: rgba(236, 230, 238, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(69, 65, 74, 0.08);
+}
+
+[data-m3-mode="dark"] {
+    --m3-schemes-on-surface-variant: rgba(202, 196, 208, 1);
+    --m3-schemes-surface-container-high: rgba(43, 41, 48, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(202, 196, 208, 0.08);
+}
+
+[data-m3-mode="dark-high-contrast"] {
+    --m3-schemes-on-surface-variant: rgba(255, 249, 255, 1);
+    --m3-schemes-surface-container-high: rgba(43, 41, 47, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(255, 249, 255, 0.08);
+}
+
+[data-m3-mode="dark-medium-contrast"] {
+    --m3-schemes-on-surface-variant: rgba(206, 200, 212, 1);
+    --m3-schemes-surface-container-high: rgba(43, 41, 47, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(206, 200, 212, 0.08);
+}
+
+[data-m3-mode="monochrome-LT"] {
+    --m3-schemes-on-surface-variant: rgba(71, 71, 71, 1);
+    --m3-schemes-surface-container-high: rgba(232, 232, 232, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(71, 71, 71, 0.08);
+}
+
+[data-m3-mode="monochrome-DT"] {
+    --m3-schemes-on-surface-variant: rgba(198, 198, 198, 1);
+    --m3-schemes-surface-container-high: rgba(42, 42, 42, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(198, 198, 198, 0.08);
+}
+
+[data-m3-mode="pink-LT"] {
+    --m3-schemes-on-surface-variant: rgba(80, 67, 72, 1);
+    --m3-schemes-surface-container-high: rgba(244, 228, 232, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(80, 67, 72, 0.08);
+}
+
+[data-m3-mode="pink-DT"] {
+    --m3-schemes-on-surface-variant: rgba(212, 194, 199, 1);
+    --m3-schemes-surface-container-high: rgba(48, 40, 43, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(212, 194, 199, 0.08);
+}
+
+[data-m3-mode="rose-LT"] {
+    --m3-schemes-on-surface-variant: rgba(82, 67, 69, 1);
+    --m3-schemes-surface-container-high: rgba(246, 228, 229, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(82, 67, 69, 0.08);
+}
+
+[data-m3-mode="rose-DT"] {
+    --m3-schemes-on-surface-variant: rgba(215, 194, 195, 1);
+    --m3-schemes-surface-container-high: rgba(49, 40, 41, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(215, 194, 195, 0.08);
+}
+
+[data-m3-mode="red-LT"] {
+    --m3-schemes-on-surface-variant: rgba(83, 67, 65, 1);
+    --m3-schemes-surface-container-high: rgba(247, 228, 226, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(83, 67, 65, 0.08);
+}
+
+[data-m3-mode="red-DT"] {
+    --m3-schemes-on-surface-variant: rgba(216, 194, 190, 1);
+    --m3-schemes-surface-container-high: rgba(50, 40, 38, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(216, 194, 190, 0.08);
+}
+
+[data-m3-mode="orange-LT"] {
+    --m3-schemes-on-surface-variant: rgba(82, 68, 60, 1);
+    --m3-schemes-surface-container-high: rgba(246, 229, 221, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(82, 68, 60, 0.08);
+}
+
+[data-m3-mode="orange-DT"] {
+    --m3-schemes-on-surface-variant: rgba(215, 194, 184, 1);
+    --m3-schemes-surface-container-high: rgba(49, 40, 35, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(215, 194, 184, 0.08);
+}
+
+[data-m3-mode="yellow-LT"] {
+    --m3-schemes-on-surface-variant: rgba(77, 70, 57, 1);
+    --m3-schemes-surface-container-high: rgba(241, 231, 217, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(77, 70, 57, 0.08);
+}
+
+[data-m3-mode="yellow-DT"] {
+    --m3-schemes-on-surface-variant: rgba(208, 197, 180, 1);
+    --m3-schemes-surface-container-high: rgba(46, 41, 33, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(208, 197, 180, 0.08);
+}
+
+[data-m3-mode="chartreuse-LT"] {
+    --m3-schemes-on-surface-variant: rgba(71, 72, 59, 1);
+    --m3-schemes-surface-container-high: rgba(234, 233, 220, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(71, 72, 59, 0.08);
+}
+
+[data-m3-mode="chartreuse-DT"] {
+    --m3-schemes-on-surface-variant: rgba(200, 199, 183, 1);
+    --m3-schemes-surface-container-high: rgba(42, 43, 34, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(200, 199, 183, 0.08);
+}
+
+[data-m3-mode="green-LT"] {
+    --m3-schemes-on-surface-variant: rgba(66, 73, 64, 1);
+    --m3-schemes-surface-container-high: rgba(229, 233, 225, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(66, 73, 64, 0.08);
+}
+
+[data-m3-mode="green-DT"] {
+    --m3-schemes-on-surface-variant: rgba(193, 201, 190, 1);
+    --m3-schemes-surface-container-high: rgba(39, 43, 38, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(193, 201, 190, 0.08);
+}
+
+[data-m3-mode="teal-LT"] {
+    --m3-schemes-on-surface-variant: rgba(63, 73, 70, 1);
+    --m3-schemes-surface-container-high: rgba(227, 234, 231, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(63, 73, 70, 0.08);
+}
+
+[data-m3-mode="teal-DT"] {
+    --m3-schemes-on-surface-variant: rgba(190, 201, 197, 1);
+    --m3-schemes-surface-container-high: rgba(37, 43, 42, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(190, 201, 197, 0.08);
+}
+
+[data-m3-mode="cyan-LT"] {
+    --m3-schemes-on-surface-variant: rgba(64, 72, 75, 1);
+    --m3-schemes-surface-container-high: rgba(228, 233, 235, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(64, 72, 75, 0.08);
+}
+
+[data-m3-mode="cyan-DT"] {
+    --m3-schemes-on-surface-variant: rgba(191, 200, 204, 1);
+    --m3-schemes-surface-container-high: rgba(37, 43, 45, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(191, 200, 204, 0.08);
+}
+
+[data-m3-mode="blue-LT"] {
+    --m3-schemes-on-surface-variant: rgba(68, 70, 79, 1);
+    --m3-schemes-surface-container-high: rgba(232, 231, 239, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(68, 70, 79, 0.08);
+}
+
+[data-m3-mode="blue-DT"] {
+    --m3-schemes-on-surface-variant: rgba(197, 198, 208, 1);
+    --m3-schemes-surface-container-high: rgba(40, 42, 47, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(197, 198, 208, 0.08);
+}
+
+[data-m3-mode="indigo-LT"] {
+    --m3-schemes-on-surface-variant: rgba(71, 70, 79, 1);
+    --m3-schemes-surface-container-high: rgba(234, 231, 239, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(71, 70, 79, 0.08);
+}
+
+[data-m3-mode="indigo-DT"] {
+    --m3-schemes-on-surface-variant: rgba(200, 197, 208, 1);
+    --m3-schemes-surface-container-high: rgba(42, 41, 47, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(200, 197, 208, 0.08);
+}
+
+[data-m3-mode="purple-LT"] {
+    --m3-schemes-on-surface-variant: rgba(74, 69, 78, 1);
+    --m3-schemes-surface-container-high: rgba(237, 230, 238, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(74, 69, 78, 0.08);
+}
+
+[data-m3-mode="purple-DT"] {
+    --m3-schemes-on-surface-variant: rgba(203, 196, 207, 1);
+    --m3-schemes-surface-container-high: rgba(44, 41, 47, 1);
+    --m3-state-layers-on-surface-variant-opacity-08: rgba(203, 196, 207, 0.08);
+}
+
+[data-color-mode="SDS-light"] {
+    --color-background-brand-default: var(--color-primitives-brand-800);
+    --color-background-brand-hover: var(--color-primitives-brand-900);
+    --color-background-default-default: var(--color-primitives-white-1000);
+    --color-background-neutral-tertiary: var(--color-primitives-slate-200);
+    --color-background-neutral-tertiary-hover: var(--color-primitives-slate-300);
+    --color-border-brand-default: var(--color-primitives-brand-800);
+    --color-border-default-default: var(--color-primitives-gray-300);
+    --color-border-neutral-secondary: var(--color-primitives-slate-600);
+    --color-text-brand-on-brand: var(--color-primitives-brand-100);
+    --color-text-default-default: var(--color-primitives-gray-900);
+    --color-text-default-secondary: var(--color-primitives-gray-500);
+    --color-text-neutral-default: var(--color-primitives-slate-900);
+}
+
+[data-color-mode="SDS-dark"] {
+    --color-background-brand-default: var(--color-primitives-brand-100);
+    --color-background-brand-hover: var(--color-primitives-brand-300);
+    --color-background-default-default: var(--color-primitives-gray-900);
+    --color-background-neutral-tertiary: var(--color-primitives-slate-900);
+    --color-background-neutral-tertiary-hover: var(--color-primitives-slate-1000);
+    --color-border-brand-default: var(--color-primitives-brand-100);
+    --color-border-default-default: var(--color-primitives-gray-600);
+    --color-border-neutral-secondary: var(--color-primitives-slate-500);
+    --color-text-brand-on-brand: var(--color-primitives-brand-900);
+    --color-text-default-default: var(--color-primitives-white-1000);
+    --color-text-default-secondary: var(--color-primitives-white-500);
+    --color-text-neutral-default: var(--color-primitives-slate-200);
+}
+
+[data-responsive-mode="desktop"] {
+    --responsive-device-width: 1200px;
+}
+
+[data-responsive-mode="mobile"] {
+    --responsive-device-width: 375px;
+}
+
+[data-responsive-mode="tablet"] {
+    --responsive-device-width: 768px;
+}

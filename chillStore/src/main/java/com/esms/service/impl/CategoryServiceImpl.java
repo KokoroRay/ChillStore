@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,17 +21,20 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Override
     public List<Category> getAllCategory() {
         return categoryRepository.findAll();
     }
 
     @Override
-    public List<Category> searchCategory(String keyword) {
+    public Page<Category> searchCategory(String keyword, Pageable pa) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            return categoryRepository.findAll();
+            return categoryRepository.findAll(pa);
         }
-        return categoryRepository.findByNameContainingIgnoreCase(keyword.trim());
+        return categoryRepository.findByNameContainingIgnoreCase(keyword.trim(), pa);
     }
 
     @Override
@@ -81,6 +87,8 @@ public class CategoryServiceImpl implements CategoryService {
                 throw new RuntimeException("Không thể xóa thư mục chứa thư mục con");
             }
             categoryRepository.delete(cat);
+            Integer maxId = categoryRepository.findMaxId();
+            reseedIdentityTo(maxId);
         }else {
             throw new RuntimeException("Category không tồn tại id" + id);
         }
@@ -90,4 +98,14 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getAllParentOptions() {
         return categoryRepository.findAll();
     }
+
+
+    private void reseedIdentityTo(Integer newSeed) {
+        String table = "categories";
+        int seed = (newSeed != null) ? newSeed : 0;
+        String sql = String.format("DBCC CHECKIDENT('%s', RESEED, %d)", table, seed);
+        jdbcTemplate.execute(sql);
+    }
+
+
 }

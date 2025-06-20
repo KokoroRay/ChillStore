@@ -1,52 +1,51 @@
-/* file: src/main/resources/static/css/custom.css */
 
-/* Tạo shadow nhẹ cho card */
-.card.shadow-sm {
+.list-group-item {
+    transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.btn-update {
+    min-width: 80px;
+}
+
+.btn-delete {
+    min-width: 80px;
+}
+
+
+
+/* Main content bù sidebar */
+.main-content, .flex-grow-1 {
+    margin-left: 200px;
+}
+
+/* Card style */
+.card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Customize button màu nhẹ hơn */
-.btn-info {
-    background-color: #ace7ef;
-    border-color: #ace7ef;
-    color: #000;
-}
-.btn-info:hover {
-    background-color: #8edce4;
-    border-color: #8edce4;
-}
-
-.btn-danger {
-    background-color: #f28b82;
-    border-color: #f28b82;
-    color: #000;
-}
-.btn-danger:hover {
-    background-color: #e0675e;
-    border-color: #e0675e;
-}
-
-/* Nút Add pill */
-.btn-success {
-    background-color: #a8e6a3;
-    border-color: #a8e6a3;
-    color: #000;
-}
-.btn-success:hover {
-    background-color: #8cd78a;
-    border-color: #8cd78a;
-}
-
-/* Sidebar active link */
-.nav-link.active {
-    background-color: #e9f5f5;
-    font-weight: bold;
-}
-
-/* Placeholder image box */
+/* Placeholder image */
 .placeholder-img {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
     background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+}
+
+/* Buttons */
+.btn-add {
+    background-color: #a8f0a3;
+    color: #000;
+}
+.btn-update {
+    background-color: #c0e4f3;
+    color: #000;
+}
+.btn-delete {
+    background-color: #f38c8c;
+    color: #000;
 }

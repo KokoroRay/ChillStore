@@ -2,16 +2,20 @@ package com.esms.service.impl;
 
 import com.esms.model.dto.VoucherDto;
 import com.esms.model.entity.Admin;
+import com.esms.model.entity.Brand;
+import com.esms.model.entity.Category;
 import com.esms.model.entity.Voucher;
 import com.esms.repository.AdminRepository;
+import com.esms.repository.BrandRepository;
+import com.esms.repository.CategoryRepository;
 import com.esms.repository.VoucherRepository;
 import com.esms.service.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Transient;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transient
@@ -22,6 +26,12 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private BrandRepository brandRepository;
 
     @Override
     public List<Voucher> getAllVouchers() {
@@ -61,6 +71,17 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setEnd_date(voucherDto.getEnd_date());
         voucher.setActive(voucherDto.isActive());
 
+        if (voucherDto.getCategoryIds() != null && !voucherDto.getCategoryIds().isEmpty()) {
+            List<Category> categories = categoryRepository.findAllByIdIn(voucherDto.getCategoryIds());
+            voucher.setCategories(new HashSet<>(categories));
+        }
+
+        if (voucherDto.getBrandIds() != null && !voucherDto.getBrandIds().isEmpty()) {
+
+            List<Brand> brands = brandRepository.findAllById(voucherDto.getBrandIds());
+            voucher.setBrands(new HashSet<>(brands));
+        }
+
         Admin admin = adminRepository.findByEmail(createdByEmail).orElseThrow(() -> new RuntimeException("Admin not found"));
         voucher.setCreated_by(admin);
         return voucherRepository.save(voucher);
@@ -87,7 +108,16 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setStart_date(voucherDto.getStart_date());
         voucher.setEnd_date(voucherDto.getEnd_date());
         voucher.setActive(voucherDto.isActive());
-
+        voucher.getCategories().clear();
+        if (voucherDto.getCategoryIds() != null && !voucherDto.getCategoryIds().isEmpty()) {
+            List<Category> categories  = categoryRepository.findAllByIdIn(voucherDto.getCategoryIds());
+            voucher.setCategories(new HashSet<>(categories));
+        }
+        voucher.getBrands().clear();
+        if (voucherDto.getBrandIds() != null && !voucherDto.getBrandIds().isEmpty()) {
+            List<Brand> brands = brandRepository.findAllByIdIn(voucherDto.getBrandIds());
+            voucher.setBrands(new HashSet<>(brands));
+        }
         return voucherRepository.save(voucher);
     }
 

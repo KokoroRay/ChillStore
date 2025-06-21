@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "vouchers")
@@ -49,6 +51,22 @@ public class Voucher {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime created_at;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "voucher_categories",
+            joinColumns = @JoinColumn(name ="voucher_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<Category>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "voucher_brands",
+            joinColumns = @JoinColumn(name ="voucher_id"),
+            inverseJoinColumns = @JoinColumn(name = "brand_id")
+    )
+    private Set<Brand> brands = new HashSet<Brand>();
 
     @PrePersist
     protected void prePersist() {
@@ -149,5 +167,21 @@ public class Voucher {
 
     public void setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
+
+    public Set<Brand> getBrands() {
+        return brands;
+    }
+
+    public void setBrands(Set<Brand> brands) {
+        this.brands = brands;
     }
 }

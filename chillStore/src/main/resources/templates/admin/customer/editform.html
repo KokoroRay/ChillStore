@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Cập nhật Người dùng</title>
+    <title>Update User</title>
 </head>
 <body>
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
-        <div th:replace="~{fragments/sidebar :: sidebar('customer')}"></div>
-        <!-- Main content -->
+        <div th:replace="~{fragments/sidebar :: sidebar(activeMenuItem='customer')}"></div>
+
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
             <div th:replace="~{admin/customer/editform-content :: editform-content}"></div>
         </main>
@@ -19,4 +18,4 @@
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/script.js}"></script>
 </body>
-</html> 
+</html>

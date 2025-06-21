@@ -43,9 +43,7 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.nav-link:hover {
-    background-color: #34495e;
-}
+
 
 .nav-link.active {
     background-color: #3498db;
@@ -194,14 +192,16 @@ th, td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
 }
 
 th {
-    background-color: #f8f9fa;
+    background-color: #1f1f1f;   /* Màu đen đậm */
+    color: #fff;                 /* Chữ trắng */
     font-weight: bold;
-    color: #2c3e50;
+    padding: 12px;
+    text-align: left;
 }
-
 tr:hover {
     background-color: #f8f9fa;
 }

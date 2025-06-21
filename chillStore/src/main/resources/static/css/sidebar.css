@@ -48,7 +48,7 @@
 .header-container {
     height: 80px;
     position: fixed;
-    left: 220px; /* đẩy sang phải bằng đúng chiều rộng sidebar */
+    left: 220px;
     top: 0;
     width: calc(100% - 220px);
     background-color: white;
@@ -104,7 +104,7 @@
 
 /* CONTENT */
 .content {
-    margin-top: 80px; /* tránh bị header che */
+    margin-top: 80px;
     padding: 20px;
     flex: 1;
     background-color: #f8f9fa;
@@ -112,7 +112,7 @@
     overflow-y: auto;
 }
 .sidebar ul {
-    list-style: none;       /* Loại bỏ dấu chấm */
-    padding: 0;             /* Xoá padding mặc định */
-    margin: 0;              /* Xoá margin mặc định */
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }

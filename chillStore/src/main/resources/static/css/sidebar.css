@@ -5,8 +5,9 @@
 }
 
 .sidebar {
+    border-radius: 0 20px 20px 0;
     width: 220px;
-    background-color: #00688B;
+    background-color: #005691;
     padding: 20px 10px;
     display: flex;
     flex-direction: column;
@@ -62,6 +63,7 @@
 }
 
 .logo-image {
+    border-radius: 20px;
     height: 70px;
     max-height: 100%;
     width: auto;

@@ -1,60 +1,67 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Product Form - ESMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Form</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            display: flex;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: #f8f9fa;
         }
         .sidebar {
-            width: 220px;
-            background-color: #e3f2fd;
-            padding: 20px;
+            width: 250px;
             height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             position: fixed;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            left: 0;
+            top: 0;
+            padding: 20px;
+            color: white;
+            overflow-y: auto;
         }
         .sidebar h2 {
-            font-size: 24px;
             margin-bottom: 30px;
             text-align: center;
-            color: #333;
+            font-weight: 600;
         }
-        .sidebar button {
+        .sidebar .btn {
             width: 100%;
             margin-bottom: 10px;
             text-align: left;
-            padding: 10px 15px;
             border: none;
-            border-radius: 5px;
+            padding: 12px 15px;
+            border-radius: 8px;
             transition: all 0.3s ease;
         }
-        .sidebar button:hover {
-            background-color: #bbdefb;
+        .sidebar .btn:hover {
+            transform: translateX(5px);
         }
-        .sidebar button.active {
-            background-color: #2196f3;
+        .sidebar .btn-primary {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .sidebar .btn-light {
+            background-color: rgba(255, 255, 255, 0.1);
             color: white;
         }
         .main-content {
-            flex-grow: 1;
+            margin-left: 250px;
             padding: 20px;
-            margin-left: 220px;
         }
         .topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            padding: 15px;
-            background-color: white;
+            padding: 20px;
+            background: white;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .topbar h4 {
             margin: 0;
@@ -62,50 +69,49 @@
             font-weight: 600;
         }
         .form-container {
-            max-width: 900px;
-            margin: 0 auto;
+            background: white;
             padding: 30px;
-            background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .form-group label {
-            font-weight: 500;
+            font-weight: 600;
             color: #333;
             margin-bottom: 8px;
+            display: block;
         }
         .form-control {
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            transition: border-color 0.3s ease;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
         }
         .form-control:focus {
             border-color: #2196f3;
             box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
         }
-        .preview-image {
-            max-width: 200px;
-            max-height: 200px;
-            margin-top: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .form-control.is-invalid {
+            border-color: #dc3545;
         }
-        .form-check {
-            padding: 10px 0;
+        .invalid-feedback {
+            display: block;
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 5px;
         }
-        .form-check-input {
-            margin-right: 10px;
+        .status-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        /* Custom toggle switch styles */
         .status-toggle {
             position: relative;
             display: inline-block;
             width: 60px;
-            height: 30px;
+            height: 34px;
         }
         .status-toggle input {
             opacity: 0;
@@ -121,13 +127,13 @@
             bottom: 0;
             background-color: #ccc;
             transition: .4s;
-            border-radius: 30px;
+            border-radius: 34px;
         }
         .status-slider:before {
             position: absolute;
             content: "";
-            height: 22px;
-            width: 22px;
+            height: 26px;
+            width: 26px;
             left: 4px;
             bottom: 4px;
             background-color: white;
@@ -138,25 +144,22 @@
             background-color: #2196f3;
         }
         input:checked + .status-slider:before {
-            transform: translateX(30px);
+            transform: translateX(26px);
         }
         .status-label {
-            margin-left: 15px;
             font-weight: 500;
             color: #333;
         }
-        .status-container {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background-color: #f8f9fa;
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
             border-radius: 8px;
-            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .btn {
-            padding: 10px 20px;
+            padding: 12px 24px;
+            border-radius: 8px;
             font-weight: 500;
-            border-radius: 5px;
             transition: all 0.3s ease;
         }
         .btn-primary {
@@ -203,6 +206,10 @@
         .image-upload-label:hover {
             color: #1976d2;
         }
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -228,6 +235,14 @@
     </div>
 
     <div class="form-container">
+        <!-- Display validation errors -->
+        <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+            <h5>Vui lòng sửa các lỗi sau:</h5>
+            <ul>
+                <li th:each="error : ${#fields.errors('*')}" th:text="${error}"></li>
+            </ul>
+        </div>
+
         <form th:action="${product.productId == null ? '/admin/products/add' : '/admin/products/' + product.productId + '/edit'}"
               method="post"
               enctype="multipart/form-data">
@@ -248,20 +263,24 @@
                         <label for="name">Tên sản phẩm</label>
                         <input type="text"
                                class="form-control"
+                               th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
                                id="name"
                                name="name"
                                th:value="${product.name}"
                                required>
+                        <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback" th:errors="*{name}"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="description">Mô tả</label>
                         <textarea class="form-control"
+                                  th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
                                   id="description"
                                   name="description"
                                   rows="4"
                                   th:text="${product.description}"
                                   required></textarea>
+                        <div th:if="${#fields.hasErrors('description')}" class="invalid-feedback" th:errors="*{description}"></div>
                     </div>
 
                     <div class="row">
@@ -270,11 +289,13 @@
                                 <label for="price">Giá</label>
                                 <input type="number"
                                        class="form-control"
+                                       th:classappend="${#fields.hasErrors('price')} ? 'is-invalid'"
                                        id="price"
                                        name="price"
                                        th:value="${product.price}"
                                        step="0.01"
                                        required>
+                                <div th:if="${#fields.hasErrors('price')}" class="invalid-feedback" th:errors="*{price}"></div>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -282,11 +303,50 @@
                                 <label for="stockQty">Số lượng tồn kho</label>
                                 <input type="number"
                                        class="form-control"
+                                       th:classappend="${#fields.hasErrors('stockQty')} ? 'is-invalid'"
                                        id="stockQty"
                                        name="stockQty"
                                        th:value="${product.stockQty}"
                                        readonly
                                        style="background-color: #f8f9fa;">
+                                <div th:if="${#fields.hasErrors('stockQty')}" class="invalid-feedback" th:errors="*{stockQty}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="categoryId">Danh mục</label>
+                                <select class="form-control"
+                                        th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid'"
+                                        id="categoryId"
+                                        name="categoryId"
+                                        required>
+                                    <option value="">Chọn danh mục</option>
+                                    <option th:each="category : ${categories}"
+                                            th:value="${category.id}"
+                                            th:text="${category.name}"
+                                            th:selected="${product.categoryId == category.id}"></option>
+                                </select>
+                                <div th:if="${#fields.hasErrors('categoryId')}" class="invalid-feedback" th:errors="*{categoryId}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="brandId">Thương hiệu</label>
+                                <select class="form-control"
+                                        th:classappend="${#fields.hasErrors('brandId')} ? 'is-invalid'"
+                                        id="brandId"
+                                        name="brandId"
+                                        required>
+                                    <option value="">Chọn thương hiệu</option>
+                                    <option th:each="brand : ${brands}"
+                                            th:value="${brand.id}"
+                                            th:text="${brand.name}"
+                                            th:selected="${product.brandId == brand.id}"></option>
+                                </select>
+                                <div th:if="${#fields.hasErrors('brandId')}" class="invalid-feedback" th:errors="*{brandId}"></div>
                             </div>
                         </div>
                     </div>

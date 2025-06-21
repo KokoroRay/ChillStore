@@ -3,9 +3,12 @@ package com.esms.controller;
 import com.esms.model.entity.Brand;
 import com.esms.model.entity.Category;
 import com.esms.model.entity.Product;
+import com.esms.model.dto.ProductDto;
 import com.esms.service.BrandService;
 import com.esms.service.CategoryService;
 import com.esms.service.ProductService;
+import com.esms.util.MapperUtils.ProductMapper;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,12 +16,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Map;
@@ -80,8 +85,11 @@ public class ProductController {
         } else {
             pageable = PageRequest.of(page, size);
         }
-        Page<Product> products = productService.searchProductsWithFilters(
+        
+        // Use DTO method instead of entity
+        Page<ProductDto> products = productService.searchProductDtosWithFilters(
                 keyword, categoryId, brandId, minPrice, maxPrice, minStock, sortBy, sortDir, pageable, filterStatus);
+        
         // Pagination logic for page numbers
         int totalPages = products.getTotalPages();
         int currentPage = page;
@@ -123,7 +131,7 @@ public class ProductController {
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption,
             Model model) {
-        Product product = productService.getProductById(id);
+        ProductDto product = productService.getProductDtoById(id);
         model.addAttribute("product", product);
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
@@ -152,7 +160,7 @@ public class ProductController {
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption,
             Model model) {
-        Product product = productService.getProductById(id);
+        ProductDto product = productService.getProductDtoById(id);
         List<Category> categories = categoryService.getAllCategory();
         List<Brand> brands = brandService.getAllBrands();
         model.addAttribute("product", product);
@@ -174,7 +182,8 @@ public class ProductController {
     @PostMapping("/{id}/edit")
     public String updateProduct(
             @PathVariable("id") Integer id,
-            @ModelAttribute("product") Product product,
+            @Valid @ModelAttribute("product") ProductDto productDto,
+            BindingResult bindingResult,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size,
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -184,8 +193,35 @@ public class ProductController {
             @RequestParam(value = "minPrice", required = false) Double minPrice,
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
             @RequestParam(value = "minStock", required = false) Integer minStock,
-            @RequestParam(value = "sortOption", required = false) String sortOption) {
-        productService.updateProduct(id, product);
+            @RequestParam(value = "sortOption", required = false) String sortOption,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        
+        if (bindingResult.hasErrors()) {
+            List<Category> categories = categoryService.getAllCategory();
+            List<Brand> brands = brandService.getAllBrands();
+            model.addAttribute("categories", categories);
+            model.addAttribute("brands", brands);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("size", size);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("categoryId", categoryId);
+            model.addAttribute("brandId", brandId);
+            model.addAttribute("filterStatus", filterStatus);
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
+            model.addAttribute("minStock", minStock);
+            model.addAttribute("sortOption", sortOption);
+            return "admin/ManageProduct/ProductForm";
+        }
+        
+        try {
+            productService.updateProduct(id, productDto);
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật sản phẩm thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra: " + e.getMessage());
+        }
+        
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
                 page, size,
                 keyword != null ? keyword : "",
@@ -210,8 +246,16 @@ public class ProductController {
             @RequestParam(value = "minPrice", required = false) Double minPrice,
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
             @RequestParam(value = "minStock", required = false) Integer minStock,
-            @RequestParam(value = "sortOption", required = false) String sortOption) {
-        productService.deleteProduct(id);
+            @RequestParam(value = "sortOption", required = false) String sortOption,
+            RedirectAttributes redirectAttributes) {
+        
+        try {
+            productService.deleteProduct(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa sản phẩm thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra: " + e.getMessage());
+        }
+        
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
                 page, size,
                 keyword != null ? keyword : "",

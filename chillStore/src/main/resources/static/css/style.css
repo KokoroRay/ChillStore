@@ -146,7 +146,7 @@ body, html {
     display: flex;
     flex-direction: column;
     align-items: center;     /* Căn giữa ngang */
-    /* justify-content mặc định là flex-start, tức “bắt đầu từ trên” */
+    /* justify-content mặc định là flex-start, tức "bắt đầu từ trên" */
 }
 
 /* Thẻ h2 chung cho cả hai panel */
@@ -172,7 +172,7 @@ body, html {
     display: flex;
     flex-direction: column;
     align-items: center;     /* Căn giữa ngang như trước */
-    justify-content: flex-start;  /* <-- sửa từ “center” sang “flex-start” */
+    justify-content: flex-start;  /* <-- sửa từ "center" sang "flex-start" */
 
     padding-top: 40px;       /* <-- thêm padding-top cho bằng với .white-panel */
 
@@ -194,4 +194,67 @@ body, html {
 .blue-panel .btn-signup:hover,
 .blue-panel .btn-back:hover {
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Tối ưu không gian cho Manage Product --- */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 10px 0 10px;
+    margin-top: 170px;
+}
+
+.product-card {
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    border-radius: 8px;
+    min-height: 100px;
+}
+.product-image {
+    width: 70px;
+    height: 70px;
+}
+.product-info h5 {
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+}
+.product-details {
+    font-size: 0.92rem;
+    gap: 10px;
+}
+.product-controls .btn {
+    padding: 6px 10px;
+    font-size: 0.95rem;
+}
+
+/* --- Two-column grid for product list in Manage Product --- */
+@media (min-width: 768px) {
+  /* .main-content .row {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+  .main-content .col-md-6 {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 20px;
+  } */
+}
+
+@media (max-width: 767.98px) {
+  /* .main-content .col-md-6 {
+    width: 100%;
+    margin-bottom: 20px;
+  } */
+}
+
+.filter-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 18px 22px 10px 22px;
+    margin-bottom: 24px;
+}
+
+.main-content {
+    margin-top: 170px;
 }

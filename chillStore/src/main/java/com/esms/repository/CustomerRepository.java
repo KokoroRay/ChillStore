@@ -21,7 +21,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
            "(:keyword IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(c.email) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
            "AND (:locked IS NULL OR c.isLocked = :locked)")
     Page<Customer> searchCustomersWithFilters(@Param("keyword") String keyword,
-                                              @Param("gender") String gender,
                                               @Param("locked") Boolean locked,
                                               Pageable pageable);
 

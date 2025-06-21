@@ -251,16 +251,26 @@
 <div class="container mt-4 main-container">
     <div th:insert="~{fragments/sidebar :: sidebar}"></div>
 <div class="main-content">
-    <div class="topbar">
-        <a th:href="@{/admin/products}" style="text-decoration:none;"><h4>Quản lý sản phẩm</h4></a>
-        <div>
-            <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
-        </div>
+    
+    <!-- Display success/error messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-
-    <!-- Search and Filter Section -->
+    
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
     <div class="filter-section">
-        <form th:action="@{/admin/products}" method="get" class="row g-3 align-items-end">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Quản lý sản phẩm</h4>
+        </div>
+        
+        <form th:action="@{/admin/products}" method="get" class="row g-3 align-items-end" style="margin-bottom: 0;" onsubmit="return validateFilterForm()">
             <div class="col-md-3">
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-search"></i></span>
@@ -294,36 +304,64 @@
                     <i class="fas fa-sync-alt"></i>
                 </button>
             </div>
-
             <!-- Advanced Filters -->
             <div class="col-12 mt-3">
-                <div class="card p-3">
-                    <h6 class="card-title mb-3"><i class="fas fa-sliders-h me-2"></i>Bộ lọc nâng cao</h6>
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label">Giá từ</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" name="minPrice" th:value="${minPrice != null ? #numbers.formatDecimal(minPrice, 0, 'COMMA', 0, 'POINT') : ''}" step="0.01" min="0" placeholder="Min">
-                                <span class="input-group-text">₫</span>
-                            </div>
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Giá từ</label>
+                        <div class="input-group">
+                            <input type="number" 
+                                   class="form-control" 
+                                   name="minPrice" 
+                                   th:value="${minPrice != null ? #numbers.formatDecimal(minPrice, 0, 'COMMA', 0, 'POINT') : ''}" 
+                                   step="0.01" 
+                                   min="0" 
+                                   max="999999999.99"
+                                   placeholder="Min"
+                                   onchange="validatePrice(this, 'minPriceError')">
+                            <span class="input-group-text">₫</span>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">đến</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" name="maxPrice" th:value="${maxPrice != null ? #numbers.formatDecimal(maxPrice, 0, 'COMMA', 0, 'POINT') : ''}" step="0.01" min="0" placeholder="Max">
-                                <span class="input-group-text">₫</span>
-                            </div>
+                        <div class="invalid-feedback" id="minPriceError" style="display: none;">
+                            Giá phải từ 0 đến 999,999,999.99
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Số lượng tồn kho tối thiểu</label>
-                            <input type="number" class="form-control" name="minStock" th:value="${minStock}" min="0" placeholder="Nhập số lượng">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">đến</label>
+                        <div class="input-group">
+                            <input type="number" 
+                                   class="form-control" 
+                                   name="maxPrice" 
+                                   th:value="${maxPrice != null ? #numbers.formatDecimal(maxPrice, 0, 'COMMA', 0, 'POINT') : ''}" 
+                                   step="0.01" 
+                                   min="0" 
+                                   max="999999999.99"
+                                   placeholder="Max"
+                                   onchange="validatePrice(this, 'maxPriceError')">
+                            <span class="input-group-text">₫</span>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Sắp xếp</label>
-                            <select class="form-select" name="sortOption">
-                                <option th:each="option : ${sortOptions}" th:value="${option.value}" th:text="${option.label}" th:selected="${sortOption == option.value}"></option>
-                            </select>
+                        <div class="invalid-feedback" id="maxPriceError" style="display: none;">
+                            Giá phải từ 0 đến 999,999,999.99
                         </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Số lượng tồn kho tối thiểu</label>
+                        <input type="number" 
+                               class="form-control" 
+                               name="minStock" 
+                               th:value="${minStock}" 
+                               min="0" 
+                               max="999999"
+                               placeholder="Nhập số lượng"
+                               onchange="validateMinStock(this)">
+                        <div class="invalid-feedback" id="minStockError" style="display: none;">
+                            Số lượng tồn kho phải từ 0 đến 999,999
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Sắp xếp</label>
+                        <select class="form-select" name="sortOption">
+                            <option th:each="option : ${sortOptions}" th:value="${option.value}" th:text="${option.label}" th:selected="${sortOption == option.value}"></option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -546,6 +584,70 @@
 <script>
     function resetFilters() {
         window.location.href = '/admin/products';
+    }
+    
+    function validateMinStock(input) {
+        const value = parseInt(input.value);
+        const errorDiv = document.getElementById('minStockError');
+        
+        if (value < 0 || value > 999999) {
+            input.classList.add('is-invalid');
+            errorDiv.style.display = 'block';
+            return false;
+        } else {
+            input.classList.remove('is-invalid');
+            errorDiv.style.display = 'none';
+            return true;
+        }
+    }
+    
+    function validatePrice(input, errorId) {
+        const value = parseFloat(input.value);
+        const errorDiv = document.getElementById(errorId);
+        
+        if (value < 0 || value > 999999999.99) {
+            input.classList.add('is-invalid');
+            errorDiv.style.display = 'block';
+            return false;
+        } else {
+            input.classList.remove('is-invalid');
+            errorDiv.style.display = 'none';
+            return true;
+        }
+    }
+    
+    function validateFilterForm() {
+        const minStockInput = document.querySelector('input[name="minStock"]');
+        const minPriceInput = document.querySelector('input[name="minPrice"]');
+        const maxPriceInput = document.querySelector('input[name="maxPrice"]');
+        
+        // Validate minStock
+        if (minStockInput.value && !validateMinStock(minStockInput)) {
+            return false;
+        }
+        
+        // Validate minPrice
+        if (minPriceInput.value && !validatePrice(minPriceInput, 'minPriceError')) {
+            return false;
+        }
+        
+        // Validate maxPrice
+        if (maxPriceInput.value && !validatePrice(maxPriceInput, 'maxPriceError')) {
+            return false;
+        }
+        
+        // Validate price range
+        if (minPriceInput.value && maxPriceInput.value) {
+            const minPrice = parseFloat(minPriceInput.value);
+            const maxPrice = parseFloat(maxPriceInput.value);
+            
+            if (minPrice > maxPrice) {
+                alert('Giá tối thiểu không được lớn hơn giá tối đa');
+                return false;
+            }
+        }
+        
+        return true;
     }
 </script>
 

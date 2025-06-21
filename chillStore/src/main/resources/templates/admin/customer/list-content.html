@@ -1,89 +1,113 @@
 <div th:fragment="list-content">
-    <main class="ml-[220px] w-full max-w-5xl px-6 py-8">
-        <div class="flex flex-wrap items-center gap-4 mb-6 w-full">
-            <h1 class="text-3xl font-bold text-slate-800">User List</h1>
-            <a th:href="@{/admin/customer/addform}" class="bg-cyan-400 text-white px-5 py-2 rounded hover:bg-cyan-500 transition">Add New</a>
-            <form th:action="@{/admin/customer}" method="get" class="flex flex-1 gap-2 min-w-[220px] relative">
-                <select id="searchType" name="type" class="px-2 py-2 rounded border border-cyan-200">
+    <div class="content">
+        <h2 class="mb-4">Customer List</h2>
+
+        <!-- Search Form -->
+        <form class="row g-3 mb-3" th:action="@{/admin/customer}" method="get">
+            <div class="col-md-3">
+                <select name="type" class="form-select">
                     <option value="name">Name</option>
                     <option value="email">Email</option>
                 </select>
-                <input id="searchInput" type="text" name="search" th:value="${search}" placeholder="Search by name or email..." class="flex-1 px-3 py-2 rounded border border-cyan-200" autocomplete="off" />
-                <button type="submit" class="bg-slate-700 text-white px-4 py-2 rounded hover:bg-slate-900 transition">Search</button>
-                <ul id="suggestionList" class="absolute left-0 top-12 w-full bg-white border border-cyan-200 rounded shadow z-20"></ul>
-            </form>
-        </div>
-        <div th:if="${success}" class="bg-green-100 text-green-800 px-4 py-2 rounded mb-2" th:text="${success}"></div>
-        <div th:if="${error}" class="bg-red-100 text-red-800 px-4 py-2 rounded mb-2" th:text="${error}"></div>
-        <div>
-            <div th:if="${#lists.isEmpty(customers)}" class="text-center text-gray-500">No user data available</div>
-            <div th:each="customer : ${customers}" class="bg-white rounded-xl shadow p-6 mb-6 w-full">
-                <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">ID:</span> <span th:text="${customer.customerId}"></span></div>
-                <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Full Name:</span> <span th:text="${customer.display_name}"></span></div>
-                <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Email:</span> <span th:text="${customer.email}"></span></div>
-                <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Password:</span> <span th:text="${customer.password != null ? (#strings.substring(customer.password,0,4) + '****') : '****'}"></span></div>
-                <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Phone:</span> <span th:text="${customer.phone}"></span></div>
-                <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Created On:</span> <span th:text="${#temporals.format(customer.created_at, 'dd/MM/yyyy')}"></span></div>
-                <div class="flex gap-3"><span class="font-semibold text-cyan-700 min-w-[90px]">Updated On:</span> <span th:text="${#temporals.format(customer.updated_at, 'dd/MM/yyyy')}"></span></div>
-                <div class="flex gap-3 items-center"><span class="font-semibold text-cyan-700 min-w-[90px]">Status:</span>
-                    <span th:if="${customer.locked}" class="text-red-600 font-bold">Locked</span>
-                    <span th:unless="${customer.locked}" class="text-green-600 font-bold">Active</span>
-                </div>
-                <div class="flex gap-3 mt-3">
-                    <a th:href="@{/admin/customer/edit/{id}(id=${customer.customerId})}" class="bg-cyan-400 text-white px-4 py-2 rounded hover:bg-cyan-500 transition">Edit</a>
-                    <a th:if="${!customer.locked}" th:href="@{/admin/customer/delete/{id}(id=${customer.customerId})}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition" onclick="return confirm('Are you sure you want to LOCK this user account?')">Lock</a>
-                    <a th:if="${customer.locked}" th:href="@{/admin/customer/unlock/{id}(id=${customer.customerId})}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 transition" onclick="return confirm('Are you sure you want to UNLOCK this user account?')">Unlock</a>
-                </div>
             </div>
-        </div>
-        <div class="flex justify-center mt-6" th:if="${totalPages > 1}">
-            <ul class="inline-flex -space-x-px">
-                <li th:if="${currentPage > 1}">
-                    <a th:href="@{/admin/customer(page=${currentPage - 1}, search=${search}, locked=${locked})}" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">«</a>
-                </li>
-                <li th:each="i : ${#numbers.sequence(1, totalPages)}"
-                    th:classappend="${i == currentPage} ? 'bg-cyan-400 text-white' : 'bg-white text-gray-500'">
-                    <a th:href="@{/admin/customer(page=${i}, search=${search}, locked=${locked})}"
-                       th:text="${i}"
-                       class="px-3 py-2 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700"></a>
-                </li>
-                <li th:if="${currentPage < totalPages}">
-                    <a th:href="@{/admin/customer(page=${currentPage + 1}, search=${search}, locked=${locked})}" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">»</a>
-                </li>
-            </ul>
-        </div>
-    </main>
-</div>
-<script>
-    const input = document.getElementById('searchInput');
-    const suggestionList = document.getElementById('suggestionList');
-    const searchType = document.getElementById('searchType');
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Search by name or email"
+                       th:value="${search}">
+            </div>
+            <div class="col-md-3">
+                <select name="locked" class="form-select">
+                    <option value="">All Status</option>
+                    <option value="false" th:selected="${locked == 'false'}">Active</option>
+                    <option value="true" th:selected="${locked == 'true'}">Locked</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">Search</button>
+            </div>
+        </form>
+        
+        <a th:href="@{/admin/customer/addform}" class="btn btn-primary mb-3">Add New Customer</a>
 
-    input.addEventListener('input', function() {
-        const keyword = input.value.trim();
-        const type = searchType.value;
-        if (keyword.length === 0) {
-            suggestionList.innerHTML = '';
-            return;
-        }
-        fetch(`/admin/customer/suggest?keyword=${encodeURIComponent(keyword)}&type=${type}`)
-            .then(res => res.json())
-            .then(data => {
-                suggestionList.innerHTML = '';
-                data.forEach(item => {
-                    const li = document.createElement('li');
-                    li.textContent = item;
-                    li.className = 'px-3 py-2 hover:bg-cyan-100 cursor-pointer';
-                    li.onclick = () => {
-                        input.value = item;
-                        suggestionList.innerHTML = '';
-                    };
-                    suggestionList.appendChild(li);
-                });
-            });
-    });
-    // Hide suggestions when clicking outside
-    input.addEventListener('blur', function() {
-        setTimeout(() => suggestionList.innerHTML = '', 200);
-    });
-</script>
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Customer Table -->
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="customer : ${customers}">
+                    <td th:text="${customer.customerId}"></td>
+                    <td th:text="${customer.display_name}"></td>
+                    <td th:text="${customer.email}"></td>
+                    <td th:text="${customer.password != null ? (#strings.substring(customer.password,0,4) + '****') : '****'}"></td>
+                    <td th:text="${customer.phone}"></td>
+                    <td th:text="${customer.address}"></td>
+                    <td>
+                        <span th:if="${customer.locked}" class="badge bg-danger">Locked</span>
+                        <span th:unless="${customer.locked}" class="badge bg-success">Active</span>
+                    </td>
+                    <td th:text="${#temporals.format(customer.created_at, 'dd/MM/yyyy')}"></td>
+                    <td>
+                        <div class="customer-buttons">
+                            <a th:href="@{/admin/customer/edit/{id}(id=${customer.customerId})}"
+                               class="btn-update">Edit</a>
+                            <a th:if="${!customer.locked}" 
+                               th:href="@{/admin/customer/delete/{id}(id=${customer.customerId})}"
+                               onclick="return confirm('Are you sure you want to lock this customer?')"
+                               class="btn btn-sm btn-warning btn-lock">
+                                Lock
+                            </a>
+                            <a th:if="${customer.locked}" 
+                               th:href="@{/admin/customer/unlock/{id}(id=${customer.customerId})}"
+                               onclick="return confirm('Are you sure you want to unlock this customer?')"
+                               class="btn btn-sm btn-success btn-unlock">
+                                Unlock
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-4" th:if="${totalPages > 1}">
+            <nav>
+                <ul class="pagination">
+                    <!-- Previous -->
+                    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/customer(page=${currentPage - 1}, search=${search}, type=${type}, locked=${locked})}">Previous</a>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(1, totalPages)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/admin/customer(page=${i}, search=${search}, type=${type}, locked=${locked})}"
+                           th:text="${i}">1</a>
+                    </li>
+
+                    <!-- Next -->
+                    <li class="page-item" th:classappend="${currentPage >= totalPages} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/customer(page=${currentPage + 1}, search=${search}, type=${type}, locked=${locked})}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

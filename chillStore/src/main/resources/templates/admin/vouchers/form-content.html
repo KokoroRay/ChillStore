@@ -1,526 +1,199 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>Voucher Form</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
-
-  <style>
-    /* CSS custom Select2 */
-    select.form-control[multiple]:not(.select2-hidden-accessible) {
-      position: absolute !important;
-      left: -9999px !important;
-      width: 1px !important;
-      height: 1px !important;
-      overflow: hidden !important;
-      padding: 0 !important;
-      border: 0 !important;
-      clip: rect(0 0 0 0) !important;
-      white-space: nowrap !important;
-      pointer-events: none !important;
-    }
-    .select2-container {
-      width: 100% !important;
-      display: block !important;
-      box-sizing: border-box;
-      margin-top: 0;
-    }
-    .select2-container--bootstrap4 .select2-selection--multiple {
-      min-height: calc(2.25rem + 2px);
-      border: 1px solid #ced4da;
-      border-radius: 0.25rem;
-      background-color: #fff;
-      cursor: text;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      padding: 0.375rem 0.75rem;
-      padding-right: calc(0.75rem + 1.5em);
-      gap: 0.2rem;
-    }
-    .select2-container--bootstrap4.select2-container--focus .select2-selection--multiple {
-      border-color: #80bdff;
-      outline: 0;
-      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
-    .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__rendered {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.2rem;
-      flex-grow: 1;
-    }
-    .select2-selection__choice {
-      background-color: #e0f7fa;
-      border: 1px solid #80deea;
-      border-radius: 0.25rem;
-      padding: 0.2rem 0.6rem;
-      color: #007bff;
-      font-size: 0.875rem;
-      display: inline-flex;
-      align-items: center;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-    .select2-selection__choice__remove {
-      color: #dc3545;
-      margin-right: 0.4rem;
-      font-size: 1rem;
-      cursor: pointer;
-      font-weight: bold;
-      line-height: 1;
-      order: -1;
-    }
-    .select2-selection__choice__remove:hover {
-      color: #c82333;
-    }
-    .select2-search__field {
-      flex-grow: 1;
-      min-width: 5em;
-      height: auto !important;
-      padding: 0;
-      border: none;
-      outline: none;
-      background: transparent;
-      font-size: 0.875rem;
-    }
-    .select2-dropdown {
-      border: 1px solid #ced4da;
-      border-top: none;
-      border-radius: 0 0 0.25rem 0.25rem;
-      box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.175);
-      z-index: 1050;
-    }
-    .select2-results__option {
-      padding: 0.5rem 1rem;
-    }
-    .select2-results__option--highlighted {
-      background-color: #007bff !important;
-      color: #fff !important;
-    }
-    .select2-results__option[aria-selected=true] {
-      background-color: #e9ecef !important;
-      color: #000 !important;
-    }
-    .select2-container--bootstrap4.is-invalid .select2-selection--multiple {
-      border-color: #dc3545 !important;
-    }
-    .form-control.is-valid + .select2-container--bootstrap4 .select2-selection--multiple,
-    .form-control.is-invalid + .select2-container--bootstrap4 .select2-selection--multiple {
-      background-image: none !important;
-    }
-    .form-label {
-      font-weight: 500;
-      color: #495057;
-      margin-bottom: 8px;
-      display: block;
-    }
-    .form-group.mb-3 {
-      position: relative;
-    }
-    .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__arrow {
-      height: calc(2.25rem + 2px);
-      position: absolute;
-      top: 0;
-      right: 0.75rem;
-      width: 1.5em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-    .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__arrow b {
-      border-color: #6c757d transparent transparent transparent;
-      border-style: solid;
-      border-width: 5px 4px 0 4px;
-      height: 0;
-      left: 50%;
-      margin-left: -4px;
-      margin-top: -2px;
-      position: absolute;
-      top: 50%;
-      width: 0;
-    }
-    .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__clear {
-      position: absolute;
-      top: 50%;
-      right: 2.25rem;
-      transform: translateY(-50%);
-      font-size: 1.2rem;
-      color: #6c757d;
-      cursor: pointer;
-      padding: 0 5px;
-      z-index: 10;
-    }
-    .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__clear:hover {
-      color: #dc3545;
-    }
-
-    /* Form container */
-    .form-container {
-      max-width: 700px;
-      margin: 20px auto;
-      padding: 30px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    .form-section {
-      margin-bottom: 25px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid #eee;
-    }
-    .form-section-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 15px;
-    }
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .d-none {
-      display: none !important;
-    }
-  </style>
-</head>
-<body>
+<!-- admin/vouchers/form-content.html -->
 <div th:fragment="content(voucherDto, selectedCategories, selectedBrands, errorMessage)">
   <div id="voucherFormContainer"
        th:attr="data-discount-pct=${voucherDto != null and voucherDto.discount_pct != null} ? ${voucherDto.discount_pct} : null,
                 data-discount-amount=${voucherDto != null and voucherDto.discount_amount != null} ? ${voucherDto.discount_amount} : null">
     <div class="form-container">
-      <h2 th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Edit Voucher' : 'Add Voucher'">Voucher Form</h2>
+      <h2 class="mb-4 text-center"
+          th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Chỉnh sửa Voucher' : 'Tạo Voucher Mới'">
+        Voucher Form
+      </h2>
       <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
       <form th:action="${voucherDto != null and voucherDto.voucher_id != null}
-                             ? @{/admin/vouchers/edit/{id}(id=${voucherDto.voucher_id})}
-                             : @{/admin/vouchers/add}"
-            th:object="${voucherDto}" method="post" id="voucherFormElement">
-
+                         ? @{/admin/vouchers/edit/{id}(id=${voucherDto.voucher_id})}
+                         : @{/admin/vouchers/add}"
+            th:object="${voucherDto}" method="post" novalidate id="voucherFormElement">
         <input type="hidden" th:field="*{voucher_id}"
                th:if="${voucherDto != null and voucherDto.voucher_id != null}"/>
 
-        <!-- Voucher Information -->
+        <!-- Thông tin Voucher -->
         <div class="form-section">
-          <div class="form-section-title">Voucher Information</div>
+          <div class="form-section-title">
+            <i class="fas fa-info-circle"></i> Thông tin Voucher
+          </div>
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label for="code" class="form-label">Code <span class="text-danger">*</span></label>
-              <input type="text" th:field="*{code}" class="form-control" id="code" placeholder="Enter voucher code" required/>
-              <div class="invalid-feedback" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
+              <label for="code" class="form-label">Mã <span class="text-danger">*</span></label>
+              <input type="text" th:field="*{code}" class="form-control" id="code"
+                     placeholder="Nhập mã voucher" required/>
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('code')}"
+                   th:errors="*{code}"></div>
             </div>
             <div class="col-md-6 mb-3">
-              <label for="quantity_available" class="form-label">Quantity <span class="text-danger">*</span></label>
-              <input type="number" min="0" th:field="*{quantity_available}" class="form-control" id="quantity_available" placeholder="e.g., 100" required/>
-              <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity_available')}" th:errors="*{quantity_available}"></div>
+              <label for="quantity_available" class="form-label">Số lượng khả dụng <span class="text-danger">*</span></label>
+              <input type="number" min="1" th:field="*{quantity_available}" class="form-control"
+                     id="quantity_available" placeholder="ví dụ: 100" required/>
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('quantity_available')}"
+                   th:errors="*{quantity_available}"></div>
             </div>
           </div>
           <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea th:field="*{description}" class="form-control" id="description" rows="2" placeholder="Description (optional)"></textarea>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+            <label for="description" class="form-label">Mô tả</label>
+            <textarea th:field="*{description}" class="form-control" id="description" rows="2"
+                      placeholder="Mô tả chi tiết về voucher (tùy chọn)"></textarea>
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('description')}"
+                 th:errors="*{description}"></div>
           </div>
         </div>
 
-        <!-- Select category với Select2 AJAX -->
-        <div class="form-group mb-3">
-          <label for="categoryIds" class="form-label">
-            Danh mục áp dụng:
-            <i id="clearCategories" class="fas fa-times-circle" style="cursor:pointer; margin-left:5px;" title="Clear all"></i>
-          </label>
-          <select id="categoryIds" name="categoryIds" multiple="multiple" class="form-control"
-                  th:classappend="${#fields.hasErrors('categoryIds')} ? 'is-invalid' : ''">
-            <!-- Preload selected khi edit hoặc khi validation lỗi -->
-            <option th:each="cat : ${selectedCategories}"
-                    th:value="${cat.id}"
-                    th:text="${cat.name}"
-                    selected="selected">
-            </option>
-          </select>
-          <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryIds')}" th:errors="*{categoryIds}"></div>
-        </div>
-
-        <!-- Select brand với Select2 AJAX -->
-        <div class="form-group mb-3">
-          <label for="brandIds" class="form-label">
-            Thương hiệu áp dụng:
-            <i id="clearBrands" class="fas fa-times-circle" style="cursor:pointer; margin-left:5px;" title="Clear all"></i>
-          </label>
-          <select id="brandIds" name="brandIds" multiple="multiple" class="form-control"
-                  th:classappend="${#fields.hasErrors('brandIds')} ? 'is-invalid' : ''">
-            <option th:each="br : ${selectedBrands}"
-                    th:value="${br.id}"
-                    th:text="${br.name}"
-                    selected="selected">
-            </option>
-          </select>
-          <div class="invalid-feedback" th:if="${#fields.hasErrors('brandIds')}" th:errors="*{brandIds}"></div>
-        </div>
-
-        <!-- Promotion Details -->
+        <!-- Chi tiết khuyến mãi -->
         <div class="form-section">
-          <div class="form-section-title">Promotion Details</div>
+          <div class="form-section-title">
+            <i class="fas fa-percentage"></i> Chi tiết khuyến mãi
+          </div>
           <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Discount Type <span class="text-danger">*</span></label>
+            <div class="col-lg-6 mb-3">
+              <label class="form-label">Loại giảm giá <span class="text-danger">*</span></label>
               <div class="d-flex gap-3">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="discountType" id="discountPercent" value="percent"
+                  <input class="form-check-input" type="radio" name="discountType"
+                         id="discountPercent" value="percent"
                          onclick="toggleDiscountType('percent')"
-                         th:checked="${voucherDto != null and voucherDto.discount_pct != null}"/>
-                  <label class="form-check-label" for="discountPercent">Percentage</label>
+                         th:checked="${voucherDto != null and voucherDto.discount_pct != null and voucherDto.discount_pct > 0}"/>
+                  <label class="form-check-label" for="discountPercent">Phần trăm</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="discountType" id="discountAmount" value="amount"
+                  <input class="form-check-input" type="radio" name="discountType"
+                         id="discountAmount" value="amount"
                          onclick="toggleDiscountType('amount')"
-                         th:checked="${voucherDto != null and voucherDto.discount_amount != null}"/>
-                  <label class="form-check-label" for="discountAmount">Fixed Amount</label>
+                         th:checked="${voucherDto != null and voucherDto.discount_amount != null and voucherDto.discount_amount > 0}"/>
+                  <label class="form-check-label" for="discountAmount">Số tiền cố định</label>
                 </div>
               </div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label for="min_order_amount" class="form-label">Min Order Amount</label>
-              <input type="number" step="0.01" min="0" th:field="*{min_order_amount}" class="form-control" id="min_order_amount" placeholder="e.g., 500000"/>
-              <div class="invalid-feedback" th:if="${#fields.hasErrors('min_order_amount')}" th:errors="*{min_order_amount}"></div>
+            <div class="col-lg-6 mb-3">
+              <label for="min_order_amount" class="form-label">Giá trị đơn hàng tối thiểu (₫)</label>
+              <div class="input-group">
+                <span class="input-group-text">₫</span>
+                <input type="number" step="1000" min="0" th:field="*{min_order_amount}"
+                       class="form-control" id="min_order_amount"
+                       placeholder="ví dụ: 500.000"/>
+              </div>
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('min_order_amount')}"
+                   th:errors="*{min_order_amount}"></div>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 mb-3" id="discountPctField">
-              <label for="discount_pct" class="form-label">Discount Percent (%)</label>
-              <input type="number" step="0.01" min="0" max="100" th:field="*{discount_pct}" class="form-control" id="discount_pct" placeholder="e.g., 10"/>
-              <div class="invalid-feedback" th:if="${#fields.hasErrors('discount_pct')}" th:errors="*{discount_pct}"></div>
+            <div class="col-lg-6 mb-3" id="discountPctField">
+              <label for="discount_pct" class="form-label">Phần trăm giảm giá (%)</label>
+              <div class="input-group">
+                <input type="number" step="0.01" min="0" max="100" th:field="*{discount_pct}"
+                       class="form-control" id="discount_pct" placeholder="ví dụ: 10"/>
+                <span class="input-group-text">%</span>
+              </div>
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('discount_pct')}"
+                   th:errors="*{discount_pct}"></div>
             </div>
-            <div class="col-md-6 mb-3" id="discountAmountField">
-              <label for="discount_amount" class="form-label">Discount Amount (VND)</label>
-              <input type="number" step="1000" min="0" th:field="*{discount_amount}" class="form-control" id="discount_amount" placeholder="e.g., 100000"/>
-              <div class="invalid-feedback" th:if="${#fields.hasErrors('discount_amount')}" th:errors="*{discount_amount}"></div>
+            <div class="col-lg-6 mb-3" id="discountAmountField">
+              <label for="discount_amount" class="form-label">Số tiền giảm giá (₫)</label>
+              <div class="input-group">
+                <span class="input-group-text">₫</span>
+                <input type="number" step="1000" min="0" th:field="*{discount_amount}"
+                       class="form-control" id="discount_amount" placeholder="ví dụ: 100.000"/>
+              </div>
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('discount_amount')}"
+                   th:errors="*{discount_amount}"></div>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
+            <div class="col-lg-6 mb-3">
+              <label for="start_date" class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
               <input type="date" th:field="*{start_date}" class="form-control" id="start_date" required/>
-              <div class="invalid-feedback" th:if="${#fields.hasErrors('start_date')}" th:errors="*{start_date}"></div>
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('start_date')}"
+                   th:errors="*{start_date}"></div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label for="end_date" class="form-label">End Date <span class="text-danger">*</span></label>
+            <div class="col-lg-6 mb-3">
+              <label for="end_date" class="form-label">Ngày kết thúc <span class="text-danger">*</span></label>
               <input type="date" th:field="*{end_date}" class="form-control" id="end_date" required/>
-              <div class="invalid-feedback" th:if="${#fields.hasErrors('end_date')}" th:errors="*{end_date}"></div>
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('end_date')}"
+                   th:errors="*{end_date}"></div>
             </div>
           </div>
           <div class="mb-3">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" th:field="*{active}" id="active"/>
-              <label class="form-check-label" for="active">Active Voucher</label>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" th:field="*{active}" id="active" role="switch"/>
+              <label class="form-check-label" for="active">Kích hoạt voucher ngay lập tức</label>
             </div>
           </div>
         </div>
 
-        <div class="form-actions">
+        <!-- Sản phẩm áp dụng -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <i class="fas fa-box-open"></i> Sản phẩm áp dụng
+          </div>
+          <p class="text-muted mb-4">
+            Chọn danh mục và thương hiệu mà voucher này sẽ áp dụng.
+            Để trống cả hai để áp dụng cho tất cả sản phẩm.
+          </p>
+          <div class="row">
+            <div class="col-md-6 mb-4">
+              <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span>Danh mục</span>
+                  <i id="clearCategories" class="fas fa-times-circle clear-all-btn" title="Xóa tất cả"></i>
+                </div>
+                <div class="card-body">
+                  <select id="categoryIds" name="categoryIds" multiple="multiple"
+                          class="form-control"
+                          th:classappend="${#fields.hasErrors('categoryIds')}? 'is-invalid' : ''">
+                    <option th:each="cat : ${selectedCategories}"
+                            th:value="${cat.id}"
+                            th:text="${cat.name}"
+                            selected="selected"></option>
+                  </select>
+                  <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('categoryIds')}"
+                       th:errors="*{categoryIds}"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-4">
+              <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span>Thương hiệu</span>
+                  <i id="clearBrands" class="fas fa-times-circle clear-all-btn" title="Xóa tất cả"></i>
+                </div>
+                <div class="card-body">
+                  <select id="brandIds" name="brandIds" multiple="multiple"
+                          class="form-control"
+                          th:classappend="${#fields.hasErrors('brandIds')}? 'is-invalid' : ''">
+                    <option th:each="br : ${selectedBrands}"
+                            th:value="${br.id}"
+                            th:text="${br.name}"
+                            selected="selected"></option>
+                  </select>
+                  <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('brandIds')}"
+                       th:errors="*{brandIds}"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nút hành động -->
+        <div class="form-actions mt-4 d-flex justify-content-end gap-2">
           <a th:href="@{/admin/vouchers}" class="btn btn-secondary">
-            <i class="fas fa-times"></i> Cancel
+            <i class="fas fa-times me-2"></i> Hủy
           </a>
           <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i>
-            <span th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Update' : 'Add'">Save</span>
+            <i class="fas fa-save me-2"></i>
+            <span th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Cập nhật Voucher' : 'Tạo Voucher'">
+              Lưu
+            </span>
           </button>
         </div>
       </form>
     </div>
   </div>
-
-  <!-- JS thư viện -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-  <!-- Lấy context path -->
-  <script th:inline="javascript">
-    /*<![CDATA[*/
-    var contextPath = /*[[@{/}]]*/ '';
-    /*]]>*/
-  </script>
-
-  <script>
-    // Hàm khởi tạo Select2 cho category và brand
-    function initSelect2() {
-      // Lưu giá trị đã chọn trước khi khởi tạo Select2
-      const selectedCategoryIds = [...$('#categoryIds option')].map(option => option.value);
-      const selectedBrandIds = [...$('#brandIds option')].map(option => option.value);
-
-      // Select2 AJAX cho category
-      $('#categoryIds').select2({
-        theme: 'bootstrap4',
-        placeholder: "Chọn danh mục...",
-        closeOnSelect: false,
-        width: '100%',
-        ajax: {
-          url: contextPath + 'admin/vouchers/categories/search',
-          dataType: 'json',
-          delay: 250,
-          data: function(params) {
-            return {
-              q: params.term,
-              page: params.page || 1
-            };
-          },
-          processResults: function(data, params) {
-            params.page = params.page || 1;
-            return {
-              results: data.results,
-              pagination: {
-                more: data.pagination && data.pagination.more
-              }
-            };
-          },
-          cache: true
-        }
-      });
-
-      // Select2 AJAX cho brand
-      $('#brandIds').select2({
-        theme: 'bootstrap4',
-        placeholder: "Chọn thương hiệu...",
-        closeOnSelect: false,
-        width: '100%',
-        ajax: {
-          url: contextPath + 'admin/vouchers/brands/search',
-          dataType: 'json',
-          delay: 250,
-          data: function(params) {
-            return {
-              q: params.term,
-              page: params.page || 1
-            };
-          },
-          processResults: function(data, params) {
-            params.page = params.page || 1;
-            return {
-              results: data.results,
-              pagination: {
-                more: data.pagination && data.pagination.more
-              }
-            };
-          },
-          cache: true
-        }
-      });
-
-      // Clear-all
-      $('#clearCategories').on('click', function() {
-        $('#categoryIds').val(null).trigger('change');
-      });
-
-      $('#clearBrands').on('click', function() {
-        $('#brandIds').val(null).trigger('change');
-      });
-
-      // Validation styling
-      if ($('#categoryIds').hasClass('is-invalid')) {
-        $('#categoryIds').next('.select2-container').find('.select2-selection--multiple').addClass('is-invalid');
-      }
-      if ($('#brandIds').hasClass('is-invalid')) {
-        $('#brandIds').next('.select2-container').find('.select2-selection--multiple').addClass('is-invalid');
-      }
-
-      $('#categoryIds').on('change', function() {
-        if ($(this).val() && $(this).val().length > 0) {
-          $(this).next('.select2-container').find('.select2-selection--multiple').removeClass('is-invalid');
-          $(this).siblings('.invalid-feedback').text('');
-        }
-      });
-
-      $('#brandIds').on('change', function() {
-        if ($(this).val() && $(this).val().length > 0) {
-          $(this).next('.select2-container').find('.select2-selection--multiple').removeClass('is-invalid');
-          $(this).siblings('.invalid-feedback').text('');
-        }
-      });
-
-      // QUAN TRỌNG: Tạo các option đã chọn trong Select2
-      setTimeout(() => {
-        if (selectedCategoryIds.length > 0) {
-          // Tạo các option tương ứng
-          selectedCategoryIds.forEach(id => {
-            const text = $(`#categoryIds option[value="${id}"]`).text();
-            const option = new Option(text, id, true, true);
-            $('#categoryIds').append(option);
-          });
-          $('#categoryIds').val(selectedCategoryIds).trigger('change');
-        }
-
-        if (selectedBrandIds.length > 0) {
-          selectedBrandIds.forEach(id => {
-            const text = $(`#brandIds option[value="${id}"]`).text();
-            const option = new Option(text, id, true, true);
-            $('#brandIds').append(option);
-          });
-          $('#brandIds').val(selectedBrandIds).trigger('change');
-        }
-      }, 500);
-    }
-
-    // Toggle discount type
-    function toggleDiscountType(type) {
-      const pctField = document.getElementById('discountPctField');
-      const amtField = document.getElementById('discountAmountField');
-      const inputPct = document.getElementById('discount_pct');
-      const inputAmt = document.getElementById('discount_amount');
-      const radioPct = document.getElementById('discountPercent');
-      const radioAmt = document.getElementById('discountAmount');
-
-      if (type === 'percent') {
-        pctField.classList.remove('d-none');
-        amtField.classList.add('d-none');
-        if (inputPct) {
-          inputPct.required = true;
-          if (inputAmt) inputAmt.value = '';
-        }
-        if (inputAmt) inputAmt.required = false;
-        if (radioPct) radioPct.checked = true;
-      } else {
-        amtField.classList.remove('d-none');
-        pctField.classList.add('d-none');
-        if (inputAmt) {
-          inputAmt.required = true;
-          if (inputPct) inputPct.value = '';
-        }
-        if (inputPct) inputPct.required = false;
-        if (radioAmt) radioAmt.checked = true;
-      }
-    }
-
-    // Khởi tạo khi DOM sẵn sàng
-    document.addEventListener('DOMContentLoaded', function() {
-      const container = document.getElementById('voucherFormContainer');
-      let discountPct = container.getAttribute('data-discount-pct');
-      let discountAmount = container.getAttribute('data-discount-amount');
-
-      if (!discountPct || discountPct === 'null') discountPct = null;
-      if (!discountAmount || discountAmount === 'null') discountAmount = null;
-
-      if (discountPct != null) {
-        toggleDiscountType('percent');
-      } else if (discountAmount != null) {
-        toggleDiscountType('amount');
-      } else {
-        toggleDiscountType('percent');
-      }
-
-      // Khởi tạo Select2
-      initSelect2();
-    });
-  </script>
 </div>
-</body>
-</html>

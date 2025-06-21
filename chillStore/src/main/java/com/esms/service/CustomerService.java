@@ -26,6 +26,8 @@ public interface CustomerService {
 
     Page<Customer> searchCustomersWithFilters(String keyword, String gender, Boolean locked, Pageable pageable);
 
+    Page<Customer> findWithFilters(String keyword, Boolean locked, Pageable pageable);
+
     List<String> suggestCustomer(String keyword, int limit);
 
     List<String> suggestCustomerByType(String keyword, String type, int limit);

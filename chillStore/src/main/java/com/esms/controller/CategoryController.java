@@ -4,6 +4,7 @@ package com.esms.controller;
 import com.esms.model.dto.CategoryDto;
 import com.esms.model.entity.Category;
 import com.esms.service.CategoryService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/category")
+@RequestMapping({"/admin/category", "/staff/category"})
 public class CategoryController {
 
     @Autowired
@@ -25,14 +26,20 @@ public class CategoryController {
     @GetMapping
     public String listCategory(
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "error", required = false) String error, Model model, Pageable pa) {
+            @RequestParam(value = "error", required = false) String error, Model model,
+            Pageable pa, HttpServletRequest request) {
         if (error != null) {
             model.addAttribute("error", error);
         }
         Page<Category> categories = categoryService.searchCategory(keyword, pa);
         model.addAttribute("categories", categories);
         model.addAttribute("keyword", keyword);
-        return "admin/category/list";
+        String requestUrl = request.getRequestURI();
+        if (requestUrl.startsWith("/staff") ){
+            return "staff/category/list";
+        } else {
+            return "admin/category/list";
+        }
     }
 
     @GetMapping("/add")

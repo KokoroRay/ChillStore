@@ -3,163 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết sản phẩm</title>
+    <title>Chi tiết sản phẩm - ESMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/sidebarStaff.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-        }
-        .card {
-            border: none;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-        .card-header {
-            background-color: #fff;
-            border-bottom: 2px solid #f0f0f0;
-            padding: 1.5rem;
-        }
-        .card-title {
-            margin: 0;
-            color: #333;
-            font-weight: 600;
-        }
-        .card-body {
-            padding: 2rem;
-        }
-        .product-image {
-            width: 100%;
-            max-height: 400px;
-            object-fit: contain;
-            border-radius: 8px;
-            background-color: #fff;
-            padding: 1rem;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-        }
-        .no-image {
-            width: 100%;
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            color: #6c757d;
-        }
-        .table {
-            margin-bottom: 0;
-        }
-        .table th {
-            width: 150px;
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-        .table td {
-            vertical-align: middle;
-        }
-        .product-description {
-            max-height: 150px;
-            overflow-y: auto;
-            padding: 0.5rem;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-        }
-        .card-footer {
-            background-color: #fff;
-            border-top: 2px solid #f0f0f0;
-            padding: 1.5rem;
-        }
-        .btn {
-            padding: 0.5rem 1.5rem;
-            font-weight: 500;
-        }
-        .badge {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/styleproduct.css">
 </head>
 <body>
-<div class="container">
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title">Chi tiết sản phẩm</h3>
-            <form th:action="@{/admin/products}" method="get">
-                <input type="hidden" name="page" th:value="${currentPage}" />
-                <input type="hidden" name="size" th:value="${size}" />
-                <input type="hidden" name="keyword" th:value="${keyword}" />
-                <input type="hidden" name="categoryId" th:value="${categoryId}" />
-                <input type="hidden" name="brandId" th:value="${brandId}" />
-                <input type="hidden" name="filterStatus" th:value="${filterStatus}" />
-                <input type="hidden" name="minPrice" th:value="${minPrice}" />
-                <input type="hidden" name="maxPrice" th:value="${maxPrice}" />
-                <input type="hidden" name="minStock" th:value="${minStock}" />
-                <input type="hidden" name="sortOption" th:value="${sortOption}" />
-                <button type="submit" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Quay lại
-                </button>
-            </form>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-5 mb-4 mb-md-0">
-                    <img th:if="${product.imageUrl}"
-                         th:src="${product.imageUrl}"
-                         class="product-image"
-                         alt="Product Image">
-                    <div th:unless="${product.imageUrl}" class="no-image">
-                        <i class="fas fa-image fa-3x mb-2"></i>
-                        <p>Không có hình ảnh</p>
+
+<div th:insert="~{fragments/header :: headerContent}"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <!-- Topbar -->
+            <div class="topbar">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Chi tiết sản phẩm</h4>
+                    <div class="d-flex align-items-center">
+                        <a th:href="@{/admin/products(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" class="btn btn-secondary me-3">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                        <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
                     </div>
                 </div>
-                <div class="col-md-7">
-                    <table class="table">
-                        <tr>
-                            <th>ID:</th>
-                            <td th:text="${product.productId}"></td>
-                        </tr>
-                        <tr>
-                            <th>Tên sản phẩm:</th>
-                            <td th:text="${product.name}"></td>
-                        </tr>
-                        <tr>
-                            <th>Mô tả:</th>
-                            <td>
-                                <div class="product-description">
-                                    <span th:text="${product.description}"></span>
+            </div>
+
+            <!-- Product Detail Card -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5 mb-4 mb-md-0">
+                            <div class="product-image-container text-center">
+                                <img th:if="${product.imageUrl}"
+                                     th:src="${product.imageUrl}"
+                                     class="product-detail-image"
+                                     alt="Product Image">
+                                <div th:unless="${product.imageUrl}" class="no-image-large">
+                                    <i class="fas fa-image fa-4x mb-3"></i>
+                                    <p class="text-muted">Không có hình ảnh</p>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Giá:</th>
-                            <td th:text="${#numbers.formatCurrency(product.price)}"></td>
-                        </tr>
-                        <tr>
-                            <th>Số lượng tồn kho:</th>
-                            <td th:text="${product.stockQty}"></td>
-                        </tr>
-                        <tr>
-                            <th>Trạng thái:</th>
-                            <td>
-                                <span th:if="${product.status}" class="badge bg-success">Đang bán</span>
-                                <span th:unless="${product.status}" class="badge bg-danger">Ngừng bán</span>
-                            </td>
-                        </tr>
-                    </table>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="product-detail-info">
+                                <h3 class="product-detail-title mb-4" th:text="${product.name}"></h3>
+                                
+                                <div class="table-responsive">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <th class="detail-label">ID sản phẩm:</th>
+                                                <td class="detail-value" th:text="${product.productId}"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="detail-label">Tên sản phẩm:</th>
+                                                <td class="detail-value" th:text="${product.name}"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="detail-label">Mô tả:</th>
+                                                <td class="detail-value">
+                                                    <div class="product-description" th:text="${product.description}"></div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="detail-label">Giá:</th>
+                                                <td class="detail-value">
+                                                    <span class="price-highlight" th:text="${#numbers.formatCurrency(product.price)}"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="detail-label">Số lượng tồn kho:</th>
+                                                <td class="detail-value">
+                                                    <span class="stock-badge" th:text="${product.stockQty}"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="detail-label">Trạng thái:</th>
+                                                <td class="detail-value">
+                                                    <span th:if="${product.status}" class="badge bg-success fs-6">Đang bán</span>
+                                                    <span th:unless="${product.status}" class="badge bg-danger fs-6">Ngừng bán</span>
+                                                </td>
+                                            </tr>
+                                            <tr th:if="${product.category != null}">
+                                                <th class="detail-label">Danh mục:</th>
+                                                <td class="detail-value" th:text="${product.category.name}"></td>
+                                            </tr>
+                                            <tr th:if="${product.brand != null}">
+                                                <th class="detail-label">Thương hiệu:</th>
+                                                <td class="detail-value" th:text="${product.brand.name}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{/admin/products(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                        <a th:href="@{/admin/products/{id}/edit(id=${product.productId}, page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Chỉnh sửa
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card-footer text-end">
-            <a th:href="@{/admin/products/{id}/edit(id=${product.productId})}" class="btn btn-warning">
-                <i class="fas fa-edit"></i> Chỉnh sửa
-            </a>
         </div>
     </div>
 </div>

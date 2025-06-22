@@ -50,6 +50,8 @@ public class DiscountController {
      * @param brandId Filter by brand
      * @param productId Filter by product
      * @param discountRange Filter by discount percentage range
+     * @param page Page number for pagination (default: 0)
+     * @param size Page size for pagination (default: 3)
      * @return view name
      */
     @GetMapping("/list")
@@ -62,19 +64,29 @@ public class DiscountController {
                                @RequestParam(value = "categoryId", required = false) Integer categoryId,
                                @RequestParam(value = "brandId", required = false) Integer brandId,
                                @RequestParam(value = "productId", required = false) Integer productId,
-                               @RequestParam(value = "discountRange", required = false) String discountRange) {
+                               @RequestParam(value = "discountRange", required = false) String discountRange,
+                               @RequestParam(value = "page", defaultValue = "0") int page,
+                               @RequestParam(value = "size", defaultValue = "3") int size) {
         try {
             // Get filtered discounts from service
-            List<DiscountDto> discounts = discountService.searchAndFilterDiscounts(
+            List<DiscountDto> allDiscounts = discountService.searchAndFilterDiscounts(
                 search, status, applyType, startDate, endDate, 
                 categoryId, brandId, productId, discountRange
             );
             
-            // Calculate statistics
-            long totalDiscounts = discounts.size();
-            long activeDiscounts = discounts.stream().filter(d -> d.getActive()).count();
-            long productDiscounts = discounts.stream().filter(d -> "product".equals(d.getApplyType())).count();
-            long brandDiscounts = discounts.stream().filter(d -> "brand".equals(d.getApplyType())).count();
+            // Calculate statistics from all discounts
+            long totalDiscounts = allDiscounts.size();
+            long activeDiscounts = allDiscounts.stream().filter(d -> Boolean.TRUE.equals(d.getActive())).count();
+            long productDiscounts = allDiscounts.stream().filter(d -> "product".equals(d.getApplyType())).count();
+            long brandDiscounts = allDiscounts.stream().filter(d -> "brand".equals(d.getApplyType())).count();
+            long categoryDiscounts = allDiscounts.stream().filter(d -> "category".equals(d.getApplyType())).count();
+            
+            // Implement pagination
+            int totalPages = (int) Math.ceil((double) totalDiscounts / size);
+            int startIndex = page * size;
+            int endIndex = Math.min(startIndex + size, allDiscounts.size());
+            
+            List<DiscountDto> paginatedDiscounts = allDiscounts.subList(startIndex, endIndex);
             
             // Get data for filter dropdowns
             List<Product> products = productService.findAll();
@@ -82,15 +94,36 @@ public class DiscountController {
             List<Category> categories = categoryService.getAllCategory();
             
             // Add data to model
-            model.addAttribute("discounts", discounts);
+            model.addAttribute("discounts", paginatedDiscounts);
             model.addAttribute("totalDiscounts", totalDiscounts);
             model.addAttribute("activeDiscounts", activeDiscounts);
             model.addAttribute("productDiscounts", productDiscounts);
             model.addAttribute("brandDiscounts", brandDiscounts);
+            model.addAttribute("categoryDiscounts", categoryDiscounts);
             model.addAttribute("products", products);
             model.addAttribute("brands", brands);
             model.addAttribute("categories", categories);
             model.addAttribute("activeMenu", "discount");
+            
+            // Pagination attributes
+            model.addAttribute("currentPage", page);
+            model.addAttribute("pageSize", size);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("hasNext", page < totalPages - 1);
+            model.addAttribute("hasPrevious", page > 0);
+            model.addAttribute("startIndex", totalDiscounts > 0 ? startIndex + 1 : 0);
+            model.addAttribute("endIndex", endIndex);
+            
+            // Search parameters for pagination links
+            model.addAttribute("search", search);
+            model.addAttribute("status", status);
+            model.addAttribute("applyType", applyType);
+            model.addAttribute("startDate", startDate);
+            model.addAttribute("endDate", endDate);
+            model.addAttribute("categoryId", categoryId);
+            model.addAttribute("brandId", brandId);
+            model.addAttribute("productId", productId);
+            model.addAttribute("discountRange", discountRange);
             
             return "admin/discount/list";
         } catch (Exception e) {
@@ -175,7 +208,7 @@ public class DiscountController {
                               @RequestParam(value = "categoryId", required = false) Integer categoryId,
                               RedirectAttributes redirectAttributes) {
         try {
-            // Validate dữ liệu
+            // Validate dữ liệu cơ bản
             if (discountDto.getCode() == null || discountDto.getCode().trim().isEmpty()) {
                 redirectAttributes.addFlashAttribute("error", "Discount code is required");
                 return "redirect:/admin/discount/create";
@@ -193,6 +226,11 @@ public class DiscountController {
             
             if (discountDto.getStartDate().isAfter(discountDto.getEndDate())) {
                 redirectAttributes.addFlashAttribute("error", "End date must be after start date");
+                return "redirect:/admin/discount/create";
+            }
+            
+            if (discountDto.getApplyType() == null || discountDto.getApplyType().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Apply type is required");
                 return "redirect:/admin/discount/create";
             }
             
@@ -215,6 +253,19 @@ public class DiscountController {
                     return "redirect:/admin/discount/create";
                 }
                 discountDto.setCategoryId(categoryId);
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Invalid apply type");
+                return "redirect:/admin/discount/create";
+            }
+            
+            // Thiết lập createdBy nếu là tạo mới (tạm thời set = 1 cho admin)
+            if (discountDto.getPromoId() == null) {
+                discountDto.setCreatedBy(1); // TODO: Lấy từ session user
+            }
+            
+            // Thiết lập active mặc định nếu null
+            if (discountDto.getActive() == null) {
+                discountDto.setActive(true);
             }
             
             // Lưu discount
@@ -233,7 +284,12 @@ public class DiscountController {
             
             return "redirect:/admin/discount/list?success=" + successMessage;
             
+        } catch (IllegalArgumentException e) {
+            // Lỗi validation từ service (ví dụ: code đã tồn tại)
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/admin/discount/create";
         } catch (Exception e) {
+            // Lỗi khác
             redirectAttributes.addFlashAttribute("error", "Failed to save discount: " + e.getMessage());
             return "redirect:/admin/discount/create";
         }

@@ -14,277 +14,323 @@
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
     <!-- Custom CSS -->
     <link th:href="@{/css/discount.css}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    
+    <!-- Custom styles to fix layout -->
+    <style>
+        /* Fix layout for discount form page */
+        .main-content {
+            margin-left: 220px !important;
+            width: calc(100% - 220px) !important;
+            padding: 20px;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+        
+        .content-wrapper {
+            margin-top: 80px;
+            padding: 20px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 10px;
+            }
+            
+            .content-wrapper {
+                margin-top: 60px;
+                padding: 10px;
+            }
+        }
+        
+        /* Ensure proper spacing */
+        .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Include Sidebar -->
-            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <!-- Include Header -->
+    <div th:insert="~{fragments/header :: headerContent}"></div>
+    
+    <!-- Include Sidebar -->
+    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+    
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    <i class="fas fa-percentage text-primary"></i>
+                    <span th:text="${discount != null ? 'Edit Discount' : 'Create New Discount'}">Discount Form</span>
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="/admin/discount/list" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to List
+                    </a>
+                </div>
+            </div>
             
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">
-                        <i class="fas fa-percentage text-primary"></i>
-                        <span th:text="${discount != null ? 'Edit Discount' : 'Create New Discount'}">Discount Form</span>
-                    </h1>
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <a href="/admin/discount/list" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left"></i>
-                            Back to List
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Success/Error Messages -->
-                <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle"></i>
-                    <span th:text="${param.success}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                
-                <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span th:text="${param.error}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                
-                <!-- Discount Form -->
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-edit"></i>
-                                    <span th:text="${discount != null ? 'Edit Discount Information' : 'Discount Information'}">Discount Information</span>
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form th:action="@{/admin/discount/save}" method="post" th:object="${discountDto}">
-                                    <!-- Hidden fields -->
-                                    <input type="hidden" th:field="*{promoId}" th:if="${discount != null}">
-                                    
-                                    <div class="row">
-                                        <!-- Discount Code -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="code" class="form-label">
-                                                <i class="fas fa-tag"></i> Discount Code <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="text" class="form-control" id="code" th:field="*{code}" 
-                                                   placeholder="Enter discount code" required>
-                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
-                                        </div>
-                                        
-                                        <!-- Discount Percentage -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="discountPct" class="form-label">
-                                                <i class="fas fa-percentage"></i> Discount Percentage <span class="text-danger">*</span>
-                                            </label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="discountPct" th:field="*{discountPct}" 
-                                                       placeholder="0.00" min="0" max="100" step="0.01" required>
-                                                <span class="input-group-text">%</span>
-                                            </div>
-                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('discountPct')}" th:errors="*{discountPct}"></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Description -->
-                                    <div class="mb-3">
-                                        <label for="description" class="form-label">
-                                            <i class="fas fa-align-left"></i> Description <span class="text-danger">*</span>
+            <!-- Success/Error Messages -->
+            <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${param.success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            
+            <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${param.error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            
+            <!-- Discount Form -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-edit"></i>
+                                <span th:text="${discount != null ? 'Edit Discount Information' : 'Discount Information'}">Discount Information</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/admin/discount/save}" method="post" th:object="${discountDto}">
+                                <!-- Hidden fields -->
+                                <input type="hidden" th:field="*{promoId}" th:if="${discount != null}">
+                                
+                                <div class="row">
+                                    <!-- Discount Code -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="code" class="form-label">
+                                            <i class="fas fa-tag"></i> Discount Code <span class="text-danger">*</span>
                                         </label>
-                                        <textarea class="form-control" id="description" th:field="*{description}" 
-                                                  rows="3" placeholder="Enter discount description" required></textarea>
-                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                                        <input type="text" class="form-control" id="code" th:field="*{code}" 
+                                               placeholder="Enter discount code" required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
                                     </div>
                                     
-                                    <div class="row">
-                                        <!-- Start Date -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="startDate" class="form-label">
-                                                <i class="fas fa-calendar-alt"></i> Start Date <span class="text-danger">*</span>
+                                    <!-- Discount Percentage -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="discountPct" class="form-label">
+                                            <i class="fas fa-percentage"></i> Discount Percentage <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="discountPct" th:field="*{discountPct}" 
+                                                   placeholder="0.00" min="0" max="100" step="0.01" required>
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('discountPct')}" th:errors="*{discountPct}"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Description -->
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">
+                                        <i class="fas fa-align-left"></i> Description <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control" id="description" th:field="*{description}" 
+                                              rows="3" placeholder="Enter discount description" required></textarea>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                                </div>
+                                
+                                <div class="row">
+                                    <!-- Start Date -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="startDate" class="form-label">
+                                            <i class="fas fa-calendar-alt"></i> Start Date <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control" id="startDate" th:field="*{startDate}" required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+                                    </div>
+                                    
+                                    <!-- End Date -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="endDate" class="form-label">
+                                            <i class="fas fa-calendar-check"></i> End Date <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control" id="endDate" th:field="*{endDate}" required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Apply Type -->
+                                <div class="mb-3">
+                                    <label for="applyType" class="form-label">
+                                        <i class="fas fa-layer-group"></i> Apply Type <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="applyType" th:field="*{applyType}" required>
+                                        <option value="">Select apply type</option>
+                                        <option value="product">Product</option>
+                                        <option value="brand">Brand</option>
+                                        <option value="category">Category</option>
+                                    </select>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('applyType')}" th:errors="*{applyType}"></div>
+                                </div>
+                                
+                                <!-- Product Selection with Cascading Dropdowns (shown when applyType is product) -->
+                                <div class="mb-3" id="productSelection" style="display: none;">
+                                    <label class="form-label">
+                                        <i class="fas fa-box"></i> Select Products <span class="text-danger">*</span>
+                                    </label>
+                                    
+                                    <!-- Brand Filter for Products -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="productBrandFilter" class="form-label">
+                                                <i class="fas fa-filter"></i> Filter by Brand
                                             </label>
-                                            <input type="date" class="form-control" id="startDate" th:field="*{startDate}" required>
-                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+                                            <select class="form-select" id="productBrandFilter">
+                                                <option value="">All Brands</option>
+                                                <option th:each="brand : ${brands}" 
+                                                        th:value="${brand.id}" 
+                                                        th:text="${brand.name}">
+                                                    Brand Name
+                                                </option>
+                                            </select>
                                         </div>
-                                        
-                                        <!-- End Date -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="endDate" class="form-label">
-                                                <i class="fas fa-calendar-check"></i> End Date <span class="text-danger">*</span>
+                                        <div class="col-md-6">
+                                            <label for="productCategoryFilter" class="form-label">
+                                                <i class="fas fa-filter"></i> Filter by Category
                                             </label>
-                                            <input type="date" class="form-control" id="endDate" th:field="*{endDate}" required>
-                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></div>
+                                            <select class="form-select" id="productCategoryFilter">
+                                                <option value="">All Categories</option>
+                                                <option th:each="category : ${categories}" 
+                                                        th:value="${category.id}" 
+                                                        th:text="${category.name}">
+                                                    Category Name
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
                                     
-                                    <!-- Apply Type -->
-                                    <div class="mb-3">
-                                        <label for="applyType" class="form-label">
-                                            <i class="fas fa-layer-group"></i> Apply Type <span class="text-danger">*</span>
+                                    <!-- Product Selection -->
+                                    <select class="form-select" id="productIds" name="productIds" multiple>
+                                        <option th:each="product : ${products}" 
+                                                th:value="${product.productId}" 
+                                                th:text="${product.name + ' - $' + product.price}"
+                                                th:data-brand="${product.brand != null ? product.brand.id : ''}"
+                                                th:data-category="${product.category != null ? product.category.id : ''}"
+                                                th:selected="${discount != null && discount.productIds != null && discount.productIds.contains(product.productId)}">
+                                            Product Name
+                                        </option>
+                                    </select>
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle"></i> 
+                                        Use filters above to narrow down products. Hold Ctrl (or Cmd on Mac) to select multiple products.
+                                    </div>
+                                </div>
+                                
+                                <!-- Brand Selection (shown when applyType is brand) -->
+                                <div class="mb-3" id="brandSelection" style="display: none;">
+                                    <label for="brandId" class="form-label">
+                                        <i class="fas fa-trademark"></i> Select Brand <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="brandId" name="brandId">
+                                        <option value="">Select brand</option>
+                                        <option th:each="brand : ${brands}" 
+                                                th:value="${brand.id}" 
+                                                th:text="${brand.name}"
+                                                th:selected="${discount != null && discount.brandId != null && discount.brandId.equals(brand.id)}">
+                                            Brand Name
+                                        </option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Category Selection (shown when applyType is category) -->
+                                <div class="mb-3" id="categorySelection" style="display: none;">
+                                    <label for="categoryId" class="form-label">
+                                        <i class="fas fa-folder"></i> Select Category <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="categoryId" name="categoryId">
+                                        <option value="">Select category</option>
+                                        <option th:each="category : ${categories}" 
+                                                th:value="${category.id}" 
+                                                th:text="${category.name}"
+                                                th:selected="${discount != null && discount.categoryId != null && discount.categoryId.equals(category.id)}">
+                                            Category Name
+                                        </option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Active Status -->
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="active" th:field="*{active}">
+                                        <label class="form-check-label" for="active">
+                                            <i class="fas fa-toggle-on"></i> Active
                                         </label>
-                                        <select class="form-select" id="applyType" th:field="*{applyType}" required>
-                                            <option value="">Select apply type</option>
-                                            <option value="product">Product</option>
-                                            <option value="brand">Brand</option>
-                                            <option value="category">Category</option>
-                                        </select>
-                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('applyType')}" th:errors="*{applyType}"></div>
                                     </div>
-                                    
-                                    <!-- Product Selection with Cascading Dropdowns (shown when applyType is product) -->
-                                    <div class="mb-3" id="productSelection" style="display: none;">
-                                        <label class="form-label">
-                                            <i class="fas fa-box"></i> Select Products <span class="text-danger">*</span>
-                                        </label>
-                                        
-                                        <!-- Brand Filter for Products -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <label for="productBrandFilter" class="form-label">
-                                                    <i class="fas fa-filter"></i> Filter by Brand
-                                                </label>
-                                                <select class="form-select" id="productBrandFilter">
-                                                    <option value="">All Brands</option>
-                                                    <option th:each="brand : ${brands}" 
-                                                            th:value="${brand.id}" 
-                                                            th:text="${brand.name}">
-                                                        Brand Name
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="productCategoryFilter" class="form-label">
-                                                    <i class="fas fa-filter"></i> Filter by Category
-                                                </label>
-                                                <select class="form-select" id="productCategoryFilter">
-                                                    <option value="">All Categories</option>
-                                                    <option th:each="category : ${categories}" 
-                                                            th:value="${category.id}" 
-                                                            th:text="${category.name}">
-                                                        Category Name
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Product Selection -->
-                                        <select class="form-select" id="productIds" name="productIds" multiple>
-                                            <option th:each="product : ${products}" 
-                                                    th:value="${product.productId}" 
-                                                    th:text="${product.name + ' - $' + product.price}"
-                                                    th:data-brand="${product.brand != null ? product.brand.id : ''}"
-                                                    th:data-category="${product.category != null ? product.category.id : ''}"
-                                                    th:selected="${discount != null && discount.productIds != null && discount.productIds.contains(product.productId)}">
-                                                Product Name
-                                            </option>
-                                        </select>
-                                        <div class="form-text">
-                                            <i class="fas fa-info-circle"></i> 
-                                            Use filters above to narrow down products. Hold Ctrl (or Cmd on Mac) to select multiple products.
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Brand Selection (shown when applyType is brand) -->
-                                    <div class="mb-3" id="brandSelection" style="display: none;">
-                                        <label for="brandId" class="form-label">
-                                            <i class="fas fa-trademark"></i> Select Brand <span class="text-danger">*</span>
-                                        </label>
-                                        <select class="form-select" id="brandId" name="brandId">
-                                            <option value="">Select brand</option>
-                                            <option th:each="brand : ${brands}" 
-                                                    th:value="${brand.id}" 
-                                                    th:text="${brand.name}"
-                                                    th:selected="${discount != null && discount.brandId != null && discount.brandId.equals(brand.id)}">
-                                                Brand Name
-                                            </option>
-                                        </select>
-                                    </div>
-                                    
-                                    <!-- Category Selection (shown when applyType is category) -->
-                                    <div class="mb-3" id="categorySelection" style="display: none;">
-                                        <label for="categoryId" class="form-label">
-                                            <i class="fas fa-folder"></i> Select Category <span class="text-danger">*</span>
-                                        </label>
-                                        <select class="form-select" id="categoryId" name="categoryId">
-                                            <option value="">Select category</option>
-                                            <option th:each="category : ${categories}" 
-                                                    th:value="${category.id}" 
-                                                    th:text="${category.name}"
-                                                    th:selected="${discount != null && discount.categoryId != null && discount.categoryId.equals(category.id)}">
-                                                Category Name
-                                            </option>
-                                        </select>
-                                    </div>
-                                    
-                                    <!-- Active Status -->
-                                    <div class="mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="active" th:field="*{active}">
-                                            <label class="form-check-label" for="active">
-                                                <i class="fas fa-toggle-on"></i> Active
-                                            </label>
-                                        </div>
-                                        <div class="form-text">Enable this discount immediately</div>
-                                    </div>
-                                    
-                                    <!-- Submit Buttons -->
-                                    <div class="d-flex justify-content-between">
-                                        <a href="/admin/discount/list" class="btn btn-outline-secondary">
-                                            <i class="fas fa-times"></i> Cancel
-                                        </a>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save"></i>
-                                            <span th:text="${discount != null ? 'Update Discount' : 'Create Discount'}">Save</span>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                                    <div class="form-text">Enable this discount immediately</div>
+                                </div>
+                                
+                                <!-- Submit Buttons -->
+                                <div class="d-flex justify-content-between">
+                                    <a href="/admin/discount/list" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i>
+                                        <span th:text="${discount != null ? 'Update Discount' : 'Create Discount'}">Save</span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    
-                    <!-- Sidebar with Help -->
-                    <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-info-circle"></i> Help & Guidelines
-                                </h5>
+                </div>
+                
+                <!-- Sidebar with Help -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle"></i> Help & Guidelines
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="help-section mb-3">
+                                <h6><i class="fas fa-lightbulb"></i> Tips for Creating Discounts</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> Use clear, memorable discount codes</li>
+                                    <li><i class="fas fa-check text-success"></i> Set reasonable discount percentages (5-50%)</li>
+                                    <li><i class="fas fa-check text-success"></i> Choose appropriate start and end dates</li>
+                                    <li><i class="fas fa-check text-success"></i> Select the right apply type for your needs</li>
+                                </ul>
                             </div>
-                            <div class="card-body">
-                                <div class="help-section mb-3">
-                                    <h6><i class="fas fa-lightbulb"></i> Tips for Creating Discounts</h6>
-                                    <ul class="list-unstyled">
-                                        <li><i class="fas fa-check text-success"></i> Use clear, memorable discount codes</li>
-                                        <li><i class="fas fa-check text-success"></i> Set reasonable discount percentages (5-50%)</li>
-                                        <li><i class="fas fa-check text-success"></i> Choose appropriate start and end dates</li>
-                                        <li><i class="fas fa-check text-success"></i> Select the right apply type for your needs</li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="help-section mb-3">
-                                    <h6><i class="fas fa-question-circle"></i> Apply Types</h6>
-                                    <ul class="list-unstyled">
-                                        <li><strong>Product:</strong> Apply to specific products</li>
-                                        <li><strong>Brand:</strong> Apply to all products of a brand</li>
-                                        <li><strong>Category:</strong> Apply to all products in a category</li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="help-section">
-                                    <h6><i class="fas fa-exclamation-triangle"></i> Important Notes</h6>
-                                    <ul class="list-unstyled">
-                                        <li><i class="fas fa-info text-info"></i> Discount codes must be unique</li>
-                                        <li><i class="fas fa-info text-info"></i> End date must be after start date</li>
-                                        <li><i class="fas fa-info text-info"></i> You can activate/deactivate discounts later</li>
-                                    </ul>
-                                </div>
+                            
+                            <div class="help-section mb-3">
+                                <h6><i class="fas fa-question-circle"></i> Apply Types</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong>Product:</strong> Apply to specific products</li>
+                                    <li><strong>Brand:</strong> Apply to all products of a brand</li>
+                                    <li><strong>Category:</strong> Apply to all products in a category</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="help-section">
+                                <h6><i class="fas fa-exclamation-triangle"></i> Important Notes</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-info text-info"></i> Discount codes must be unique</li>
+                                    <li><i class="fas fa-info text-info"></i> End date must be after start date</li>
+                                    <li><i class="fas fa-info text-info"></i> You can activate/deactivate discounts later</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
         </div>
     </div>
     

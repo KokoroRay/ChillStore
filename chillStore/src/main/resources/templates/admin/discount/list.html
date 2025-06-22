@@ -11,13 +11,15 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link th:href="@{/css/discount.css}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Include Sidebar -->
-            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
-            
+            <div th:insert="~{fragments/header :: headerContent}"></div>
+            <div th:insert="~{fragments/sidebar :: sidebar}"></div>
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">

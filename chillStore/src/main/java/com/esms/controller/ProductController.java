@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/admin/products")
+@RequestMapping({"/admin/products", "/staff/products"})
 public class ProductController {
 
     @Autowired

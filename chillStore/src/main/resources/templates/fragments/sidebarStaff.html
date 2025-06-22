@@ -1,50 +1,44 @@
 <div class="main-container">
 
-  <div th:fragment="sidebar">
-    <div class="sidebar">
+  <div th:fragment="sidebarStaff">
+    <div class="sidebarStaff">
       <div class="p-3 border-bottom">
         <img th:src="@{/images/logo.png}" alt="FsMs Logo" class="logo-sidebar">
       </div>
       <ul class="nav flex-column p-2">
         <li class="nav-item mb-2">
-          <a th:href="@{/admin/category}"
+          <a th:href="@{/staff/category}"
              th:classappend="${activeMenu=='category'} ? 'nav-link active' : 'nav-link'">
             Manage Category
           </a>
         </li>
         <li class="nav-item mb-2">
-          <a th:href="@{/admin/user}"
-             th:classappend="${activeMenu=='user'} ? 'nav-link active' : 'nav-link'">
+          <a th:href="@{/staff/product}"
+             th:classappend="${activeMenu=='product'} ? 'nav-link active' : 'nav-link'">
             Manage Product
           </a>
         </li>
         <li class="nav-item mb-2">
-          <a th:href="@{/staff/orders}"
-             th:classappend="${activeMenu=='manageOrder'} ? 'nav-link active' : 'nav-link'">
-            Manage Order
+          <a th:href="@{/staff/order}"
+             th:classappend="${activeMenu=='order'} ? 'nav-link active' : 'nav-link'">
+            Manage Orders
           </a>
         </li>
         <li class="nav-item mb-2">
-          <a th:href="@{/admin/voucher}"
-             th:classappend="${activeMenu=='voucher'} ? 'nav-link active' : 'nav-link'">
-            Manage Customer
+          <a th:href="@{/admin/vouchers}"
+             th:classappend="${activeMenu=='vouchers'} ? 'nav-link active' : 'nav-link'">
+            Manage Vouchers
           </a>
         </li>
         <li class="nav-item mb-2">
-          <a th:href="@{/admin/revenue}"
-             th:classappend="${activeMenu=='revenue'} ? 'nav-link active' : 'nav-link'">
-            Manage Voucher
-          </a>
-        </li>
-        <li class="nav-item mb-2">
-          <a th:href="@{/admin/warehouse}"
-             th:classappend="${activeMenu=='warehouse'} ? 'nav-link active' : 'nav-link'">
+          <a th:href="@{/admin/feedback}"
+             th:classappend="${activeMenu=='feedback'} ? 'nav-link active' : 'nav-link'">
             Manage Feedback
           </a>
         </li>
         <li class="nav-item mb-2">
-          <a th:href="@{/admin/product}"
-             th:classappend="${activeMenu=='product'} ? 'nav-link active' : 'nav-link'">
+          <a th:href="@{/admin/maintance}"
+             th:classappend="${activeMenu=='maintance'} ? 'nav-link active' : 'nav-link'">
             Manage Maintanance
           </a>
         </li>

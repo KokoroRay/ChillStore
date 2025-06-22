@@ -25,7 +25,7 @@
                 <button type="submit" class="btn btn-success w-100">Search</button>
             </div>
         </form>
-        
+
         <a th:href="@{/admin/customer/addform}" class="btn btn-primary mb-3">Add New Customer</a>
 
         <!-- Alert Messages -->
@@ -35,50 +35,50 @@
         <!-- Customer Table -->
         <table class="table table-bordered table-hover">
             <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Password</th>
-                    <th>Phone</th>
-                    <th>Address</th>
-                    <th>Status</th>
-                    <th>Created Date</th>
-                    <th>Actions</th>
-                </tr>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Created Date</th>
+                <th>Actions</th>
+            </tr>
             </thead>
             <tbody>
-                <tr th:each="customer : ${customers}">
-                    <td th:text="${customer.customerId}"></td>
-                    <td th:text="${customer.display_name}"></td>
-                    <td th:text="${customer.email}"></td>
-                    <td th:text="${customer.password != null ? (#strings.substring(customer.password,0,4) + '****') : '****'}"></td>
-                    <td th:text="${customer.phone}"></td>
-                    <td th:text="${customer.address}"></td>
-                    <td>
-                        <span th:if="${customer.locked}" class="badge bg-danger">Locked</span>
-                        <span th:unless="${customer.locked}" class="badge bg-success">Active</span>
-                    </td>
-                    <td th:text="${#temporals.format(customer.created_at, 'dd/MM/yyyy')}"></td>
-                    <td>
-                        <div class="customer-buttons">
-                            <a th:href="@{/admin/customer/edit/{id}(id=${customer.customerId})}"
-                               class="btn-update">Edit</a>
-                            <a th:if="${!customer.locked}" 
-                               th:href="@{/admin/customer/delete/{id}(id=${customer.customerId})}"
-                               onclick="return confirm('Are you sure you want to lock this customer?')"
-                               class="btn btn-sm btn-warning btn-lock">
-                                Lock
-                            </a>
-                            <a th:if="${customer.locked}" 
-                               th:href="@{/admin/customer/unlock/{id}(id=${customer.customerId})}"
-                               onclick="return confirm('Are you sure you want to unlock this customer?')"
-                               class="btn btn-sm btn-success btn-unlock">
-                                Unlock
-                            </a>
-                        </div>
-                    </td>
-                </tr>
+            <tr th:each="customer : ${customers}">
+                <td th:text="${customer.customerId}"></td>
+                <td th:text="${customer.name}"></td>
+                <td th:text="${customer.email}"></td>
+                <td th:text="${customer.password != null ? (#strings.substring(customer.password,0,4) + '****') : '****'}"></td>
+                <td th:text="${customer.phone}"></td>
+                <td th:text="${customer.address}"></td>
+                <td>
+                    <span th:if="${customer.locked}" class="badge bg-danger">Locked</span>
+                    <span th:unless="${customer.locked}" class="badge bg-success">Active</span>
+                </td>
+                <td th:text="${#temporals.format(customer.created_at, 'dd/MM/yyyy')}"></td>
+                <td>
+                    <div class="customer-buttons">
+                        <a th:href="@{/admin/customer/edit/{id}(id=${customer.customerId})}"
+                           class="btn-update">Edit</a>
+                        <a th:if="${!customer.locked}"
+                           th:href="@{/admin/customer/delete/{id}(id=${customer.customerId})}"
+                           onclick="return confirm('Are you sure you want to lock this customer?')"
+                           class="btn btn-sm btn-warning btn-lock">
+                            Lock
+                        </a>
+                        <a th:if="${customer.locked}"
+                           th:href="@{/admin/customer/unlock/{id}(id=${customer.customerId})}"
+                           onclick="return confirm('Are you sure you want to unlock this customer?')"
+                           class="btn btn-sm btn-success btn-unlock">
+                            Unlock
+                        </a>
+                    </div>
+                </td>
+            </tr>
             </tbody>
         </table>
 

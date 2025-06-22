@@ -25,20 +25,33 @@
 }
 
 
-.btn-update {
-    background-color: #33c1f1;
-    color: white;
-}
-
 .btn-update:hover {
     background-color: #29aee0;
 }
 
-.btn-delete {
-    background-color: #f16060;
+
+.btn-add {
+    background-color: #009990;
+    color: white;
+}
+.btn-search {
+    background-color: #074799;
     color: white;
 }
 
+
 .btn-delete:hover {
     background-color: #e74c3c;
+}
+form .form-control,
+form .form-select {
+    height: 40px;
+    font-size: 14px;
+}
+.table{
+        border-collapse: separate;
+        border-spacing: 0;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        overflow: hidden;
 }

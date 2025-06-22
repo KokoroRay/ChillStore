@@ -1,0 +1,174 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap");
+.main-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+.sidebar {
+    border-radius: 0 20px 20px 0;
+    width: 220px;
+    background-color: #005691;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 1000;
+}
+.sidebar .nav-item {
+    position: relative;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    overflow: visible; /* Quan trọng! */
+    margin-bottom: 10px;
+    z-index: 1;
+}
+
+.sidebar .nav-link {
+    display: block;
+    padding: 12px 20px;
+    color: white;
+    background-color: transparent;
+    text-decoration: none;
+    border-radius: inherit;
+    position: relative;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+.sidebar .nav-item:hover {
+    background-color: white;
+}
+
+.sidebar .nav-item:hover .nav-link {
+    color: #005691;
+}
+
+
+.sidebar .nav-item:hover .nav-link::before,
+.sidebar .nav-item:hover .nav-link::after {
+    content: "";
+    position: absolute;
+    right: -21px;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.sidebar .nav-item:hover .nav-link::before {
+    top: -50px;
+    box-shadow: 35px 35px 0 10px white;
+}
+
+.sidebar .nav-item:hover .nav-link::after {
+    bottom: -50px;
+    box-shadow: 35px -35px 0 10px white;
+}
+.sidebar .nav-item:active  .nav-link::before,
+.sidebar .nav-item:active  .nav-link::after {
+    content: "";
+    position: absolute;
+    right: -21px;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.sidebar .nav-item:active  .nav-link::before {
+    top: -50px;
+    box-shadow: 35px 35px 0 10px white;
+}
+
+.sidebar .nav-item:active  .nav-link::after {
+    bottom: -50px;
+    box-shadow: 35px -35px 0 10px white;
+}
+
+
+/*-----*/
+.main-content {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* HEADER */
+.header-container {
+    height: 80px;
+    position: fixed;
+    left: 220px;
+    top: 0;
+    width: calc(100% - 220px);
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+.logo-sidebar {
+    width: 120px;
+    height: auto;
+    display: block;
+    margin: 10px auto;
+    border-radius: 20px;
+}
+
+.center-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.profile-icon svg {
+    width: 20px;
+    height: 20px;
+    color: #6a1b9a;
+}
+
+/* CONTENT */
+.content {
+    margin-top: 80px;
+    flex: 1;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Product - ESMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <style>
+
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            margin-left: 220px;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px 25px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .topbar h4 {
+            margin: 0;
+            color: #333;
+            font-weight: 600;
+        }
+        .filter-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .filter-section .form-control,
+        .filter-section .form-select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+        .filter-section .form-control:focus,
+        .filter-section .form-select:focus {
+            border-color: #2196f3;
+            box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+        }
+        .filter-section .input-group-text {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+        .filter-section .card {
+            border: 1px solid #eee;
+            box-shadow: none;
+        }
+        .filter-section .card-title {
+            color: #666;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .filter-section .form-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+        .filter-section .btn-primary {
+            background-color: #2196f3;
+            border-color: #2196f3;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+        .filter-section .btn-primary:hover {
+            background-color: #1976d2;
+            border-color: #1976d2;
+        }
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .product-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .product-info {
+            flex-grow: 1;
+        }
+        .product-info h5 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-weight: 600;
+        }
+        .product-details {
+            display: flex;
+            gap: 20px;
+            color: #666;
+            font-size: 0.95rem;
+        }
+        .product-details span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .product-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 15px;
+            font-weight: 500;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn i {
+            margin-right: 5px;
+        }
+        .btn-info {
+            background-color: #2196f3;
+            border-color: #2196f3;
+            color: white;
+        }
+        .btn-info:hover {
+            background-color: #1976d2;
+            border-color: #1976d2;
+            color: white;
+        }
+        .btn-warning {
+            background-color: #ff9800;
+            border-color: #ff9800;
+            color: white;
+        }
+        .btn-warning:hover {
+            background-color: #f57c00;
+            border-color: #f57c00;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #f44336;
+            border-color: #f44336;
+        }
+        .btn-danger:hover {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+        }
+        .badge {
+            padding: 6px 12px;
+            font-weight: 500;
+            border-radius: 20px;
+        }
+        .pagination {
+            margin-top: 30px;
+        }
+        .pagination .page-link {
+            padding: 8px 15px;
+            color: #2196f3;
+            border: 1px solid #2196f3;
+            margin: 0 3px;
+            border-radius: 5px;
+            background: #fff;
+            transition: all 0.2s ease;
+            min-width: 40px;
+            text-align: center;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #2196f3;
+            border-color: #2196f3;
+            color: #fff;
+        }
+        .pagination .page-link:hover {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-color: #1976d2;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #bdbdbd;
+            background: #f5f5f5;
+            border-color: #e0e0e0;
+            cursor: not-allowed;
+        }
+        .pagination-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+        }
+        .page-size-selector label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+        .page-size-selector .form-select {
+            width: auto;
+            padding: 4px 24px 4px 12px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            border-color: #ddd;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+        .page-size-selector .form-select:hover,
+        .page-size-selector .form-select:focus {
+            border-color: #2196f3;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+        }
+        .modal-header {
+            border-bottom: 2px solid #f0f0f0;
+            padding: 20px;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-footer {
+            border-top: 2px solid #f0f0f0;
+            padding: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: headerContent}"></div>
+
+<div class="container mt-4 main-container">
+    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+    <div class="main-content">
+        <div class="topbar">
+            <a th:href="@{/admin/products}" style="text-decoration:none;"><h4>Quản lý sản phẩm</h4></a>
+            <div>
+                <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
+            </div>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="filter-section">
+            <form th:action="@{/admin/products}" method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Tìm kiếm sản phẩm...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="categoryId">
+                        <option value="">Tất cả danh mục</option>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${categoryId == category.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="brandId">
+                        <option value="">Tất cả thương hiệu</option>
+                        <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brandId == brand.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="filterStatus">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="true" th:selected="${filterStatus == true}">Đang bán</option>
+                        <option value="false" th:selected="${filterStatus == false}">Ngừng bán</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-center justify-content-end" style="gap: 10px;">
+                    <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">
+                        <i class="fas fa-filter me-2"></i> Lọc
+                    </button>
+                    <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center" style="height: 40px; padding: 0.375rem 0.75rem; font-size: 0.875rem;" onclick="resetFilters()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+
+                <!-- Advanced Filters -->
+                <div class="col-12 mt-3">
+                    <div class="card p-3">
+                        <h6 class="card-title mb-3"><i class="fas fa-sliders-h me-2"></i>Bộ lọc nâng cao</h6>
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-3">
+                                <label class="form-label">Giá từ</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" name="minPrice" th:value="${minPrice != null ? #numbers.formatDecimal(minPrice, 0, 'COMMA', 0, 'POINT') : ''}" step="0.01" min="0" placeholder="Min">
+                                    <span class="input-group-text">₫</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">đến</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" name="maxPrice" th:value="${maxPrice != null ? #numbers.formatDecimal(maxPrice, 0, 'COMMA', 0, 'POINT') : ''}" step="0.01" min="0" placeholder="Max">
+                                    <span class="input-group-text">₫</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Số lượng tồn kho tối thiểu</label>
+                                <input type="number" class="form-control" name="minStock" th:value="${minStock}" min="0" placeholder="Nhập số lượng">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Sắp xếp</label>
+                                <select class="form-select" name="sortOption">
+                                    <option th:each="option : ${sortOptions}" th:value="${option.value}" th:text="${option.label}" th:selected="${sortOption == option.value}"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Products List -->
+        <div th:each="product : ${products}" class="product-card">
+            <img th:if="${product.imageUrl}"
+                 th:src="${product.imageUrl}"
+                 th:alt="${product.name}"
+                 class="product-image">
+            <div class="product-info">
+                <h5 th:text="${product.name}"></h5>
+                <div class="product-details">
+                <span>
+                    <i class="fas fa-tag"></i>
+                    Giá: <span th:text="${#numbers.formatCurrency(product.price)}"></span>
+                </span>
+                    <span>
+                    <i class="fas fa-box"></i>
+                    Số lượng: <span th:text="${product.stockQty}"></span>
+                </span>
+                    <span>
+                    <i class="fas fa-toggle-on"></i>
+                    Trạng thái:
+                    <span th:if="${product.status}" class="badge bg-success">Đang bán</span>
+                    <span th:unless="${product.status}" class="badge bg-danger">Ngừng bán</span>
+                </span>
+                </div>
+            </div>
+            <div class="product-controls">
+                <a th:href="@{/admin/products/{id}(id=${product.productId},
+                page=${currentPage},
+                size=${size},
+                keyword=${keyword},
+                categoryId=${categoryId},
+                brandId=${brandId},
+                filterStatus=${filterStatus},
+                minPrice=${minPrice},
+                maxPrice=${maxPrice},
+                minStock=${minStock},
+                sortOption=${sortOption})}"
+                   class="btn btn-info">
+                    <i class="fas fa-eye"></i> Chi tiết
+                </a>
+                <a th:href="@{/admin/products/{id}/edit(id=${product.productId},
+                page=${currentPage},
+                size=${size},
+                keyword=${keyword},
+                categoryId=${categoryId},
+                brandId=${brandId},
+                filterStatus=${filterStatus},
+                minPrice=${minPrice},
+                maxPrice=${maxPrice},
+                minStock=${minStock},
+                sortOption=${sortOption})}"
+                   class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Sửa
+                </a>
+                <button type="button"
+                        class="btn btn-danger"
+                        th:onclick="'confirmDelete(' + ${product.productId} + ', ' + ${currentPage} + ')'">
+                    <i class="fas fa-trash"></i> Xóa
+                </button>
+            </div>
+        </div>
+
+        <!-- Phân trang -->
+        <div class="container mt-4">
+            <!-- Pagination Info -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="pagination-info">
+                    Hiển thị <span th:text="${products.numberOfElements}"></span> /
+                    <span th:text="${totalItems}"></span> sản phẩm
+                </div>
+            </div>
+
+            <!-- Pagination Navigation -->
+            <nav th:if="${totalPages > 1}" aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <!-- First Page -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/admin/products(
+                        page=0,
+                        size=${size},
+                        keyword=${keyword},
+                        categoryId=${categoryId},
+                        brandId=${brandId},
+                        filterStatus=${filterStatus},
+                        minPrice=${minPrice},
+                        maxPrice=${maxPrice},
+                        minStock=${minStock},
+                        sortOption=${sortOption}
+                    )}">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <!-- Previous Page -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/admin/products(
+                        page=${currentPage - 1},
+                        size=${size},
+                        keyword=${keyword},
+                        categoryId=${categoryId},
+                        brandId=${brandId},
+                        filterStatus=${filterStatus},
+                        minPrice=${minPrice},
+                        maxPrice=${maxPrice},
+                        minStock=${minStock},
+                        sortOption=${sortOption}
+                    )}">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    <!-- Page Numbers -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                        th:classappend="${currentPage == i} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/admin/products(
+                            page=${i},
+                            size=${size},
+                            keyword=${keyword},
+                            categoryId=${categoryId},
+                            brandId=${brandId},
+                            filterStatus=${filterStatus},
+                            minPrice=${minPrice},
+                            maxPrice=${maxPrice},
+                            minStock=${minStock},
+                            sortOption=${sortOption}
+                       )}"
+                           th:text="${i + 1}">
+                        </a>
+                    </li>
+                    <!-- Next Page -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/admin/products(
+                        page=${currentPage + 1},
+                        size=${size},
+                        keyword=${keyword},
+                        categoryId=${categoryId},
+                        brandId=${brandId},
+                        filterStatus=${filterStatus},
+                        minPrice=${minPrice},
+                        maxPrice=${maxPrice},
+                        minStock=${minStock},
+                        sortOption=${sortOption}
+                    )}">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <!-- Last Page -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/admin/products(
+                        page=${totalPages - 1},
+                        size=${size},
+                        keyword=${keyword},
+                        categoryId=${categoryId},
+                        brandId=${brandId},
+                        filterStatus=${filterStatus},
+                        minPrice=${minPrice},
+                        maxPrice=${maxPrice},
+                        minStock=${minStock},
+                        sortOption=${sortOption}
+                    )}">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <script th:inline="javascript">
+            function changePageSize(size) {
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('size', size);
+                currentUrl.searchParams.set('page', '0'); // Reset to first page when changing page size
+                window.location.href = currentUrl.toString();
+            }
+        </script>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn xóa sản phẩm này?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <form id="deleteForm" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script th:inline="javascript">
+        function confirmDelete(productId, currentPage) {
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            const deleteForm = document.getElementById('deleteForm');
+            deleteForm.action = `/admin/products/${productId}/delete?page=${currentPage}`;
+            modal.show();
+        }
+    </script>
+
+    <script>
+        function resetFilters() {
+            window.location.href = '/admin/products';
+        }
+    </script>
+
+</body>
+</html>

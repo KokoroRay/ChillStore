@@ -1,4 +1,76 @@
 /* Customer Management Styles - Simple Bootstrap */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Quan trọng: cho phép nội dung co giãn */
+}
+
+.card-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.card-scrollable {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.table-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.table-container {
+    flex: 1;
+    overflow: auto;
+}
+
+/* Đảm bảo bảng chiếm toàn bộ không gian */
+.table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+/* Xử lý địa chỉ dài */
+.address-cell {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .table-container {
+        min-width: 600px;
+    }
+}
+
+/* Các nút */
 .customer-buttons {
     display: flex;
     gap: 12px;
@@ -54,4 +126,11 @@
 .btn-unlock:hover {
     background-color: #218838;
     color: white;
-} 
+}
+
+/* Loại bỏ các class trùng lặp không cần thiết */
+.main-content,
+.full-height-card,
+.card-body-scrollable {
+    /* Giữ nguyên nếu cần, nhưng tốt nhất nên loại bỏ nếu không sử dụng */
+}

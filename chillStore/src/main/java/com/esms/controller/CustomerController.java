@@ -5,6 +5,7 @@ import com.esms.exception.UserNotFoundException;
 import com.esms.model.dto.CustomerDto;
 import com.esms.model.entity.Customer;
 import com.esms.service.CustomerService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/customer")
+@RequestMapping({"/admin/customer", "/staff/customer"})
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -28,25 +29,39 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
+
     @GetMapping
     public String getAllCustomers(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) Boolean locked,
-            Model model) {
-        
+            @RequestParam(value = "error", required = false) String error,
+            Model model, HttpServletRequest request) {
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
+
         Pageable pageable = PageRequest.of(page - 1, 10);
         Page<Customer> customerPage = customerService.findWithFilters(search, locked, pageable);
-        
+
         model.addAttribute("customers", customerPage.getContent());
         model.addAttribute("totalPages", customerPage.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("search", search);
         model.addAttribute("type", type);
         model.addAttribute("locked", locked);
-        
-        return "admin/customer/list";
+        model.addAttribute("currentPage", customerPage.getNumber());
+        model.addAttribute("totalPages", customerPage.getTotalPages());
+        model.addAttribute("totalItems", customerPage.getTotalElements());
+        model.addAttribute("pageSize", customerPage.getSize());
+
+        String requestUrl = request.getRequestURI();
+        if (requestUrl.startsWith("/staff")) {
+            return "staff/customer/list";
+        } else {
+            return "admin/customer/list";
+        }
     }
 
     @GetMapping("/addform")

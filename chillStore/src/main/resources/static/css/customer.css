@@ -1,4 +1,4 @@
-/* Customer Management Styles - Simple Bootstrap */
+/* Customer Management Styles */
 html, body {
     height: 100%;
 }
@@ -49,13 +49,11 @@ body {
     overflow: auto;
 }
 
-/* Đảm bảo bảng chiếm toàn bộ không gian */
 .table {
     width: 100%;
     margin-bottom: 0;
 }
 
-/* Xử lý địa chỉ dài */
 .address-cell {
     max-width: 300px;
     overflow: hidden;
@@ -70,7 +68,7 @@ body {
     }
 }
 
-/* Các nút */
+/* Customer Buttons */
 .customer-buttons {
     display: flex;
     gap: 12px;
@@ -126,11 +124,4 @@ body {
 .btn-unlock:hover {
     background-color: #218838;
     color: white;
-}
-
-/* Loại bỏ các class trùng lặp không cần thiết */
-.main-content,
-.full-height-card,
-.card-body-scrollable {
-    /* Giữ nguyên nếu cần, nhưng tốt nhất nên loại bỏ nếu không sử dụng */
 }

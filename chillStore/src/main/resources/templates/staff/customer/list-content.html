@@ -35,14 +35,14 @@
             <p>Try changing your search or filters.</p>
         </div>
 
-        <div th:if="${!#lists.isEmpty(customers)}" class="card-container"> <!-- Sử dụng container mới -->
-            <div class="card shadow-sm h-100"> <!-- Thêm h-100 -->
+        <div th:if="${!#lists.isEmpty(customers)}" class="card-container">
+            <div class="card shadow-sm h-100">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">Customer Details</h5>
                 </div>
-                <div class="card-body p-0 card-scrollable"> <!-- Sử dụng class mới -->
-                    <div class="table-wrapper"> <!-- Thêm wrapper -->
-                        <div class="table-container"> <!-- Container cho bảng -->
+                <div class="card-body p-0 card-scrollable">
+                    <div class="table-wrapper">
+                        <div class="table-container">
                             <table class="table table-hover mb-0">
                                 <thead class="table-light">
                                 <tr>

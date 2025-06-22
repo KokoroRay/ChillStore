@@ -6,14 +6,11 @@ body {
     margin: 0;
 }
 
-/* Tiêu đề */
 h2 {
     text-align: center;
     color: #333;
     margin-bottom: 30px;
 }
-
-/* Form chính */
 form {
     max-width: 500px;
     margin: 0 auto;

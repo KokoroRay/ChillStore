@@ -1,15 +1,9 @@
 /* addStaff.css */
 
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+body {
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
-    overflow: hidden; /* Chặn cuộn */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 0;
 }
 
 /* Tiêu đề */
@@ -21,8 +15,8 @@ h2 {
 
 /* Form chính */
 form {
-    width: 100%;
     max-width: 500px;
+    margin: 0 auto;
     padding: 30px;
     background-color: #fff;
     border-radius: 12px;

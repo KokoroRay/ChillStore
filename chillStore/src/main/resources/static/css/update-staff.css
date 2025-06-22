@@ -1,11 +1,15 @@
 /* update-staff.css */
 
 /* Toàn bộ phần thân */
-body {
+html,body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
     margin: 0;
-    padding: 40px;
+    padding: 0;
+    overflow: hidden;
 }
 
 /* Tiêu đề */
@@ -17,7 +21,8 @@ h2 {
 
 /* Form */
 form {
-    max-width: 500px;
+    width: 100%;
+    max-width: 900px;
     margin: 0 auto;
     padding: 30px;
     background-color: #fff;
@@ -79,9 +84,9 @@ form button[type="submit"]:hover {
 .btn-back:hover {
     background-color: #5a6268;
 }
-.content {
-    width: 80%;
-    max-width: 1000px;
+.content form {
+    width: 100%;
+    max-width: 1200px;
     margin: 40px auto;
     padding: 30px;
     background-color: #f9f9f9;

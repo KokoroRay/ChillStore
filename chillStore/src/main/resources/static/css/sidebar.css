@@ -160,12 +160,13 @@
 /* CONTENT */
 .content {
     margin-top: 80px;
-    padding: 20px;
     flex: 1;
     background-color: #f8f9fa;
     min-height: calc(100vh - 80px);
     overflow-y: auto;
 }
+
+
 .sidebar ul {
     list-style: none;
     padding: 0;

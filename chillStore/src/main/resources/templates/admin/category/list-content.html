@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
 <div th:fragment="content(categories, keyword, error)">
 
   <div class="d-flex justify-content-between align-items-center mb-4">
@@ -37,12 +34,14 @@
           <table class="table table-hover mb-0">
             <thead class="table-primary">
             <tr>
+              <th>ID</th>
               <th>Name</th>
               <th class="text-end">Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="cat : ${categories}">
+              <td th:text="${cat.id}">1</td>
               <td th:text="${cat.name}">Category Name</td>
               <td class="text-end">
                 <a th:href="@{/admin/category/edit/{id}(id=${cat.id})}"
@@ -63,5 +62,3 @@
     </div>
   </div>
 </div>
-</body>
-</html>

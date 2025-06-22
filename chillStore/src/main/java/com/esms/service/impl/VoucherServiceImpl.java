@@ -10,6 +10,7 @@ import com.esms.repository.BrandRepository;
 import com.esms.repository.CategoryRepository;
 import com.esms.repository.VoucherRepository;
 import com.esms.service.VoucherService;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Transient;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,9 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Autowired
     private BrandRepository brandRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Voucher> getAllVouchers() {
@@ -72,12 +76,11 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setActive(voucherDto.isActive());
 
         if (voucherDto.getCategoryIds() != null && !voucherDto.getCategoryIds().isEmpty()) {
-            List<Category> categories = categoryRepository.findAllByIdIn(voucherDto.getCategoryIds());
+            List<Category> categories = categoryRepository.findAllById(voucherDto.getCategoryIds());
             voucher.setCategories(new HashSet<>(categories));
         }
 
         if (voucherDto.getBrandIds() != null && !voucherDto.getBrandIds().isEmpty()) {
-
             List<Brand> brands = brandRepository.findAllById(voucherDto.getBrandIds());
             voucher.setBrands(new HashSet<>(brands));
         }
@@ -110,12 +113,12 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setActive(voucherDto.isActive());
         voucher.getCategories().clear();
         if (voucherDto.getCategoryIds() != null && !voucherDto.getCategoryIds().isEmpty()) {
-            List<Category> categories  = categoryRepository.findAllByIdIn(voucherDto.getCategoryIds());
+            List<Category> categories  = categoryRepository.findAllById(voucherDto.getCategoryIds());
             voucher.setCategories(new HashSet<>(categories));
         }
         voucher.getBrands().clear();
         if (voucherDto.getBrandIds() != null && !voucherDto.getBrandIds().isEmpty()) {
-            List<Brand> brands = brandRepository.findAllByIdIn(voucherDto.getBrandIds());
+            List<Brand> brands = brandRepository.findAllById(voucherDto.getBrandIds());
             voucher.setBrands(new HashSet<>(brands));
         }
         return voucherRepository.save(voucher);
@@ -123,8 +126,20 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public void deleteVoucher(Integer id) {
-        Voucher voucher = voucherRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Voucher khong ton tai"));
-        voucherRepository.delete(voucher);
+        Optional <Voucher> voucherOptional = voucherRepository.findById(id);
+        if (voucherOptional.isPresent()){
+            voucherRepository.delete(voucherOptional.get());
+            Integer maxId = voucherRepository.findMaxId();
+            reseedIdentityTo(maxId);
+        } else {
+            throw new RuntimeException("Voucher khong ton tai" + id);
+        }
+    }
+
+    private void reseedIdentityTo(Integer newSeed) {
+        String table = "voucher";
+        int seed = (newSeed != null) ? newSeed : 0;
+        String sql = String.format("DBCC CHECKIDENT('%s', RESEED, %d)", table, seed);
+        jdbcTemplate.execute(sql);
     }
 }

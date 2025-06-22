@@ -5,8 +5,9 @@
   <title>Staff List</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/header.css">
-  <link  rel="stylesheet" href="/css/manageStaff.css">
   <link rel="stylesheet" href="/css/sidebar.css">
+  <link  rel="stylesheet" href="/css/manageStaff.css">
+
 </head>
 <body>
  <div th:insert="~{fragments/header :: headerContent}"></div>
@@ -22,7 +23,7 @@
       <input type="text" name="keyword" class="form-control" placeholder="Search by name or email"
              th:value="${keyword}">
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
       <select name="gender" class="form-select">
         <option value="">All Genders</option>
         <option value="MALE" th:selected="${gender == 'MALE'}">Male</option>
@@ -30,15 +31,17 @@
         <option value="OTHER" th:selected="${gender == 'OTHER'}">Other</option>
       </select>
     </div>
-    <div class="col-md-2">
-      <button type="submit" class="btn btn-success w-100">Search</button>
+    <div class="col-md-3 tt-end">
+      <button type="submit" class="btn w-100">
+        <img th:src="@{/images/search.png}" alt="Search" width="20" height="20">
+      </button>
     </div>
   </form>
-  <a href="/manageStaff/add-form" class="btn btn-primary mb-3">Add</a>
+  <a href="/manageStaff/add-form" class="btn btn-add mb-3">Add</a>
 
 
   <table class="table table-bordered table-hover">
-    <thead class="table-dark">
+    <thead class="table-primary">
     <tr>
       <th>ID</th>
       <th>Name</th>
@@ -62,11 +65,14 @@
       <td>
         <div class="staff-buttons">
         <a th:href="@{'/manageStaff/update-form?id=' + ${staff.id}}"
-         class="btn-update">Update</a>
+         class="">
+          <img th:src="@{/images/update.png}" alt="Delete" width="30" height="30">
+          </a>
         <a th:href="@{'/manageStaff/deleteStaff/' + ${staff.id}}"
            onclick="return confirm('Are you sure to delete this staff?')"
-           class="btn btn-sm btn-danger btn-delete">
-          Delete
+           class="btn btn-sm">
+          <img th:src="@{/images/delete.png}" alt="Delete" width="30" height="30">
+
         </a>
 </div>
       </td>

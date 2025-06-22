@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Manage Orders</title>
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/custom.css}"/>
+    <link rel="stylesheet" th:href="@{/css/header.css}"/>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+    <style>
+      body, html {
+        margin: 0;
+        height: 100%;
+      }
+
+      .header {
+        height: 80px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        z-index: 999;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .main-container {
+        display: flex;
+        height: calc(100vh - 80px);
+        padding-top: 100px;
+        box-sizing: border-box;
+      }
+
+      .sidebar {
+        width: 220px;
+        background-color: #00688B;
+        padding: 20px 10px;
+        overflow-y: auto;
+        height: calc(100vh - 80px);
+      }
+
+      .content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+        height: calc(100vh - 80px);
+      }
+      
+      .filter-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        align-items: center;
+      }
+      .search-box {
+        position: relative;
+        flex-grow: 1;
+      }
+      .search-box input {
+        padding-left: 35px;
+        height: 38px;
+      }
+      .search-box .fa-search {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+      }
+    </style>
+</head>
+<body>
+
+<!-- Fixed header -->
+<div class="header" th:insert="~{fragments/header :: header(currentSection='Manage Orders', keyword='')}"></div>
+
+<!-- Body bên dưới header -->
+<div class="main-container">
+    <div th:insert="~{fragments/sidebarStaff :: sidebar(activeMenu='manageOrder')}"></div>
+    <div class="content">
+        <div class="container-fluid">
+            <h1>Manage Orders</h1>
+
+            <!-- Search Error Message -->
+            <div th:if="${searchError}" class="alert alert-danger" role="alert" th:text="${searchError}">
+            </div>
+
+            <!-- Search and Filter Form -->
+            <form th:action="@{/staff/orders}" method="get" class="filter-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="keyword" class="form-control" placeholder="Search by Receipt or Customer" th:value="${keyword}">
+                </div>
+                <div class="filter-group">
+                     <select name="status" class="form-control" onchange="this.form.submit()">
+                        <option value="">All status</option>
+                        <option th:each="st : ${statuses}"
+                                th:value="${st}"
+                                th:text="${st}"
+                                th:selected="${st == selectedStatus}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>Receipt</th>
+                    <th>Customer Name</th>
+                    <th>Order Date</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Payment Method</th>
+                    <th>Details</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order, i : ${orders}">
+                    <td th:text="${i.count}"></td>
+                    <td th:text="${order.orderId}"></td>
+                    <td th:text="${order.customerName}"></td>
+                    <td th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${order.totalAmount}"></td>
+                    <td th:text="${order.status}"></td>
+                    <td th:text="${order.paymentMethod}"></td>
+                    <td>
+                        <form th:if="${order.status == 'New order' || order.status == 'Pending payment'}" th:action="@{/staff/orders/confirm/{orderId}(orderId=${order.orderId})}" method="post">
+                            <button type="submit" class="btn btn-success">Confirm</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

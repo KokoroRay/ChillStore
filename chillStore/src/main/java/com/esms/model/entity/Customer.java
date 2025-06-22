@@ -24,7 +24,7 @@ public class Customer {
 
     public Customer(Integer customerId, String name, String display_name, String email, String password,
                     String phone, String address, LocalDate birth_date, LocalDateTime created_at,
-                    LocalDateTime updated_at, String imageUrl, boolean isLocked) {
+                    LocalDateTime updated_at, boolean isLocked) {
         this.customerId = customerId;
         this.name = name;
         this.display_name = display_name;

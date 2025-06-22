@@ -1,17 +1,18 @@
 package com.esms.model.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class OrderDto {
-    private Long orderId;
+    private Integer orderId;
     private String customerName;
-    private Double discountAmount;
+    private BigDecimal discountAmount;
     private Date orderDate;
     private Double totalAmount;
     private String status;
     private String paymentMethod;
 
-    public OrderDto(Long orderId, String customerName, Double discountAmount, Date orderDate, Double totalAmount, String status, String paymentMethod) {
+    public OrderDto(Integer orderId, String customerName, BigDecimal discountAmount, Date orderDate, Double totalAmount, String status, String paymentMethod) {
         this.orderId = orderId;
         this.customerName = customerName;
         this.discountAmount = discountAmount;
@@ -21,11 +22,11 @@ public class OrderDto {
         this.paymentMethod = paymentMethod;
     }
 
-    public Long getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
@@ -37,11 +38,11 @@ public class OrderDto {
         this.customerName = customerName;
     }
 
-    public Double getDiscountAmount() {
+    public BigDecimal getDiscountAmount() {
         return discountAmount;
     }
 
-    public void setDiscountAmount(Double discountAmount) {
+    public void setDiscountAmount(BigDecimal discountAmount) {
         this.discountAmount = discountAmount;
     }
 

@@ -1,3 +1,6 @@
+/* Custom styles for the application */
+
+/* Add any custom styles here */
 
 .list-group-item {
     transition: background-color 0.2s;
@@ -48,4 +51,27 @@
 .btn-delete {
     background-color: #f38c8c;
     color: #000;
+}
+
+/* Search and Filter Styles */
+.filter-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+.search-box {
+    position: relative;
+    flex-grow: 1;
+}
+.search-box input {
+    padding-left: 35px;
+    height: 38px;
+}
+.search-box .fa-search {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
 }

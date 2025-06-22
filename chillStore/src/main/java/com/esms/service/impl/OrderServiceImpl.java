@@ -31,7 +31,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public void confirmOrder(Long orderId) {
+    public void confirmOrder(Integer orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid order Id:" + orderId));
         order.setStatus("Đã xác nhận");

@@ -2,6 +2,7 @@ package com.esms.model.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -9,14 +10,14 @@ import java.util.Date;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    private Integer orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerId")
     private Customer customer;
 
     @Column(name = "discount_amount")
-    private Double discountAmount;
+    private BigDecimal discountAmount;
 
     @Column(name = "order_date")
     private Date orderDate;
@@ -33,7 +34,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long orderId, Customer customer, Double discountAmount, Date orderDate, Double totalAmount, String status, String paymentMethod) {
+    public Order(Integer orderId, Customer customer, BigDecimal discountAmount, Date orderDate, Double totalAmount, String status, String paymentMethod) {
         this.orderId = orderId;
         this.customer = customer;
         this.discountAmount = discountAmount;
@@ -43,11 +44,11 @@ public class Order {
         this.paymentMethod = paymentMethod;
     }
 
-    public Long getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
@@ -59,11 +60,11 @@ public class Order {
         this.customer = customer;
     }
 
-    public Double getDiscountAmount() {
+    public BigDecimal getDiscountAmount() {
         return discountAmount;
     }
 
-    public void setDiscountAmount(Double discountAmount) {
+    public void setDiscountAmount(BigDecimal discountAmount) {
         this.discountAmount = discountAmount;
     }
 

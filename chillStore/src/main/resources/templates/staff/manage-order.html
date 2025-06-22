@@ -1,103 +1,218 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
     <title>Manage Orders</title>
-    <!-- CSS -->
-    <link rel="stylesheet" th:href="@{/css/custom.css}"/>
-    <link rel="stylesheet" th:href="@{/css/header.css}"/>
-    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
-
+    
     <style>
-      body, html {
-        margin: 0;
-        height: 100%;
-      }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
 
-      .header {
-        height: 80px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background-color: white;
-        z-index: 999;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
 
-      .main-container {
-        display: flex;
-        height: calc(100vh - 80px);
-        padding-top: 100px;
-        box-sizing: border-box;
-      }
+        .sidebar {
+            background-color: #00688B;
+            min-height: 100vh;
+            padding: 20px 0;
+            position: fixed;
+            left: 0;
+            top: 80px;
+            width: 250px;
+            z-index: 999;
+        }
 
-      .sidebar {
-        width: 220px;
-        background-color: #00688B;
-        padding: 20px 10px;
-        overflow-y: auto;
-        height: calc(100vh - 80px);
-      }
+        .main-content {
+            margin-left: 250px;
+            margin-top: 80px;
+            padding: 30px;
+            min-height: calc(100vh - 80px);
+        }
 
-      .content {
-        flex: 1;
-        padding: 30px;
-        overflow-y: auto;
-        background-color: #f8f9fa;
-        height: calc(100vh - 80px);
-      }
-      
-      .filter-container {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 20px;
-        align-items: center;
-      }
-      .search-box {
-        position: relative;
-        flex-grow: 1;
-      }
-      .search-box input {
-        padding-left: 35px;
-        height: 38px;
-      }
-      .search-box .fa-search {
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #aaa;
-      }
+        .sidebar .nav-link {
+            color: white;
+            padding: 12px 25px;
+            border-radius: 0;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            border-left: 4px solid #fff;
+        }
+
+        .search-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 300px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .search-box input {
+            padding-left: 35px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .filter-group {
+            margin-left: 15px;
+        }
+
+        .filter-group select {
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 0.875rem;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
 
-<!-- Fixed header -->
-<div class="header" th:insert="~{fragments/header :: header(currentSection='Manage Orders', keyword='')}"></div>
-
-<!-- Body bên dưới header -->
-<div class="main-container">
-    <div th:insert="~{fragments/sidebarStaff :: sidebar(activeMenu='manageOrder')}"></div>
-    <div class="content">
-        <div class="container-fluid">
-            <h1>Manage Orders</h1>
-
-            <!-- Search Error Message -->
-            <div th:if="${searchError}" class="alert alert-danger" role="alert" th:text="${searchError}">
+<!-- Header -->
+<div class="header">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h4 class="mb-0">Manage Orders</h4>
             </div>
+            <div class="col-md-6">
+                <div class="d-flex justify-content-end">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="form-control" placeholder="Search orders...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            <!-- Search and Filter Form -->
-            <form th:action="@{/staff/orders}" method="get" class="filter-container">
+<!-- Sidebar -->
+<div class="sidebar">
+    <nav class="nav flex-column">
+        <a class="nav-link" href="/admin/dashboard">
+            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+        </a>
+        <a class="nav-link" href="/admin/products">
+            <i class="fas fa-box me-2"></i> Products
+        </a>
+        <a class="nav-link active" href="/staff/orders">
+            <i class="fas fa-shopping-cart me-2"></i> Manage Orders
+        </a>
+        <a class="nav-link" href="/admin/customers">
+            <i class="fas fa-users me-2"></i> Customers
+        </a>
+        <a class="nav-link" href="/admin/staff">
+            <i class="fas fa-user-tie me-2"></i> Staff
+        </a>
+        <a class="nav-link" href="/admin/categories">
+            <i class="fas fa-tags me-2"></i> Categories
+        </a>
+        <a class="nav-link" href="/admin/vouchers">
+            <i class="fas fa-ticket-alt me-2"></i> Vouchers
+        </a>
+        <a class="nav-link" href="/admin/warehouse">
+            <i class="fas fa-warehouse me-2"></i> Warehouse
+        </a>
+    </nav>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Search Error Message -->
+    <div th:if="${searchError}" class="alert alert-danger" role="alert" th:text="${searchError}"></div>
+
+    <!-- Search and Filter Form -->
+    <div class="search-container">
+        <form th:action="@{/staff/orders}" method="get" class="row align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Search</label>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" name="keyword" class="form-control" placeholder="Search by Receipt or Customer" th:value="${keyword}">
                 </div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Status</label>
                 <div class="filter-group">
-                     <select name="status" class="form-control" onchange="this.form.submit()">
+                    <select name="status" class="form-control" onchange="this.form.submit()">
                         <option value="">All status</option>
                         <option th:each="st : ${statuses}"
                                 th:value="${st}"
@@ -105,11 +220,17 @@
                                 th:selected="${st == selectedStatus}"></option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Filter</button>
-            </form>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
 
-            <table class="table table-bordered">
-                <thead class="thead-light">
+    <!-- Orders Table -->
+    <div class="table-container">
+        <table class="table table-hover mb-0">
+            <thead>
                 <tr>
                     <th>#</th>
                     <th>Receipt</th>
@@ -120,8 +241,8 @@
                     <th>Payment Method</th>
                     <th>Details</th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 <tr th:each="order, i : ${orders}">
                     <td th:text="${i.count}"></td>
                     <td th:text="${order.orderId}"></td>
@@ -131,16 +252,18 @@
                     <td th:text="${order.status}"></td>
                     <td th:text="${order.paymentMethod}"></td>
                     <td>
-                        <form th:if="${order.status == 'New order' || order.status == 'Pending payment'}" th:action="@{/staff/orders/confirm/{orderId}(orderId=${order.orderId})}" method="post">
+                        <form th:if="${order.status == 'New order' || order.status == 'Pending payment'}" th:action="@{/staff/orders/confirm/{orderId}(orderId=${order.orderId})}" method="post" style="display: inline;">
                             <button type="submit" class="btn btn-success">Confirm</button>
                         </form>
                     </td>
                 </tr>
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

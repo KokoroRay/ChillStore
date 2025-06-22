@@ -42,7 +42,7 @@ public class OrderController {
     }
 
     @PostMapping("/confirm/{orderId}")
-    public String confirmOrder(@PathVariable Long orderId) {
+    public String confirmOrder(@PathVariable Integer orderId) {
         orderService.confirmOrder(orderId);
         return "redirect:/staff/orders";
     }

@@ -6,5 +6,5 @@ import java.util.List;
 public interface IOrderService {
     List<OrderDto> getAllOrders();
     List<OrderDto> searchOrders(String keyword, String status);
-    void confirmOrder(Long orderId);
+    void confirmOrder(Integer orderId);
 } 

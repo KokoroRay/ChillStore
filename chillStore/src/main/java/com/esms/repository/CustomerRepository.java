@@ -36,4 +36,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     @Query("SELECT c FROM Customer c WHERE LOWER(c.display_name) LIKE LOWER(CONCAT('%', :displayName, '%'))")
     Page<Customer> searchByDisplayName(@Param("displayName") String displayName, Pageable pageable);
+
 }

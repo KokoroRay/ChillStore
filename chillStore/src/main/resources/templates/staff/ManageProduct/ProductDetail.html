@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sản phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebarStaff.css">
+    <style>
+        /* CSS cho Body và Main Content được nhúng trực tiếp vào đây */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            display: flex; /* Bật Flexbox cho body để sidebar và main-content hoạt động cùng */
+            height: 100vh; /* Chiếm toàn bộ chiều cao viewport */
+            overflow: hidden; /* Ngăn cuộn chính của body */
+        }
+
+        .main-content {
+            margin-left: 220px; /* Điều chỉnh margin-left để tránh sidebar */
+            padding-top: 80px; /* Điều chỉnh padding-top để tránh header */
+            flex-grow: 1; /* Cho phép main-content chiếm hết không gian còn lại trong body (flex container) */
+            overflow-y: auto; /* Cho phép cuộn nội dung theo chiều dọc nếu nội dung vượt quá chiều cao */
+            padding-left: 20px; /* Thêm padding ngang để nội dung không bị dính sát vào cạnh */
+            padding-right: 20px;
+            box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước tổng của phần tử */
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Các style khác của ProductDetail.html giữ nguyên */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px 25px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .topbar h4 {
+            margin: 0;
+            color: #333;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #f0f0f0;
+            padding: 1.5rem;
+        }
+        .card-title {
+            margin: 0;
+            color: #333;
+            font-weight: 600;
+        }
+        .card-body {
+            padding: 2rem;
+        }
+        .product-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+            background-color: #fff;
+            padding: 1rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        .no-image {
+            width: 100%;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            color: #6c757d;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table th {
+            width: 150px;
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .product-description {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .card-footer {
+            background-color: #fff;
+            border-top: 2px solid #f0f0f0;
+            padding: 1.5rem;
+        }
+        .btn {
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+        }
+        .badge {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        .sidebarStaff {
+            border-radius: 0 20px 20px 0;
+            width: 220px;
+            background-color: #005691;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .sidebarStaff .nav-item {
+            position: relative;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
+            overflow: visible;
+            margin-bottom: 10px;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .sidebarStaff .nav-link {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            background-color: transparent;
+            text-decoration: none;
+            border-radius: inherit;
+            position: relative;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .sidebarStaff .nav-item:hover {
+            background-color: white;
+        }
+
+        .sidebarStaff .nav-item:hover .nav-link {
+            color: #005691;
+        }
+
+        .sidebarStaff .nav-item:hover .nav-link::before,
+        .sidebarStaff .nav-item:hover .nav-link::after {
+            content: "";
+            position: absolute;
+            right: -21px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .sidebarStaff .nav-item:hover .nav-link::before {
+            top: -50px;
+            box-shadow: 35px 35px 0 10px white;
+        }
+
+        .sidebarStaff .nav-item:hover .nav-link::after {
+            bottom: -50px;
+            box-shadow: 35px -35px 0 10px white;
+        }
+
+        /* Active state */
+        .sidebarStaff .nav-item:active .nav-link::before,
+        .sidebarStaff .nav-item:active .nav-link::after {
+            content: "";
+            position: absolute;
+            right: -21px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .sidebarStaff .nav-item:active .nav-link::before {
+            top: -50px;
+            box-shadow: 35px 35px 0 10px white;
+        }
+
+        .sidebarStaff .nav-item:active .nav-link::after {
+            bottom: -50px;
+            box-shadow: 35px -35px 0 10px white;
+        }
+
+        /* Active menu item */
+        .sidebarStaff .nav-link.active {
+            background-color: white;
+            color: #005691 !important;
+        }
+
+        .sidebarStaff .nav-link.active::before,
+        .sidebarStaff .nav-link.active::after {
+            content: "";
+            position: absolute;
+            right: -21px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .sidebarStaff .nav-link.active::before {
+            top: -50px;
+            box-shadow: 35px 35px 0 10px white;
+        }
+
+        .sidebarStaff .nav-link.active::after {
+            bottom: -50px;
+            box-shadow: 35px -35px 0 10px white;
+        }
+    </style>
+</head>
+<body>
+
+<div th:insert="~{fragments/header :: headerContent}"></div>
+
+<div th:insert="~{fragments/sidebarStaff :: sidebarStaff(activeMenu='products')}"></div>
+
+<div class="main-content">
+    <div class="topbar">
+        <a th:href="@{/staff/products}" style="text-decoration:none;"><h4>Chi tiết sản phẩm</h4></a>
+        <div>
+            <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">Chi tiết sản phẩm</h3>
+                <form th:action="@{/staff/products}" method="get">
+                    <input type="hidden" name="page" th:value="${currentPage}" />
+                    <input type="hidden" name="size" th:value="${size}" />
+                    <input type="hidden" name="keyword" th:value="${keyword}" />
+                    <input type="hidden" name="categoryId" th:value="${categoryId}" />
+                    <input type="hidden" name="brandId" th:value="${brandId}" />
+                    <input type="hidden" name="filterStatus" th:value="${filterStatus}" />
+                    <input type="hidden" name="minPrice" th:value="${minPrice}" />
+                    <input type="hidden" name="maxPrice" th:value="${maxPrice}" />
+                    <input type="hidden" name="minStock" th:value="${minStock}" />
+                    <input type="hidden" name="sortOption" th:value="${sortOption}" />
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </button>
+                </form>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-5 mb-4 mb-md-0">
+                        <img th:if="${product.imageUrl}"
+                             th:src="${product.imageUrl}"
+                             class="product-image"
+                             alt="Product Image">
+                        <div th:unless="${product.imageUrl}" class="no-image">
+                            <i class="fas fa-image fa-3x mb-2"></i>
+                            <p>Không có hình ảnh</p>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <table class="table">
+                            <tr>
+                                <th>ID:</th>
+                                <td th:text="${product.productId}"></td>
+                            </tr>
+                            <tr>
+                                <th>Tên sản phẩm:</th>
+                                <td th:text="${product.name}"></td>
+                            </tr>
+                            <tr>
+                                <th>Mô tả:</th>
+                                <td>
+                                    <div class="product-description">
+                                        <span th:text="${product.description}"></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Giá:</th>
+                                <td th:text="${#numbers.formatCurrency(product.price)}"></td>
+                            </tr>
+                            <tr>
+                                <th>Số lượng tồn kho:</th>
+                                <td th:text="${product.stockQty}"></td>
+                            </tr>
+                            <tr>
+                                <th>Trạng thái:</th>
+                                <td>
+                                    <span th:if="${product.status}" class="badge bg-success">Đang bán</span>
+                                    <span th:unless="${product.status}" class="badge bg-danger">Ngừng bán</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

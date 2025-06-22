@@ -1,4 +1,3 @@
-
 <div th:fragment="sidebar">
   <div class="sidebar">
     <div class="p-3 border-bottom">
@@ -49,9 +48,9 @@
         </a>
       </li>
       <li class="nav-item mb-2">
-        <a th:href="@{/admin/promotion}"
-           th:classappend="${activeMenu=='promotion'} ? 'nav-link active' : 'nav-link'">
-          Manage promotion
+        <a th:href="@{/admin/discount}"
+           th:classappend="${activeMenu=='discount'} ? 'nav-link active' : 'nav-link'">
+          Manage Discount
         </a>
       </li>
     </ul>

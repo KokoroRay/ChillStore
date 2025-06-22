@@ -1,9 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap");
 .main-container {
     display: flex;
     height: 100vh;
     overflow: hidden;
 }
-
 .sidebar {
     border-radius: 0 20px 20px 0;
     width: 220px;
@@ -16,27 +16,85 @@
     top: 0;
     left: 0;
     bottom: 0;
-    overflow-y: auto;
+    overflow: hidden;
     z-index: 1000;
 }
-.sidebar a {
+.sidebar .nav-item {
+    position: relative;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    overflow: visible; /* Quan trọng! */
+    margin-bottom: 10px;
+    z-index: 1;
+}
+
+.sidebar .nav-link {
     display: block;
-    background-color: white;
-    color: black;
-    padding: 5px;
-    margin: 8px 0;
-    width: 100%;
-    text-align: left;
-    border-radius: 10px;
+    padding: 12px 20px;
+    color: white;
+    background-color: transparent;
     text-decoration: none;
-    font-weight: 500;
+    border-radius: inherit;
+    position: relative;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+.sidebar .nav-item:hover {
+    background-color: white;
 }
 
-.sidebar a.active {
-    background-color: #e0e0ff;
-    color: #007bff;
+.sidebar .nav-item:hover .nav-link {
+    color: #005691;
 }
 
+
+.sidebar .nav-item:hover .nav-link::before,
+.sidebar .nav-item:hover .nav-link::after {
+    content: "";
+    position: absolute;
+    right: -21px;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.sidebar .nav-item:hover .nav-link::before {
+    top: -50px;
+    box-shadow: 35px 35px 0 10px white;
+}
+
+.sidebar .nav-item:hover .nav-link::after {
+    bottom: -50px;
+    box-shadow: 35px -35px 0 10px white;
+}
+.sidebar .nav-item:active  .nav-link::before,
+.sidebar .nav-item:active  .nav-link::after {
+    content: "";
+    position: absolute;
+    right: -21px;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.sidebar .nav-item:active  .nav-link::before {
+    top: -50px;
+    box-shadow: 35px 35px 0 10px white;
+}
+
+.sidebar .nav-item:active  .nav-link::after {
+    bottom: -50px;
+    box-shadow: 35px -35px 0 10px white;
+}
+
+
+/*-----*/
 .main-content {
     margin-left: 220px;
     width: calc(100% - 220px);
@@ -62,17 +120,12 @@
     z-index: 999;
 }
 
-.logo-image {
-    border-radius: 20px;
-    height: 70px;
-    max-height: 100%;
-    width: auto;
-}
 .logo-sidebar {
     width: 120px;
     height: auto;
-    margin-bottom: 20px;
     display: block;
+    margin: 10px auto;
+    border-radius: 20px;
 }
 
 .center-logo {

@@ -194,6 +194,12 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
 
+    @Override
+    public Page<Customer> findWithFilters(String keyword, Boolean locked, Pageable pageable) {
+        String effectiveKeyword = (keyword != null && !keyword.isBlank()) ? keyword.trim() : null;
+        return customerRepository.findWithFilters(effectiveKeyword, locked, pageable);
+    }
+
     @Transactional
     @Override
     public void createCustomer(Customer customer) {
@@ -284,4 +290,50 @@ public class CustomerServiceImpl implements CustomerService {
     public Page<Customer> searchCustomersByEmail(String email, Pageable pageable) {
         return customerRepository.findByEmailContainingIgnoreCase(email, pageable);
     }
+
+    // Commented out - not needed for simple Bootstrap layout
+    /*
+    // Custom sorting methods
+    @Override
+    public Page<Customer> getAllCustomersOrderByCreatedAtDesc(Pageable pageable) {
+        return customerRepository.findAllOrderByCreatedAtDesc(pageable);
+    }
+
+    @Override
+    public Page<Customer> getAllCustomersOrderByCreatedAtAsc(Pageable pageable) {
+        return customerRepository.findAllOrderByCreatedAtAsc(pageable);
+    }
+
+    @Override
+    public Page<Customer> getAllCustomersOrderByDisplayNameAsc(Pageable pageable) {
+        return customerRepository.findAllOrderByDisplayNameAsc(pageable);
+    }
+
+    @Override
+    public Page<Customer> getAllCustomersOrderByDisplayNameDesc(Pageable pageable) {
+        return customerRepository.findAllOrderByDisplayNameDesc(pageable);
+    }
+
+    // Statistics methods
+    @Override
+    public long getTotalCustomers() {
+        return customerRepository.count();
+    }
+
+    @Override
+    public long getActiveCustomers() {
+        return customerRepository.countByIsLockedFalse();
+    }
+
+    @Override
+    public long getLockedCustomers() {
+        return customerRepository.countByIsLockedTrue();
+    }
+
+    @Override
+    public long getNewCustomersThisMonth() {
+        LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        return customerRepository.countByCreatedAtAfter(startOfMonth);
+    }
+    */
 }

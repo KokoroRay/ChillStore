@@ -11,15 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     Page<Category> findByNameContainingIgnoreCase(String name, Pageable pageable);
     @Query("SELECT MAX(c.id) FROM Category c")
     Integer findMaxId();
-
     Page<Category> findAll(Pageable pageable);
-
-    List<Category> findAllByIdIn(List<Integer> ids);
-
     Optional<Category> findById(Integer parentId);
 }

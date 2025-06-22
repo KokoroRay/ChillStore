@@ -56,8 +56,8 @@ public class VoucherController {
     public String showAddForm(Model model) {
         VoucherDto voucherDto = new VoucherDto();
         model.addAttribute("voucherDto", voucherDto);
-        model.addAttribute("selectedCategories", List.<Category>of());
-        model.addAttribute("selectedBrands", List.<Brand>of());
+        model.addAttribute("selectedCategories", new ArrayList<Category>());
+        model.addAttribute("selectedBrands", new ArrayList<Brand>());
         model.addAttribute("activeMenu", "vouchers");
         model.addAttribute("currentSection", "voucher");
         model.addAttribute("keyword", "");
@@ -70,11 +70,11 @@ public class VoucherController {
             VoucherDto voucherDto, BindingResult bindingResult,
             Model model, Authentication  authentication) {
         if (bindingResult.hasErrors()) {
-            List<Category> selCats = List.of();
-            List<Brand> selBrands = List.of();
+            List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
+            List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
             model.addAttribute("selectedCategories", selCats);
             model.addAttribute("selectedBrands",selBrands);
-            model.addAttribute("voucher", voucherDto);
+            model.addAttribute("voucherDto", voucherDto);
             model.addAttribute("activeMenu", "vouchers");
             model.addAttribute("currentSection", "voucher");
             model.addAttribute("keyword", "");
@@ -84,8 +84,8 @@ public class VoucherController {
             String adminEmail = authentication.getName();
             voucherService.createVoucher(voucherDto, adminEmail);
         } catch (Exception e) {
-            List<Category> selCats = List.of();
-            List<Brand> selBrands = List.of();
+            List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
+            List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
             model.addAttribute("selectedCategories", selCats);
             model.addAttribute("selectedBrands",selBrands);
             model.addAttribute("voucherDto", voucherDto);
@@ -110,9 +110,9 @@ public class VoucherController {
         voucherDto.setDiscount_amount(voucher.getDiscount_amount());
         voucherDto.setDiscount_pct(voucher.getDiscount_pct());
         voucherDto.setMin_order_amount(voucher.getMin_order_amount());
-        voucherDto.setQuantity_available(voucherDto.getQuantity_available());
+        voucherDto.setQuantity_available(voucher.getQuantity_available());
         voucherDto.setStart_date(voucher.getStart_date());
-        voucherDto.setEnd_date(voucherDto.getEnd_date());
+        voucherDto.setEnd_date(voucher.getEnd_date());
         voucherDto.setActive(voucher.isActive());
         List<Category> selCats = voucher.getCategories() != null ? new ArrayList<>(voucher.getCategories()) : List.of();
         List<Brand> selBrands = voucher.getBrands() != null ? new ArrayList<>(voucher.getBrands()) : List.of();
@@ -134,8 +134,11 @@ public class VoucherController {
                               @Valid @ModelAttribute("voucherDto") VoucherDto voucherDto,
                               BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            List<Category> selCats = List.of();
-            List<Brand> selBrands = List.of();
+            List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
+            List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
+            model.addAttribute("selectedCategories", selCats);
+            model.addAttribute("selectedCategories", selCats);
+            model.addAttribute("selectedBrands", selBrands);
             model.addAttribute("activeMenu", "vouchers");
             model.addAttribute("currentSection", "voucher");
             model.addAttribute("keyword", "");
@@ -144,6 +147,10 @@ public class VoucherController {
         try {
             voucherService.updateVoucher(id, voucherDto);
         } catch (Exception e) {
+            List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
+            List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
+            model.addAttribute("selectedCategories", selCats);
+            model.addAttribute("selectedBrands", selBrands);
             model.addAttribute("voucherDto", voucherDto);
             model.addAttribute("error Message", e.getMessage());
             model.addAttribute("activeMenu", "vouchers");

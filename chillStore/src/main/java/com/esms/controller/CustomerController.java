@@ -35,21 +35,17 @@ public class CustomerController {
             @RequestParam(required = false) String type,
             @RequestParam(required = false) Boolean locked,
             Model model) {
+        
         Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<Customer> customerPage;
-        if (search == null || search.isBlank()) {
-            customerPage = customerService.getAllCustomers(pageable);
-        } else if ("email".equalsIgnoreCase(type)) {
-            customerPage = customerService.searchCustomersByEmail(search, pageable);
-        } else {
-            customerPage = customerService.searchCustomersByName(search, pageable);
-        }
+        Page<Customer> customerPage = customerService.findWithFilters(search, locked, pageable);
+        
         model.addAttribute("customers", customerPage.getContent());
         model.addAttribute("totalPages", customerPage.getTotalPages());
         model.addAttribute("currentPage", page);
         model.addAttribute("search", search);
         model.addAttribute("type", type);
         model.addAttribute("locked", locked);
+        
         return "admin/customer/list";
     }
 

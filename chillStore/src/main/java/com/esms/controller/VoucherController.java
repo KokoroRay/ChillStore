@@ -7,6 +7,7 @@ import com.esms.model.entity.Voucher;
 import com.esms.repository.BrandRepository;
 import com.esms.repository.CategoryRepository;
 import com.esms.service.VoucherService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 
 @Controller
-@RequestMapping("/admin/vouchers")
+@RequestMapping({"/admin/vouchers", "/staff/vouchers"})
 public class VoucherController {
 
     @Autowired
@@ -41,7 +42,7 @@ public class VoucherController {
             @RequestParam(name = "keyword", required = false)
             String keyword,
             @RequestParam(name = "error", required = false)
-            String error, Model model
+            String error, Model model, HttpServletRequest request
     ) {
         List<Voucher> vouchers = voucherService.searchVouchers(keyword);
         model.addAttribute("vouchers", vouchers);
@@ -49,7 +50,12 @@ public class VoucherController {
         if (error != null) {
             model.addAttribute("error", error);
         }
-        return "admin/vouchers/list";
+        String requestUrl = request.getRequestURI();
+        if (requestUrl.startsWith("/staff")) {
+            return "staff/vouchers/list";
+        } else {
+            return "admin/vouchers/list";
+        }
     }
 
     @GetMapping("/add")

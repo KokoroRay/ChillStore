@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${discount != null ? 'Edit Discount' : 'Create New Discount'} + ' - ChillStore Admin'">Discount Form - ChillStore Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <!-- Custom CSS -->
+    <link th:href="@{/css/discount.css}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    
+    <!-- Custom styles to fix layout -->
+    <style>
+        /* Fix layout for discount form page */
+        .main-content {
+            margin-left: 220px !important;
+            width: calc(100% - 220px) !important;
+            padding: 20px;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+        
+        .content-wrapper {
+            margin-top: 80px;
+            padding: 20px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 10px;
+            }
+            
+            .content-wrapper {
+                margin-top: 60px;
+                padding: 10px;
+            }
+        }
+        
+        /* Ensure proper spacing */
+        .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <div th:insert="~{fragments/header :: headerContent}"></div>
+    
+    <!-- Include Sidebar -->
+    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+    
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    <i class="fas fa-percentage text-primary"></i>
+                    <span th:text="${discount != null ? 'Edit Discount' : 'Create New Discount'}">Discount Form</span>
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="/admin/discount/list" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to List
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Success/Error Messages -->
+            <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${param.success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            
+            <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${param.error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            
+            <!-- Discount Form -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-edit"></i>
+                                <span th:text="${discount != null ? 'Edit Discount Information' : 'Discount Information'}">Discount Information</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/admin/discount/save}" method="post" th:object="${discountDto}">
+                                <!-- Hidden fields -->
+                                <input type="hidden" th:field="*{promoId}" th:if="${discount != null}">
+                                
+                                <div class="row">
+                                    <!-- Discount Code -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="code" class="form-label">
+                                            <i class="fas fa-tag"></i> Discount Code <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="code" th:field="*{code}" 
+                                               placeholder="Enter discount code" required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
+                                    </div>
+                                    
+                                    <!-- Discount Percentage -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="discountPct" class="form-label">
+                                            <i class="fas fa-percentage"></i> Discount Percentage <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="discountPct" th:field="*{discountPct}" 
+                                                   placeholder="0.00" min="0" max="100" step="0.01" required>
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('discountPct')}" th:errors="*{discountPct}"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Description -->
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">
+                                        <i class="fas fa-align-left"></i> Description <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control" id="description" th:field="*{description}" 
+                                              rows="3" placeholder="Enter discount description" required></textarea>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                                </div>
+                                
+                                <div class="row">
+                                    <!-- Start Date -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="startDate" class="form-label">
+                                            <i class="fas fa-calendar-alt"></i> Start Date <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control" id="startDate" th:field="*{startDate}" required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+                                    </div>
+                                    
+                                    <!-- End Date -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="endDate" class="form-label">
+                                            <i class="fas fa-calendar-check"></i> End Date <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control" id="endDate" th:field="*{endDate}" required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Apply Type -->
+                                <div class="mb-3">
+                                    <label for="applyType" class="form-label">
+                                        <i class="fas fa-layer-group"></i> Apply Type <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="applyType" th:field="*{applyType}" required>
+                                        <option value="">Select apply type</option>
+                                        <option value="product">Product</option>
+                                        <option value="brand">Brand</option>
+                                        <option value="category">Category</option>
+                                    </select>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('applyType')}" th:errors="*{applyType}"></div>
+                                </div>
+                                
+                                <!-- Product Selection with Cascading Dropdowns (shown when applyType is product) -->
+                                <div class="mb-3" id="productSelection" style="display: none;">
+                                    <label class="form-label">
+                                        <i class="fas fa-box"></i> Select Products <span class="text-danger">*</span>
+                                    </label>
+                                    
+                                    <!-- Brand Filter for Products -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="productBrandFilter" class="form-label">
+                                                <i class="fas fa-filter"></i> Filter by Brand
+                                            </label>
+                                            <select class="form-select" id="productBrandFilter">
+                                                <option value="">All Brands</option>
+                                                <option th:each="brand : ${brands}" 
+                                                        th:value="${brand.id}" 
+                                                        th:text="${brand.name}">
+                                                    Brand Name
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="productCategoryFilter" class="form-label">
+                                                <i class="fas fa-filter"></i> Filter by Category
+                                            </label>
+                                            <select class="form-select" id="productCategoryFilter">
+                                                <option value="">All Categories</option>
+                                                <option th:each="category : ${categories}" 
+                                                        th:value="${category.id}" 
+                                                        th:text="${category.name}">
+                                                    Category Name
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Product Selection -->
+                                    <select class="form-select" id="productIds" name="productIds" multiple>
+                                        <option th:each="product : ${products}" 
+                                                th:value="${product.productId}" 
+                                                th:text="${product.name + ' - $' + product.price}"
+                                                th:data-brand="${product.brand != null ? product.brand.id : ''}"
+                                                th:data-category="${product.category != null ? product.category.id : ''}"
+                                                th:selected="${discount != null && discount.productIds != null && discount.productIds.contains(product.productId)}">
+                                            Product Name
+                                        </option>
+                                    </select>
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle"></i> 
+                                        Use filters above to narrow down products. Hold Ctrl (or Cmd on Mac) to select multiple products.
+                                    </div>
+                                </div>
+                                
+                                <!-- Brand Selection (shown when applyType is brand) -->
+                                <div class="mb-3" id="brandSelection" style="display: none;">
+                                    <label for="brandId" class="form-label">
+                                        <i class="fas fa-trademark"></i> Select Brand <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="brandId" name="brandId">
+                                        <option value="">Select brand</option>
+                                        <option th:each="brand : ${brands}" 
+                                                th:value="${brand.id}" 
+                                                th:text="${brand.name}"
+                                                th:selected="${discount != null && discount.brandId != null && discount.brandId.equals(brand.id)}">
+                                            Brand Name
+                                        </option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Category Selection (shown when applyType is category) -->
+                                <div class="mb-3" id="categorySelection" style="display: none;">
+                                    <label for="categoryId" class="form-label">
+                                        <i class="fas fa-folder"></i> Select Category <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="categoryId" name="categoryId">
+                                        <option value="">Select category</option>
+                                        <option th:each="category : ${categories}" 
+                                                th:value="${category.id}" 
+                                                th:text="${category.name}"
+                                                th:selected="${discount != null && discount.categoryId != null && discount.categoryId.equals(category.id)}">
+                                            Category Name
+                                        </option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Active Status -->
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="active" th:field="*{active}">
+                                        <label class="form-check-label" for="active">
+                                            <i class="fas fa-toggle-on"></i> Active
+                                        </label>
+                                    </div>
+                                    <div class="form-text">Enable this discount immediately</div>
+                                </div>
+                                
+                                <!-- Submit Buttons -->
+                                <div class="d-flex justify-content-between">
+                                    <a href="/admin/discount/list" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i>
+                                        <span th:text="${discount != null ? 'Update Discount' : 'Create Discount'}">Save</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar with Help -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle"></i> Help & Guidelines
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="help-section mb-3">
+                                <h6><i class="fas fa-lightbulb"></i> Tips for Creating Discounts</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> Use clear, memorable discount codes</li>
+                                    <li><i class="fas fa-check text-success"></i> Set reasonable discount percentages (5-50%)</li>
+                                    <li><i class="fas fa-check text-success"></i> Choose appropriate start and end dates</li>
+                                    <li><i class="fas fa-check text-success"></i> Select the right apply type for your needs</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="help-section mb-3">
+                                <h6><i class="fas fa-question-circle"></i> Apply Types</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong>Product:</strong> Apply to specific products</li>
+                                    <li><strong>Brand:</strong> Apply to all products of a brand</li>
+                                    <li><strong>Category:</strong> Apply to all products in a category</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="help-section">
+                                <h6><i class="fas fa-exclamation-triangle"></i> Important Notes</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-info text-info"></i> Discount codes must be unique</li>
+                                    <li><i class="fas fa-info text-info"></i> End date must be after start date</li>
+                                    <li><i class="fas fa-info text-info"></i> You can activate/deactivate discounts later</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for product selection with better configuration
+            $('#productIds').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Select products...',
+                allowClear: true,
+                width: '100%',
+                closeOnSelect: false
+            });
+            
+            // Show/hide selection sections based on apply type
+            $('#applyType').change(function() {
+                var applyType = $(this).val();
+                
+                // Hide all selection sections
+                $('#productSelection, #brandSelection, #categorySelection').hide();
+                
+                // Show relevant section
+                if (applyType === 'product') {
+                    $('#productSelection').show();
+                    // Reinitialize Select2 when showing product selection
+                    $('#productIds').select2('destroy');
+                    $('#productIds').select2({
+                        theme: 'bootstrap-5',
+                        placeholder: 'Select products...',
+                        allowClear: true,
+                        width: '100%',
+                        closeOnSelect: false
+                    });
+                } else if (applyType === 'brand') {
+                    $('#brandSelection').show();
+                } else if (applyType === 'category') {
+                    $('#categorySelection').show();
+                }
+            });
+            
+            // Cascading dropdown functionality for product selection
+            function filterProducts() {
+                var selectedBrand = $('#productBrandFilter').val();
+                var selectedCategory = $('#productCategoryFilter').val();
+                
+                // Hide all options first
+                $('#productIds option').hide();
+                
+                // Show options that match the filters
+                $('#productIds option').each(function() {
+                    var $option = $(this);
+                    var brandMatch = !selectedBrand || $option.data('brand') == selectedBrand;
+                    var categoryMatch = !selectedCategory || $option.data('category') == selectedCategory;
+                    
+                    if (brandMatch && categoryMatch) {
+                        $option.show();
+                    }
+                });
+                
+                // Update Select2
+                $('#productIds').trigger('change');
+            }
+            
+            // Bind filter events for cascading dropdown
+            $('#productBrandFilter, #productCategoryFilter').change(function() {
+                filterProducts();
+            });
+            
+            // Date validation with better user feedback
+            $('#startDate, #endDate').change(function() {
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+                
+                if (startDate && endDate && startDate > endDate) {
+                    // Show Bootstrap alert instead of browser alert
+                    showAlert('End date must be after start date!', 'danger');
+                    $(this).val('');
+                    return;
+                }
+                
+                // Clear any existing alerts
+                $('.alert').remove();
+            });
+            
+            // Form validation with better user experience
+            $('form').submit(function(e) {
+                var applyType = $('#applyType').val();
+                var isValid = true;
+                var errorMessage = '';
+                
+                // Clear any existing alerts
+                $('.alert').remove();
+                
+                // Validate apply type selection
+                if (!applyType) {
+                    errorMessage = 'Please select an apply type!';
+                    isValid = false;
+                } else {
+                    // Validate based on apply type
+                    if (applyType === 'product') {
+                        if ($('#productIds').val() === null || $('#productIds').val().length === 0) {
+                            errorMessage = 'Please select at least one product!';
+                            isValid = false;
+                        }
+                    } else if (applyType === 'brand') {
+                        if ($('#brandId').val() === '') {
+                            errorMessage = 'Please select a brand!';
+                            isValid = false;
+                        }
+                    } else if (applyType === 'category') {
+                        if ($('#categoryId').val() === '') {
+                            errorMessage = 'Please select a category!';
+                            isValid = false;
+                        }
+                    }
+                }
+                
+                // Validate required fields
+                if (!$('#code').val().trim()) {
+                    errorMessage = 'Discount code is required!';
+                    isValid = false;
+                }
+                
+                if (!$('#discountPct').val() || parseFloat($('#discountPct').val()) <= 0) {
+                    errorMessage = 'Discount percentage must be greater than 0!';
+                    isValid = false;
+                }
+                
+                if (!$('#startDate').val()) {
+                    errorMessage = 'Start date is required!';
+                    isValid = false;
+                }
+                
+                if (!$('#endDate').val()) {
+                    errorMessage = 'End date is required!';
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    showAlert(errorMessage, 'danger');
+                    // Scroll to top to show alert
+                    $('html, body').animate({scrollTop: 0}, 500);
+                }
+            });
+            
+            // Function to show Bootstrap alerts
+            function showAlert(message, type) {
+                var alertHtml = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i>
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                $('.card-body').prepend(alertHtml);
+            }
+            
+            // Auto-fill current date for start date if empty
+            if (!$('#startDate').val()) {
+                var today = new Date().toISOString().split('T')[0];
+                $('#startDate').val(today);
+            }
+            
+            // Set minimum date for end date based on start date
+            $('#startDate').change(function() {
+                $('#endDate').attr('min', $(this).val());
+            });
+            
+            // Initialize minimum date for end date
+            if ($('#startDate').val()) {
+                $('#endDate').attr('min', $('#startDate').val());
+            }
+            
+            // Show success message if redirected from successful save
+            if (window.location.search.includes('success=')) {
+                var successType = new URLSearchParams(window.location.search).get('success');
+                var message = '';
+                
+                switch(successType) {
+                    case 'created':
+                        message = 'Discount created successfully!';
+                        break;
+                    case 'updated':
+                        message = 'Discount updated successfully!';
+                        break;
+                    default:
+                        message = 'Operation completed successfully!';
+                }
+                
+                showAlert(message, 'success');
+            }
+            
+            // Initialize form for edit mode - show correct selection based on apply type
+            var currentApplyType = $('#applyType').val();
+            if (currentApplyType) {
+                // Trigger change event to show correct selection
+                $('#applyType').trigger('change');
+                
+                // For product selection, set filters based on selected products
+                if (currentApplyType === 'product') {
+                    // Set brand filter if all selected products are from same brand
+                    var selectedProducts = $('#productIds option:selected');
+                    if (selectedProducts.length > 0) {
+                        var firstBrand = selectedProducts.first().data('brand');
+                        var allSameBrand = true;
+                        
+                        selectedProducts.each(function() {
+                            if ($(this).data('brand') !== firstBrand) {
+                                allSameBrand = false;
+                                return false; // break loop
+                            }
+                        });
+                        
+                        if (allSameBrand && firstBrand) {
+                            $('#productBrandFilter').val(firstBrand);
+                        }
+                        
+                        // Set category filter if all selected products are from same category
+                        var firstCategory = selectedProducts.first().data('category');
+                        var allSameCategory = true;
+                        
+                        selectedProducts.each(function() {
+                            if ($(this).data('category') !== firstCategory) {
+                                allSameCategory = false;
+                                return false; // break loop
+                            }
+                        });
+                        
+                        if (allSameCategory && firstCategory) {
+                            $('#productCategoryFilter').val(firstCategory);
+                        }
+                        
+                        // Apply filters
+                        filterProducts();
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

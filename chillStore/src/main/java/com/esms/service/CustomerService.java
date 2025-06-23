@@ -34,4 +34,5 @@ public interface CustomerService {
 
     Page<Customer> searchCustomersByName(String name, Pageable pageable);
     Page<Customer> searchCustomersByEmail(String email, Pageable pageable);
+
 }

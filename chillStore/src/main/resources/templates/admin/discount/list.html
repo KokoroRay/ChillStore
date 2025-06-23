@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Discount - ChillStore Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/discount.css}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    
+    <!-- Custom styles to fix layout -->
+    <style>
+        /* Fix layout for discount page */
+        .main-content {
+            margin-left: 220px !important;
+            width: calc(100% - 220px) !important;
+            padding: 20px;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+        
+        .content-wrapper {
+            margin-top: 80px;
+            padding: 20px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 10px;
+            }
+            
+            .content-wrapper {
+                margin-top: 60px;
+                padding: 10px;
+            }
+        }
+        
+        /* Ensure proper spacing */
+        .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <div th:insert="~{fragments/header :: headerContent}"></div>
+    
+    <!-- Include Sidebar -->
+    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+    
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    <i class="fas fa-percentage text-primary"></i>
+                    Manage Discount
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="/admin/discount/create" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add New Discount
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Success/Error Messages -->
+            <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="${param.success == 'created' ? 'Discount created successfully!' : 
+                               param.success == 'updated' ? 'Discount updated successfully!' :
+                               param.success == 'deleted' ? 'Discount deleted successfully!' :
+                               param.success == 'activated' ? 'Discount activated successfully!' :
+                               'Discount deactivated successfully!'}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-2">
+                    <div class="stats-card">
+                        <div class="stats-number" th:text="${totalDiscounts}">0</div>
+                        <div class="stats-label">Total Discounts</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="stats-card">
+                        <div class="stats-number" th:text="${activeDiscounts}">0</div>
+                        <div class="stats-label">Active Discounts</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="stats-card">
+                        <div class="stats-number" th:text="${productDiscounts}">0</div>
+                        <div class="stats-label">Product Discounts</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="stats-card">
+                        <div class="stats-number" th:text="${brandDiscounts}">0</div>
+                        <div class="stats-label">Brand Discounts</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="stats-card">
+                        <div class="stats-number" th:text="${categoryDiscounts}">0</div>
+                        <div class="stats-label">Category Discounts</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="stats-card">
+                        <div class="stats-number" th:text="${totalPages}">0</div>
+                        <div class="stats-label">Total Pages</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search and Filter Section -->
+            <div class="card search-filter-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-search"></i> Search & Filter
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/admin/discount/list}" method="get" id="searchFilterForm" class="search-filter-form">
+                        <!-- Hidden fields for pagination -->
+                        <input type="hidden" name="page" value="0">
+                        <input type="hidden" name="size" th:value="${pageSize}">
+                        
+                        <div class="row">
+                            <!-- Search by Code/Description -->
+                            <div class="col-md-4 mb-3">
+                                <label for="search" class="form-label">
+                                    <i class="fas fa-search"></i> Search
+                                </label>
+                                <input type="text" class="form-control" id="search" name="search" 
+                                       th:value="${param.search}" placeholder="Search by code or description...">
+                            </div>
+                            
+                            <!-- Filter by Status -->
+                            <div class="col-md-2 mb-3">
+                                <label for="status" class="form-label">
+                                    <i class="fas fa-toggle-on"></i> Status
+                                </label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="">All Status</option>
+                                    <option value="true" th:selected="${param.status == 'true'}">Active</option>
+                                    <option value="false" th:selected="${param.status == 'false'}">Inactive</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Filter by Apply Type -->
+                            <div class="col-md-2 mb-3">
+                                <label for="applyType" class="form-label">
+                                    <i class="fas fa-layer-group"></i> Type
+                                </label>
+                                <select class="form-select" id="applyType" name="applyType">
+                                    <option value="">All Types</option>
+                                    <option value="product" th:selected="${param.applyType == 'product'}">Product</option>
+                                    <option value="brand" th:selected="${param.applyType == 'brand'}">Brand</option>
+                                    <option value="category" th:selected="${param.applyType == 'category'}">Category</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Filter by Date Range -->
+                            <div class="col-md-2 mb-3">
+                                <label for="startDate" class="form-label">
+                                    <i class="fas fa-calendar-alt"></i> Start Date
+                                </label>
+                                <input type="date" class="form-control" id="startDate" name="startDate" 
+                                       th:value="${param.startDate}">
+                            </div>
+                            
+                            <div class="col-md-2 mb-3">
+                                <label for="endDate" class="form-label">
+                                    <i class="fas fa-calendar-check"></i> End Date
+                                </label>
+                                <input type="date" class="form-control" id="endDate" name="endDate" 
+                                       th:value="${param.endDate}">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <!-- Filter by Category -->
+                            <div class="col-md-3 mb-3">
+                                <label for="categoryId" class="form-label">
+                                    <i class="fas fa-folder"></i> Category
+                                </label>
+                                <select class="form-select" id="categoryId" name="categoryId">
+                                    <option value="">All Categories</option>
+                                    <option th:each="category : ${categories}" 
+                                            th:value="${category.id}" 
+                                            th:text="${category.name}"
+                                            th:selected="${param.categoryId != null && param.categoryId[0] == category.id.toString()}">
+                                        Category Name
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <!-- Filter by Brand -->
+                            <div class="col-md-3 mb-3">
+                                <label for="brandId" class="form-label">
+                                    <i class="fas fa-trademark"></i> Brand
+                                </label>
+                                <select class="form-select" id="brandId" name="brandId">
+                                    <option value="">All Brands</option>
+                                    <option th:each="brand : ${brands}" 
+                                            th:value="${brand.id}" 
+                                            th:text="${brand.name}"
+                                            th:selected="${param.brandId != null && param.brandId[0] == brand.id.toString()}">
+                                        Brand Name
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <!-- Filter by Product -->
+                            <div class="col-md-3 mb-3">
+                                <label for="productId" class="form-label">
+                                    <i class="fas fa-box"></i> Product
+                                </label>
+                                <select class="form-select" id="productId" name="productId">
+                                    <option value="">All Products</option>
+                                    <option th:each="product : ${products}" 
+                                            th:value="${product.productId}" 
+                                            th:text="${product.name}"
+                                            th:selected="${param.productId != null && param.productId[0] == product.productId.toString()}">
+                                        Product Name
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <!-- Filter by Discount Percentage Range -->
+                            <div class="col-md-3 mb-3">
+                                <label for="discountRange" class="form-label">
+                                    <i class="fas fa-percentage"></i> Discount Range
+                                </label>
+                                <select class="form-select" id="discountRange" name="discountRange">
+                                    <option value="">All Ranges</option>
+                                    <option value="0-10" th:selected="${param.discountRange == '0-10'}">0-10%</option>
+                                    <option value="10-20" th:selected="${param.discountRange == '10-20'}">10-20%</option>
+                                    <option value="20-30" th:selected="${param.discountRange == '20-30'}">20-30%</option>
+                                    <option value="30-50" th:selected="${param.discountRange == '30-50'}">30-50%</option>
+                                    <option value="50+" th:selected="${param.discountRange == '50+'}">50%+</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="search-filter-actions">
+                            <div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Search & Filter
+                                </button>
+                                <a href="/admin/discount/list" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i> Clear All
+                                </a>
+                            </div>
+                            <div class="search-filter-info">
+                                <small>
+                                    <i class="fas fa-info-circle"></i> 
+                                    Found <span th:text="${discounts.size()}">0</span> discount(s)
+                                </small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Discount List -->
+            <div class="row" th:if="${!discounts.empty}">
+                <div class="col-12">
+                    <div class="row">
+                        <!-- Discount Card -->
+                        <div class="col-lg-6 col-xl-4 mb-4" th:each="discount : ${discounts}">
+                            <div class="discount-card">
+                                <!-- Discount Header -->
+                                <div class="discount-header">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="mb-1" th:text="${discount.code}">DISCOUNT_CODE</h5>
+                                            <p class="mb-0" th:text="${discount.description}">Description</p>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="discount-badge" 
+                                                  th:classappend="${discount.active ? 'active' : 'inactive'}"
+                                                  th:text="${discount.active ? 'Active' : 'Inactive'}">
+                                                Status
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Discount Body -->
+                                <div class="discount-body">
+                                    <!-- Discount Percentage -->
+                                    <div class="text-center mb-3">
+                                        <div class="discount-percentage" th:text="${discount.discountPct + '%'}">10%</div>
+                                        <small class="text-muted">Discount Percentage</small>
+                                    </div>
+                                    
+                                    <!-- Apply Type -->
+                                    <div class="mb-3">
+                                        <span class="discount-badge" 
+                                              th:classappend="${discount.applyType == 'product' ? 'product' : 
+                                                              discount.applyType == 'brand' ? 'brand' : 'category'}"
+                                              th:text="${discount.applyType}">
+                                            Type
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Date Range -->
+                                    <div class="discount-dates mb-3">
+                                        <div><i class="fas fa-calendar-alt"></i> 
+                                            <strong>Start:</strong> 
+                                            <span th:text="${#temporals.format(discount.startDate, 'dd/MM/yyyy')}">01/01/2025</span>
+                                        </div>
+                                        <div><i class="fas fa-calendar-check"></i> 
+                                            <strong>End:</strong> 
+                                            <span th:text="${#temporals.format(discount.endDate, 'dd/MM/yyyy')}">31/12/2025</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Product Count -->
+                                    <div class="mb-3" th:if="${discount.productCount > 0}">
+                                        <small class="text-muted">
+                                            <i class="fas fa-box"></i> 
+                                            <span th:text="${discount.productCount + ' products'}">0 products</span>
+                                        </small>
+                                    </div>
+                                    
+                                    <!-- Product List (if any) -->
+                                    <div class="product-list mb-3" th:if="${discount.productNames != null && !discount.productNames.empty}">
+                                        <small class="text-muted mb-2 d-block">Applied Products:</small>
+                                        <div class="product-item" th:each="productName : ${discount.productNames}">
+                                            <i class="fas fa-tag"></i> <span th:text="${productName}">Product Name</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Created By -->
+                                    <div class="mb-3" th:if="${discount.adminName != null}">
+                                        <small class="text-muted">
+                                            <i class="fas fa-user"></i> 
+                                            Created by: <span th:text="${discount.adminName}">Admin</span>
+                                        </small>
+                                    </div>
+                                    
+                                    <!-- Action Buttons -->
+                                    <div class="action-buttons">
+                                        <a th:href="@{/admin/discount/{id}(id=${discount.promoId})}" 
+                                           class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                        <a th:href="@{/admin/discount/{id}/edit(id=${discount.promoId})}" 
+                                           class="btn btn-outline-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <form th:action="@{/admin/discount/{id}/toggle(id=${discount.promoId})}" 
+                                              method="post" style="display: inline;">
+                                            <input type="hidden" name="active" th:value="${!discount.active}">
+                                            <button type="submit" class="btn btn-outline-success btn-sm" 
+                                                    th:if="${discount.active}">
+                                                <i class="fas fa-pause"></i> Deactivate
+                                            </button>
+                                            <button type="submit" class="btn btn-outline-success btn-sm" 
+                                                    th:unless="${discount.active}">
+                                                <i class="fas fa-play"></i> Activate
+                                            </button>
+                                        </form>
+                                        <form th:action="@{/admin/discount/{id}/delete(id=${discount.promoId})}" 
+                                              method="post" style="display: inline;"
+                                              onsubmit="return confirm('Are you sure you want to delete this discount?')">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination Controls -->
+            <div class="row" th:if="${totalDiscounts > 0}">
+                <div class="col-12">
+                    <nav aria-label="Discount pagination" class="pagination-container">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <!-- Page Info -->
+                            <div class="pagination-info">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle"></i>
+                                    Showing <span th:text="${startIndex}">1</span> to 
+                                    <span th:text="${endIndex}">3</span> of 
+                                    <span th:text="${totalDiscounts}">0</span> discounts
+                                    <span th:if="${totalPages > 1}">(Page <span th:text="${currentPage + 1}">1</span> of <span th:text="${totalPages}">1</span>)</span>
+                                    <span th:if="${totalPages == 1}">(Single page)</span>
+                                </small>
+                            </div>
+                            
+                            <!-- Pagination -->
+                            <ul class="pagination pagination-sm mb-0" th:if="${totalPages > 1}">
+                                <!-- First Page -->
+                                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                    <a class="page-link" th:if="${currentPage > 0}" 
+                                       th:href="@{/admin/discount/list(page=0, size=${pageSize}, search=${search}, status=${status}, applyType=${applyType}, startDate=${startDate}, endDate=${endDate}, categoryId=${categoryId}, brandId=${brandId}, productId=${productId}, discountRange=${discountRange})}">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                    <span class="page-link" th:unless="${currentPage > 0}">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </span>
+                                </li>
+                                
+                                <!-- Previous Page -->
+                                <li class="page-item" th:classappend="${!hasPrevious ? 'disabled' : ''}">
+                                    <a class="page-link" th:if="${hasPrevious}" 
+                                       th:href="@{/admin/discount/list(page=${currentPage - 1}, size=${pageSize}, search=${search}, status=${status}, applyType=${applyType}, startDate=${startDate}, endDate=${endDate}, categoryId=${categoryId}, brandId=${brandId}, productId=${productId}, discountRange=${discountRange})}">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                    <span class="page-link" th:unless="${hasPrevious}">
+                                        <i class="fas fa-angle-left"></i>
+                                    </span>
+                                </li>
+                                
+                                <!-- Page Numbers with ellipsis -->
+                                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                                    th:if="${pageNum == 0 || pageNum == totalPages - 1 || (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)}"
+                                    th:classappend="${pageNum == currentPage ? 'active' : ''}">
+                                    <a class="page-link" th:href="@{/admin/discount/list(page=${pageNum}, size=${pageSize}, search=${search}, status=${status}, applyType=${applyType}, startDate=${startDate}, endDate=${endDate}, categoryId=${categoryId}, brandId=${brandId}, productId=${productId}, discountRange=${discountRange})}"
+                                       th:text="${pageNum + 1}">1</a>
+                                </li>
+                                
+                                <!-- Ellipsis -->
+                                <li class="page-item disabled" th:if="${currentPage > 2 && totalPages > 5}">
+                                    <span class="page-link">...</span>
+                                </li>
+                                <li class="page-item disabled" th:if="${currentPage < totalPages - 3 && totalPages > 5}">
+                                    <span class="page-link">...</span>
+                                </li>
+                                
+                                <!-- Next Page -->
+                                <li class="page-item" th:classappend="${!hasNext ? 'disabled' : ''}">
+                                    <a class="page-link" th:if="${hasNext}" 
+                                       th:href="@{/admin/discount/list(page=${currentPage + 1}, size=${pageSize}, search=${search}, status=${status}, applyType=${applyType}, startDate=${startDate}, endDate=${endDate}, categoryId=${categoryId}, brandId=${brandId}, productId=${productId}, discountRange=${discountRange})}">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                    <span class="page-link" th:unless="${hasNext}">
+                                        <i class="fas fa-angle-right"></i>
+                                    </span>
+                                </li>
+                                
+                                <!-- Last Page -->
+                                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                    <a class="page-link" th:if="${currentPage < totalPages - 1}" 
+                                       th:href="@{/admin/discount/list(page=${totalPages - 1}, size=${pageSize}, search=${search}, status=${status}, applyType=${applyType}, startDate=${startDate}, endDate=${endDate}, categoryId=${categoryId}, brandId=${brandId}, productId=${productId}, discountRange=${discountRange})}">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                    <span class="page-link" th:unless="${currentPage < totalPages - 1}">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </span>
+                                </li>
+                            </ul>
+                            
+                            <!-- Page Size Selector -->
+                            <div class="page-size-selector">
+                                <small class="text-muted">Show:</small>
+                                <select class="form-select form-select-sm d-inline-block w-auto ms-2" 
+                                        onchange="changePageSize(this.value)">
+                                    <option value="3" th:selected="${pageSize == 3}">3</option>
+                                    <option value="6" th:selected="${pageSize == 6}">6</option>
+                                    <option value="9" th:selected="${pageSize == 9}">9</option>
+                                    <option value="12" th:selected="${pageSize == 12}">12</option>
+                                </select>
+                                <small class="text-muted ms-2">per page</small>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Empty State -->
+            <div class="text-center py-5" th:if="${discounts.empty}">
+                <i class="fas fa-percentage fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No Discounts Found</h4>
+                <p class="text-muted">Start by creating your first discount to attract customers.</p>
+                <a href="/admin/discount/create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create First Discount
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Custom JS -->
+    <script th:src="@{/js/admin.js}"></script>
+    
+    <!-- Search and Filter JavaScript -->
+    <script>
+        $(document).ready(function() {
+            // Auto-submit form when certain filters change
+            $('#status, #applyType, #discountRange').change(function() {
+                $('#searchFilterForm').submit();
+            });
+            
+            // Date validation for filter
+            $('#startDate, #endDate').change(function() {
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+                
+                if (startDate && endDate && startDate > endDate) {
+                    alert('End date must be after start date!');
+                    $(this).val('');
+                    return;
+                }
+                
+                // Auto-submit if both dates are filled
+                if (startDate && endDate) {
+                    $('#searchFilterForm').submit();
+                }
+            });
+            
+            // Clear all filters
+            $('.btn-outline-secondary').click(function(e) {
+                e.preventDefault();
+                window.location.href = '/admin/discount/list';
+            });
+            
+            // Search with Enter key
+            $('#search').keypress(function(e) {
+                if (e.which == 13) { // Enter key
+                    $('#searchFilterForm').submit();
+                }
+            });
+            
+            // Show loading state during search
+            $('#searchFilterForm').submit(function() {
+                // Add loading class to the form
+                $(this).addClass('loading');
+                
+                // Show loading message
+                if ($('.search-loading').length === 0) {
+                    $('.search-filter-card').after(`
+                        <div class="search-loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Searching discounts...</p>
+                        </div>
+                    `);
+                }
+                
+                // Reset pagination to first page when searching
+                $('input[name="page"]').val('0');
+            });
+            
+            // Highlight active filters
+            function highlightActiveFilters() {
+                var hasActiveFilters = false;
+                
+                // Check each filter
+                $('select, input[type="date"], input[type="text"]').each(function() {
+                    if ($(this).val() && $(this).val().trim() !== '') {
+                        hasActiveFilters = true;
+                        $(this).addClass('is-active-filter');
+                    } else {
+                        $(this).removeClass('is-active-filter');
+                    }
+                });
+                
+                // Show/hide clear button based on active filters
+                if (hasActiveFilters) {
+                    $('.btn-outline-secondary').show();
+                } else {
+                    $('.btn-outline-secondary').hide();
+                }
+            }
+            
+            // Initialize filter highlighting
+            highlightActiveFilters();
+            
+            // Update highlighting when filters change
+            $('select, input').change(function() {
+                highlightActiveFilters();
+            });
+            
+            // Add CSS for active filters
+            $('<style>')
+                .prop('type', 'text/css')
+                .html(`
+                    .is-active-filter {
+                        border-color: #667eea !important;
+                        background-color: #f8f9ff !important;
+                    }
+                    .search-loading {
+                        text-align: center;
+                        padding: 40px;
+                        color: #6c757d;
+                    }
+                    .search-loading i {
+                        font-size: 2rem;
+                        margin-bottom: 15px;
+                        animation: spin 1s linear infinite;
+                    }
+                    .pagination-info {
+                        font-size: 0.9rem;
+                    }
+                    .page-size-selector {
+                        display: flex;
+                        align-items: center;
+                    }
+                    .page-size-selector select {
+                        min-width: 60px;
+                    }
+                    .pagination .page-link {
+                        color: #667eea;
+                        border-color: #dee2e6;
+                    }
+                    .pagination .page-item.active .page-link {
+                        background-color: #667eea;
+                        border-color: #667eea;
+                        color: white;
+                    }
+                    .pagination .page-item.disabled .page-link {
+                        color: #6c757d;
+                        background-color: #fff;
+                        border-color: #dee2e6;
+                    }
+                `)
+                .appendTo('head');
+        });
+        
+        // Function to change page size
+        function changePageSize(newSize) {
+            // Show loading indicator
+            showLoadingIndicator();
+            
+            // Get current URL parameters
+            var urlParams = new URLSearchParams(window.location.search);
+            
+            // Update page size and reset to first page
+            urlParams.set('size', newSize);
+            urlParams.set('page', '0');
+            
+            // Redirect to new URL
+            window.location.href = '/admin/discount/list?' + urlParams.toString();
+        }
+        
+        // Function to go to specific page
+        function goToPage(pageNum) {
+            // Show loading indicator
+            showLoadingIndicator();
+            
+            // Get current URL parameters
+            var urlParams = new URLSearchParams(window.location.search);
+            
+            // Update page number
+            urlParams.set('page', pageNum);
+            
+            // Redirect to new URL
+            window.location.href = '/admin/discount/list?' + urlParams.toString();
+        }
+        
+        // Function to show loading indicator
+        function showLoadingIndicator() {
+            // Add loading overlay
+            if ($('.loading-overlay').length === 0) {
+                $('body').append(`
+                    <div class="loading-overlay" style="
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(255,255,255,0.8);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 9999;
+                    ">
+                        <div class="text-center">
+                            <i class="fas fa-spinner fa-2x text-primary" style="animation: spin 1s linear infinite;"></i>
+                            <p class="mt-2 text-muted">Loading...</p>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+        
+        // Add smooth scroll to top when pagination changes
+        $('.pagination .page-link').click(function() {
+            $('html, body').animate({scrollTop: 0}, 500);
+        });
+        
+        // Add confirmation for page size change
+        $('.page-size-selector select').change(function() {
+            var newSize = $(this).val();
+            var currentSize = new URLSearchParams(window.location.search).get('size') || '3';
+            
+            if (newSize !== currentSize) {
+                if (confirm('Changing page size will reset to the first page. Continue?')) {
+                    changePageSize(newSize);
+                } else {
+                    // Reset select to previous value
+                    $(this).val(currentSize);
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

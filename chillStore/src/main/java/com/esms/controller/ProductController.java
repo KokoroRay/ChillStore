@@ -6,6 +6,7 @@ import com.esms.model.entity.Product;
 import com.esms.service.BrandService;
 import com.esms.service.CategoryService;
 import com.esms.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/admin/products")
+@RequestMapping({"/admin/products", "/staff/products"})
 public class ProductController {
 
     @Autowired
@@ -48,7 +49,7 @@ public class ProductController {
             @RequestParam(value = "sortOption", required = false, defaultValue = "default") String sortOption,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size,
-            Model model) {
+            Model model, HttpServletRequest request) {
 
         List<Category> categories = categoryService.getAllCategory();
         List<Brand> brands = brandService.getAllBrands();
@@ -106,7 +107,12 @@ public class ProductController {
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        return "admin/ManageProduct/Product";
+        String requestURI = request.getRequestURI();
+        if(requestURI.startsWith("/staff")){
+            return "staff/ManageProduct/Product";
+        } else {
+            return "admin/ManageProduct/Product";
+        }
     }
 
     @GetMapping("/{id}")
@@ -122,7 +128,7 @@ public class ProductController {
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption,
-            Model model) {
+            Model model, HttpServletRequest request) {
         Product product = productService.getProductById(id);
         model.addAttribute("product", product);
         model.addAttribute("currentPage", page);
@@ -135,7 +141,12 @@ public class ProductController {
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("minStock", minStock);
         model.addAttribute("sortOption", sortOption);
-        return "admin/ManageProduct/ProductDetail";
+        String requestURI = request.getRequestURI();
+        if(requestURI.startsWith("/staff")){
+            return "staff/ManageProduct/ProductDetail";
+        } else {
+            return "admin/ManageProduct/ProductDetail";
+        }
     }
 
     @GetMapping("/{id}/edit")

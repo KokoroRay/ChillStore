@@ -1,7 +1,7 @@
 <div class="main-container">
 
   <div th:fragment="sidebarStaff">
-    <div class="sidebarStaff">
+    <div class="sidebar">
       <div class="p-3 border-bottom">
         <img th:src="@{/images/logo.png}" alt="FsMs Logo" class="logo-sidebar">
       </div>
@@ -37,7 +37,7 @@
           </a>
         </li>
         <li class="nav-item mb-2">
-          <a th:href="@{/admin/feedback}"
+          <a th:href="@{/staff/manageFeedback}"
              th:classappend="${activeMenu=='feedback'} ? 'nav-link active' : 'nav-link'">
             Manage Feedback
           </a>

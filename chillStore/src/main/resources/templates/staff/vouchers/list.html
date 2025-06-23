@@ -2,16 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
     <title>Manage Vouchers</title>
-    <!-- CSS Bootstrap, FontAwesome, custom CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS Bootstrap, FontAwesome FIRST -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Custom CSS AFTER Bootstrap -->
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/sidebarStaff.css">
+
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+
     <style>
         /* Thêm style đảm bảo sidebar hiển thị đúng */
         html, body {
@@ -42,11 +44,6 @@
             margin-left: 250px;
             width: calc(100% - 250px);
             flex: 1;
-        }
-
-        /* Header cần margin-left */
-        .header-container {
-            margin-left: 250px;
         }
 
         /* Giữ nguyên các style khác */
@@ -162,26 +159,28 @@
             font-size: 0.9rem;
             color: #6c757d;
         }
+
+        /* FIX: Đảm bảo sidebar có màu */
+        .sidebar-container .sidebar {
+            background-color: #005691 !important;
+        }
     </style>
 </head>
 
 <body>
-<div th:insert="~{fragments/header :: headerContent}"></div>
 <!-- Container-fluid để full chiều ngang -->
 <div class="container-fluid px-0 d-flex-fullheight">
-
     <!-- Sidebar container cố định -->
     <div class="sidebar-container">
-        <!-- Sidebar: th:insert fragment -->
-        <div th:insert="~{fragments/sidebarStaff :: sidebarStaff}" class="border-end h-100"></div>
+        <!-- FIX: Thêm class "sidebar" vào đây -->
+        <div th:insert="~{fragments/sidebarStaff :: sidebarStaff}"
+             class="sidebar border-end h-100"></div>
     </div>
 
     <!-- Main content -->
     <div class="main-content">
-        <!-- Header -->
-        <div class="header-container">
-            <!-- Header content ở đây nếu cần -->
-        </div>
+        <!-- FIX: Xóa header thừa -->
+        <!-- <div th:insert="~{fragments/header :: headerContent}"></div> -->
 
         <!-- Content -->
         <main class="p-4">

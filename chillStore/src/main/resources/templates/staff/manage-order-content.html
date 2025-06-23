@@ -1,0 +1,76 @@
+<div th:fragment="content(orders, statuses, keyword, selectedStatus, searchError)">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <form th:action="@{/staff/orders}" method="get" class="d-flex w-75">
+      <input type="text"
+             name="keyword"
+             class="form-control"
+             placeholder="Search by Receipt or Customer"
+             th:value="${keyword}">
+      <select name="status" class="form-control ms-2" style="max-width: 150px;" onchange="this.form.submit()">
+        <option value="">All status</option>
+        <option th:each="st : ${statuses}"
+                th:value="${st}"
+                th:text="${st}"
+                th:selected="${st == selectedStatus}"></option>
+      </select>
+      <button type="submit" class="btn btn-outline-primary ms-2">
+        <i class="fas fa-search"></i> Search
+      </button>
+    </form>
+  </div>
+
+  <div th:if="${searchError}" class="alert alert-danger" th:text="${searchError}"></div>
+
+  <div th:if="${#lists.isEmpty(orders)}" class="text-center text-muted py-5">
+    <h4><i class="fas fa-inbox"></i> No orders found</h4>
+    <p>Try changing your search criteria.</p>
+  </div>
+
+  <div th:if="${!#lists.isEmpty(orders)}" class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Order List</h5>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Customer Name</th>
+              <th>Order Date</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+              <th>Payment Method</th>
+              <th>Receipt</th>
+              <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order, i : ${orders}">
+              <td th:text="${i.count}"></td>
+              <td th:text="${order.customerName}"></td>
+              <td th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+              <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA')}"></td>
+              <td th:text="${order.status}"></td>
+              <td th:text="${order.paymentMethod}"></td>
+              <td th:text="${order.orderId}"></td>
+              <td>
+                <form th:if="${order.status == 'New order' || order.status == 'Pending payment'}" 
+                      th:action="@{/staff/orders/confirm/{orderId}(orderId=${order.orderId})}" 
+                      method="post" 
+                      style="display: inline;">
+                  <button type="submit" class="btn btn-success btn-sm">
+                    <i class="fas fa-check"></i> Confirm
+                  </button>
+                </form>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

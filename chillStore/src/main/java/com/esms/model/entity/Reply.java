@@ -1,38 +1,47 @@
-package com.esms.model.dto;
+package com.esms.model.entity;
 
-import com.esms.model.entity.Feedback;
-import com.esms.model.entity.Staff;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-public class ReplyFeedbackDTO {
-    private int feedbackId;
+@Entity
+@Table(name ="replies")
+public class Reply {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="reply_id")
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "feedback_id", nullable = false)
     private Feedback feedback;
+    @ManyToOne
+    @JoinColumn(name = "staff_id", nullable = false)
     private Staff staff;
+
+    @Column(name = "content", length = 1000)
     private String content;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    private int staffId;
 
-
-    public ReplyFeedbackDTO() {
-
+    public Reply() {
     }
 
-    public ReplyFeedbackDTO(int feedbackId, Feedback feedback, Staff staff, String content, LocalDateTime createdAt, int staffId) {
-        this.feedbackId = feedbackId;
+    public Reply(int id, Feedback feedback, Staff staff, String content, LocalDateTime createdAt) {
+        this.id = id;
         this.feedback = feedback;
         this.staff = staff;
         this.content = content;
         this.createdAt = createdAt;
-        this.staffId = staffId;
     }
 
-    public int getFeedbackId() {
-        return feedbackId;
+    public int getId() {
+        return id;
     }
 
-    public void setFeedbackId(int feedbackId) {
-        this.feedbackId = feedbackId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Feedback getFeedback() {
@@ -65,13 +74,5 @@ public class ReplyFeedbackDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public int getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(int staffId) {
-        this.staffId = staffId;
     }
 }

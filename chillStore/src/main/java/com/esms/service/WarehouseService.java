@@ -33,16 +33,6 @@ public interface WarehouseService {
      */
     Warehouse importProduct(Integer productId, Integer quantity, String notes);
 
-    /**
-     * Xuất sản phẩm từ kho
-     * @param productId ID của sản phẩm
-     * @param quantity Số lượng xuất
-     * @param notes Ghi chú
-     * @return Warehouse transaction đã tạo
-     * @throws RuntimeException nếu số lượng xuất lớn hơn số lượng tồn kho
-     */
-    Warehouse exportProduct(Integer productId, Integer quantity, String notes);
-
     // Lấy tất cả giao dịch kho với phân trang
     Page<Warehouse> getAllWarehouseTransactions(Pageable pageable);
 

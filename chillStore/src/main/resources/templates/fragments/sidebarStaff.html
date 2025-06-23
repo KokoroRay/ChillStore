@@ -13,8 +13,8 @@
           </a>
         </li>
         <li class="nav-item mb-2">
-          <a th:href="@{/staff/product}"
-             th:classappend="${activeMenu=='product'} ? 'nav-link active' : 'nav-link'">
+          <a th:href="@{/staff/products}"
+             th:classappend="${activeMenu=='products'} ? 'nav-link active' : 'nav-link'">
             Manage Product
           </a>
         </li>
@@ -23,6 +23,12 @@
              th:classappend="${activeMenu=='orders'} ? 'nav-link active' : 'nav-link'">
             Manage Orders
           </a>
+        <li class="nav-item mb-2">
+          <a th:href="@{/staff/customer}"
+             th:classappend="${activeMenu=='customer'} ? 'nav-link active' : 'nav-link'">
+            Manage Customer
+          </a>
+        </li>
         </li>
         <li class="nav-item mb-2">
           <a th:href="@{/admin/vouchers}"

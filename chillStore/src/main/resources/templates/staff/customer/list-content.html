@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<div th:fragment="list-content(customers, totalPages, currentPage, search, locked, error, success)">
+    <div class="content">
+        <h2 class="mb-4">Customer List</h2>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <form th:action="@{/staff/customer}" method="get" class="d-flex w-100">
+                <div class="input-group">
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="Search by name, email, or phone"
+                           th:value="${search}">
+                    <select name="locked" class="form-select w-auto">
+                        <option value="">All Status</option>
+                        <option value="false" th:selected="${locked != null and !locked}">Active</option>
+                        <option value="true" th:selected="${locked != null and locked}">Locked</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary ms-2">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <a th:href="@{/staff/customer}" class="btn btn-secondary ms-2">
+                        <i class="fas fa-redo"></i> Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div th:if="${#lists.isEmpty(customers)}" class="text-center text-muted py-5">
+            <h4><i class="fas fa-inbox"></i> No customers found</h4>
+            <p>Try changing your search or filters.</p>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(customers)}" class="card-container">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Customer Details</h5>
+                </div>
+                <div class="card-body p-0 card-scrollable">
+                    <div class="table-wrapper">
+                        <div class="table-container">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                <tr>
+                                    <th class="text-start">ID</th>
+                                    <th class="text-start">Full Name</th>
+                                    <th class="text-start">Date of Birth</th>
+                                    <th class="text-start">Phone Number</th>
+                                    <th class="text-start">Address</th>
+                                    <th class="text-center">Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="customer : ${customers}">
+                                    <td class="text-start" th:text="${customer.customerId}"></td>
+                                    <td class="text-start" th:text="${customer.name}"></td>
+
+                                    <td class="text-start" th:if="${customer.birth_date != null}"
+                                        th:text="${#temporals.format(customer.birth_date, 'dd/MM/yyyy')}"></td>
+                                    <td class="text-start" th:unless="${customer.birth_date != null}">N/A</td>
+
+                                    <td class="text-start" th:text="${customer.phone}"></td>
+
+                                    <td class="text-start address-cell"
+                                        th:text="${customer.address}"
+                                        title="${customer.address}"></td>
+
+                                    <td class="text-center">
+                                        <span th:if="${customer.locked}" class="badge bg-danger">Locked</span>
+                                        <span th:unless="${customer.locked}" class="badge bg-success">Active</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

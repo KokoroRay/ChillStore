@@ -11,8 +11,9 @@ public class OrderDto {
     private Double totalAmount;
     private String status;
     private String paymentMethod;
+    private int itemsCount;
 
-    public OrderDto(Integer orderId, String customerName, BigDecimal discountAmount, Date orderDate, Double totalAmount, String status, String paymentMethod) {
+    public OrderDto(Integer orderId, String customerName, BigDecimal discountAmount, Date orderDate, Double totalAmount, String status, String paymentMethod, int itemsCount) {
         this.orderId = orderId;
         this.customerName = customerName;
         this.discountAmount = discountAmount;
@@ -20,6 +21,7 @@ public class OrderDto {
         this.totalAmount = totalAmount;
         this.status = status;
         this.paymentMethod = paymentMethod;
+        this.itemsCount = itemsCount;
     }
 
     public Integer getOrderId() {
@@ -76,5 +78,13 @@ public class OrderDto {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public int getItemsCount() {
+        return itemsCount;
+    }
+
+    public void setItemsCount(int itemsCount) {
+        this.itemsCount = itemsCount;
     }
 } 

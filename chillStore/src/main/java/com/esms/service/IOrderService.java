@@ -7,4 +7,5 @@ public interface IOrderService {
     List<OrderDto> getAllOrders();
     List<OrderDto> searchOrders(String keyword, String status);
     void confirmOrder(Integer orderId);
+    java.util.List<com.esms.model.dto.OrderItemDetailDto> getOrderItemsDetail(Integer orderId);
 } 

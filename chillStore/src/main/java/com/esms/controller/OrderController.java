@@ -1,6 +1,7 @@
 package com.esms.controller;
 
 import com.esms.model.dto.OrderDto;
+import com.esms.model.dto.OrderItemDetailDto;
 import com.esms.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,5 +46,11 @@ public class OrderController {
     public String confirmOrder(@PathVariable Integer orderId) {
         orderService.confirmOrder(orderId);
         return "redirect:/staff/orders";
+    }
+
+    @GetMapping("/{orderId}/items")
+    @ResponseBody
+    public java.util.List<OrderItemDetailDto> getOrderItems(@PathVariable Integer orderId) {
+        return orderService.getOrderItemsDetail(orderId);
     }
 } 

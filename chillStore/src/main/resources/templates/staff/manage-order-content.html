@@ -40,6 +40,7 @@
               <th>#</th>
               <th>Customer Name</th>
               <th>Order Date</th>
+              <th>Items</th>
               <th>Total Amount</th>
               <th>Status</th>
               <th>Payment Method</th>
@@ -52,11 +53,15 @@
               <td th:text="${i.count}"></td>
               <td th:text="${order.customerName}"></td>
               <td th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+              <td th:text="${order.itemsCount}"></td>
               <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA')}"></td>
               <td th:text="${order.status}"></td>
               <td th:text="${order.paymentMethod}"></td>
               <td th:text="${order.orderId}"></td>
               <td>
+                <button type="button" class="btn btn-info btn-sm" th:attr="data-order-id=${order.orderId}" onclick="showOrderDetail(this)">
+                  <i class="fas fa-eye"></i> Detail
+                </button>
                 <form th:if="${order.status == 'New order' || order.status == 'Pending payment'}" 
                       th:action="@{/staff/orders/confirm/{orderId}(orderId=${order.orderId})}" 
                       method="post" 
@@ -73,4 +78,57 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal hiển thị chi tiết sản phẩm đã mua -->
+  <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="orderDetailModalLabel">Order Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+              </tr>
+            </thead>
+            <tbody id="orderDetailTableBody">
+              <!-- Nội dung sẽ được fill bằng JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function showOrderDetail(btn) {
+    var orderId = btn.getAttribute('data-order-id');
+    fetch('/staff/orders/' + orderId + '/items')
+      .then(res => res.json())
+      .then(items => {
+        let tbody = document.getElementById('orderDetailTableBody');
+        tbody.innerHTML = '';
+        if (items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="text-center">No items found</td></tr>';
+        } else {
+          items.forEach(item => {
+            tbody.innerHTML += `<tr>
+              <td>${item.productName}</td>
+              <td>${item.categoryName}</td>
+              <td>${item.quantity}</td>
+              <td>${item.priceEach.toLocaleString()}</td>
+            </tr>`;
+          });
+        }
+        var modal = new bootstrap.Modal(document.getElementById('orderDetailModal'));
+        modal.show();
+      });
+  }
+  </script>
 </div> 

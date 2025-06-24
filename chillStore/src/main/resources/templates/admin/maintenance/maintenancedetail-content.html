@@ -1,0 +1,71 @@
+<div th:fragment="content">
+    <div class="content">
+        <h2 class="mb-4">Maintenance Detail</h2>
+
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Maintenance Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="fw-bold">Request ID:</td>
+                                <td th:text="${maintenance.requestId}"></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Order ID:</td>
+                                <td th:text="${maintenance.orderId}"></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Product ID:</td>
+                                <td th:text="${maintenance.productId}"></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Customer ID:</td>
+                                <td th:text="${maintenance.customerId}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="fw-bold">Request Type:</td>
+                                <td>
+                                    <span th:if="${maintenance.requestType == 'maintenance'}" class="badge bg-primary">Maintenance</span>
+                                    <span th:if="${maintenance.requestType == 'warranty'}" class="badge bg-info">Warranty</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Request Date:</td>
+                                <td th:text="${#temporals.format(maintenance.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Status:</td>
+                                <td>
+                                    <span th:if="${maintenance.status == 'Pending'}" class="badge bg-warning">Pending</span>
+                                    <span th:if="${maintenance.status == 'In Progress'}" class="badge bg-primary">In Progress</span>
+                                    <span th:if="${maintenance.status == 'Completed'}" class="badge bg-success">Completed</span>
+                                    <span th:if="${maintenance.status == 'Cancelled'}" class="badge bg-danger">Cancelled</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Reason:</td>
+                                <td th:text="${maintenance.reason}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a th:href="@{/admin/maintenance/edit/{id}(id=${maintenance.requestId})}" class="btn btn-warning">Edit</a>
+                <a th:href="@{/admin/maintenance}" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div> 

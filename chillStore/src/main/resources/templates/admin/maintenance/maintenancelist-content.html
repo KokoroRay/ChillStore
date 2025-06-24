@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:fragment="content">
+    <div class="content">
+        <h2 class="mb-4">Maintenance List</h2>
+
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <a th:href="@{/admin/maintenance/add}" class="btn btn-primary mb-3">Add New Maintenance</a>
+
+        <!-- Maintenance Table -->
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Request ID</th>
+                <th>Order ID</th>
+                <th>Product ID</th>
+                <th>Customer ID</th>
+                <th>Request Type</th>
+                <th>Request Date</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="m : ${maintenances}">
+                <td th:text="${m.requestId}"></td>
+                <td th:text="${m.orderId}"></td>
+                <td th:text="${m.productId}"></td>
+                <td th:text="${m.customerId}"></td>
+                <td>
+                    <span th:if="${m.requestType == 'maintenance'}" class="badge bg-primary">Maintenance</span>
+                    <span th:if="${m.requestType == 'warranty'}" class="badge bg-info">Warranty</span>
+                </td>
+                <td th:text="${#temporals.format(m.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${m.reason}"></td>
+                <td>
+                    <span th:if="${m.status == 'Pending'}" class="badge bg-warning">Pending</span>
+                    <span th:if="${m.status == 'In Progress'}" class="badge bg-primary">In Progress</span>
+                    <span th:if="${m.status == 'Completed'}" class="badge bg-success">Completed</span>
+                    <span th:if="${m.status == 'Cancelled'}" class="badge bg-danger">Cancelled</span>
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a th:href="@{/admin/maintenance/detail/{id}(id=${m.requestId})}"
+                           class="btn btn-sm btn-info">View</a>
+                        <a th:href="@{/admin/maintenance/edit/{id}(id=${m.requestId})}"
+                           class="btn btn-sm btn-warning">Edit</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

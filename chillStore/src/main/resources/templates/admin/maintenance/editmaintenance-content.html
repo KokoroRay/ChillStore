@@ -1,0 +1,63 @@
+<div th:fragment="content">
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="card shadow p-4 w-100" style="max-width: 600px;">
+            <h2 class="mb-4 text-center">Update Maintenance</h2>
+            <form th:action="@{'/admin/maintenance/update/' + ${maintenanceDto.requestId}}" th:object="${maintenanceDto}" method="post">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="orderId">Order ID</label>
+                        <input class="form-control" id="orderId" th:field="*{orderId}" type="text" required>
+                        <div class="text-danger small mt-1" th:errors="*{orderId}" th:if="${#fields.hasErrors('orderId')}"></div>
+                        <small class="text-muted">Enter a valid order ID that exists in the database</small>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="requestDate">Maintenance Date</label>
+                        <input class="form-control" id="requestDate" th:field="*{requestDate}" type="datetime-local" required>
+                        <div class="text-danger small mt-1" th:errors="*{requestDate}" th:if="${#fields.hasErrors('requestDate')}"></div>
+                        <small class="text-muted">Maintenance date and time must be today or in the future</small>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="productId">Product ID</label>
+                        <input class="form-control" id="productId" th:field="*{productId}" type="text" required>
+                        <div class="text-danger small mt-1" th:errors="*{productId}" th:if="${#fields.hasErrors('productId')}"></div>
+                        <small class="text-muted">Enter a valid product ID that exists in the database</small>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="status">Status</label>
+                        <select class="form-select" id="status" th:field="*{status}">
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <div class="text-danger small mt-1" th:errors="*{status}" th:if="${#fields.hasErrors('status')}"></div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="customerId">Customer ID</label>
+                        <input class="form-control" id="customerId" th:field="*{customerId}" type="text" required>
+                        <div class="text-danger small mt-1" th:errors="*{customerId}" th:if="${#fields.hasErrors('customerId')}"></div>
+                        <small class="text-muted">Enter a valid customer ID that exists in the database</small>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="reason">Maintenance Reason</label>
+                        <textarea class="form-control" id="reason" th:field="*{reason}" rows="2" required></textarea>
+                        <div class="text-danger small mt-1" th:errors="*{reason}" th:if="${#fields.hasErrors('reason')}"></div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="requestType">Request Type</label>
+                        <select class="form-select" id="requestType" th:field="*{requestType}" required>
+                            <option value="">Select request type</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="warranty">Warranty</option>
+                        </select>
+                        <div class="text-danger small mt-1" th:errors="*{requestType}" th:if="${#fields.hasErrors('requestType')}"></div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button class="btn btn-primary px-4" type="submit">Update</button>
+                    <a class="btn btn-secondary px-4" th:href="@{'/admin/maintenance'}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

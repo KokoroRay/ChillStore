@@ -1,9 +1,6 @@
 package com.esms.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Entity class cho bảng promotion_products (liên kết giữa Discount và Product)
@@ -11,9 +8,6 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "promotion_products") // Giữ nguyên tên bảng trong database
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class DiscountProduct {
     
     @EmbeddedId
@@ -30,4 +24,41 @@ public class DiscountProduct {
     @MapsId("productId")
     @JoinColumn(name = "product_id")
     private Product product;
+    
+    // Constructor mặc định
+    public DiscountProduct() {
+    }
+    
+    // Constructor đầy đủ
+    public DiscountProduct(DiscountProductId id, Discount discount, Product product) {
+        this.id = id;
+        this.discount = discount;
+        this.product = product;
+    }
+    
+    // Getters
+    public DiscountProductId getId() {
+        return id;
+    }
+    
+    public Discount getDiscount() {
+        return discount;
+    }
+    
+    public Product getProduct() {
+        return product;
+    }
+    
+    // Setters
+    public void setId(DiscountProductId id) {
+        this.id = id;
+    }
+    
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
+    }
+    
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 } 

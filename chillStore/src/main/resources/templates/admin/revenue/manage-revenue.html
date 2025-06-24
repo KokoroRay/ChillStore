@@ -25,10 +25,10 @@
                 <div class="col-md-4">
                     <div class="card text-white bg-success mb-3">
                         <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-coins me-2"></i>Tổng doanh thu</h5>
-                            <h3 class="card-text mt-2" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'POINT', 0, 'COMMA')} + ' đ'"></h3>
+                            <h5 class="card-title"><i class="fas fa-coins me-2"></i>Total Revenue</h5>
+                            <h3 class="card-text mt-2" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'POINT', 0, 'COMMA')} + ' VND'"></h3>
                             <div class="mt-2">
-                                <span class="fw-bold">Đơn hàng: </span>
+                                <span class="fw-bold">Orders: </span>
                                 <span th:text="${totalOrders}"></span>
                             </div>
                         </div>
@@ -40,7 +40,7 @@
             </div>
             <!-- Bảng thống kê sản phẩm bán ra -->
             <div class="row mt-4">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Product Sales Statistics</h5>
@@ -60,15 +60,15 @@
                                     <tr th:each="stat : ${productStats}">
                                         <td th:text="${stat[0]}"></td>
                                         <td th:text="${stat[1]}"></td>
-                                        <td th:text="${#numbers.formatDecimal(stat[2], 0, 'POINT', 0, 'COMMA')} + ' đ'"></td>
-                                        <td th:text="${#numbers.formatDecimal(stat[3], 0, 'POINT', 0, 'COMMA')} + ' đ'"></td>
+                                        <td th:text="${#numbers.formatDecimal(stat[2], 0, 'POINT', 0, 'COMMA')} + ' VND'"></td>
+                                        <td th:text="${#numbers.formatDecimal(stat[3], 0, 'POINT', 0, 'COMMA')} + ' VND'"></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="card">
                         <div class="card-header">
                             <h5 class="mb-0">Top 10 Best-selling Staff</h5>
@@ -127,7 +127,7 @@
                     beginAtZero: true,
                     ticks: {
                         callback: function(value) {
-                            return value.toLocaleString() + ' đ';
+                            return value.toLocaleString() + ' VND';
                         }
                     }
                 }

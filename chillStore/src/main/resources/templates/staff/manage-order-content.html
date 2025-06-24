@@ -84,7 +84,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="orderDetailModalLabel">Order Details</h5>
+          <h5 class="modal-title" id="orderDetailModalLabel">Receipt <span id="receiptNumber" class="text-primary"></span></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -109,6 +109,7 @@
   <script>
   function showOrderDetail(btn) {
     var orderId = btn.getAttribute('data-order-id');
+    document.getElementById('receiptNumber').textContent = '#' + orderId;
     fetch('/staff/orders/' + orderId + '/items')
       .then(res => res.json())
       .then(items => {

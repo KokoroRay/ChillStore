@@ -13,73 +13,86 @@
 <div class="main-container1">
     <div th:insert="~{fragments/header :: headerContent}"></div>
     <div th:insert="~{fragments/sidebar :: sidebar}"></div>
-    <main class="main-content">
+    <main class="main-content" style="padding-top: 100px;">
         <section class="warehouse-section">
-            <h2>Product Log</h2>
-
-            <!-- Alerts -->
-            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
-
-            <!-- Action buttons -->
-            <div class="action-buttons">
-                <a th:href="@{/admin/warehouse}" class="btn btn-back">Back to Warehouse</a>
-
-                <!-- ✅ Nút xuất file Excel -->
-                <form th:action="@{/admin/warehouse/log/export-excel}" method="get" style="display: inline;">
-                    <button type="submit" class="btn btn-export">Export Excel</button>
-                </form>
-            </div>
-
-            <!-- Table -->
-            <div class="transactions-table">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Product Name</th>
-                        <th>Quantity Change</th>
-                        <th>Stock After</th>
-                        <th>Type</th>
-                        <th>Transaction Date</th>
-                        <th>Handled By</th>
-                        <th>Note</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="transaction : ${transactions}">
-                        <td th:text="${transaction.transId}"></td>
-                        <td th:text="${transaction.productName}"></td>
-                        <td th:text="${transaction.quantityChange}"></td>
-                        <td th:text="${transaction.stockAfter}"></td>
-                        <td th:text="${transaction.type}"></td>
-                        <td th:text="${#temporals.format(transaction.transDate, 'yyyy-MM-dd HH:mm')}"></td>
-                        <td th:text="${transaction.adminName}"></td>
-                        <td th:text="${transaction.notes}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            <div class="pagination" th:if="${totalPages > 1}">
-                <a th:if="${currentPage > 0}"
-                   th:href="@{/admin/warehouse/log(page=${currentPage - 1}, size=10)}"
-                   class="btn btn-page">&laquo; Previous</a>
-
-                <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                    <a th:if="${i != currentPage}"
-                       th:href="@{/admin/warehouse/log(page=${i}, size=10)}"
-                       class="btn btn-page"
-                       th:text="${i + 1}"></a>
-                    <span th:if="${i == currentPage}"
-                          class="btn btn-page active"
-                          th:text="${i + 1}"></span>
-                </span>
-
-                <a th:if="${currentPage < totalPages - 1}"
-                   th:href="@{/admin/warehouse/log(page=${currentPage + 1}, size=10)}"
-                   class="btn btn-page">Next &raquo;</a>
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="mb-4">Warehouse Log</h2>
+                    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <a th:href="@{/admin/warehouse}" class="btn btn-secondary me-3">
+                            <i class="fas fa-arrow-left"></i> Back to Warehouse
+                        </a>
+                        <form th:action="@{/admin/warehouse/log}" method="get" class="d-flex w-75">
+                            <input type="text" name="keyword" class="form-control" placeholder="Search by product name" th:value="${keyword}">
+                            <button type="submit" class="btn ms-2">
+                                <img th:src="@{/images/search.png}" alt="Search" width="20" height="20">
+                            </button>
+                        </form>
+                        <form th:action="@{/admin/warehouse/log/export-excel}" method="get" class="d-flex align-items-center ms-2">
+                            <select name="range" class="form-select d-inline w-auto me-2">
+                                <option value="week">1 Tuần</option>
+                                <option value="month">1 Tháng</option>
+                                <option value="year">1 Năm</option>
+                                <option value="all">Tất cả</option>
+                            </select>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </button>
+                        </form>
+                    </div>
+                    <div th:if="${#lists.isEmpty(transactions)}" class="text-center text-muted py-5">
+                        <h4><i class="fas fa-inbox"></i> No warehouse log found</h4>
+                        <p>Try changing your search or import new transactions</p>
+                    </div>
+                    <div th:if="${!#lists.isEmpty(transactions)}">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-primary">
+                            <tr>
+                                <th>ID</th>
+                                <th>Product Name</th>
+                                <th>Quantity Change</th>
+                                <th>Stock After</th>
+                                <th>Type</th>
+                                <th>Transaction Date</th>
+                                <th>Handled By</th>
+                                <th>Note</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="transaction : ${transactions}">
+                                <td th:text="${transaction.transId}"></td>
+                                <td th:text="${transaction.productName}"></td>
+                                <td th:text="${transaction.quantityChange}"></td>
+                                <td th:text="${transaction.stockAfter}"></td>
+                                <td th:text="${transaction.type}"></td>
+                                <td th:text="${#temporals.format(transaction.transDate, 'yyyy-MM-dd HH:mm')}"></td>
+                                <td th:text="${transaction.adminName}"></td>
+                                <td th:text="${transaction.notes}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <!-- Pagination -->
+                        <div class="pagination d-flex justify-content-center mt-4" th:if="${totalPages > 1}">
+                            <a th:if="${currentPage > 0}"
+                               th:href="@{/admin/warehouse/log(page=${currentPage - 1}, size=10, keyword=${keyword})}"
+                               class="btn btn-page">&laquo; Previous</a>
+                            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                                <a th:if="${i != currentPage}"
+                                   th:href="@{/admin/warehouse/log(page=${i}, size=10, keyword=${keyword})}"
+                                   class="btn btn-page"
+                                   th:text="${i + 1}"></a>
+                                <span th:if="${i == currentPage}"
+                                      class="btn btn-page active"
+                                      th:text="${i + 1}"></span>
+                            </span>
+                            <a th:if="${currentPage < totalPages - 1}"
+                               th:href="@{/admin/warehouse/log(page=${currentPage + 1}, size=10, keyword=${keyword})}"
+                               class="btn btn-page">Next &raquo;</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </main>

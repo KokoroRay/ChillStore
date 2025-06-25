@@ -23,7 +23,7 @@ public class Order {
     private Date orderDate;
 
     @Column(name = "total_amount")
-    private Double totalAmount;
+    private BigDecimal totalAmount;
 
     @Column(name = "status")
     private String status;
@@ -34,7 +34,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Integer orderId, Customer customer, BigDecimal discountAmount, Date orderDate, Double totalAmount, String status, String paymentMethod) {
+    public Order(Integer orderId, Customer customer, BigDecimal discountAmount, Date orderDate, BigDecimal totalAmount, String status, String paymentMethod) {
         this.orderId = orderId;
         this.customer = customer;
         this.discountAmount = discountAmount;
@@ -76,11 +76,11 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public Double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(Double totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 

@@ -7,10 +7,16 @@
                     <form th:action="@{'/admin/maintenance/save'}" th:object="${maintenanceDto}" method="post">
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
-                                <label class="form-label" for="orderId">Order ID</label>
-                                <input class="form-control" id="orderId" th:field="*{orderId}" type="text" required>
+                                <label class="form-label" for="orderId">Order</label>
+                                <select class="form-select" id="orderId" th:field="*{orderId}" required>
+                                    <option value="">Select an order</option>
+                                    <option th:each="order : ${orders}" 
+                                            th:value="${order.orderId}" 
+                                            th:text="'Order #' + ${order.orderId} + ' - ' + ${order.customer.name}">
+                                    </option>
+                                </select>
                                 <div class="text-danger small mt-1" th:errors="*{orderId}" th:if="${#fields.hasErrors('orderId')}"></div>
-                                <small class="text-muted">Enter a valid order ID that exists in the database</small>
+                                <small class="text-muted">Select an existing order from the list</small>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="requestDate">Maintenance Date</label>
@@ -19,26 +25,28 @@
                                 <small class="text-muted">Maintenance date and time must be today or in the future</small>
                             </div>
                             <div class="col-12 col-md-6">
-                                <label class="form-label" for="productId">Product ID</label>
-                                <input class="form-control" id="productId" th:field="*{productId}" type="text" required>
-                                <div class="text-danger small mt-1" th:errors="*{productId}" th:if="${#fields.hasErrors('productId')}"></div>
-                                <small class="text-muted">Enter a valid product ID that exists in the database</small>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <label class="form-label" for="status">Status</label>
-                                <select class="form-select" id="status" th:field="*{status}">
-                                    <option value="Pending">Pending</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Cancelled">Cancelled</option>
+                                <label class="form-label" for="productId">Product</label>
+                                <select class="form-select" id="productId" th:field="*{productId}" required>
+                                    <option value="">Select a product</option>
+                                    <option th:each="product : ${products}" 
+                                            th:value="${product.productId}" 
+                                            th:text="${product.name}">
+                                    </option>
                                 </select>
-                                <div class="text-danger small mt-1" th:errors="*{status}" th:if="${#fields.hasErrors('status')}"></div>
+                                <div class="text-danger small mt-1" th:errors="*{productId}" th:if="${#fields.hasErrors('productId')}"></div>
+                                <small class="text-muted">Select an existing product from the list</small>
                             </div>
                             <div class="col-12 col-md-6">
-                                <label class="form-label" for="customerId">Customer ID</label>
-                                <input class="form-control" id="customerId" th:field="*{customerId}" type="text" required>
+                                <label class="form-label" for="customerId">Customer</label>
+                                <select class="form-select" id="customerId" th:field="*{customerId}" required>
+                                    <option value="">Select a customer</option>
+                                    <option th:each="customer : ${customers}" 
+                                            th:value="${customer.customerId}" 
+                                            th:text="${customer.name}">
+                                    </option>
+                                </select>
                                 <div class="text-danger small mt-1" th:errors="*{customerId}" th:if="${#fields.hasErrors('customerId')}"></div>
-                                <small class="text-muted">Enter a valid customer ID that exists in the database</small>
+                                <small class="text-muted">Select an existing customer from the list</small>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="reason">Maintenance Reason</label>

@@ -2,7 +2,13 @@ package com.esms.controller;
 
 import com.esms.model.dto.MaintenanceDto;
 import com.esms.model.entity.Maintenance;
+import com.esms.model.entity.Order;
+import com.esms.model.entity.Product;
+import com.esms.model.entity.Customer;
 import com.esms.service.MaintenanceService;
+import com.esms.repository.OrderRepository;
+import com.esms.repository.ProductRepository;
+import com.esms.repository.CustomerRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,31 +29,81 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/maintenance")
 public class MaintenanceController {
+    private static final Logger logger = LoggerFactory.getLogger(MaintenanceController.class);
+    
     @Autowired
     private MaintenanceService maintenanceService;
+    
+    @Autowired
+    private OrderRepository orderRepository;
+    
+    @Autowired
+    private ProductRepository productRepository;
+    
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @GetMapping
     public String viewMaintenanceList(Model model) {
-        List<MaintenanceDto> maintenances = maintenanceService.getAllMaintenances();
-        model.addAttribute("maintenances", maintenances);
-        model.addAttribute("activeMenu", "maintenance");
-        return "admin/maintenance/maintenancelist";
+        try {
+            List<MaintenanceDto> maintenances = maintenanceService.getAllMaintenances();
+            logger.info("Retrieved {} maintenance records", maintenances.size());
+            model.addAttribute("maintenances", maintenances);
+            model.addAttribute("activeMenu", "maintenance");
+            return "admin/maintenance/maintenancelist";
+        } catch (Exception e) {
+            logger.error("Error retrieving maintenance list", e);
+            model.addAttribute("error", "Error loading maintenance list: " + e.getMessage());
+            model.addAttribute("maintenances", List.of());
+            model.addAttribute("activeMenu", "maintenance");
+            return "admin/maintenance/maintenancelist";
+        }
     }
 
     @GetMapping("/detail/{id}")
     public String viewMaintenanceDetail(@PathVariable("id") Integer id, Model model) {
-        MaintenanceDto maintenance = maintenanceService.getMaintenanceById(id);
-        model.addAttribute("maintenance", maintenance);
-        model.addAttribute("activeMenu", "maintenance");
-        return "admin/maintenance/maintenancedetail";
+        try {
+            MaintenanceDto maintenance = maintenanceService.getMaintenanceById(id);
+            if (maintenance == null) {
+                model.addAttribute("error", "Maintenance not found with ID: " + id);
+                return "redirect:/admin/maintenance";
+            }
+            model.addAttribute("maintenance", maintenance);
+            model.addAttribute("activeMenu", "maintenance");
+            return "admin/maintenance/maintenancedetail";
+        } catch (Exception e) {
+            logger.error("Error retrieving maintenance detail for ID: {}", id, e);
+            model.addAttribute("error", "Error loading maintenance detail: " + e.getMessage());
+            return "redirect:/admin/maintenance";
+        }
     }
 
     @GetMapping("/edit/{id}")
     public String editMaintenanceForm(@PathVariable("id") Integer id, Model model) {
-        MaintenanceDto maintenance = maintenanceService.getMaintenanceById(id);
-        model.addAttribute("maintenanceDto", maintenance);
-        model.addAttribute("activeMenu", "maintenance");
-        return "admin/maintenance/editmaintenance";
+        try {
+            MaintenanceDto maintenance = maintenanceService.getMaintenanceById(id);
+            if (maintenance == null) {
+                model.addAttribute("error", "Maintenance not found with ID: " + id);
+                return "redirect:/admin/maintenance";
+            }
+            model.addAttribute("maintenanceDto", maintenance);
+            model.addAttribute("activeMenu", "maintenance");
+            
+            // Add dropdown data
+            List<Order> orders = orderRepository.findAll();
+            List<Product> products = productRepository.findAll();
+            List<Customer> customers = customerRepository.findAll();
+            
+            model.addAttribute("orders", orders);
+            model.addAttribute("products", products);
+            model.addAttribute("customers", customers);
+            
+            return "admin/maintenance/editmaintenance";
+        } catch (Exception e) {
+            logger.error("Error retrieving maintenance for edit, ID: {}", id, e);
+            model.addAttribute("error", "Error loading maintenance: " + e.getMessage());
+            return "redirect:/admin/maintenance";
+        }
     }
 
     @PostMapping("/update/{id}")
@@ -56,16 +114,39 @@ public class MaintenanceController {
             Model model,
             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
+            logger.warn("Validation errors in maintenance update form");
             model.addAttribute("activeMenu", "maintenance");
+            
+            // Add dropdown data back for form re-render
+            List<Order> orders = orderRepository.findAll();
+            List<Product> products = productRepository.findAll();
+            List<Customer> customers = customerRepository.findAll();
+            
+            model.addAttribute("orders", orders);
+            model.addAttribute("products", products);
+            model.addAttribute("customers", customers);
+            
             return "admin/maintenance/editmaintenance";
         }
         try {
             maintenanceDto.setRequestId(id);
             maintenanceService.updateMaintenance(maintenanceDto);
+            logger.info("Successfully updated maintenance with ID: {}", id);
             redirectAttributes.addFlashAttribute("success", "Maintenance schedule updated successfully!");
         } catch (Exception e) {
+            logger.error("Error updating maintenance with ID: {}", id, e);
             redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
             model.addAttribute("activeMenu", "maintenance");
+            
+            // Add dropdown data back for form re-render
+            List<Order> orders = orderRepository.findAll();
+            List<Product> products = productRepository.findAll();
+            List<Customer> customers = customerRepository.findAll();
+            
+            model.addAttribute("orders", orders);
+            model.addAttribute("products", products);
+            model.addAttribute("customers", customers);
+            
             return "admin/maintenance/editmaintenance";
         }
         return "redirect:/admin/maintenance";
@@ -75,6 +156,16 @@ public class MaintenanceController {
     public String addMaintenanceForm(Model model) {
         model.addAttribute("maintenanceDto", new MaintenanceDto());
         model.addAttribute("activeMenu", "maintenance");
+        
+        // Add dropdown data
+        List<Order> orders = orderRepository.findAll();
+        List<Product> products = productRepository.findAll();
+        List<Customer> customers = customerRepository.findAll();
+        
+        model.addAttribute("orders", orders);
+        model.addAttribute("products", products);
+        model.addAttribute("customers", customers);
+        
         return "admin/maintenance/addmaintenance";
     }
 
@@ -85,7 +176,18 @@ public class MaintenanceController {
             Model model,
             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
+            logger.warn("Validation errors in maintenance add form");
             model.addAttribute("activeMenu", "maintenance");
+            
+            // Add dropdown data back for form re-render
+            List<Order> orders = orderRepository.findAll();
+            List<Product> products = productRepository.findAll();
+            List<Customer> customers = customerRepository.findAll();
+            
+            model.addAttribute("orders", orders);
+            model.addAttribute("products", products);
+            model.addAttribute("customers", customers);
+            
             return "admin/maintenance/addmaintenance";
         }
         try {
@@ -98,10 +200,22 @@ public class MaintenanceController {
             }
             
             maintenanceService.addMaintenance(maintenanceDto);
+            logger.info("Successfully added new maintenance");
             redirectAttributes.addFlashAttribute("success", "Maintenance schedule created successfully!");
         } catch (Exception e) {
+            logger.error("Error adding maintenance", e);
             model.addAttribute("error", "An error occurred: " + e.getMessage());
             model.addAttribute("activeMenu", "maintenance");
+            
+            // Add dropdown data back for form re-render
+            List<Order> orders = orderRepository.findAll();
+            List<Product> products = productRepository.findAll();
+            List<Customer> customers = customerRepository.findAll();
+            
+            model.addAttribute("orders", orders);
+            model.addAttribute("products", products);
+            model.addAttribute("customers", customers);
+            
             return "admin/maintenance/addmaintenance";
         }
         return "redirect:/admin/maintenance";

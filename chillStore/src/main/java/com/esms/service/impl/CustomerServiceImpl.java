@@ -186,10 +186,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Page<Customer> searchCustomersWithFilters(String keyword, String gender, Boolean locked, Pageable pageable) {
+    public Page<Customer> searchCustomersWithFilters(String keyword, Boolean locked, Pageable pageable) {
         return customerRepository.searchCustomersWithFilters(
             (keyword == null || keyword.isBlank()) ? null : keyword.trim(),
-            (gender == null || gender.isBlank()) ? null : gender,
             locked,
             pageable
         );

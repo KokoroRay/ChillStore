@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +25,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String listCategory(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "error", required = false) String error, Model model,
@@ -43,6 +45,7 @@ public class CategoryController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showAddForm(Model model) {
         CategoryDto categoryDto = new CategoryDto();
         List<Category> parenOptions = categoryService.getAllParentOptions();
@@ -52,6 +55,7 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String addCategory(
             @Valid @ModelAttribute("categoryDto") CategoryDto categoryDto,
             Model model, BindingResult bindingResult) {
@@ -71,6 +75,7 @@ public class CategoryController {
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showEditForm(
             @PathVariable("id") Integer id,
             Model model) {
@@ -87,6 +92,7 @@ public class CategoryController {
     }
 
     @PostMapping("/edit/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String editCategory(
             @PathVariable("id") Integer id,
             @Valid @ModelAttribute("categoryDto") CategoryDto categoryDto,
@@ -112,6 +118,7 @@ public class CategoryController {
 
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String deleteCategory(
             @PathVariable("id") Integer id) {
         try {

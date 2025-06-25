@@ -65,8 +65,8 @@ public class OrderServiceImpl implements IOrderService {
 
     private OrderDto convertToDto(Order order) {
         int itemsCount = orderItemRepository.countItemsByOrderId(order.getOrderId());
-        Double totalAmount = orderItemRepository.sumTotalAmountByOrderId(order.getOrderId());
-        if (totalAmount == null) totalAmount = 0.0;
+        Double totalAmountRaw = orderItemRepository.sumTotalAmountByOrderId(order.getOrderId());
+        java.math.BigDecimal totalAmount = totalAmountRaw != null ? java.math.BigDecimal.valueOf(totalAmountRaw) : java.math.BigDecimal.ZERO;
         return new OrderDto(
                 order.getOrderId(),
                 order.getCustomer().getName(),

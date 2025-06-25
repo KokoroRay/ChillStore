@@ -8,12 +8,12 @@ public class OrderDto {
     private String customerName;
     private BigDecimal discountAmount;
     private Date orderDate;
-    private Double totalAmount;
+    private BigDecimal totalAmount;
     private String status;
     private String paymentMethod;
     private int itemsCount;
 
-    public OrderDto(Integer orderId, String customerName, BigDecimal discountAmount, Date orderDate, Double totalAmount, String status, String paymentMethod, int itemsCount) {
+    public OrderDto(Integer orderId, String customerName, BigDecimal discountAmount, Date orderDate, BigDecimal totalAmount, String status, String paymentMethod, int itemsCount) {
         this.orderId = orderId;
         this.customerName = customerName;
         this.discountAmount = discountAmount;
@@ -56,11 +56,11 @@ public class OrderDto {
         this.orderDate = orderDate;
     }
 
-    public Double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(Double totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 

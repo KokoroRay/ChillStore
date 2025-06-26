@@ -1,3 +1,6 @@
+/* Custom styles for the application */
+
+/* Add any custom styles here */
 
 .list-group-item {
     transition: background-color 0.2s;
@@ -14,8 +17,6 @@
 .btn-delete {
     min-width: 80px;
 }
-
-
 
 /* Main content bù sidebar */
 .main-content, .flex-grow-1 {

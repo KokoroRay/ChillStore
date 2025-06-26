@@ -12,11 +12,19 @@ import com.esms.model.entity.Customer;
 import com.esms.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Collection;
 
 @Controller
 @RequestMapping("/auth")
@@ -57,8 +65,64 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String showLoginForm(Model model) {
+    public String showLoginForm(Model model,
+                                @RequestParam(value = "error", required = false) String error,
+                                @RequestParam(value = "logout", required = false) String logout,
+                                @RequestParam(value = "register", required = false) String register,
+                                @RequestParam(value = "resetSuccess", required = false ) String resetSuccess) {
+        if (error != null) {
+            model.addAttribute("error", "Invalid email or password");
+        }
+        if (logout != null) {
+            model.addAttribute("logout", "You have been logged out successfully");
+        }
+        if (register != null) {
+            model.addAttribute("register", "You have been registered successfully");
+        }
+        if (resetSuccess != null) {
+            model.addAttribute("resetSuccess", "You have been reset password successfully");
+        }
         return "login";
+    }
+
+    @GetMapping("/home")
+    public String home(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser".equals(authentication.getPrincipal()))) {
+            Object principal = authentication.getPrincipal();
+            String name = "";
+            String email = "";
+            String provider = "local";
+            if (principal instanceof OAuth2User) {
+                OAuth2User oauth2User = (OAuth2User) principal;
+                name = oauth2User.getAttribute("name");
+                email = oauth2User.getAttribute("email");
+                provider = "google";
+            } else if (principal instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) principal;
+                email = userDetails.getUsername();
+                customerService.findCustomerByEmail(email).ifPresent(customer -> {
+                    model.addAttribute("loggedInCustomerId", customer.getCustomerId());
+                    model.addAttribute("loggedInUserName", customer.getDisplay_name() != null ? customer.getDisplay_name() : customer.getName());
+                });
+            }
+            model.addAttribute("loggedInUserEmail", email);
+            model.addAttribute("loggedInUserName", name);
+            model.addAttribute("loggedInUserProvider", provider);
+
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            String role = "GUEST";
+            if (!authorities.isEmpty()) {
+                role = authorities.iterator().next().getAuthority().replace("ROLE_", "");
+            }
+            model.addAttribute("loggedInUserRole", role);
+        } else {
+            model.addAttribute("loggedInUserEmail", "Guest");
+            model.addAttribute("loggedInUserName", "Guest");
+            model.addAttribute("loggedInProvider", "none");
+            model.addAttribute("loggedInUserRole", "GUEST");
+        }
+        return "home";
     }
 
     //hiểu thị form để forget

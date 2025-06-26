@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     Optional<Customer> findByEmail(String email);
+    Optional<Customer> findByProviderAndProviderId(String provider, String providerId);
     Page<Customer> findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String name, String email, Pageable pageable);
     Page<Customer> findByNameContainingIgnoreCase(String name, Pageable pageable);
     Page<Customer> findByEmailContainingIgnoreCase(String email, Pageable pageable);

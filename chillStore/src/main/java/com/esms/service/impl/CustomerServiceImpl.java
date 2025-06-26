@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -292,49 +293,36 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findByEmailContainingIgnoreCase(email, pageable);
     }
 
-    // Commented out - not needed for simple Bootstrap layout
-    /*
-    // Custom sorting methods
     @Override
-    public Page<Customer> getAllCustomersOrderByCreatedAtDesc(Pageable pageable) {
-        return customerRepository.findAllOrderByCreatedAtDesc(pageable);
+    public Optional<Customer> findCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email);
     }
 
     @Override
-    public Page<Customer> getAllCustomersOrderByCreatedAtAsc(Pageable pageable) {
-        return customerRepository.findAllOrderByCreatedAtAsc(pageable);
+    public Optional<Customer> findCustomerByProviderAndProviderId(String provider, String providerId) {
+        return customerRepository.findByProviderAndProviderId(provider, providerId);
     }
 
     @Override
-    public Page<Customer> getAllCustomersOrderByDisplayNameAsc(Pageable pageable) {
-        return customerRepository.findAllOrderByDisplayNameAsc(pageable);
+    public Customer processOAuth2User(OAuth2User oAuth2User, String provider) {
+        String email = oAuth2User.getAttribute("email");
+        String name = oAuth2User.getAttribute("name");
+        String providerId = oAuth2User.getName();
+
+        Optional<Customer> existingCustomer = findCustomerByEmail(email);
+        Customer customer;
+        if (existingCustomer.isPresent()) {
+            customer = existingCustomer.get();
+            customer.setName(name);
+            customer.setDisplay_name(name);
+            customer.setProvider(provider);
+            customer.setProviderId(providerId);
+            customer.setUpdated_at(LocalDateTime.now());
+        } else {
+            customer = new Customer(email, name, provider, providerId);
+        }
+        return customerRepository.save(customer);
     }
 
-    @Override
-    public Page<Customer> getAllCustomersOrderByDisplayNameDesc(Pageable pageable) {
-        return customerRepository.findAllOrderByDisplayNameDesc(pageable);
-    }
 
-    // Statistics methods
-    @Override
-    public long getTotalCustomers() {
-        return customerRepository.count();
-    }
-
-    @Override
-    public long getActiveCustomers() {
-        return customerRepository.countByIsLockedFalse();
-    }
-
-    @Override
-    public long getLockedCustomers() {
-        return customerRepository.countByIsLockedTrue();
-    }
-
-    @Override
-    public long getNewCustomersThisMonth() {
-        LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
-        return customerRepository.countByCreatedAtAfter(startOfMonth);
-    }
-    */
 }

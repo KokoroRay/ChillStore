@@ -29,13 +29,14 @@
                         <a href="/admin/products/add" class="btn btn-primary me-3">
                             <i class="fas fa-plus"></i> Thêm sản phẩm
                         </a>
+                        <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
                     </div>
                 </div>
             </div>
 
             <!-- Search and Filter Section -->
             <div class="filter-section">
-                <form th:action="@{/admin/products}" method="get" class="row g-3 align-items-end">
+                <form th:action="@{/admin/products}" method="get" class="row g-3">
                     <div class="col-md-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-search"></i></span>
@@ -69,42 +70,42 @@
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
+                </form>
 
-                    <!-- Advanced Filters -->
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-title mb-3"><i class="fas fa-sliders-h me-2"></i>Bộ lọc nâng cao</h6>
-                                <div class="row g-3">
-                                    <div class="col-md-3">
-                                        <label class="form-label">Giá từ</label>
-                                        <div class="input-group">
-                                            <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" name="minPrice" th:value="${minPrice != null ? #numbers.formatInteger(minPrice, 0) : ''}" placeholder="Min">
-                                            <span class="input-group-text">₫</span>
-                                        </div>
+                <!-- Advanced Filters -->
+                <div class="mt-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3"><i class="fas fa-sliders-h me-2"></i>Bộ lọc nâng cao</h6>
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Giá từ</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="minPrice" th:value="${minPrice}" step="0.01" min="0" placeholder="Min">
+                                        <span class="input-group-text">₫</span>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">đến</label>
-                                        <div class="input-group">
-                                            <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" name="maxPrice" th:value="${maxPrice != null ? #numbers.formatInteger(maxPrice, 0) : ''}" placeholder="Max">
-                                            <span class="input-group-text">₫</span>
-                                        </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">đến</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="maxPrice" th:value="${maxPrice}" step="0.01" min="0" placeholder="Max">
+                                        <span class="input-group-text">₫</span>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Số lượng tồn kho tối thiểu</label>
-                                        <input type="number" class="form-control" name="minStock" th:value="${minStock}" min="0" placeholder="Nhập số lượng">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Sắp xếp</label>
-                                        <select class="form-select" name="sortOption">
-                                            <option th:each="option : ${sortOptions}" th:value="${option.value}" th:text="${option.label}" th:selected="${sortOption == option.value}"></option>
-                                        </select>
-                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Số lượng tồn kho tối thiểu</label>
+                                    <input type="number" class="form-control" name="minStock" th:value="${minStock}" min="0" placeholder="Nhập số lượng">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Sắp xếp</label>
+                                    <select class="form-select" name="sortOption">
+                                        <option th:each="option : ${sortOptions}" th:value="${option.value}" th:text="${option.label}" th:selected="${sortOption == option.value}"></option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
 
             <!-- Products List -->

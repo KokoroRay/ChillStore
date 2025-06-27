@@ -1,5 +1,6 @@
 package com.esms.service.impl;
 
+import com.esms.model.dto.ProductDTO;
 import com.esms.model.entity.Product;
 import com.esms.repository.ProductRepository;
 import com.esms.service.ProductService;
@@ -187,5 +188,16 @@ public class ProductServiceImpl implements ProductService {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
+    @Override
+    public List<ProductDTO> getAllProductDTOs() {
+        List<Product> products = productRepository.findAll();
 
+        return products.stream()
+                .map(product -> new ProductDTO(
+                        product.getName(),
+                        product.getImageUrl(),
+                        product.getPrice()
+                ))
+                .collect(Collectors.toList());
+    }
 }

@@ -1,11 +1,13 @@
 package com.esms.service;
 
+import com.esms.model.dto.ProductDTO;
 import com.esms.model.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public interface ProductService {
     List<Product> findAll();
     Page<Product> getAllProducts(Pageable pageable);
@@ -27,4 +29,6 @@ public interface ProductService {
     Product updateProduct(Integer productId, Product product);
     void deleteProduct(Integer productId);
 
+
+    List<ProductDTO> getAllProductDTOs();
 }

@@ -5,11 +5,21 @@
   <title>Trang Chủ</title>
   <link rel="stylesheet" th:href="@{/static/style.css}" />
   <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" th:href="@{/css/navigationBar.css}">
+
+
 </head>
 <body>
 <div th:insert="~{fragments/header :: headerContent}"></div>
+<div th:insert="~{fragments/navigationBar :: navBar}"></div>
 
 <h1>Chào mừng đến với Chill Store!</h1>
+<img src="/images/logo.png">
+<img src="/images/sale.png">
+<img src="/images/sale1.png">
+
+
+
 
 <div sec:authorize="isAuthenticated()">
   <p>Xin chào, <span th:text="${loggedInUserName}"></span>!</p>
@@ -46,5 +56,12 @@
 </div>
 
 <p>Khám phá các sản phẩm tuyệt vời của chúng tôi!</p>
+<div class="product-container">
+  <div class="product-card" th:each="product : ${products}">
+    <img th:src="${product.imageUrl}" alt="Ảnh sản phẩm">
+    <h3 th:text="${product.name}">Tên sản phẩm</h3>
+    <p th:text="'Giá: ' + ${product.price} + ' VND'"></p>
+  </div>
+</div>
 </body>
 </html>

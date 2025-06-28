@@ -240,6 +240,11 @@ public class ProductServiceImpl implements ProductService {
         return new PageImpl<>(productDtos, pageable, productPage.getTotalElements());
     }
 
+    @Override
+    public void saveProduct(Product product) {
+        productRepository.save(product);
+    }
+
     private String removeDiacritics(String input) {
         if (input == null) return null;
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);

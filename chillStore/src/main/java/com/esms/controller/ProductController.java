@@ -51,16 +51,32 @@ public class ProductController {
             @RequestParam(value = "size", defaultValue = "9") int size,
             Model model, HttpServletRequest request) {
 
+        // Validation logic for price range
+        String priceError = null;
+        if (minPrice != null && minPrice < 1000) {
+            priceError = "Minimum price must be at least 1,000 VND";
+            minPrice = null; // Reset to null to ignore invalid input
+        }
+        if (maxPrice != null && maxPrice > 1000000000) {
+            priceError = "Maximum price cannot exceed 1,000,000,000 VND";
+            maxPrice = null; // Reset to null to ignore invalid input
+        }
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            priceError = "Minimum price cannot be greater than maximum price";
+            minPrice = null;
+            maxPrice = null;
+        }
+
         List<Category> categories = categoryService.getAllCategory();
         List<Brand> brands = brandService.getAllBrands();
         List<Integer> availablePageSizes = List.of(5, 9, 15, 30);
         // Define sort options for the dropdown
         List<Map<String, String>> sortOptions = List.of(
-                Map.of("value", "default", "label", "Mặc định"),
-                Map.of("value", "name_asc", "label", "Tên (A-Z)"),
-                Map.of("value", "name_desc", "label", "Tên (Z-A)"),
-                Map.of("value", "price_asc", "label", "Giá tăng dần"),
-                Map.of("value", "price_desc", "label", "Giá giảm dần")
+                Map.of("value", "default", "label", "Default"),
+                Map.of("value", "name_asc", "label", "Name (A-Z)"),
+                Map.of("value", "name_desc", "label", "Name (Z-A)"),
+                Map.of("value", "price_asc", "label", "Price (Low to High)"),
+                Map.of("value", "price_desc", "label", "Price (High to Low)")
         );
         // Parse sortBy and sortDir from sortOption
         String sortBy = null;
@@ -107,6 +123,7 @@ public class ProductController {
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        model.addAttribute("priceError", priceError);
         String requestURI = request.getRequestURI();
         if(requestURI.startsWith("/staff")){
             return "staff/ManageProduct/Product";
@@ -223,6 +240,41 @@ public class ProductController {
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption) {
         productService.deleteProduct(id);
+        return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
+                page, size,
+                keyword != null ? keyword : "",
+                categoryId != null ? categoryId : "",
+                brandId != null ? brandId : "",
+                filterStatus != null ? filterStatus : "",
+                minPrice != null ? minPrice : "",
+                maxPrice != null ? maxPrice : "",
+                minStock != null ? minStock : "",
+                sortOption != null ? sortOption : "");
+    }
+
+    @GetMapping("/add")
+    public String showAddProductForm(Model model) {
+        model.addAttribute("product", new Product());
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("brands", brandService.getAllBrands());
+        return "admin/ManageProduct/ProductForm";
+    }
+
+    @PostMapping("/add")
+    public String addProduct(
+            @ModelAttribute("product") Product product,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "brandId", required = false) Integer brandId,
+            @RequestParam(value = "filterStatus", required = false) Boolean filterStatus,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "minStock", required = false) Integer minStock,
+            @RequestParam(value = "sortOption", required = false) String sortOption
+    ) {
+        productService.saveProduct(product);
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
                 page, size,
                 keyword != null ? keyword : "",

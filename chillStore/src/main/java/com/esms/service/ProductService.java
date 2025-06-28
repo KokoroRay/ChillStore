@@ -45,4 +45,5 @@ public interface ProductService {
             Pageable pageable,
             Boolean status
     );
+    void saveProduct(Product product);
 }

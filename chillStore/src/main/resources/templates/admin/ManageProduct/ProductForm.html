@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${product.productId == null ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'} + ' - ESMS'"></title>
+    <title th:text="${product.productId == null ? 'Add New Product' : 'Edit Product'} + ' - ESMS'"></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/header.css">
@@ -24,12 +24,11 @@
             <!-- Topbar -->
             <div class="topbar">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0" th:text="${product.productId == null ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'}"></h4>
+                    <h4 class="mb-0" th:text="${product.productId == null ? 'Add New Product' : 'Edit Product'}"></h4>
                     <div class="d-flex align-items-center">
                         <a th:href="@{/admin/products(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" class="btn btn-secondary me-3">
-                            <i class="fas fa-arrow-left"></i> Quay lại
+                            <i class="fas fa-arrow-left"></i> Back
                         </a>
-                        <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
                     </div>
                 </div>
             </div>
@@ -57,30 +56,30 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-group mb-3">
-                                        <label for="name" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+                                        <label for="name" class="form-label">Product Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="name" name="name" th:value="${product.name}" required>
                                     </div>
                                     
                                     <div class="form-group mb-3">
-                                        <label for="description" class="form-label">Mô tả <span class="text-danger">*</span></label>
+                                        <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
                                         <textarea class="form-control" id="description" name="description" rows="4" th:text="${product.description}" required></textarea>
                                     </div>
                                     
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="price" class="form-label">Giá <span class="text-danger">*</span></label>
+                                                <label for="price" class="form-label">Price <span class="text-danger">*</span></label>
                                                 <div class="input-group">
-                                                    <input type="number" class="form-control" id="price" name="price" th:value="${product.price}" step="0.01" min="0" required>
+                                                    <input type="text" class="form-control" id="price" name="price" th:value="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}" required oninput="formatCurrencyInput(this)">
                                                     <span class="input-group-text">₫</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="stockQty" class="form-label">Số lượng tồn kho</label>
+                                                <label for="stockQty" class="form-label">Stock Quantity</label>
                                                 <input type="number" class="form-control" id="stockQty" name="stockQty" th:value="${product.stockQty}" min="0" readonly style="background-color: #f8f9fa;">
-                                                <small class="form-text text-muted">Số lượng tồn kho sẽ được quản lý qua kho</small>
+                                                <small class="form-text text-muted">Stock quantity will be managed through warehouse</small>
                                             </div>
                                         </div>
                                     </div>
@@ -88,18 +87,18 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="categoryId" class="form-label">Danh mục</label>
+                                                <label for="categoryId" class="form-label">Category</label>
                                                 <select class="form-select" id="categoryId" name="categoryId">
-                                                    <option value="">Chọn danh mục</option>
+                                                    <option value="">Select Category</option>
                                                     <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${product.category != null and product.category.id == category.id}"></option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="brandId" class="form-label">Thương hiệu</label>
+                                                <label for="brandId" class="form-label">Brand</label>
                                                 <select class="form-select" id="brandId" name="brandId">
-                                                    <option value="">Chọn thương hiệu</option>
+                                                    <option value="">Select Brand</option>
                                                     <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${product.brand != null and product.brand.id == brand.id}"></option>
                                                 </select>
                                             </div>
@@ -109,11 +108,11 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
-                                        <label class="form-label">Hình ảnh sản phẩm</label>
+                                        <label class="form-label">Product Image</label>
                                         <div class="image-upload-container">
                                             <input type="file" id="image" name="image" accept="image/*" th:required="${product.productId == null}">
                                             <label for="image" class="image-upload-label">
-                                                <i class="fas fa-cloud-upload-alt"></i> Chọn hình ảnh
+                                                <i class="fas fa-cloud-upload-alt"></i> Choose Image
                                             </label>
                                             <div th:if="${product.imageUrl}" class="preview-container mt-3">
                                                 <img th:src="${product.imageUrl}" class="preview-image" alt="Product Image">
@@ -122,13 +121,13 @@
                                     </div>
 
                                     <div class="form-group mb-3">
-                                        <label class="form-label">Trạng thái sản phẩm</label>
+                                        <label class="form-label">Product Status</label>
                                         <div class="status-container">
                                             <label class="status-toggle">
                                                 <input type="checkbox" id="status" name="status" th:checked="${product.status}" value="true">
                                                 <span class="status-slider"></span>
                                             </label>
-                                            <span class="status-label">Đang bán</span>
+                                            <span class="status-label">Active</span>
                                         </div>
                                     </div>
                                 </div>
@@ -136,10 +135,10 @@
 
                             <div class="form-actions">
                                 <a th:href="@{/admin/products(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" class="btn btn-secondary">
-                                    <i class="fas fa-times"></i> Hủy
+                                    <i class="fas fa-times"></i> Cancel
                                 </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Lưu
+                                    <i class="fas fa-save"></i> Save
                                 </button>
                             </div>
                         </form>
@@ -180,6 +179,24 @@
                 }
             };
             reader.readAsDataURL(file);
+        }
+    });
+
+    // Format currency input
+    function formatCurrencyInput(input) {
+        let value = input.value.replace(/[^\d]/g, '');
+        if (value) {
+            value = parseInt(value, 10).toLocaleString('vi-VN');
+        }
+        input.value = value;
+    }
+
+    // Remove commas before form submission
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const priceInput = document.getElementById('price');
+        if (priceInput.value) {
+            // Remove all non-digit characters
+            priceInput.value = priceInput.value.replace(/[^\d]/g, '');
         }
     });
 </script>

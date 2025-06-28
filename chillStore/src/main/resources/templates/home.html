@@ -4,19 +4,32 @@
   <meta charset="UTF-8" />
   <title>Trang Chủ</title>
   <link rel="stylesheet" th:href="@{/static/style.css}" />
-  <link rel="stylesheet" href="/css/header.css">
   <link rel="stylesheet" th:href="@{/css/navigationBar.css}">
+  <link rel="stylesheet" th:href="@{/css/home.css}">
 
 
 </head>
 <body>
-<div th:insert="~{fragments/header :: headerContent}"></div>
-<div th:insert="~{fragments/navigationBar :: navBar}"></div>
+<div th:insert="~{fragments/navigationBar :: navBar}"></div><br>
+<div class="container">
+<div class="video-background-container">
+  <video autoplay muted loop playsinline class="video-background">
+    <source th:src="@{/videos/video.mp4}" type="video/mp4" />
+    Trình duyệt của bạn không hỗ trợ video.
+  </video>
 
-<h1>Chào mừng đến với Chill Store!</h1>
-<img src="/images/logo.png">
-<img src="/images/sale.png">
-<img src="/images/sale1.png">
+  <div class="video-overlay">
+    <h1>Welcome</h1>
+    <p>ESMS – Plug In. Power Up. Live Smart.</p>
+    <a href="#" class="btn-read">HOME</a>
+  </div>
+</div><br>
+
+<div class="image-row">
+  <img src="/images/maygiac.png">
+  <img src="/images/robot.png">
+  <img src="/images/tulanh3.png">
+</div>
 
 
 
@@ -47,21 +60,30 @@
   </div>
 
 </div>
-
-<div sec:authorize="isAnonymous()">
+<div class="guest-bar">
+  <img src="/images/logo.png">
+<div sec:authorize="isAnonymous()" class="guest-info">
   <p>Bạn đang ở chế độ khách.</p>
   <p>Vui lòng đăng nhập hoặc đăng ký để trải nghiệm đầy đủ tính năng.</p>
   <a th:href="@{/auth/login}">Đăng nhập</a> |
   <a th:href="@{/auth/register}">Đăng ký</a>
 </div>
-
+</div>
 <p>Khám phá các sản phẩm tuyệt vời của chúng tôi!</p>
 <div class="product-container">
+  <div class="product-grid">
   <div class="product-card" th:each="product : ${products}">
-    <img th:src="${product.imageUrl}" alt="Ảnh sản phẩm">
+    <img th:src="@{${product.imageUrl}}" alt="Ảnh sản phẩm">
     <h3 th:text="${product.name}">Tên sản phẩm</h3>
     <p th:text="'Giá: ' + ${product.price} + ' VND'"></p>
   </div>
+  </div>
+</div>
+<div class="pagination">
+  <a th:if="${currentPage > 0}" th:href="@{'/home?page=' + ${prevPage}}">« Trước</a>
+  <a th:if="${currentPage + 1 < totalPages}" th:href="@{'/home?page=' + ${nextPage}}">Sau »</a>
+
+</div>
 </div>
 </body>
 </html>

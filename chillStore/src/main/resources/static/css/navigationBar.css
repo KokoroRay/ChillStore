@@ -1,14 +1,14 @@
 .horizontal-sidebar {
-    background-color: #0074b7;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     padding: 10px 0;
-    overflow-x: auto; /* Cho responsive nếu màn nhỏ */
+    overflow-x: auto;
 }
 
 .horizontal-sidebar ul {
     list-style: none;
     display: flex;
-    flex-direction: row; /* ép nằm ngang */
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     padding: 0;
@@ -23,14 +23,14 @@
 .horizontal-sidebar a {
     display: block;
     padding: 12px 18px;
-    color: white;
+    color: black;
     text-decoration: none;
     font-weight: 500;
     transition: background 0.3s, border-radius 0.3s;
 }
 
 .horizontal-sidebar a:hover {
-    background-color: #005691;
+    background-color: #DCDCDC;
     border-radius: 8px;
 }
 .horizontal-sidebar {

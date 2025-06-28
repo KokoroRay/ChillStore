@@ -4,11 +4,15 @@ package com.esms.controller;
 import com.esms.model.dto.ProductDTO;
 import com.esms.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;
@@ -21,7 +25,9 @@ public class HomeController {
     private ProductService productService;
     @GetMapping({"/", "/home"}) // Cả / và /home đều dẫn đến trang chủ
 
-    public String home(Model model) {
+    public String home(Model model,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "20") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Kiểm tra nếu người dùng đã xác thực (không phải "anonymousUser")
@@ -37,9 +43,16 @@ public class HomeController {
             // Bạn có thể thêm các thuộc tính khác cho view của khách
         }
 
-        List<ProductDTO> productList = productService.getAllProductDTOs();
-        model.addAttribute("products", productList);
-        return "home"; // Trả về tên file template home.html
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductDTO> productPage = productService.getProductDTOsPaginated(pageable);
+
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("nextPage", page + 1);
+        model.addAttribute("prevPage", page - 1);
+
+        return "home";
     }
 
 

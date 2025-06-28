@@ -200,4 +200,14 @@ public class ProductServiceImpl implements ProductService {
                 ))
                 .collect(Collectors.toList());
     }
+    @Override
+    public Page<ProductDTO> getProductDTOsPaginated(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(product -> convertToDTO(product));
+    }
+
+    private ProductDTO convertToDTO(Product product) {
+        return new ProductDTO(product.getProductId(), product.getName(), product.getPrice(), product.getImageUrl());
+    }
+
 }

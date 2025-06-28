@@ -11,34 +11,49 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer customerId;
 
+    private String provider;
+    @Column(name = "provider_id")
+    private String providerId;
+
     private String name;
     private String display_name;
     private String email;
     private String password;
     private String phone;
     private String address;
+    private String gender;
     private LocalDate birth_date = LocalDate.now();
     private LocalDateTime created_at = LocalDateTime.now();
     private LocalDateTime updated_at = LocalDateTime.now();
     private boolean isLocked = false;
 
-    public Customer(Integer customerId, String name, String display_name, String email, String password,
-                    String phone, String address, LocalDate birth_date, LocalDateTime created_at,
-                    LocalDateTime updated_at, boolean isLocked) {
-        this.customerId = customerId;
+
+    public Customer() {
+        this.created_at = LocalDateTime.now();
+        this.updated_at = LocalDateTime.now();
+        this.isLocked = false;
+    }
+
+    public Customer(String email, String name, String provider, String providerId) {
+        this();
+        this.email = email;
         this.name = name;
-        this.display_name = display_name;
+        this.display_name = name;
+        this.provider = provider;
+        this.providerId = providerId;
+    }
+
+    public  Customer (String name, String email, String password, String phone, String address, String gender, LocalDate birth_date) {
+        this.name = name;
+        this.display_name = name;
         this.email = email;
         this.password = password;
         this.phone = phone;
         this.address = address;
+        this.gender = gender;
         this.birth_date = birth_date;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.isLocked = isLocked;
+        this.provider = "local";
     }
-
-    public Customer() {}
 
     public Integer getCustomerId() { return customerId; }
     public void setCustomerId(Integer customerId) { this.customerId = customerId; }
@@ -71,4 +86,28 @@ public class Customer {
 
     public boolean isLocked() { return isLocked; }
     public void setLocked(boolean locked) { isLocked = locked; }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
 }

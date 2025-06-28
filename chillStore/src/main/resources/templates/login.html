@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Đăng nhập</title>
-  <!-- Link đến 2 file CSS đã tạo -->
   <link rel="stylesheet" th:href="@{/css/globals.css}" />
   <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
@@ -11,11 +10,11 @@
 <div class="container">
   <div class="card">
 
-    <!-- ======== Phần LOGIN (bên trái) ======== -->
     <div class="white-panel">
       <h2 style="font-weight: 900">LOGIN</h2>
       <form th:action="@{/auth/login}" method="post">
-        <!-- Input Email -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
         <div class="input-group">
           <input
                   type="text"
@@ -25,7 +24,6 @@
           />
         </div>
 
-        <!-- Input Password -->
         <div class="input-group">
           <input
                   type="password"
@@ -35,49 +33,44 @@
           />
         </div>
 
-        <!-- Link quên mật khẩu (nếu có) -->
         <div class="forgot">
           <a th:href="@{/auth/forgot-password}">Forgot Password?</a>
         </div>
 
-        <!-- Nút Login -->
         <div class="btn-group">
           <button type="submit" class="btn login-btn">
             LOGIN
           </button>
         </div>
 
-        <!-- Nút Sign in with Google -->
         <div class="google-btn">
-          <button type="button">
+          <a th:href="@{/oauth2/authorization/google}" class="btn google-login-btn">
             <img th:src="@{/img/google-icon.png}" alt="Google Icon" />
             Sign in with Google
-          </button>
+          </a>
         </div>
       </form>
 
-      <!-- Thông báo lỗi / đăng xuất thành công -->
-      <p
-              th:if="${param.error}"
-              style="color: red; margin-top: 15px;"
-      >
+      <p th:if="${param.error}" style="color: red; margin-top: 15px;">
         Email hoặc mật khẩu không chính xác.
       </p>
-      <p
-              th:if="${param.logout}"
-              style="color: green; margin-top: 15px;"
-      >
+      <p th:if="${param.logout}" style="color: green; margin-top: 15px;">
         Bạn đã đăng xuất thành công.
       </p>
+      <p th:if="${param.register}" style="color: green; margin-top: 15px;">
+        Đăng ký thành công! Vui lòng đăng nhập.
+      </p>
+      <p th:if="${param.resetSuccess}" style="color: green; margin-top: 15px;">
+        Đặt lại mật khẩu thành công! Vui lòng đăng nhập.
+      </p>
 
-      <!-- Link tới trang Đăng ký nếu chưa có tài khoản -->
+
       <p style="margin-top: 20px; font-size: 14px;">
         Chưa có tài khoản?
         <a th:href="@{/auth/register}">Đăng ký</a>.
       </p>
     </div>
 
-    <!-- ======== Phần SIGN UP (bên phải) ======== -->
     <div class="blue-panel">
       <h2 style="font-weight: 900">SIGN UP</h2>
       <div class="btn-group">
@@ -98,7 +91,35 @@
       </div>
     </div>
 
-  </div> <!-- .card -->
-</div> <!-- .container -->
+  </div> </div> <style>
+  .google-login-btn { /* Đổi tên class để phù hợp với thẻ <a> */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    background-color: #ffffff; /* Hoặc màu nền khác */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none; /* Bỏ gạch chân của thẻ <a> */
+    color: #333; /* Màu chữ */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+    margin-top: 15px; /* Khoảng cách với nút Login */
+  }
+
+  .google-login-btn:hover {
+    background-color: #f0f0f0;
+  }
+
+  .google-login-btn img {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+  }
+</style>
+
 </body>
 </html>

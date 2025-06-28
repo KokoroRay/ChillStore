@@ -40,8 +40,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/", "/home",
+                                "/css/**", "/js/**", "/videos/**", "/img/**", "/images/**",
+                                "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
+                                "/auth/login", "/auth/register", "/auth/resend-otp"
+                        ).permitAll()
+
                         // Cho phép truy cập các trang công khai (Guest Home, CSS, JS, Auth flows)
-                        .requestMatchers("/", "/home", "/css/**", "/js/**", "/img/**", // Thêm /img/** nếu bạn có ảnh
+                        .requestMatchers("/", "/home", "/videos/**", "/css/**", "/js/**", "/img/**", // Thêm /img/** nếu bạn có ảnh
                                 "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
                                 "/auth/login", "/auth/register", "/auth/resend-otp").permitAll()
                         // Phân quyền công dân cao nhất
@@ -99,4 +105,5 @@ public class SecurityConfig {
 
         };
     }
+
 }

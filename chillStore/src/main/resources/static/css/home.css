@@ -8,6 +8,53 @@ container {
 .main-content {
     grid-column: 2 / span 10;
 }
+
+/*category*/
+.category-section {
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    max-width: 1000px;
+}
+
+.category-toggle {
+    text-align: right;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #007bff;
+    user-select: none;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 20px;
+    justify-items: center;
+    align-items: center;
+    transition: all 0.4s ease;
+}
+
+.category-item {
+    text-align: center;
+    font-size: 14px;
+}
+
+.category-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 6px;
+}
+
+.hidden {
+    display: none;
+}
+
+
+
 .video-background-container {
     position: relative;
     width: 100%;

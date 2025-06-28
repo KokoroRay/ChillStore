@@ -10,8 +10,12 @@
 
 </head>
 <body>
+
+
 <div th:insert="~{fragments/navigationBar :: navBar}"></div><br>
-<div class="container">
+
+
+<a class="container">
 <div class="video-background-container">
   <video autoplay muted loop playsinline class="video-background">
     <source th:src="@{/videos/video.mp4}" type="video/mp4" />
@@ -23,6 +27,7 @@
     <p>ESMS – Plug In. Power Up. Live Smart.</p>
     <a href="#" class="btn-read">HOME</a>
   </div>
+  </a>
 </div><br>
 
 <div class="image-row">
@@ -69,10 +74,49 @@
   <a th:href="@{/auth/register}">Đăng ký</a>
 </div>
 </div>
-<p>Khám phá các sản phẩm tuyệt vời của chúng tôi!</p>
+  <!--Category-->
+  <div class="category-section">
+    <div class="category-toggle" onclick="toggleCategories()">
+      <span id="toggle-text">≡</span>
+    </div>
+
+    <div class="category-grid" id="category-grid">
+      <a th:href="@{'/home?category=máy lạnh'}" class="category-item">
+        <img src="/images/maylanh.png" alt="Máy lạnh">
+        <p>Máy lạnh</p>
+      </a>
+      <a th:href="@{'/home?category=quạt điều hòa'}" class="category-item">
+        <img src="/images/quat.png" alt="Quạt điều hòa">
+        <p>Quạt điều hòa</p>
+      </a>
+      <a th:href="@{'/home?category=máy giặc'}" class="category-item">
+        <img src="/images/maygiaci.png" alt="Máy giặc">
+        <p>Máy giặc</p>
+      </a>
+      <a th:href="@{'/home?category=máy lọc nước'}" class="category-item">
+        <img src="/images/maylocnuoc.png" alt="Máy lọc nước">
+        <p>Máy lọc nước</p>
+      </a>
+      <a th:href="@{'/home?category=tivi'}" class="category-item">
+        <img src="/images/tivi.png" alt="Tivi">
+        <p>Tivi</p>
+      </a>
+      <a th:href="@{'/home?category=tủ lạnh'}" class="category-item">
+        <img src="/images/tulanh.png" alt="Tủ lạnh">
+        <p>Tủ lạnh</p>
+      </a>
+      <a th:href="@{'/home?category=tất cả'}" class="category-item">
+        <img src="/images/dots.png" alt="Tất cả">
+        <p>Tất cả danh mục</p>
+      </a>
+    </div>
+  </div>
+
+  <br>
 <div class="product-container">
   <div class="product-grid">
-  <div class="product-card" th:each="product : ${products}">
+  <div class="product-card"
+          th:each="product : ${products}">
     <img th:src="@{${product.imageUrl}}" alt="Ảnh sản phẩm">
     <h3 th:text="${product.name}">Tên sản phẩm</h3>
     <p th:text="'Giá: ' + ${product.price} + ' VND'"></p>
@@ -85,5 +129,22 @@
 
 </div>
 </div>
+
+<script>
+  function toggleCategories() {
+    const grid = document.getElementById("category-grid");
+    const text = document.getElementById("toggle-text");
+
+    if (grid.classList.contains("hidden")) {
+      grid.classList.remove("hidden");
+      text.innerText = "≡";
+    } else {
+      grid.classList.add("hidden");
+      text.innerText = "≡";
+    }
+  }
+
+</script>
+
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.esms.controller;
 
 
 import com.esms.model.dto.ProductDTO;
+import com.esms.model.entity.Product;
 import com.esms.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,8 @@ public class HomeController {
 
     public String home(Model model,
                        @RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "20") int size) {
+                       @RequestParam(defaultValue = "20") int size,
+                       @RequestParam(value = "category", required = false) String category) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Kiểm tra nếu người dùng đã xác thực (không phải "anonymousUser")
@@ -43,9 +45,17 @@ public class HomeController {
             // Bạn có thể thêm các thuộc tính khác cho view của khách
         }
 
+
         Pageable pageable = PageRequest.of(page, size);
         Page<ProductDTO> productPage = productService.getProductDTOsPaginated(pageable);
 
+        if (category != null && !category.equalsIgnoreCase("tất cả")) {
+            productPage = productService.getProductsByCategory(category, pageable);
+            model.addAttribute("currentCategory", category);
+        } else {
+            productPage = productService.getProductDTOsPaginated(pageable);
+            model.addAttribute("currentCategory", "Tất cả");
+        }
         model.addAttribute("products", productPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productPage.getTotalPages());
@@ -54,6 +64,5 @@ public class HomeController {
 
         return "home";
     }
-
 
 }

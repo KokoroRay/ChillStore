@@ -33,4 +33,7 @@ public interface ProductService {
     List<ProductDTO> getAllProductDTOs();
 
     Page<ProductDTO> getProductDTOsPaginated(Pageable pageable);
+
+    Page<ProductDTO> getProductsByCategory(String category, Pageable pageable);
 }
+

@@ -1,5 +1,7 @@
 package com.esms.model.dto;
 
+import com.esms.model.entity.Category;
+
 import java.math.BigDecimal;
 
 public class ProductDTO {
@@ -7,6 +9,7 @@ public class ProductDTO {
     private String name;
     private String imageUrl;
     private BigDecimal price;
+    private Category category;
 
     public ProductDTO(Integer productId, String name, BigDecimal price, String imageUrl) {
         this.productId = productId;
@@ -21,7 +24,18 @@ public class ProductDTO {
         this.price = price;
     }
 
-    // Getters and Setters
+    public ProductDTO(Integer productId, String name, String imageUrl, BigDecimal price, Category category) {
+        this.productId = productId;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.category = category;
+    }
+
+    public ProductDTO() {
+
+    }
+// Getters and Setters
 
     public Integer getProductId() {
         return productId;
@@ -39,4 +53,7 @@ public class ProductDTO {
 
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }
+
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
 }

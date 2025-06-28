@@ -27,6 +27,14 @@ public class Category {
     public Category() {
     }
 
+    public Category(Integer id, String name, Category parent, List<Category> children, List<Product> products) {
+        this.id = id;
+        this.name = name;
+        this.parent = parent;
+        this.children = children;
+        this.products = products;
+    }
+
     public Integer getId() {
         return id;
     }

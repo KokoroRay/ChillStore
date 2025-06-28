@@ -210,4 +210,25 @@ public class ProductServiceImpl implements ProductService {
         return new ProductDTO(product.getProductId(), product.getName(), product.getPrice(), product.getImageUrl());
     }
 
+    public Page<ProductDTO> getProductsByCategory(String category, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByCategoryNameIgnoreCase(category, pageable);
+
+        return productPage.map(product -> {
+            ProductDTO dto = new ProductDTO();
+            dto.setProductId(product.getProductId());
+            dto.setName(product.getName());
+            dto.setPrice(product.getPrice());
+            dto.setImageUrl(product.getImageUrl());
+
+            if (product.getCategory() != null) {
+                dto.setCategory(product.getCategory());
+            }
+
+            return dto;
+        });
+
+    }
+
+
+
 }

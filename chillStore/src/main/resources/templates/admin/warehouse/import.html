@@ -13,15 +13,15 @@
 <div class="main-container1">
     <div th:insert="~{fragments/header :: headerContent}"></div>
     <div th:insert="~{fragments/sidebar :: sidebar}"></div>
-    <main class="main-content">
+    <main class="main-content" style="padding-top: 100px;">
         <section class="warehouse-section">
-            <h2>Import Warehouse</h2>
-
-            <div class="form-wrapper">
+            <div class="form-container" style="max-width:600px; margin:20px auto; padding:30px; background-color:#fff; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1);">
+                <h2>Import Warehouse</h2>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
                 <form th:action="@{/admin/warehouse/import}" method="post">
-                    <div class="form-group">
-                        <label for="productId">Product:</label>
-                        <select id="productId" name="productId" required>
+                    <div class="mb-3">
+                        <label for="productId" class="form-label">Product <span class="text-danger">*</span></label>
+                        <select id="productId" name="productId" class="form-control" required>
                             <option value="">Select Product</option>
                             <option th:each="product : ${products}"
                                     th:value="${product.productId}"
@@ -29,31 +29,33 @@
                             </option>
                         </select>
                     </div>
-
-                    <div class="form-group">
-                        <label for="quantity">Quantity:</label>
-                        <input type="number" id="quantity" name="quantity" required min="1">
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity <span class="text-danger">*</span></label>
+                        <input type="number" id="quantity" name="quantity" class="form-control" required min="1">
                     </div>
-
-                    <div class="form-group">
-                        <label for="notes">Notes:</label>
-                        <textarea id="notes" name="notes" rows="3"></textarea>
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
                     </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-import">Import</button>
-                        <a th:href="@{/admin/warehouse}" class="btn btn-cancel">Cancel</a>
+                    <div class="d-flex justify-content-end mt-4">
+                        <a th:href="@{/admin/warehouse}" class="btn btn-secondary me-2">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Import
+                        </button>
                     </div>
                 </form>
-
-                <!-- ✅ Form Import File Excel -->
+                <hr/>
                 <form th:action="@{/admin/warehouse/import-excel}" method="post" enctype="multipart/form-data" style="margin-top: 30px;">
-                    <div class="form-group">
-                        <label for="file">Import via Excel file (.xlsx):</label>
-                        <input type="file" id="file" name="file" accept=".xlsx" required>
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Import via Excel file (.xlsx):</label>
+                        <input type="file" id="file" name="file" class="form-control" accept=".xlsx" required>
                     </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-import">Import Excel</button>
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-file-excel"></i> Import Excel
+                        </button>
                     </div>
                 </form>
             </div>

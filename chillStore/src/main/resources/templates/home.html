@@ -4,31 +4,148 @@
   <meta charset="UTF-8" />
   <title>Trang Chủ</title>
   <link rel="stylesheet" th:href="@{/static/style.css}" />
-  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" th:href="@{/css/navigationBar.css}">
+  <link rel="stylesheet" th:href="@{/css/home.css}">
+
 
 </head>
 <body>
-<div th:insert="~{fragments/header :: headerContent}"></div>
 
-<h1>Chào mừng đến với Chill Store!</h1>
+
+<div th:insert="~{fragments/navigationBar :: navBar}"></div><br>
+
+
+<a class="container">
+<div class="video-background-container">
+  <video autoplay muted loop playsinline class="video-background">
+    <source th:src="@{/videos/video.mp4}" type="video/mp4" />
+    Trình duyệt của bạn không hỗ trợ video.
+  </video>
+
+  <div class="video-overlay">
+    <h1>Welcome</h1>
+    <p>ESMS – Plug In. Power Up. Live Smart.</p>
+    <a href="#" class="btn-read">HOME</a>
+  </div>
+</div>
+  </a>
+</div><br>
+
+<div class="image-row">
+  <img src="/images/maygiac.png">
+  <img src="/images/robot.png">
+  <img src="/images/tulanh3.png">
+</div>
+
+
+
 
 <div sec:authorize="isAuthenticated()">
-  <p>Xin chào, <span sec:authentication="name"></span>!</p>
-  <p>Bạn đã đăng nhập thành công với vai trò Customer.</p>
+  <p>Xin chào, <span th:text="${loggedInUserName}"></span>!</p>
+  <p>Bạn đã đăng nhập thành công.</p>
+  <p>Email: <span th:text="${loggedInUserEmail}"></span></p>
+  <p th:if="${loggedInProvider != null and loggedInProvider != ''}">Phương thức đăng nhập: <span th:text="${loggedInProvider}"></span></p>
+  <p>Vai trò: <span th:text="${loggedInUserRole}"></span></p>
+
   <a th:href="@{/profile}">Xem hồ sơ của bạn</a> |
   <form th:action="@{/auth/logout}" method="post" style="display:inline;">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <button type="submit">Đăng xuất</button>
   </form>
-</div>
 
-<div sec:authorize="isAnonymous()">
+  <div sec:authorize="hasRole('ADMIN')">
+    <p style="margin-top: 15px;">Bạn là Admin. <a th:href="@{/admin/category}">Đi tới trang quản trị Category</a></p>
+  </div>
+
+  <div sec:authorize="hasRole('STAFF')">
+    <p style="margin-top: 15px;">Bạn là Staff. <a th:href="@{/staff/category}">Đi tới trang nhân viên Category</a></p>
+  </div>
+
+  <div sec:authorize="hasRole('CUSTOMER')">
+    <p style="margin-top: 15px;">Bạn là Customer. Khám phá cửa hàng!</p>
+  </div>
+
+</div>
+<div class="guest-bar">
+  <img src="/images/logo.png">
+<div sec:authorize="isAnonymous()" class="guest-info">
   <p>Bạn đang ở chế độ khách.</p>
   <p>Vui lòng đăng nhập hoặc đăng ký để trải nghiệm đầy đủ tính năng.</p>
   <a th:href="@{/auth/login}">Đăng nhập</a> |
   <a th:href="@{/auth/register}">Đăng ký</a>
 </div>
+</div>
+  <!--Category-->
+  <div class="category-section">
+    <div class="category-toggle" onclick="toggleCategories()">
+      <span id="toggle-text">≡</span>
+    </div>
 
-<p>Khám phá các sản phẩm tuyệt vời của chúng tôi!</p>
+    <div class="category-grid" id="category-grid">
+      <a th:href="@{'/home?category=máy lạnh'}" class="category-item">
+        <img src="/images/maylanh.png" alt="Máy lạnh">
+        <p>Máy lạnh</p>
+      </a>
+      <a th:href="@{'/home?category=quạt điều hòa'}" class="category-item">
+        <img src="/images/quat.png" alt="Quạt điều hòa">
+        <p>Quạt điều hòa</p>
+      </a>
+      <a th:href="@{'/home?category=máy giặc'}" class="category-item">
+        <img src="/images/maygiaci.png" alt="Máy giặc">
+        <p>Máy giặc</p>
+      </a>
+      <a th:href="@{'/home?category=máy lọc nước'}" class="category-item">
+        <img src="/images/maylocnuoc.png" alt="Máy lọc nước">
+        <p>Máy lọc nước</p>
+      </a>
+      <a th:href="@{'/home?category=tivi'}" class="category-item">
+        <img src="/images/tivi.png" alt="Tivi">
+        <p>Tivi</p>
+      </a>
+      <a th:href="@{'/home?category=tủ lạnh'}" class="category-item">
+        <img src="/images/tulanh.png" alt="Tủ lạnh">
+        <p>Tủ lạnh</p>
+      </a>
+      <a th:href="@{'/home?category=tất cả'}" class="category-item">
+        <img src="/images/dots.png" alt="Tất cả">
+        <p>Tất cả danh mục</p>
+      </a>
+    </div>
+  </div>
+
+  <br>
+<div class="product-container">
+  <div class="product-grid">
+  <div class="product-card"
+          th:each="product : ${products}">
+    <img th:src="@{${product.imageUrl}}" alt="Ảnh sản phẩm">
+    <h3 th:text="${product.name}">Tên sản phẩm</h3>
+    <p th:text="'Giá: ' + ${product.price} + ' VND'"></p>
+  </div>
+  </div>
+</div>
+<div class="pagination">
+  <a th:if="${currentPage > 0}" th:href="@{'/home?page=' + ${prevPage}}">« Trước</a>
+  <a th:if="${currentPage + 1 < totalPages}" th:href="@{'/home?page=' + ${nextPage}}">Sau »</a>
+
+</div>
+</div>
+
+<script>
+  function toggleCategories() {
+    const grid = document.getElementById("category-grid");
+    const text = document.getElementById("toggle-text");
+
+    if (grid.classList.contains("hidden")) {
+      grid.classList.remove("hidden");
+      text.innerText = "≡";
+    } else {
+      grid.classList.add("hidden");
+      text.innerText = "≡";
+    }
+  }
+
+</script>
+
 </body>
 </html>

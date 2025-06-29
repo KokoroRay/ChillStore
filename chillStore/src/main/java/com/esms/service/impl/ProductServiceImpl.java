@@ -1,10 +1,9 @@
 package com.esms.service.impl;
 
+import com.esms.model.dto.ProductDTO;
 import com.esms.model.entity.Product;
-import com.esms.model.dto.ProductDto;
 import com.esms.repository.ProductRepository;
 import com.esms.service.ProductService;
-import com.esms.util.MapperUtils.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,13 +17,12 @@ import java.text.Normalizer;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
-
     @Override
     public List<Product> findAll() {
         return productRepository.findAll();
     }
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public Page<Product> getAllProducts(Pageable pageable) {
@@ -185,69 +183,52 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(productId);
     }
 
-    // DTO methods implementation
-    @Override
-    public ProductDto getProductDtoById(Integer productId) {
-        Product product = getProductById(productId);
-        return ProductMapper.toDto(product);
-    }
-
-    @Override
-    public ProductDto createProduct(ProductDto productDto) {
-        Product product = ProductMapper.toEntity(productDto);
-        Product savedProduct = productRepository.save(product);
-        return ProductMapper.toDto(savedProduct);
-    }
-
-    @Override
-    public ProductDto updateProduct(Integer productId, ProductDto productDto) {
-        Product existingProduct = getProductById(productId);
-        ProductMapper.updateEntityFromDto(existingProduct, productDto);
-        Product updatedProduct = productRepository.save(existingProduct);
-        return ProductMapper.toDto(updatedProduct);
-    }
-
-    @Override
-    public Page<ProductDto> getAllProductDtos(Pageable pageable) {
-        Page<Product> productPage = getAllProducts(pageable);
-        List<ProductDto> productDtos = productPage.getContent().stream()
-                .map(ProductMapper::toDto)
-                .collect(Collectors.toList());
-        return new PageImpl<>(productDtos, pageable, productPage.getTotalElements());
-    }
-
-    @Override
-    public Page<ProductDto> searchProductDtosWithFilters(
-            String keyword,
-            Integer categoryId,
-            Integer brandId,
-            Double minPrice,
-            Double maxPrice,
-            Integer minStock,
-            String sortBy,
-            String sortDir,
-            Pageable pageable,
-            Boolean status) {
-        
-        Page<Product> productPage = searchProductsWithFilters(
-                keyword, categoryId, brandId, minPrice, maxPrice, 
-                minStock, sortBy, sortDir, pageable, status);
-        
-        List<ProductDto> productDtos = productPage.getContent().stream()
-                .map(ProductMapper::toDto)
-                .collect(Collectors.toList());
-        
-        return new PageImpl<>(productDtos, pageable, productPage.getTotalElements());
-    }
-
-    @Override
-    public void saveProduct(Product product) {
-        productRepository.save(product);
-    }
-
     private String removeDiacritics(String input) {
         if (input == null) return null;
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
+    @Override
+    public List<ProductDTO> getAllProductDTOs() {
+        List<Product> products = productRepository.findAll();
+
+        return products.stream()
+                .map(product -> new ProductDTO(
+                        product.getName(),
+                        product.getImageUrl(),
+                        product.getPrice()
+                ))
+                .collect(Collectors.toList());
+    }
+    @Override
+    public Page<ProductDTO> getProductDTOsPaginated(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(product -> convertToDTO(product));
+    }
+
+    private ProductDTO convertToDTO(Product product) {
+        return new ProductDTO(product.getProductId(), product.getName(), product.getPrice(), product.getImageUrl());
+    }
+
+    public Page<ProductDTO> getProductsByCategory(String category, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByCategoryNameIgnoreCase(category, pageable);
+
+        return productPage.map(product -> {
+            ProductDTO dto = new ProductDTO();
+            dto.setProductId(product.getProductId());
+            dto.setName(product.getName());
+            dto.setPrice(product.getPrice());
+            dto.setImageUrl(product.getImageUrl());
+
+            if (product.getCategory() != null) {
+                dto.setCategory(product.getCategory());
+            }
+
+            return dto;
+        });
+
+    }
+
+
+
 }

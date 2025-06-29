@@ -5,8 +5,10 @@ import com.esms.model.entity.Customer;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CustomerService {
     void register(RegisterDto dto);
@@ -35,4 +37,9 @@ public interface CustomerService {
     Page<Customer> searchCustomersByName(String name, Pageable pageable);
     Page<Customer> searchCustomersByEmail(String email, Pageable pageable);
 
+
+    //xử lý liên quan đến đăng kí tài khoản bằng gg
+    Optional<Customer> findCustomerByEmail(String email);
+    Optional<Customer> findCustomerByProviderAndProviderId(String provider, String providerId);
+    Customer processOAuth2User (OAuth2User oAuth2User, String provider);
 }

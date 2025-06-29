@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý doanh thu - ESMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/styleproduct.css">
+    <style>
+        /* CSS styles remain unchanged from original */
+        :root {
+            --primary: #0d6efd;
+            --success: #1cc88a;
+            --info: #36b9cc;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --dark: #5a5c69;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .kpi-card {
+            min-height: 130px;
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid;
+        }
+
+        .kpi-card.bg-primary { border-left-color: var(--primary); }
+        .kpi-card.bg-success { border-left-color: var(--success); }
+        .kpi-card.bg-info { border-left-color: var(--info); }
+        .kpi-card.bg-warning { border-left-color: var(--warning); }
+        .kpi-card.bg-danger { border-left-color: var(--danger); }
+        .kpi-card.bg-secondary { border-left-color: var(--dark); }
+
+        .kpi-card .card-body {
+            position: relative;
+            z-index: 1;
+        }
+
+        .kpi-card::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            opacity: 0.15;
+        }
+
+        .kpi-card.bg-primary::before { background: var(--primary); }
+        .kpi-card.bg-success::before { background: var(--success); }
+        .kpi-card.bg-info::before { background: var(--info); }
+        .kpi-card.bg-warning::before { background: var(--warning); }
+        .kpi-card.bg-danger::before { background: var(--danger); }
+        .kpi-card.bg-secondary::before { background: var(--dark); }
+
+        .alert-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            z-index: 2;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            background: rgba(13, 110, 253, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .tab-content {
+            padding: 20px 0;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background: transparent;
+        }
+
+        .drilldown-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .drilldown-btn:hover {
+            opacity: 1;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .trend-badge {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .trend-up { background: rgba(28, 200, 138, 0.2); color: var(--success); }
+        .trend-down { background: rgba(231, 74, 59, 0.2); color: var(--danger); }
+
+        .export-btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .no-data-placeholder {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .kpi-card .card-title {
+                font-size: 1rem;
+            }
+
+            .kpi-card h3 {
+                font-size: 1.25rem;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .export-btn-group {
+                width: 100%;
+            }
+
+            .export-btn-group .btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div th:insert="~{fragments/header :: headerContent}"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+        <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <div class="dashboard-header">
+                <h4><i class="fas fa-chart-line me-2"></i>Thống kê Doanh thu</h4>
+                <div class="export-btn-group">
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-bell me-2"></i> Cài đặt cảnh báo
+                    </button>
+                    <div class="btn-group">
+                        <a th:href="@{/admin/revenue/export?format=excel}" class="btn btn-success">
+                            <i class="fas fa-file-excel me-2"></i> Excel
+                        </a>
+                        <a th:href="@{/admin/revenue/export?format=pdf}" class="btn btn-danger">
+                            <i class="fas fa-file-pdf me-2"></i> PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bộ lọc -->
+            <div class="filter-section">
+                <form id="filterForm" method="get" class="row g-3">
+                    <input type="hidden" name="page" th:value="${currentPage}">
+                    <div class="col-md-3">
+                        <label class="form-label">Chu kỳ</label>
+                        <select name="period" class="form-select">
+                            <option value="daily" th:selected="${period == 'daily'}">Theo ngày</option>
+                            <option value="weekly" th:selected="${period == 'weekly'}">Theo tuần</option>
+                            <option value="monthly" th:selected="${period == 'monthly'}">Theo tháng</option>
+                            <option value="yearly" th:selected="${period == 'yearly'}">Theo năm</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Từ ngày</label>
+                        <input type="date" name="startDate" class="form-control" th:value="${startDate}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Đến ngày</label>
+                        <input type="date" name="endDate" class="form-control" th:value="${endDate}">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter me-2"></i> Áp dụng
+                        </button>
+                    </div>
+
+                    <!-- Bộ lọc nâng cao -->
+                    <div class="col-md-3">
+                        <label class="form-label">Danh mục</label>
+                        <select name="category" class="form-select">
+                            <option value="">Tất cả danh mục</option>
+                            <option th:each="cat : ${categories}"
+                                    th:value="${cat.categoryId}"
+                                    th:text="${cat.name}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Khu vực</label>
+                        <select name="region" class="form-select">
+                            <option value="">Tất cả khu vực</option>
+                            <option value="north">Miền Bắc</option>
+                            <option value="central">Miền Trung</option>
+                            <option value="south">Miền Nam</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Kênh bán</label>
+                        <select name="channel" class="form-select">
+                            <option value="">Tất cả kênh</option>
+                            <option value="website">Website</option>
+                            <option value="mobile">Mobile App</option>
+                            <option value="store">Cửa hàng</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Trạng thái</label>
+                        <select name="status" class="form-select">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="Paid">Đã thanh toán</option>
+                            <option value="Shipped">Đang giao hàng</option>
+                            <option value="Delivered">Đã giao hàng</option>
+                            <option value="Cancelled">Đã hủy</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tab điều hướng -->
+            <ul class="nav nav-tabs" id="revenueTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                        <i class="fas fa-home me-2"></i>Tổng quan
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button" role="tab">
+                        <i class="fas fa-chart-pie me-2"></i>Phân tích
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+                        <i class="fas fa-list me-2"></i>Chi tiết đơn hàng
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Nội dung tab -->
+            <div class="tab-content" id="revenueTabsContent">
+                <!-- Tab tổng quan -->
+                <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                    <!-- Chỉ số chính -->
+                    <div class="row mb-4">
+                        <div class="col-md-4 col-lg-2">
+                            <div class="card text-white bg-primary kpi-card">
+                                <div class="card-body position-relative">
+                                    <h5 class="card-title">Tổng doanh thu</h5>
+                                    <h3 class="card-text mt-2" th:text="${grossRevenue != null} ? ${#numbers.formatDecimal(grossRevenue, 0, 'POINT', 0, 'COMMA') + ' VND'} : '0 VND'"></h3>
+                                    <button class="drilldown-btn">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-2">
+                            <div class="card text-white bg-success kpi-card">
+                                <div class="card-body position-relative">
+                                    <h5 class="card-title">Doanh thu thuần</h5>
+                                    <h3 class="card-text mt-2" th:text="${netRevenue != null} ? ${#numbers.formatDecimal(netRevenue, 0, 'POINT', 0, 'COMMA') + ' VND'} : '0 VND'"></h3>
+                                    <button class="drilldown-btn">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-2">
+                            <div class="card text-white bg-info kpi-card">
+                                <div class="card-body position-relative">
+                                    <h5 class="card-title">Số đơn hàng</h5>
+                                    <h3 class="card-text mt-2" th:text="${orderCount != null} ? ${orderCount} : 0"></h3>
+                                    <button class="drilldown-btn">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-2">
+                            <div class="card text-white bg-warning kpi-card">
+                                <div class="card-body position-relative">
+                                    <h5 class="card-title">Giá trị đơn TB</h5>
+                                    <h3 class="card-text mt-2" th:text="${aov != null} ? ${#numbers.formatDecimal(aov, 0, 'POINT', 0, 'COMMA') + ' VND'} : '0 VND'"></h3>
+                                    <button class="drilldown-btn">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-2">
+                            <div class="card text-white bg-danger kpi-card">
+                                <div class="card-body position-relative">
+                                    <h5 class="card-title">Tỷ lệ hủy đơn</h5>
+                                    <h3 class="card-text mt-2" th:text="${cancellationRate != null} ? ${#numbers.formatDecimal(cancellationRate * 100, 1, 2) + '%'} : '0%'"></h3>
+                                    <div class="alert-badge" th:if="${cancellationRate > 0.1}">
+                                        <i class="fas fa-exclamation"></i>
+                                    </div>
+                                    <button class="drilldown-btn">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Biên lợi nhuận đã được xử lý trong controller -->
+                        <div class="col-md-4 col-lg-2" th:if="${grossMargin != null}">
+                            <div class="card text-white bg-secondary kpi-card">
+                                <div class="card-body position-relative">
+                                    <h5 class="card-title">Biên lợi nhuận</h5>
+                                    <h3 class="card-text mt-2" th:text="${#numbers.formatDecimal(grossMargin * 100, 1, 2)} + '%'"></h3>
+                                    <button class="drilldown-btn">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Biểu đồ xu hướng -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span>Xu hướng doanh thu theo thời gian</span>
+                                    </div>
+                                    <div class="chart-container" th:if="${revenueTrend != null and !revenueTrend.empty}">
+                                        <canvas id="trendChart"></canvas>
+                                    </div>
+                                    <div class="no-data-placeholder" th:if="${revenueTrend == null or revenueTrend.empty}">
+                                        <p>Không có dữ liệu để hiển thị</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Biểu đồ so sánh -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <i class="fas fa-chart-bar"></i>
+                                        <span>Doanh thu theo danh mục</span>
+                                    </div>
+                                    <div class="chart-container" th:if="${revenueByCategory != null and !revenueByCategory.empty}">
+                                        <canvas id="categoryChart"></canvas>
+                                    </div>
+                                    <div class="no-data-placeholder" th:if="${revenueByCategory == null or revenueByCategory.empty}">
+                                        <p>Không có dữ liệu để hiển thị</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <i class="fas fa-map-marked-alt"></i>
+                                        <span>Doanh thu theo khu vực</span>
+                                    </div>
+                                    <div class="chart-container" th:if="${revenueByRegion != null and !revenueByRegion.empty}">
+                                        <canvas id="regionChart"></canvas>
+                                    </div>
+                                    <div class="no-data-placeholder" th:if="${revenueByRegion == null or revenueByRegion.empty}">
+                                        <p>Không có dữ liệu để hiển thị</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab phân tích -->
+                <div class="tab-pane fade" id="analysis" role="tabpanel">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <i class="fas fa-chart-bar"></i>
+                                        <span>Phân tích Pareto (80/20)</span>
+                                    </div>
+                                    <div class="chart-container" th:if="${paretoData != null and !paretoData.empty}">
+                                        <canvas id="paretoChart"></canvas>
+                                    </div>
+                                    <div class="no-data-placeholder" th:if="${paretoData == null or paretoData.empty}">
+                                        <p>Không có dữ liệu để hiển thị</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <i class="fas fa-balance-scale"></i>
+                                        <span>So sánh thực tế vs kế hoạch</span>
+                                    </div>
+                                    <div class="chart-container" th:if="${budgetVsActual != null and !budgetVsActual.empty}">
+                                        <canvas id="budgetChart"></canvas>
+                                    </div>
+                                    <div class="no-data-placeholder" th:if="${budgetVsActual == null or budgetVsActual.empty}">
+                                        <p>Không có dữ liệu để hiển thị</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <i class="fas fa-water"></i>
+                                        <span>Phân tích biến động doanh thu</span>
+                                    </div>
+                                    <div class="chart-container">
+                                        <canvas id="waterfallChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <i class="fas fa-crystal-ball"></i>
+                                        <span>Dự báo doanh thu</span>
+                                    </div>
+                                    <div class="chart-container">
+                                        <canvas id="forecastChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <i class="fas fa-fire"></i>
+                                        <span>Bản đồ nhiệt doanh thu</span>
+                                    </div>
+                                    <div id="regionHeatmap" style="height: 300px;" th:if="${revenueByRegion != null and !revenueByRegion.empty}"></div>
+                                    <div class="no-data-placeholder" th:if="${revenueByRegion == null or revenueByRegion.empty}">
+                                        <p>Không có dữ liệu để hiển thị</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <i class="fas fa-users"></i>
+                                        <span>Phân tích nhóm khách hàng</span>
+                                    </div>
+                                    <div class="chart-container" th:if="${cohortAnalysis != null and !cohortAnalysis.empty}">
+                                        <canvas id="cohortChart"></canvas>
+                                    </div>
+                                    <div class="no-data-placeholder" th:if="${cohortAnalysis == null or cohortAnalysis.empty}">
+                                        <p>Không có dữ liệu để hiển thị</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab chi tiết đơn hàng -->
+                <div class="tab-pane fade" id="details" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="section-title">
+                                    <i class="fas fa-receipt"></i>
+                                    <span>Chi tiết đơn hàng</span>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <form method="get" action="/admin/revenue" class="d-flex">
+                                        <input type="text" class="form-control" placeholder="Tìm kiếm đơn hàng..."
+                                               th:value="${keyword}" name="keyword">
+                                        <button type="submit" class="btn btn-outline-primary">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th>Mã đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>Ngày đặt</th>
+                                        <th>Số lượng</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="order : ${orders.content}">
+                                        <td th:text="${order.orderId}"></td>
+                                        <td th:text="${order.customer.name}"></td>
+                                        <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td th:text="${order.items.size()}"></td>
+                                        <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA')} + ' VND'"></td>
+                                        <td>
+                                            <span class="badge"
+                                                  th:classappend="${order.status == 'Delivered'} ? 'bg-success' :
+                                                                 ${order.status == 'Shipped'} ? 'bg-primary' :
+                                                                 ${order.status == 'Paid'} ? 'bg-info' :
+                                                                 ${order.status == 'Cancelled'} ? 'bg-danger' : 'bg-secondary'">
+                                                <span th:text="${order.status}"></span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/admin/orders/{id}(id=${order.orderId})"
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> Xem
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${orders.content.empty}">
+                                        <td colspan="7" class="text-center">Không có đơn hàng nào</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Phân trang -->
+                            <nav class="mt-4" th:if="${orders.totalPages > 1}">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item" th:classappend="${orders.first} ? 'disabled' : ''">
+                                        <a class="page-link" th:href="@{'/admin/revenue?page=' + (orders.number - 1) + '&' + ${#request.getQueryString()}}">
+                                            Trước
+                                        </a>
+                                    </li>
+
+                                    <li th:each="page : ${#numbers.sequence(1, orders.totalPages)}"
+                                        class="page-item" th:classappend="${page - 1 == orders.number} ? 'active' : ''">
+                                        <a class="page-link"
+                                           th:href="@{'/admin/revenue?page=' + (page - 1) + '&' + ${#request.getQueryString()}}"
+                                           th:text="${page}"></a>
+                                    </li>
+
+                                    <li class="page-item" th:classappend="${orders.last} ? 'disabled' : ''">
+                                        <a class="page-link" th:href="@{'/admin/revenue?page=' + (orders.number + 1) + '&' + ${#request.getQueryString()}}">
+                                            Tiếp
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Drill Down -->
+<div class="modal fade" id="drilldownModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="drilldownModalLabel">Chi tiết chỉ số</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="drilldownChart"></canvas>
+                </div>
+                <div class="mt-4">
+                    <h6>Phân tích chi tiết</h6>
+                    <p class="text-muted">Dữ liệu chi tiết sẽ được hiển thị tại đây dựa trên chỉ số bạn chọn</p>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                            <tr>
+                                <th>Thành phần</th>
+                                <th>Giá trị</th>
+                                <th>Tỷ lệ</th>
+                                <th>Xu hướng</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Doanh thu sản phẩm A</td>
+                                <td>25,000,000 VND</td>
+                                <td>15%</td>
+                                <td><span class="badge trend-up"><i class="fas fa-arrow-up me-1"></i> 12%</span></td>
+                            </tr>
+                            <tr>
+                                <td>Doanh thu sản phẩm B</td>
+                                <td>18,500,000 VND</td>
+                                <td>11%</td>
+                                <td><span class="badge trend-down"><i class="fas fa-arrow-down me-1"></i> 5%</span></td>
+                            </tr>
+                            <tr>
+                                <td>Doanh thu sản phẩm C</td>
+                                <td>32,000,000 VND</td>
+                                <td>19%</td>
+                                <td><span class="badge trend-up"><i class="fas fa-arrow-up me-1"></i> 8%</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary">Xuất báo cáo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thư viện JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Dữ liệu biểu đồ từ server
+    const trendData = /*[[${revenueTrend}]]*/ [];
+    const categoryData = /*[[${revenueByCategory}]]*/ [];
+    const regionData = /*[[${revenueByRegion}]]*/ [];
+    const paretoData = /*[[${paretoData}]]*/ [];
+    const budgetData = /*[[${budgetVsActual}]]*/ [];
+    const cohortData = /*[[${cohortAnalysis}]]*/ [];
+
+    // Dữ liệu giả lập cho các biểu đồ mới
+    const waterfallData = {
+        labels: ['Doanh thu tháng trước', 'Sản phẩm mới', 'Khuyến mãi', 'Hoàn trả', 'Hủy đơn', 'Doanh thu hiện tại'],
+        data: [120000000, 35000000, 18000000, -12000000, -8000000, 155000000]
+    };
+
+    const forecastData = {
+        labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Dự báo'],
+        actual: [120000000, 135000000, 142000000, 155000000, 162000000, 158000000, null],
+        forecast: [null, null, null, null, null, 158000000, 175000000]
+    };
+
+    // Chuẩn bị dữ liệu cho biểu đồ xu hướng
+    if (trendData.length > 0) {
+        const trendLabels = trendData.map(item => item[0]);
+        const trendValues = trendData.map(item => item[1]);
+
+        // Vẽ biểu đồ xu hướng
+        const trendChart = new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: trendLabels,
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: trendValues,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13,110,253,0.1)',
+                    fill: true,
+                    tension: 0.2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                return 'Doanh thu: ' + (value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Vẽ biểu đồ danh mục
+    if (categoryData.length > 0) {
+        const categoryLabels = categoryData.map(item => item[0]);
+        const categoryValues = categoryData.map(item => item[1]);
+
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'bar',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: categoryValues,
+                    backgroundColor: [
+                        '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e',
+                        '#e74a3b', '#858796', '#5a5c69', '#2e59d9'
+                    ],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                return 'Doanh thu: ' + (value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Vẽ biểu đồ khu vực
+    if (regionData.length > 0) {
+        const regionLabels = regionData.map(item => item[0]);
+        const regionValues = regionData.map(item => item[1]);
+
+        new Chart(document.getElementById('regionChart'), {
+            type: 'doughnut',
+            data: {
+                labels: regionLabels,
+                datasets: [{
+                    data: regionValues,
+                    backgroundColor: [
+                        '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e',
+                        '#e74a3b', '#858796', '#5a5c69'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 15,
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed;
+                                const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return context.label + ': ' + (value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND') + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Vẽ biểu đồ Pareto
+    if (paretoData.length > 0) {
+        const paretoLabels = paretoData.map(item => item[0]);
+        const paretoRevenue = paretoData.map(item => item[1]);
+        const cumulativePercent = paretoData.map(item => item[2]);
+
+        new Chart(document.getElementById('paretoChart'), {
+            type: 'bar',
+            data: {
+                labels: paretoLabels,
+                datasets: [
+                    {
+                        label: 'Doanh thu',
+                        data: paretoRevenue,
+                        backgroundColor: '#4e73df',
+                        borderRadius: 3,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Tích lũy %',
+                        data: cumulativePercent,
+                        type: 'line',
+                        borderColor: '#e74a3b',
+                        backgroundColor: 'rgba(231, 74, 59, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Doanh thu (VND)'
+                        },
+                        grid: {
+                            drawBorder: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND';
+                            }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        min: 0,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Tỷ lệ tích lũy (%)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if (context.datasetIndex === 0) {
+                                    const value = context.parsed.y;
+                                    return 'Doanh thu: ' + (value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND');
+                                } else {
+                                    return 'Tích lũy: ' + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Vẽ biểu đồ Budget vs Actual
+    if (budgetData.length > 0) {
+        const budgetLabels = budgetData.map(item => item[0]);
+        const actualValues = budgetData.map(item => item[1]);
+        const budgetValues = budgetData.map(item => item[2]);
+
+        new Chart(document.getElementById('budgetChart'), {
+            type: 'bar',
+            data: {
+                labels: budgetLabels,
+                datasets: [
+                    {
+                        label: 'Thực tế',
+                        data: actualValues,
+                        backgroundColor: '#4e73df',
+                        borderRadius: 5
+                    },
+                    {
+                        label: 'Kế hoạch',
+                        data: budgetValues,
+                        backgroundColor: '#1cc88a',
+                        borderRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                return context.dataset.label + ': ' + (value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Vẽ biểu đồ Waterfall
+    new Chart(document.getElementById('waterfallChart'), {
+        type: 'bar',
+        data: {
+            labels: waterfallData.labels,
+            datasets: [{
+                label: 'Biến động doanh thu',
+                data: waterfallData.data,
+                backgroundColor: waterfallData.data.map(value =>
+                    value < 0 ? 'rgba(231, 74, 59, 0.7)' :
+                        (value === waterfallData.data[waterfallData.data.length - 1] ?
+                            'rgba(13, 110, 253, 0.7)' : 'rgba(28, 200, 138, 0.7)')
+                ),
+                borderColor: waterfallData.data.map(value =>
+                    value < 0 ? '#e74a3b' :
+                        (value === waterfallData.data[waterfallData.data.length - 1] ? '#0d6efd' : '#1cc88a')
+                ),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        drawBorder: false
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND';
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Vẽ biểu đồ Forecast
+    new Chart(document.getElementById('forecastChart'), {
+        type: 'line',
+        data: {
+            labels: forecastData.labels,
+            datasets: [
+                {
+                    label: 'Thực tế',
+                    data: forecastData.actual,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4
+                },
+                {
+                    label: 'Dự báo',
+                    data: forecastData.forecast,
+                    borderColor: '#f6c23e',
+                    borderDash: [5, 5],
+                    backgroundColor: 'rgba(246, 194, 62, 0.05)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        drawBorder: false
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND';
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return context.dataset.label + ': ' + (value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND');
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Vẽ bản đồ nhiệt
+    if (regionData.length > 0) {
+        const heatmapData = regionData.map(item => {
+            return {
+                x: item[0],
+                y: item[1]
+            }
+        });
+
+        const heatmapOptions = {
+            series: [{
+                name: 'Doanh thu',
+                data: heatmapData
+            }],
+            chart: {
+                type: 'heatmap',
+                height: '100%',
+                toolbar: {
+                    show: true
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            colors: ["#1cc88a"],
+            xaxis: {
+                type: 'category'
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND';
+                    }
+                }
+            }
+        };
+
+        const heatmapChart = new ApexCharts(document.querySelector("#regionHeatmap"), heatmapOptions);
+        heatmapChart.render();
+    }
+
+    // Vẽ biểu đồ cohort
+    if (cohortData.length > 0) {
+        const cohortOptions = {
+            series: [{
+                name: 'Tỷ lệ giữ chân',
+                data: cohortData.map(item => item.value)
+            }],
+            chart: {
+                type: 'bar',
+                height: '100%',
+                toolbar: {
+                    show: true
+                }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 4,
+                    horizontal: true,
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function(val) {
+                    return val + '%';
+                },
+                style: {
+                    fontSize: '12px',
+                    colors: ["#fff"]
+                }
+            },
+            xaxis: {
+                categories: cohortData.map(item => item.cohort),
+                title: {
+                    text: 'Tỷ lệ giữ chân (%)'
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return val + "%";
+                    }
+                }
+            }
+        };
+
+        const cohortChart = new ApexCharts(document.querySelector("#cohortChart"), cohortOptions);
+        cohortChart.render();
+    }
+
+    // Drill-down functionality
+    document.querySelectorAll('.drilldown-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const card = this.closest('.kpi-card');
+            const title = card.querySelector('.card-title').textContent;
+            const value = card.querySelector('.card-text').textContent;
+
+            document.getElementById('drilldownModalLabel').textContent = title;
+
+            // Giả lập dữ liệu drill-down
+            const drilldownData = {
+                labels: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'],
+                data: [25000000, 38000000, 42000000, 50000000]
+            };
+
+            // Vẽ biểu đồ trong modal
+            const drilldownCtx = document.getElementById('drilldownChart').getContext('2d');
+            new Chart(drilldownCtx, {
+                type: 'bar',
+                data: {
+                    labels: drilldownData.labels,
+                    datasets: [{
+                        label: title,
+                        data: drilldownData.data,
+                        backgroundColor: card.classList.contains('bg-primary') ? '#0d6efd' :
+                            card.classList.contains('bg-success') ? '#1cc88a' :
+                                card.classList.contains('bg-info') ? '#36b9cc' :
+                                    card.classList.contains('bg-warning') ? '#f6c23e' :
+                                        card.classList.contains('bg-danger') ? '#e74a3b' : '#5a5c69',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed.y;
+                                    return value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value ? value.toLocaleString('vi-VN') + ' VND' : '0 VND';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Hiển thị modal
+            const modal = new bootstrap.Modal(document.getElementById('drilldownModal'));
+            modal.show();
+        });
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

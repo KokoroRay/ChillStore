@@ -1,0 +1,260 @@
+/* ---------------- Body / Container ---------------- */
+body, html {
+    background-color: #b3e5fc; /* Màu xanh nhạt làm background toàn trang */
+}
+
+.container {
+    width: 100%;
+    height: 100vh; /* Chiếm toàn bộ chiều cao màn hình */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ---------------- Card chính chứa 2 panel ---------------- */
+.card {
+    width: 700px;
+    height: 400px;
+    display: flex;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ---------------- Panel bên trái: White (LOGIN) ---------------- */
+.white-panel {
+    width: 50%;
+    background-color: #ffffff;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.white-panel h2 {
+    font-size: 28px;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.input-group {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #999;
+}
+
+.forgot {
+    width: 100%;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.forgot a {
+    font-size: 12px;
+    color: #555;
+}
+
+.forgot a:hover {
+    text-decoration: underline;
+}
+
+/* Nút Login */
+.login-btn {
+    width: 50%;
+    padding: 12px;
+    background-color: #264d73;
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+
+.login-btn:hover {
+    background-color: #1e3f61;
+}
+
+/* Nút Sign in with Google */
+.google-btn {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.google-btn button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.google-btn button img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+/* ---------------- Panel bên phải: Blue (SIGN UP) ---------------- */
+.blue-panel {
+    width: 50%;
+    background-color: #2c3e50;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* Tạo cạnh bo cong ở phía trái để giống hình */
+    border-top-left-radius: 80px;
+    border-bottom-left-radius: 80px;
+}
+
+.white-panel h2,
+.blue-panel h2 {
+    height: 50px;          /* Chiều cao cố định cho h2 */
+    line-height: 50px;     /* Căn thẳng đứng bên trong khung height */
+    margin-bottom: 20px;   /* Khoảng cách dưới (có thể điều chỉnh) */
+    font-size: 28px;       /* Giữ cỡ chữ như trước */
+    letter-spacing: 2px;
+    text-align: center;    /* Nếu muốn chữ căn giữa ngang */
+}
+
+/* Nếu trong layout bạn muốn h2 luôn nằm ở một vị trí cố định,
+   hãy đảm bảo .white-panel và .blue-panel dùng flex-column */
+.white-panel {
+    width: 50%;
+    background-color: #ffffff;
+    padding: 40px 30px;      /* Đẩy xuống luôn 40px */
+    display: flex;
+    flex-direction: column;
+    align-items: center;     /* Căn giữa ngang */
+    /* justify-content mặc định là flex-start, tức "bắt đầu từ trên" */
+}
+
+/* Thẻ h2 chung cho cả hai panel */
+.white-panel h2,
+.blue-panel h2 {
+    height: 50px;        /* Chiều cao cố định */
+    line-height: 50px;   /* Căn text giữa theo chiều dọc */
+    font-size: 28px;
+    letter-spacing: 2px;
+    margin-bottom: 20px; /* Khoảng cách xuống phần nội dung bên dưới */
+    text-align: center;
+}
+
+/* ========================
+   .blue-panel (SIGN UP)
+   ======================== */
+.blue-panel {
+    width: 50%;
+    background-color: #2c3e50;
+    color: #fff;
+
+    /* Cập nhật chỗ này: */
+    display: flex;
+    flex-direction: column;
+    align-items: center;     /* Căn giữa ngang như trước */
+    justify-content: flex-start;  /* <-- sửa từ "center" sang "flex-start" */
+
+    padding-top: 40px;       /* <-- thêm padding-top cho bằng với .white-panel */
+
+}
+/* Các nút trong phần Sign Up */
+.blue-panel .btn-signup,
+.blue-panel .btn-back {
+    width: 60%;
+    padding: 10px;
+    margin: 8px 0;
+    background-color: transparent;
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.blue-panel .btn-signup:hover,
+.blue-panel .btn-back:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Tối ưu không gian cho Manage Product --- */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 10px 0 10px;
+    margin-top: 170px;
+}
+
+.product-card {
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    border-radius: 8px;
+    min-height: 100px;
+}
+.product-image {
+    width: 70px;
+    height: 70px;
+}
+.product-info h5 {
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+}
+.product-details {
+    font-size: 0.92rem;
+    gap: 10px;
+}
+.product-controls .btn {
+    padding: 6px 10px;
+    font-size: 0.95rem;
+}
+
+/* --- Two-column grid for product list in Manage Product --- */
+@media (min-width: 768px) {
+  /* .main-content .row {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+  .main-content .col-md-6 {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 20px;
+  } */
+}
+
+@media (max-width: 767.98px) {
+  /* .main-content .col-md-6 {
+    width: 100%;
+    margin-bottom: 20px;
+  } */
+}
+
+.filter-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 18px 22px 10px 22px;
+    margin-bottom: 24px;
+}
+
+.main-content {
+    margin-top: 170px;
+}

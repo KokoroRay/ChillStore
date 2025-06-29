@@ -7,34 +7,34 @@ public class ProductDto {
     
     private Integer productId;
     
-    @NotBlank(message = "Tên sản phẩm không được để trống")
-    @Size(min = 2, max = 100, message = "Tên sản phẩm phải từ 2 đến 100 ký tự")
+    @NotBlank(message = "Product name cannot be empty")
+    @Size(min = 2, max = 100, message = "Product name must be between 2 and 100 characters")
     private String name;
     
-    @NotBlank(message = "Mô tả không được để trống")
-    @Size(min = 10, max = 500, message = "Mô tả phải từ 10 đến 500 ký tự")
+    @NotBlank(message = "Description cannot be empty")
+    @Size(min = 10, max = 500, message = "Description must be between 10 and 500 characters")
     private String description;
     
-    @NotNull(message = "Giá không được để trống")
-    @DecimalMin(value = "0.01", message = "Giá phải lớn hơn 0")
-    @DecimalMax(value = "999999999.99", message = "Giá không được vượt quá 999,999,999.99")
+    @NotNull(message = "Price cannot be empty")
+    @DecimalMin(value = "1000.00", message = "Price must be at least 1,000 VND")
+    @DecimalMax(value = "1000000000.00", message = "Price cannot exceed 1,000,000,000 VND")
     private BigDecimal price;
     
-    @NotNull(message = "Số lượng tồn kho không được để trống")
-    @Min(value = 0, message = "Số lượng tồn kho không được âm")
-    @Max(value = 999999, message = "Số lượng tồn kho không được vượt quá 999,999")
+    @NotNull(message = "Stock quantity cannot be empty")
+    @Min(value = 0, message = "Stock quantity cannot be negative")
+    @Max(value = 999999, message = "Stock quantity cannot exceed 999,999")
     private Integer stockQty;
     
     private boolean status = true;
     
     private String imageUrl;
     
-    @NotNull(message = "Danh mục không được để trống")
+    @NotNull(message = "Category cannot be empty")
     private Integer categoryId;
     
     private String categoryName;
     
-    @NotNull(message = "Thương hiệu không được để trống")
+    @NotNull(message = "Brand cannot be empty")
     private Integer brandId;
     
     private String brandName;

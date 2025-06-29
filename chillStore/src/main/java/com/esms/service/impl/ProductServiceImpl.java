@@ -1,5 +1,6 @@
 package com.esms.service.impl;
 
+import com.esms.model.dto.ProductDTO;
 import com.esms.model.entity.Product;
 import com.esms.repository.ProductRepository;
 import com.esms.service.ProductService;
@@ -187,5 +188,47 @@ public class ProductServiceImpl implements ProductService {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
+    @Override
+    public List<ProductDTO> getAllProductDTOs() {
+        List<Product> products = productRepository.findAll();
+
+        return products.stream()
+                .map(product -> new ProductDTO(
+                        product.getName(),
+                        product.getImageUrl(),
+                        product.getPrice()
+                ))
+                .collect(Collectors.toList());
+    }
+    @Override
+    public Page<ProductDTO> getProductDTOsPaginated(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(product -> convertToDTO(product));
+    }
+
+    private ProductDTO convertToDTO(Product product) {
+        return new ProductDTO(product.getProductId(), product.getName(), product.getPrice(), product.getImageUrl());
+    }
+
+    public Page<ProductDTO> getProductsByCategory(String category, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByCategoryNameIgnoreCase(category, pageable);
+
+        return productPage.map(product -> {
+            ProductDTO dto = new ProductDTO();
+            dto.setProductId(product.getProductId());
+            dto.setName(product.getName());
+            dto.setPrice(product.getPrice());
+            dto.setImageUrl(product.getImageUrl());
+
+            if (product.getCategory() != null) {
+                dto.setCategory(product.getCategory());
+            }
+
+            return dto;
+        });
+
+    }
+
+
 
 }

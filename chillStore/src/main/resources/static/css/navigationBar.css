@@ -1,0 +1,39 @@
+.horizontal-sidebar {
+    background-color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    overflow-x: auto;
+}
+
+.horizontal-sidebar ul {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    gap: 30px;
+}
+
+.horizontal-sidebar li {
+    margin: 0;
+}
+
+.horizontal-sidebar a {
+    display: block;
+    padding: 12px 18px;
+    color: black;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s, border-radius 0.3s;
+}
+
+.horizontal-sidebar a:hover {
+    background-color: #DCDCDC;
+    border-radius: 8px;
+}
+.horizontal-sidebar {
+    margin-top: 80px;
+}
+

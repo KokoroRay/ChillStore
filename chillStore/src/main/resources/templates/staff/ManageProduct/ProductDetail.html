@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết sản phẩm</title>
+    <title>Product Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/header.css">
@@ -252,16 +252,13 @@
 
 <div class="main-content">
     <div class="topbar">
-        <a th:href="@{/staff/products}" style="text-decoration:none;"><h4>Chi tiết sản phẩm</h4></a>
-        <div>
-            <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
-        </div>
+        <a th:href="@{/staff/products}" style="text-decoration:none;"><h4>Product Details</h4></a>
     </div>
 
     <div class="container">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title">Chi tiết sản phẩm</h3>
+                <h3 class="card-title">Product Details</h3>
                 <form th:action="@{/staff/products}" method="get">
                     <input type="hidden" name="page" th:value="${currentPage}" />
                     <input type="hidden" name="size" th:value="${size}" />
@@ -274,7 +271,7 @@
                     <input type="hidden" name="minStock" th:value="${minStock}" />
                     <input type="hidden" name="sortOption" th:value="${sortOption}" />
                     <button type="submit" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Quay lại
+                        <i class="fas fa-arrow-left"></i> Back
                     </button>
                 </form>
             </div>
@@ -287,7 +284,7 @@
                              alt="Product Image">
                         <div th:unless="${product.imageUrl}" class="no-image">
                             <i class="fas fa-image fa-3x mb-2"></i>
-                            <p>Không có hình ảnh</p>
+                            <p>No image</p>
                         </div>
                     </div>
                     <div class="col-md-7">
@@ -297,11 +294,11 @@
                                 <td th:text="${product.productId}"></td>
                             </tr>
                             <tr>
-                                <th>Tên sản phẩm:</th>
+                                <th>Product Name:</th>
                                 <td th:text="${product.name}"></td>
                             </tr>
                             <tr>
-                                <th>Mô tả:</th>
+                                <th>Description:</th>
                                 <td>
                                     <div class="product-description">
                                         <span th:text="${product.description}"></span>
@@ -309,18 +306,18 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Giá:</th>
+                                <th>Price:</th>
                                 <td th:text="${#numbers.formatCurrency(product.price)}"></td>
                             </tr>
                             <tr>
-                                <th>Số lượng tồn kho:</th>
+                                <th>Stock Quantity:</th>
                                 <td th:text="${product.stockQty}"></td>
                             </tr>
                             <tr>
-                                <th>Trạng thái:</th>
+                                <th>Status:</th>
                                 <td>
-                                    <span th:if="${product.status}" class="badge bg-success">Đang bán</span>
-                                    <span th:unless="${product.status}" class="badge bg-danger">Ngừng bán</span>
+                                    <span th:if="${product.status}" class="badge bg-success">Active</span>
+                                    <span th:unless="${product.status}" class="badge bg-danger">Inactive</span>
                                 </td>
                             </tr>
                         </table>

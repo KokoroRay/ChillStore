@@ -1,6 +1,6 @@
 package com.esms.service;
 
-import com.esms.model.dto.ProductDTO;
+import com.esms.model.dto.ProductDto;
 import com.esms.model.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,12 +28,13 @@ public interface ProductService {
     List<Product> filterByStatus(boolean status);
     Product updateProduct(Integer productId, Product product);
     void deleteProduct(Integer productId);
+    Product saveProduct(Product product);
 
 
-    List<ProductDTO> getAllProductDTOs();
+    List<ProductDto> getAllProductDTOs();
 
-    Page<ProductDTO> getProductDTOsPaginated(Pageable pageable);
+    Page<ProductDto> getProductDTOsPaginated(Pageable pageable);
 
-    Page<ProductDTO> getProductsByCategory(String category, Pageable pageable);
+    Page<ProductDto> getProductsByCategory(String category, Pageable pageable);
 }
 

@@ -42,4 +42,8 @@ public interface CustomerService {
     Optional<Customer> findCustomerByEmail(String email);
     Optional<Customer> findCustomerByProviderAndProviderId(String provider, String providerId);
     Customer processOAuth2User (OAuth2User oAuth2User, String provider);
+
+    Customer getCustomerByEmail(String email);
+
+    void changePassword(String email, ChangePasswordDto dto);
 }

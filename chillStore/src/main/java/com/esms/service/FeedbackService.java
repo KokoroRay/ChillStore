@@ -1,9 +1,9 @@
 package com.esms.service;
 
-import com.esms.model.dto.FeedbackDTO;
+import com.esms.model.dto.FeedbackDto;
 
 import java.util.List;
 
 public interface FeedbackService {
-    List<FeedbackDTO> getAllFeedbacks();
+    List<FeedbackDto> getAllFeedbacks();
 }

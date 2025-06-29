@@ -5,7 +5,7 @@ import com.esms.model.entity.Feedback;
 
 import java.time.LocalDateTime;
 
-public class FeedbackDTO {
+public class FeedbackDto {
     private int id;
     private Customer customer;
     private String product;
@@ -14,11 +14,11 @@ public class FeedbackDTO {
     private String status;
     private LocalDateTime createdAt;
 
-public FeedbackDTO(){
+    public FeedbackDto() {
 
-}
+    }
 
-    public FeedbackDTO(int id, Customer customer, String product, Byte rating, String comment, String status, LocalDateTime createdAt) {
+    public FeedbackDto(int id, Customer customer, String product, Byte rating, String comment, String status, LocalDateTime createdAt) {
         this.id = id;
         this.customer = customer;
         this.product = product;

@@ -23,4 +23,6 @@ public interface CustomerMapper {
 
     @Mapping(target = "birth_date", source = "birth_date") // Dòng này có vẻ đúng nếu birth_date có trong DTO
     Customer toEntity(RegisterDto dto);
+
+    // TODO: Nếu dùng MapStruct, bổ sung mapping avatar_url <-> avatarUrl ở đây. Nếu mapping thủ công, sẽ xử lý ở controller/service.
 }

@@ -1,42 +1,35 @@
 package com.esms.model.dto;
 
-import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class CustomerDto {
     private Integer customerId;
 
-    @NotBlank(message = "Tên không được để trống")
     private String name;
 
-    @NotBlank(message = "Họ và tên không được để trống")
-    @Size(max = 100, message = "Họ và tên không được vượt quá 100 ký tự")
     private String displayName;
 
-    @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không hợp lệ")
-    @Size(max = 255, message = "Email không được vượt quá 255 ký tự")
     private String email;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
-    @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
     private String password;
 
-    @Size(max = 20, message = "Số điện thoại không được vượt quá 20 ký tự")
     private String phone;
 
-    @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự")
     private String address;
 
-    @NotNull(message = "Ngày sinh không được để trống")
-    @Past(message = "Ngày sinh phải là ngày trong quá khứ")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     private boolean isLocked;
+
+    private String avatarUrl;
+
+    private String gender;
 
     public CustomerDto() {}
 
@@ -130,5 +123,19 @@ public class CustomerDto {
     }
     public void setLocked(boolean locked) {
         isLocked = locked;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

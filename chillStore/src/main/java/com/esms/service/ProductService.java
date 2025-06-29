@@ -1,12 +1,13 @@
 package com.esms.service;
 
+import com.esms.model.dto.ProductDTO;
 import com.esms.model.entity.Product;
-import com.esms.model.dto.ProductDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public interface ProductService {
     List<Product> findAll();
     Page<Product> getAllProducts(Pageable pageable);
@@ -27,22 +28,12 @@ public interface ProductService {
     List<Product> filterByStatus(boolean status);
     Product updateProduct(Integer productId, Product product);
     void deleteProduct(Integer productId);
-    
-    // DTO methods
-    ProductDto getProductDtoById(Integer productId);
-    ProductDto createProduct(ProductDto productDto);
-    ProductDto updateProduct(Integer productId, ProductDto productDto);
-    Page<ProductDto> getAllProductDtos(Pageable pageable);
-    Page<ProductDto> searchProductDtosWithFilters(
-            String keyword,
-            Integer categoryId,
-            Integer brandId,
-            Double minPrice,
-            Double maxPrice,
-            Integer minStock,
-            String sortBy,
-            String sortDir,
-            Pageable pageable,
-            Boolean status
-    );
+
+
+    List<ProductDTO> getAllProductDTOs();
+
+    Page<ProductDTO> getProductDTOsPaginated(Pageable pageable);
+
+    Page<ProductDTO> getProductsByCategory(String category, Pageable pageable);
 }
+

@@ -1,6 +1,6 @@
 package com.esms.service.impl;
 
-import com.esms.model.dto.ProductDTO;
+import com.esms.model.dto.ProductDto;
 import com.esms.model.entity.Product;
 import com.esms.repository.ProductRepository;
 import com.esms.service.ProductService;
@@ -189,11 +189,11 @@ public class ProductServiceImpl implements ProductService {
         return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
     @Override
-    public List<ProductDTO> getAllProductDTOs() {
+    public List<ProductDto> getAllProductDTOs() {
         List<Product> products = productRepository.findAll();
 
         return products.stream()
-                .map(product -> new ProductDTO(
+                .map(product -> new ProductDto(
                         product.getName(),
                         product.getImageUrl(),
                         product.getPrice()
@@ -201,20 +201,20 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
     @Override
-    public Page<ProductDTO> getProductDTOsPaginated(Pageable pageable) {
+    public Page<ProductDto> getProductDTOsPaginated(Pageable pageable) {
         return productRepository.findAll(pageable)
                 .map(product -> convertToDTO(product));
     }
 
-    private ProductDTO convertToDTO(Product product) {
-        return new ProductDTO(product.getProductId(), product.getName(), product.getPrice(), product.getImageUrl());
+    private ProductDto convertToDTO(Product product) {
+        return new ProductDto(product.getProductId(), product.getName(), product.getPrice(), product.getImageUrl());
     }
 
-    public Page<ProductDTO> getProductsByCategory(String category, Pageable pageable) {
+    public Page<ProductDto> getProductsByCategory(String category, Pageable pageable) {
         Page<Product> productPage = productRepository.findByCategoryNameIgnoreCase(category, pageable);
 
         return productPage.map(product -> {
-            ProductDTO dto = new ProductDTO();
+            ProductDto dto = new ProductDto();
             dto.setProductId(product.getProductId());
             dto.setName(product.getName());
             dto.setPrice(product.getPrice());
@@ -229,6 +229,9 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-
+    @Override
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
 
 }

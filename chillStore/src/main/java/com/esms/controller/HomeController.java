@@ -1,7 +1,7 @@
 package com.esms.controller;
 
 
-import com.esms.model.dto.ProductDTO;
+import com.esms.model.dto.ProductDto;
 import com.esms.model.entity.Product;
 import com.esms.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class HomeController {
 
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDTO> productPage = productService.getProductDTOsPaginated(pageable);
+        Page<ProductDto> productPage = productService.getProductDTOsPaginated(pageable);
 
         if (category != null && !category.equalsIgnoreCase("tất cả")) {
             productPage = productService.getProductsByCategory(category, pageable);

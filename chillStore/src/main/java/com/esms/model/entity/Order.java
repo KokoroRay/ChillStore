@@ -3,7 +3,9 @@ package com.esms.model.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -30,6 +32,9 @@ public class Order {
 
     @Column(name = "payment_method")
     private String paymentMethod;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     public Order() {
     }
@@ -99,4 +104,8 @@ public class Order {
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
-} 
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+}

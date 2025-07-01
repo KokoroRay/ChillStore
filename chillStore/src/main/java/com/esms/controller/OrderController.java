@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Controller
-@RequestMapping({"/admin/order", "/staff/order"})
+@RequestMapping({"/admin/orders", "/staff/orders"})
 public class OrderController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class OrderController {
         } else {
             orders = orderService.searchOrders(keyword, status);
         }
-        
+
         List<String> statuses = Arrays.asList("Pending", "Paid", "Shipped", "Delivered", "Cancelled");
 
         model.addAttribute("orders", orders);
@@ -39,7 +39,7 @@ public class OrderController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("selectedStatus", status);
 
-        return "staff/manage-order";
+        return "staff/order/manage-order";
     }
 
     @PostMapping("/confirm/{orderId}")

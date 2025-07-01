@@ -1,7 +1,6 @@
 package com.esms.model.dto;
 
 import com.esms.model.entity.Customer;
-import com.esms.model.entity.Feedback;
 
 import java.time.LocalDateTime;
 

@@ -9,7 +9,7 @@ public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "staff_id")
-    private int id;
+    private Integer id;
     @Column(name = "name")
     private String name;
     @Column(name = "email" )
@@ -24,7 +24,7 @@ public class Staff {
     @Column(name = "gender")
     private Gender gender;
     @Column(name = "national_id")
-    private String national_id;
+    private String nationalId;
 
 
     public enum Gender {
@@ -36,7 +36,7 @@ public class Staff {
     public Staff() {
     }
 
-    public Staff(int id, String name, String email, String password, String phone, String address, Gender gender, String national_id) {
+    public Staff(Integer id, String name, String email, String password, String phone, String address, Gender gender, String nationalId) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -44,14 +44,14 @@ public class Staff {
         this.phone = phone;
         this.address = address;
         this.gender = gender;
-        this.national_id = national_id;
+        this.nationalId = nationalId;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -103,11 +103,11 @@ public class Staff {
         this.gender = gender;
     }
 
-    public String getNational_id() {
-        return national_id;
+    public String getNationalId() {
+        return nationalId;
     }
 
-    public void setNational_id(String national_id) {
-        this.national_id = national_id;
+    public void setNationalId(String nationalId) {
+        this.nationalId = nationalId;
     }
 }

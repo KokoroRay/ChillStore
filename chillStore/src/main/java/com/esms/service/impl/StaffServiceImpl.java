@@ -37,7 +37,7 @@ public class StaffServiceImpl implements IStaffService {
                 }                staff1.setPhone(staff.getPhone());
                 staff1.setAddress(staff.getAddress());
                 staff1.setGender(staff.getGender());
-                staff1.setNational_id(staff.getNational_id());
+                staff1.setNationalId(staff.getNationalId());
                 return staffRepository.save(staff1);
             }
         }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết sản phẩm - ESMS</title>
+    <title>Product Details - ESMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/header.css">
@@ -24,12 +24,11 @@
             <!-- Topbar -->
             <div class="topbar">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Chi tiết sản phẩm</h4>
+                    <h4 class="mb-0">Product Details</h4>
                     <div class="d-flex align-items-center">
                         <a th:href="@{/admin/products(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" class="btn btn-secondary me-3">
-                            <i class="fas fa-arrow-left"></i> Quay lại
-                        </a>
-                        <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user-13.svg" width="40" alt="profile">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>  
                     </div>
                 </div>
             </div>
@@ -46,7 +45,7 @@
                                      alt="Product Image">
                                 <div th:unless="${product.imageUrl}" class="no-image-large">
                                     <i class="fas fa-image fa-4x mb-3"></i>
-                                    <p class="text-muted">Không có hình ảnh</p>
+                                    <p class="text-muted">No Image</p>
                                 </div>
                             </div>
                         </div>
@@ -58,44 +57,44 @@
                                     <table class="table table-borderless">
                                         <tbody>
                                             <tr>
-                                                <th class="detail-label">ID sản phẩm:</th>
+                                                <th class="detail-label">Product ID:</th>
                                                 <td class="detail-value" th:text="${product.productId}"></td>
                                             </tr>
                                             <tr>
-                                                <th class="detail-label">Tên sản phẩm:</th>
+                                                <th class="detail-label">Product Name:</th>
                                                 <td class="detail-value" th:text="${product.name}"></td>
                                             </tr>
                                             <tr>
-                                                <th class="detail-label">Mô tả:</th>
+                                                <th class="detail-label">Description:</th>
                                                 <td class="detail-value">
                                                     <div class="product-description" th:text="${product.description}"></div>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th class="detail-label">Giá:</th>
+                                                <th class="detail-label">Price:</th>
                                                 <td class="detail-value">
                                                     <span class="price-highlight" th:text="${#numbers.formatCurrency(product.price)}"></span>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th class="detail-label">Số lượng tồn kho:</th>
+                                                <th class="detail-label">Stock Quantity:</th>
                                                 <td class="detail-value">
                                                     <span class="stock-badge" th:text="${product.stockQty}"></span>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th class="detail-label">Trạng thái:</th>
+                                                <th class="detail-label">Status:</th>
                                                 <td class="detail-value">
-                                                    <span th:if="${product.status}" class="badge bg-success fs-6">Đang bán</span>
-                                                    <span th:unless="${product.status}" class="badge bg-danger fs-6">Ngừng bán</span>
+                                                    <span th:if="${product.status}" class="badge bg-success fs-6">Active</span>
+                                                    <span th:unless="${product.status}" class="badge bg-danger fs-6">Inactive</span>
                                                 </td>
                                             </tr>
                                             <tr th:if="${product.category != null}">
-                                                <th class="detail-label">Danh mục:</th>
+                                                <th class="detail-label">Category:</th>
                                                 <td class="detail-value" th:text="${product.category.name}"></td>
                                             </tr>
                                             <tr th:if="${product.brand != null}">
-                                                <th class="detail-label">Thương hiệu:</th>
+                                                <th class="detail-label">Brand:</th>
                                                 <td class="detail-value" th:text="${product.brand.name}"></td>
                                             </tr>
                                         </tbody>
@@ -108,10 +107,10 @@
                 <div class="card-footer">
                     <div class="d-flex justify-content-end gap-2">
                         <a th:href="@{/admin/products(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Quay lại
+                            <i class="fas fa-arrow-left"></i> Back
                         </a>
                         <a th:href="@{/admin/products/{id}/edit(id=${product.productId}, page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" class="btn btn-warning">
-                            <i class="fas fa-edit"></i> Chỉnh sửa
+                            <i class="fas fa-edit"></i> Edit
                         </a>
                     </div>
                 </div>

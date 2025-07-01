@@ -1,6 +1,6 @@
 package com.esms.service.impl;
 
-import com.esms.model.dto.FeedbackDTO;
+import com.esms.model.dto.FeedbackDto;
 import com.esms.model.entity.Customer;
 import com.esms.model.entity.Feedback;
 import com.esms.repository.FeedbackRepository;
@@ -20,7 +20,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     private FeedbackRepository feedbackRepository;
 
     @Override
-    public List<FeedbackDTO> getAllFeedbacks() {
+    public List<FeedbackDto> getAllFeedbacks() {
        /* return feedbackRepository.findAll()
                 .stream()
                 .map(this::convertToDTO)
@@ -28,17 +28,17 @@ public class FeedbackServiceImpl implements FeedbackService {
         return fakeData();
 
     }
-    private List<FeedbackDTO> fakeData() {
-        List<FeedbackDTO> list = new ArrayList<>();
+    private List<FeedbackDto> fakeData() {
+        List<FeedbackDto> list = new ArrayList<>();
         Customer customer = new Customer();
         customer.setName("Nguyễn Văn A");
-        list.add(new FeedbackDTO(1, customer, "Máy lạnh", (byte) 5, "Sản phẩm rất tốt", "New", LocalDateTime.now()));
-        list.add(new FeedbackDTO(2, customer, "Máy giặt", (byte) 4, "Tốt nhưng hơi ồn", "Replied", LocalDateTime.now().minusDays(1)));
+        list.add(new FeedbackDto(1, customer, "Máy lạnh", (byte) 5, "Sản phẩm rất tốt", "New", LocalDateTime.now()));
+        list.add(new FeedbackDto(2, customer, "Máy giặt", (byte) 4, "Tốt nhưng hơi ồn", "Replied", LocalDateTime.now().minusDays(1)));
         return list;
     }
 
-    private FeedbackDTO convertToDTO(Feedback fb) {
-        FeedbackDTO dto = new FeedbackDTO();
+    private FeedbackDto convertToDTO(Feedback fb) {
+        FeedbackDto dto = new FeedbackDto();
         dto.setId(fb.getId());
         dto.setCustomer(fb.getCustomer());
         dto.setProduct(fb.getProduct().getName());

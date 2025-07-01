@@ -1,0 +1,164 @@
+<div th:fragment="content(orders, statuses, keyword, selectedStatus, searchError)">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <form th:action="@{/staff/orders}" method="get" class="d-flex w-75">
+      <input type="text"
+             name="keyword"
+             class="form-control"
+             placeholder="Search by Receipt or Customer"
+             th:value="${keyword}">
+      <select name="status" class="form-control ms-2" style="max-width: 150px;" onchange="this.form.submit()">
+        <option value="">All status</option>
+        <option th:each="st : ${statuses}"
+                th:value="${st}"
+                th:text="${st}"
+                th:selected="${st == selectedStatus}"></option>
+      </select>
+      <button type="submit" class="btn btn-outline-primary ms-2">
+        <i class="fas fa-search"></i> Search
+      </button>
+    </form>
+  </div>
+
+  <div th:if="${searchError}" class="alert alert-danger" th:text="${searchError}"></div>
+
+  <div th:if="${#lists.isEmpty(orders)}" class="text-center text-muted py-5">
+    <h4><i class="fas fa-inbox"></i> No orders found</h4>
+    <p>Try changing your search criteria.</p>
+  </div>
+
+  <div th:if="${!#lists.isEmpty(orders)}" class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Order List</h5>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Customer Name</th>
+              <th>Order Date</th>
+              <th>Items</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+              <th>Payment Method</th>
+              <th>Receipt</th>
+              <th>Details</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order, i : ${orders}">
+              <td th:text="${i.count}"></td>
+              <td th:text="${order.customerName}"></td>
+              <td th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+              <td th:text="${order.itemsCount + ' item'}"></td>
+              <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA')}"></td>
+              <td>
+                <span class="badge"
+                      th:classappend="${order.status == 'Pending'} ? ' bg-warning text-dark' :
+                      (order.status == 'Confirmed' ? ' bg-success' :
+                      (order.status == 'Cancelled' ? ' bg-danger' : ' bg-warning text-dark'))"
+                      th:text="${order.status}"></span>
+              </td>
+              <td th:text="${order.paymentMethod}"></td>
+              <td th:text="${order.orderId}"></td>
+              <td>
+                <button type="button" class="btn btn-info btn-sm" th:attr="data-order-id=${order.orderId}" onclick="showOrderDetail(this)">
+                  <i class="fas fa-eye"></i> Detail
+                </button>
+              </td>
+              <td>
+                <div th:if="${order.status == 'Pending'}" th:id="'action-btns-' + ${order.orderId}">
+                  <button type="button" class="btn btn-success btn-sm me-1" onclick="updateOrderStatusUI([[${order.orderId}]], 'Confirmed', this)">
+                    <i class="fas fa-check"></i> Confirm
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm" onclick="updateOrderStatusUI([[${order.orderId}]], 'Cancelled', this)">
+                    <i class="fas fa-times"></i> Cancel
+                  </button>
+                </div>
+                <div th:if="${order.status != 'Pending'}" th:id="'action-btns-' + ${order.orderId}">
+                  <span th:text="${order.status}"></span>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal hiển thị chi tiết sản phẩm đã mua -->
+  <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="orderDetailModalLabel">Receipt <span id="receiptNumber" class="text-primary"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+              </tr>
+            </thead>
+            <tbody id="orderDetailTableBody">
+              <!-- Nội dung sẽ được fill bằng JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function showOrderDetail(btn) {
+    var orderId = btn.getAttribute('data-order-id');
+    document.getElementById('receiptNumber').textContent = '#' + orderId;
+    fetch('/staff/orders/' + orderId + '/items')
+      .then(res => res.json())
+      .then(items => {
+        let tbody = document.getElementById('orderDetailTableBody');
+        tbody.innerHTML = '';
+        if (items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="text-center">No items found</td></tr>';
+        } else {
+          items.forEach(item => {
+            tbody.innerHTML += `<tr>
+              <td>${item.productName}</td>
+              <td>${item.categoryName}</td>
+              <td>${item.quantity}</td>
+              <td>${item.priceEach.toLocaleString()}</td>
+            </tr>`;
+          });
+        }
+        var modal = new bootstrap.Modal(document.getElementById('orderDetailModal'));
+        modal.show();
+      });
+  }
+
+  function updateOrderStatusUI(orderId, status, btn) {
+    // Cập nhật UI: thay nút bằng text
+    const actionCell = document.getElementById('action-btns-' + orderId);
+    actionCell.innerHTML = `<span>${status}</span>`;
+    // Cập nhật badge status
+    const row = btn.closest('tr');
+    const statusCell = row.querySelector('td:nth-child(6) span');
+    if (status === 'Confirmed') {
+      statusCell.className = 'badge bg-success';
+    } else if (status === 'Cancelled') {
+      statusCell.className = 'badge bg-danger';
+    } else {
+      statusCell.className = 'badge bg-secondary';
+    }
+    statusCell.textContent = status;
+  }
+  </script>
+</div> 

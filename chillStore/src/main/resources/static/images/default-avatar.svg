@@ -1,0 +1,14 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="60" fill="#E5E7EB"/>
+  
+  <!-- User icon -->
+  <circle cx="60" cy="45" r="18" fill="#9CA3AF"/>
+  <path d="M30 85C30 70.0883 42.0883 58 57 58H63C77.9117 58 90 70.0883 90 85V90H30V85Z" fill="#9CA3AF"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="25" cy="25" r="3" fill="#D1D5DB" opacity="0.6"/>
+  <circle cx="95" cy="35" r="2" fill="#D1D5DB" opacity="0.6"/>
+  <circle cx="85" cy="95" r="4" fill="#D1D5DB" opacity="0.6"/>
+  <circle cx="35" cy="95" r="2" fill="#D1D5DB" opacity="0.6"/>
+</svg> 

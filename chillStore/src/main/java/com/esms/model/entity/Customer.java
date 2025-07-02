@@ -22,10 +22,11 @@ public class Customer {
     private String phone;
     private String address;
     private String gender;
-    private LocalDate birth_date = LocalDate.now();
+    private LocalDate birth_date;
     private LocalDateTime created_at = LocalDateTime.now();
     private LocalDateTime updated_at = LocalDateTime.now();
     private boolean isLocked = false;
+    private String avatar_url;
 
 
     public Customer() {
@@ -109,5 +110,13 @@ public class Customer {
 
     public void setProvider(String provider) {
         this.provider = provider;
+    }
+
+    public String getAvatar_url() {
+        return avatar_url;
+    }
+
+    public void setAvatar_url(String avatar_url) {
+        this.avatar_url = avatar_url;
     }
 }

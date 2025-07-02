@@ -1,7 +1,7 @@
 package com.esms.controller;
 
 
-import com.esms.model.dto.FeedbackDTO;
+import com.esms.model.dto.FeedbackDto;
 import com.esms.model.dto.ReplyFeedbackDTO;
 import com.esms.service.FeedbackService;
 import com.esms.service.ReplyService;
@@ -30,7 +30,7 @@ public class FeedbackController {
 
     @GetMapping("/{id}/reply")
     public String showReplyForm(@PathVariable("id") int feedbackId, Model model) {
-        FeedbackDTO feedback = feedbackService.getAllFeedbacks()
+        FeedbackDto feedback = feedbackService.getAllFeedbacks()
                 .stream()
                 .filter(f -> f.getId() == feedbackId)
                 .findFirst().orElse(null);

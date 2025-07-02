@@ -46,6 +46,7 @@
               <th>Payment Method</th>
               <th>Receipt</th>
               <th>Details</th>
+              <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -53,23 +54,34 @@
               <td th:text="${i.count}"></td>
               <td th:text="${order.customerName}"></td>
               <td th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
-              <td th:text="${order.itemsCount}"></td>
+              <td th:text="${order.itemsCount + ' item'}"></td>
               <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA')}"></td>
-              <td th:text="${order.status}"></td>
+              <td>
+                <span class="badge"
+                      th:classappend="${order.status == 'Pending'} ? ' bg-warning text-dark' :
+                      (order.status == 'Confirmed' ? ' bg-success' :
+                      (order.status == 'Cancelled' ? ' bg-danger' : ' bg-warning text-dark'))"
+                      th:text="${order.status}"></span>
+              </td>
               <td th:text="${order.paymentMethod}"></td>
               <td th:text="${order.orderId}"></td>
               <td>
                 <button type="button" class="btn btn-info btn-sm" th:attr="data-order-id=${order.orderId}" onclick="showOrderDetail(this)">
                   <i class="fas fa-eye"></i> Detail
                 </button>
-                <form th:if="${order.status == 'New order' || order.status == 'Pending payment'}" 
-                      th:action="@{/staff/orders/confirm/{orderId}(orderId=${order.orderId})}" 
-                      method="post" 
-                      style="display: inline;">
-                  <button type="submit" class="btn btn-success btn-sm">
+              </td>
+              <td>
+                <div th:if="${order.status == 'Pending'}" th:id="'action-btns-' + ${order.orderId}">
+                  <button type="button" class="btn btn-success btn-sm me-1" onclick="updateOrderStatusUI([[${order.orderId}]], 'Confirmed', this)">
                     <i class="fas fa-check"></i> Confirm
                   </button>
-                </form>
+                  <button type="button" class="btn btn-danger btn-sm" onclick="updateOrderStatusUI([[${order.orderId}]], 'Cancelled', this)">
+                    <i class="fas fa-times"></i> Cancel
+                  </button>
+                </div>
+                <div th:if="${order.status != 'Pending'}" th:id="'action-btns-' + ${order.orderId}">
+                  <span th:text="${order.status}"></span>
+                </div>
               </td>
             </tr>
             </tbody>
@@ -130,6 +142,23 @@
         var modal = new bootstrap.Modal(document.getElementById('orderDetailModal'));
         modal.show();
       });
+  }
+
+  function updateOrderStatusUI(orderId, status, btn) {
+    // Cập nhật UI: thay nút bằng text
+    const actionCell = document.getElementById('action-btns-' + orderId);
+    actionCell.innerHTML = `<span>${status}</span>`;
+    // Cập nhật badge status
+    const row = btn.closest('tr');
+    const statusCell = row.querySelector('td:nth-child(6) span');
+    if (status === 'Confirmed') {
+      statusCell.className = 'badge bg-success';
+    } else if (status === 'Cancelled') {
+      statusCell.className = 'badge bg-danger';
+    } else {
+      statusCell.className = 'badge bg-secondary';
+    }
+    statusCell.textContent = status;
   }
   </script>
 </div> 

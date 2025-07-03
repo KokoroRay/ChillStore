@@ -31,7 +31,7 @@
                     <div class="row g-3">
                         <div class="col-lg-2 col-md-4">
                             <label class="form-label">Chu kỳ</label>
-                            <select name="period" class="form-select">
+                            <select name="period" id="periodSelect" class="form-select">
                                 <option value="daily" th:selected="${period == 'daily'}">Hôm nay</option>
                                 <option value="weekly" th:selected="${period == 'weekly'}">Tuần này</option>
                                 <option value="monthly" th:selected="${period == 'monthly'}">Tháng này</option>
@@ -42,11 +42,13 @@
                         </div>
                         <div class="col-lg-2 col-md-4">
                             <label class="form-label">Từ ngày</label>
-                            <input type="date" name="startDate" class="form-control" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}">
+                            <input type="date" name="startDate" id="startDateInput" class="form-control"
+                                   th:value="${#dates.format(startDate, 'yyyy-MM-dd')}">
                         </div>
                         <div class="col-lg-2 col-md-4">
                             <label class="form-label">Đến ngày</label>
-                            <input type="date" name="endDate" class="form-control" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}">
+                            <input type="date" name="endDate" id="endDateInput" class="form-control"
+                                   th:value="${#dates.format(endDate, 'yyyy-MM-dd')}">
                         </div>
                         <div class="col-lg-2 col-md-4">
                             <label class="form-label">Danh mục</label>
@@ -274,14 +276,36 @@
     const revenueByRegionData = /*[[${revenueByRegion}]]*/ [];
     const revenueByCategoryData = /*[[${revenueByCategory}]]*/ [];
     const paretoData = /*[[${paretoData}]]*/ [];
+    const period = /*[[${period}]]*/ 'weekly';
+    const startDate = /*[[${#dates.format(startDate, 'yyyy-MM-dd')}]]*/ '';
+    const endDate = /*[[${#dates.format(endDate, 'yyyy-MM-dd')}]]*/ '';
 
     // Tạo biểu đồ xu hướng
     if (revenueTrendData.length > 0) {
         const trendCtx = document.getElementById('trendChart').getContext('2d');
+
+        // Định dạng nhãn dựa trên period
+        const formattedLabels = revenueTrendData.map(item => {
+            const value = item[0];
+            if (period === 'custom') {
+                // Định dạng ngày cho custom: DD/MM
+                const parts = value.split('-');
+                if (parts.length === 3) {
+                    return `${parts[2]}/${parts[1]}`;
+                }
+                return value;
+            } else if (value.includes('Q')) {
+                return value.replace('-Q', ' Quý ');
+            } else if (value.includes('-W')) {
+                return value.replace('-W', ' Tuần ');
+            }
+            return value;
+        });
+
         new Chart(trendCtx, {
             type: 'line',
             data: {
-                labels: revenueTrendData.map(item => item[0]),
+                labels: formattedLabels,
                 datasets: [{
                     label: 'Doanh thu',
                     data: revenueTrendData.map(item => item[1] / 1000000),
@@ -412,6 +436,48 @@
             const type = this.getAttribute('data-type');
             alert(`Đang mở báo cáo chi tiết cho: ${this.parentElement.querySelector('.card-title').textContent}`);
         });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const periodSelect = document.getElementById('periodSelect');
+        const startDateInput = document.getElementById('startDateInput');
+        const endDateInput = document.getElementById('endDateInput');
+
+        periodSelect.addEventListener('change', function() {
+            if (this.value !== 'custom') {
+                startDateInput.disabled = true;
+                endDateInput.disabled = true;
+                startDateInput.value = '';
+                endDateInput.value = '';
+            } else {
+                startDateInput.disabled = false;
+                endDateInput.disabled = false;
+
+                // Đặt giá trị mặc định cho custom
+                const today = new Date().toISOString().split('T')[0];
+                const lastMonth = new Date();
+                lastMonth.setMonth(lastMonth.getMonth() - 1);
+                const lastMonthFormatted = lastMonth.toISOString().split('T')[0];
+
+                if (!startDateInput.value) startDateInput.value = lastMonthFormatted;
+                if (!endDateInput.value) endDateInput.value = today;
+            }
+        });
+
+        // Khởi tạo trạng thái ban đầu
+        if (periodSelect.value !== 'custom') {
+            startDateInput.disabled = true;
+            endDateInput.disabled = true;
+        } else {
+            // Nếu là custom và chưa có giá trị, đặt mặc định
+            if (!startDateInput.value) {
+                const today = new Date().toISOString().split('T')[0];
+                const lastMonth = new Date();
+                lastMonth.setMonth(lastMonth.getMonth() - 1);
+                startDateInput.value = lastMonth.toISOString().split('T')[0];
+                endDateInput.value = today;
+            }
+        }
     });
 </script>
 </body>

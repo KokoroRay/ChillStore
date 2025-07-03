@@ -49,29 +49,24 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT DISTINCT SUBSTRING(c.address, 1, 20) FROM Order o JOIN o.customer c")
     List<String> findAllRegions();
 
-    //giá trị đơn hàng trung bình
-//    @Query("SELECT COALESCE(AVG(o.totalAmount), 0) FROM Order o where o.status IN ('Paid', 'Shipped', 'Delivered')")
-//    Double getAverageOrderValue();
 
     //doanh thu theo thời gian
     @Query(value = "WITH PeriodData AS ( " +
-            "   SELECT " +
-            "       CASE :period " +
-            "           WHEN 'daily' THEN FORMAT(o.order_date, 'yyyy-MM-dd') " +
-            "           WHEN 'weekly' THEN CONCAT(DATEPART(year, o.order_date), '-', FORMAT(DATEPART(week, o.order_date), '00')) " +
-            "           WHEN 'monthly' THEN FORMAT(o.order_date, 'yyyy-MM') " +
-            "           WHEN 'yearly' THEN FORMAT(YEAR(o.order_date), '0000') " +
-            "       END AS period, " +
-            "       o.total_amount " +
-            "   FROM orders o " +
-            "   WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
-            "       AND (:startDate IS NULL OR o.order_date >= :startDate) " +
-            "       AND (:endDate IS NULL OR o.order_date <= :endDate) " +
-            ") " +
+            "SELECT " +
+            "CASE :period " +
+            "WHEN 'daily' THEN FORMAT(o.order_date, 'yyyy-MM-dd') " +
+            "WHEN 'weekly' THEN CONCAT(DATEPART(year, o.order_date), '-W', FORMAT(DATEPART(week, o.order_date), '00')) " +
+            "WHEN 'monthly' THEN FORMAT(o.order_date, 'yyyy-MM') " +
+            "WHEN 'quarterly' THEN CONCAT(DATEPART(year, o.order_date), '-Q', DATEPART(quarter, o.order_date))" +
+            "WHEN 'yearly' THEN FORMAT(YEAR(o.order_date), '0000') " +
+            "ELSE FORMAT(o.order_date, 'yyyy-MM-dd')" +
+            "END AS period, o.total_amount " +
+            "FROM orders o " +
+            "WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
+            "AND (:startDate IS NULL OR o.order_date >= :startDate) " +
+            "AND (:endDate IS NULL OR o.order_date <= :endDate)) " +
             "SELECT period, SUM(total_amount) AS revenue " +
-            "FROM PeriodData " +
-            "GROUP BY period " +
-            "ORDER BY period", nativeQuery = true)
+            "FROM PeriodData GROUP BY period ORDER BY period ", nativeQuery = true)
     List<Object[]> getRevenueTrend(@Param("period") String period,
                                    @Param("startDate") Date startDate,
                                    @Param("endDate") Date endDate);
@@ -90,19 +85,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Object[]> getRevenueByCategory(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate);
-
-
-    //doanh thu theo khách hàng
-//    @Query(value = "SELECT c.name, SUM(o.total_amount) as revenue " +
-//            "FROM orders o JOIN customers c ON o.customer_id = c.customer_id " +
-//            "WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
-//            "AND (:startDate IS NULL OR o.order_date >= :startDate) " +
-//            "AND (:endDate IS NULL OR o.order_date <= :endDate) " +
-//            "GROUP BY c.name ORDER BY revenue DESC", nativeQuery = true)
-//    List<Object[]> getRevenueByCustomer(@Param("startDate") Date startDate,
-//                                        @Param("endDate") Date endDate);
-
-    //doanh thu theo khu vực
 
 
     //tỉ lệ hủy đơn
@@ -162,5 +144,4 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             @Param("endDate") Date endDate
     );
 
-
- }
+}

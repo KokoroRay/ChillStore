@@ -1,14 +1,9 @@
 package com.esms.controller;
 
 import com.esms.model.entity.Category;
-import com.esms.model.entity.Order;
 import com.esms.repository.CategoryRepository;
 import com.esms.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,14 +30,26 @@ public class RevenueController {
     @GetMapping
     public String getRevenue(
             @RequestParam(value = "period", defaultValue = "weekly") String period,
-            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+            @RequestParam(value = "startDate", required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startLocalDate,
+            @RequestParam(value = "endDate", required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endLocalDate,
             @RequestParam(value = "category", required = false) Integer category,
             @RequestParam(value = "region", required = false) String region,
             @RequestParam(value = "status", required = false) String status,
             Model model) {
 
-        // Xử lý ngày mặc định
+        // Chuyển đổi LocalDate sang Date (nếu cần)
+        Date startDate = null;
+        Date endDate = null;
+        if (startLocalDate != null) {
+            startDate = Date.from(startLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+        if (endLocalDate != null) {
+            endDate = Date.from(endLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+
+        // Set default dates if not provided
         if (startDate == null) {
             startDate = Date.from(LocalDate.now().minusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
         }
@@ -50,7 +57,7 @@ public class RevenueController {
             endDate = new Date();
         }
 
-        // Lấy dữ liệu thống kê
+        // Get revenue data
         BigDecimal grossRevenue = orderRepository.getGrossRevenue(startDate, endDate);
         BigDecimal netRevenue = orderRepository.getNetRevenueBetween(startDate, endDate);
         Long orderCount = orderRepository.getOrderCountBetween(startDate, endDate);
@@ -59,13 +66,13 @@ public class RevenueController {
         Double grossMargin = netRevenue.doubleValue() > 0 ?
                 (netRevenue.doubleValue() - getCostOfGoodsSold(startDate, endDate)) / netRevenue.doubleValue() : 0.0;
 
-        // Dữ liệu biểu đồ
+        // Get chart data
         List<Object[]> revenueTrend = orderRepository.getRevenueTrend(period, startDate, endDate);
         List<Object[]> revenueByCategory = orderRepository.getRevenueByCategory(startDate, endDate);
         List<Object[]> revenueByRegion = orderRepository.getRevenueByRegion(startDate, endDate);
         List<Object[]> paretoData = orderRepository.getParetoDate(startDate, endDate);
 
-        // Đổ dữ liệu vào model
+        // Add data to model
         model.addAttribute("grossRevenue", grossRevenue);
         model.addAttribute("netRevenue", netRevenue);
         model.addAttribute("orderCount", orderCount);
@@ -79,7 +86,7 @@ public class RevenueController {
         model.addAttribute("paretoData", paretoData);
 
         model.addAttribute("categories", categoryRepository.findAll());
-        model.addAttribute("regions", Arrays.asList("Miền Bắc", "Miền Trung", "Miền Nam"));
+        model.addAttribute("regions", orderRepository.findAllRegions());
         model.addAttribute("statuses", Arrays.asList("Pending", "Paid", "Shipped", "Delivered", "Cancelled"));
 
         model.addAttribute("period", period);
@@ -89,11 +96,14 @@ public class RevenueController {
         model.addAttribute("region", region);
         model.addAttribute("status", status);
 
+        // Set active menu for sidebar
+        model.addAttribute("activeMenu", "revenue");
+
         return "admin/revenue/manage-revenue";
     }
 
     private double getCostOfGoodsSold(Date startDate, Date endDate) {
-        // Giả sử giá vốn hàng bán = 60% doanh thu thuần
+        // Simplified calculation (60% of net revenue)
         BigDecimal netRevenue = orderRepository.getNetRevenueBetween(startDate, endDate);
         return netRevenue != null ? netRevenue.doubleValue() * 0.6 : 0;
     }

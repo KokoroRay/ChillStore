@@ -6,278 +6,261 @@
     <title>ESMS - Quản Lý Doanh Thu</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="/css/revenue.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/sidebar.css">
-    <link rel="stylesheet" href="/css/styleproduct.css">
+    <link rel="stylesheet" href="/css/revenue.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <!-- Header -->
-<header class="dashboard-header">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h1><i class="fas fa-chart-line me-3"></i>Quản Lý Doanh Thu</h1>
-                <p class="mb-0">Phân tích hiệu suất kinh doanh toàn diện</p>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <div class="real-time-badge">
-                    <i class="fas fa-sync-alt me-2"></i>Dữ liệu thời gian thực
-                </div>
-                <div class="mt-3 export-btn-group">
-                    <button class="btn btn-light">
-                        <i class="fas fa-bell me-2"></i> Cài đặt cảnh báo
-                    </button>
-                    <div class="btn-group">
-                        <button class="btn btn-success">
-                            <i class="fas fa-file-excel me-2"></i> Xuất Excel
-                        </button>
-                        <button class="btn btn-danger">
-                            <i class="fas fa-file-pdf me-2"></i> Xuất PDF
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+<div th:replace="fragments/header :: headerContent"></div>
 
-<div class="container">
-
-    <!-- Filters -->
-    <form th:action="@{/admin/revenue}" method="get" class="filter-section">
-        <div class="row g-3">
-            <div class="col-lg-2 col-md-4">
-                <label class="form-label">Chu kỳ</label>
-                <select name="period" class="form-select">
-                    <option th:selected="${period == 'daily'}">Hôm nay</option>
-                    <option th:selected="${period == 'weekly'}">Tuần này</option>
-                    <option th:selected="${period == 'monthly'}">Tháng này</option>
-                    <option th:selected="${period == 'quarterly'}">Quý này</option>
-                    <option th:selected="${period == 'yearly'}">Năm nay</option>
-                    <option th:selected="${period == 'custom'}">Tùy chỉnh</option>
-                </select>
-            </div>
-            <div class="col-lg-2 col-md-4">
-                <label class="form-label">Từ ngày</label>
-                <input type="date" name="startDate" class="form-control" th:value="${startDate}">
-            </div>
-            <div class="col-lg-2 col-md-4">
-                <label class="form-label">Đến ngày</label>
-                <input type="date" name="endDate" class="form-control" th:value="${endDate}">
-            </div>
-            <div class="col-lg-2 col-md-4">
-                <label class="form-label">Danh mục</label>
-                <select name="category" class="form-select">
-                    <option th:selected="${category == null}" value="">Tất cả</option>
-                    <option th:each="cat : ${categories}"
-                            th:value="${cat.id}"
-                            th:text="${cat.name}"
-                            th:selected="${category == cat.id}"></option>
-                </select>
-            </div>
-            <div class="col-lg-2 col-md-4">
-                <label class="form-label">Khu vực</label>
-                <select name="region" class="form-select">
-                    <option th:selected="${region == null}">Tất cả</option>
-                    <option th:each="reg : ${regions}"
-                            th:value="${reg}"
-                            th:text="${reg}"
-                            th:selected="${region == reg}"></option>
-                </select>
-            </div>
-            <div class="col-lg-2 col-md-4">
-                <label class="form-label">Trạng thái</label>
-                <select name="status" class="form-select">
-                    <option th:selected="${status == null}">Tất cả</option>
-                    <option th:each="s : ${statuses}"
-                            th:value="${s}"
-                            th:text="${s}"
-                            th:selected="${status == s}"></option>
-                </select>
-            </div>
-        </div>
-
-        <div class="comparison-period mt-3">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="comparePeriod" name="comparePeriod">
-                <label class="form-check-label" for="comparePeriod">So sánh với kỳ trước</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="compareYoY" name="compareYoY">
-                <label class="form-check-label" for="compareYoY">So sánh cùng kỳ năm trước (YoY)</label>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">Áp dụng</button>
-    </form>
-
-    <!-- KPIs -->
-    <div class="row mb-4">
-        <!-- Tổng Doanh Thu -->
-        <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-            <div class="card text-white bg-primary kpi-card">
-                <div class="card-body">
-                    <i class="fas fa-sack-dollar kpi-icon"></i>
-                    <h5 class="card-title">Tổng Doanh Thu</h5>
-                    <h3 class="stat-value" th:text="${grossRevenue != null ? #numbers.formatDecimal(grossRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : '0 tỷ'}">0 tỷ</h3>
-                    <p class="stat-label">
-                        <span class="trend-up trend-badge">+12.5%</span>
-                    </p>
-                    <button class="drilldown-btn" data-type="gross">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Doanh Thu Thuần -->
-        <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-            <div class="card text-white bg-success kpi-card">
-                <div class="card-body">
-                    <i class="fas fa-wallet kpi-icon"></i>
-                    <h5 class="card-title">Doanh Thu Thuần</h5>
-                    <h3 class="stat-value" th:text="${netRevenue != null ? #numbers.formatDecimal(netRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : '0 tỷ'}">0 tỷ</h3>
-                    <p class="stat-label">
-                        <span class="trend-up trend-badge">+10.3%</span>
-                    </p>
-                    <button class="drilldown-btn" data-type="net">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Số Đơn Hàng -->
-        <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-            <div class="card text-white bg-info kpi-card">
-                <div class="card-body">
-                    <i class="fas fa-shopping-cart kpi-icon"></i>
-                    <h5 class="card-title">Số Đơn Hàng</h5>
-                    <h3 class="stat-value" th:text="${orderCount != null ? #numbers.formatInteger(orderCount, 0, 'COMMA') : '0'}">0</h3>
-                    <p class="stat-label">
-                        <span class="trend-up trend-badge">+8.7%</span>
-                    </p>
-                    <button class="drilldown-btn" data-type="orders">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Giá Trị Đơn TB -->
-        <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-            <div class="card text-white bg-warning kpi-card">
-                <div class="card-body">
-                    <i class="fas fa-tag kpi-icon"></i>
-                    <h5 class="card-title">Giá Trị Đơn TB</h5>
-                    <h3 class="stat-value" th:text="${aov != null ? #numbers.formatDecimal(aov/1000, 1, 0, 'COMMA') + 'k' : '0k'}">0k</h3>
-                    <p class="stat-label">
-                        <span class="trend-up trend-badge">+1.5%</span>
-                    </p>
-                    <button class="drilldown-btn" data-type="aov">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tỷ Lệ Hủy Đơn -->
-        <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-            <div class="card text-white bg-danger kpi-card">
-                <div class="card-body">
-                    <i class="fas fa-ban kpi-icon"></i>
-                    <h5 class="card-title">Tỷ Lệ Hủy Đơn</h5>
-                    <h3 class="stat-value" th:text="${cancellationRate != null ? #numbers.formatPercent(cancellationRate, 1, 1) : '0%'}">0%</h3>
-                    <p class="stat-label">
-                        <span class="trend-down trend-badge">+0.8%</span>
-                    </p>
-                    <div class="alert-badge">!</div>
-                    <button class="drilldown-btn" data-type="cancellation">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Biên Lợi Nhuận -->
-        <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-            <div class="card text-white bg-secondary kpi-card">
-                <div class="card-body">
-                    <i class="fas fa-percent kpi-icon"></i>
-                    <h5 class="card-title">Biên Lợi Nhuận</h5>
-                    <h3 class="stat-value" th:text="${grossMargin != null ? #numbers.formatPercent(grossMargin, 1, 1) : '0%'}">0%</h3>
-                    <p class="stat-label">
-                        <span class="trend-up trend-badge">+1.2%</span>
-                    </p>
-                    <button class="drilldown-btn" data-type="margin">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Charts and Visualization -->
+<div class="container-fluid">
     <div class="row">
-        <!-- Revenue Trend -->
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-body">
-                    <div class="section-title">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Xu hướng doanh thu theo thời gian</span>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="trendChart"></canvas>
-                    </div>
-                </div>
-            </div>
+        <!-- Sidebar -->
+        <div class="col-md-2 p-0">
+            <div th:replace="fragments/sidebar :: sidebar"></div>
         </div>
 
-        <!-- Revenue by Region -->
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    <div class="section-title">
-                        <i class="fas fa-map-marked-alt"></i>
-                        <span>Doanh thu theo khu vực</span>
+        <!-- Main Content -->
+        <div class="col-md-10">
+            <div class="container">
+                <!-- Filters -->
+                <form th:action="@{/admin/revenue}" method="get" class="filter-section mt-4">
+                    <div class="row g-3">
+                        <div class="col-lg-2 col-md-4">
+                            <label class="form-label">Chu kỳ</label>
+                            <select name="period" class="form-select">
+                                <option value="daily" th:selected="${period == 'daily'}">Hôm nay</option>
+                                <option value="weekly" th:selected="${period == 'weekly'}">Tuần này</option>
+                                <option value="monthly" th:selected="${period == 'monthly'}">Tháng này</option>
+                                <option value="quarterly" th:selected="${period == 'quarterly'}">Quý này</option>
+                                <option value="yearly" th:selected="${period == 'yearly'}">Năm nay</option>
+                                <option value="custom" th:selected="${period == 'custom'}">Tùy chỉnh</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-4">
+                            <label class="form-label">Từ ngày</label>
+                            <input type="date" name="startDate" class="form-control" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}">
+                        </div>
+                        <div class="col-lg-2 col-md-4">
+                            <label class="form-label">Đến ngày</label>
+                            <input type="date" name="endDate" class="form-control" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}">
+                        </div>
+                        <div class="col-lg-2 col-md-4">
+                            <label class="form-label">Danh mục</label>
+                            <select name="category" class="form-select">
+                                <option value="" th:selected="${category == null}">Tất cả</option>
+                                <option th:each="cat : ${categories}"
+                                        th:value="${cat.id}"
+                                        th:text="${cat.name}"
+                                        th:selected="${category == cat.id}"></option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-4">
+                            <label class="form-label">Khu vực</label>
+                            <select name="region" class="form-select">
+                                <option value="" th:selected="${region == null}">Tất cả</option>
+                                <option th:each="reg : ${regions}"
+                                        th:value="${reg}"
+                                        th:text="${reg}"
+                                        th:selected="${region == reg}"></option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-4">
+                            <label class="form-label">Trạng thái</label>
+                            <select name="status" class="form-select">
+                                <option value="" th:selected="${status == null}">Tất cả</option>
+                                <option th:each="s : ${statuses}"
+                                        th:value="${s}"
+                                        th:text="${s}"
+                                        th:selected="${status == s}"></option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="chart-container">
-                        <canvas id="regionChart"></canvas>
+
+                    <div class="comparison-period mt-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="comparePeriod" name="comparePeriod">
+                            <label class="form-check-label" for="comparePeriod">So sánh với kỳ trước</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="compareYoY" name="compareYoY">
+                            <label class="form-check-label" for="compareYoY">So sánh cùng kỳ năm trước (YoY)</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Áp dụng</button>
+                </form>
+
+                <!-- KPIs -->
+                <div class="row mb-4">
+                    <!-- Tổng Doanh Thu -->
+                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                        <div class="card text-white bg-primary kpi-card">
+                            <div class="card-body">
+                                <i class="fas fa-sack-dollar kpi-icon"></i>
+                                <h5 class="card-title">Tổng Doanh Thu</h5>
+                                <h3 class="stat-value" th:text="${grossRevenue != null ? #numbers.formatDecimal(grossRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : '0 tỷ'}">0 tỷ</h3>
+                                <p class="stat-label">
+                                    <span class="trend-up trend-badge">+12.5%</span>
+                                </p>
+                                <button class="drilldown-btn" data-type="gross">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Doanh Thu Thuần -->
+                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                        <div class="card text-white bg-success kpi-card">
+                            <div class="card-body">
+                                <i class="fas fa-wallet kpi-icon"></i>
+                                <h5 class="card-title">Doanh Thu Thuần</h5>
+                                <h3 class="stat-value" th:text="${netRevenue != null ? #numbers.formatDecimal(netRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : '0 tỷ'}">0 tỷ</h3>
+                                <p class="stat-label">
+                                    <span class="trend-up trend-badge">+10.3%</span>
+                                </p>
+                                <button class="drilldown-btn" data-type="net">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Số Đơn Hàng -->
+                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                        <div class="card text-white bg-info kpi-card">
+                            <div class="card-body">
+                                <i class="fas fa-shopping-cart kpi-icon"></i>
+                                <h5 class="card-title">Số Đơn Hàng</h5>
+                                <h3 class="stat-value" th:text="${orderCount != null ? #numbers.formatInteger(orderCount, 0, 'COMMA') : '0'}">0</h3>
+                                <p class="stat-label">
+                                    <span class="trend-up trend-badge">+8.7%</span>
+                                </p>
+                                <button class="drilldown-btn" data-type="orders">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Giá Trị Đơn TB -->
+                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                        <div class="card text-white bg-warning kpi-card">
+                            <div class="card-body">
+                                <i class="fas fa-tag kpi-icon"></i>
+                                <h5 class="card-title">Giá Trị Đơn TB</h5>
+                                <h3 class="stat-value" th:text="${aov != null ? #numbers.formatDecimal(aov/1000, 1, 0, 'COMMA') + 'k' : '0k'}">0k</h3>
+                                <p class="stat-label">
+                                    <span class="trend-up trend-badge">+1.5%</span>
+                                </p>
+                                <button class="drilldown-btn" data-type="aov">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tỷ Lệ Hủy Đơn -->
+                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                        <div class="card text-white bg-danger kpi-card">
+                            <div class="card-body">
+                                <i class="fas fa-ban kpi-icon"></i>
+                                <h5 class="card-title">Tỷ Lệ Hủy Đơn</h5>
+                                <h3 class="stat-value" th:text="${cancellationRate != null ? #numbers.formatPercent(cancellationRate, 1, 1) : '0%'}">0%</h3>
+                                <p class="stat-label">
+                                    <span class="trend-down trend-badge">+0.8%</span>
+                                </p>
+                                <div class="alert-badge">!</div>
+                                <button class="drilldown-btn" data-type="cancellation">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Biên Lợi Nhuận -->
+                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                        <div class="card text-white bg-secondary kpi-card">
+                            <div class="card-body">
+                                <i class="fas fa-percent kpi-icon"></i>
+                                <h5 class="card-title">Biên Lợi Nhuận</h5>
+                                <h3 class="stat-value" th:text="${grossMargin != null ? #numbers.formatPercent(grossMargin, 1, 1) : '0%'}">0%</h3>
+                                <p class="stat-label">
+                                    <span class="trend-up trend-badge">+1.2%</span>
+                                </p>
+                                <button class="drilldown-btn" data-type="margin">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="row mt-4">
-        <!-- Revenue by Category -->
-        <div class="col-lg-5">
-            <div class="card">
-                <div class="card-body">
-                    <div class="section-title">
-                        <i class="fas fa-chart-pie"></i>
-                        <span>Doanh thu theo danh mục</span>
+                <!-- Charts and Visualization -->
+                <div class="row">
+                    <!-- Revenue Trend -->
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="section-title">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Xu hướng doanh thu theo thời gian</span>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="trendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="chart-container">
-                        <canvas id="categoryChart"></canvas>
+
+                    <!-- Revenue by Region -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="section-title">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                    <span>Doanh thu theo khu vực</span>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="regionChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Pareto Analysis -->
-        <div class="col-lg-7">
-            <div class="card">
-                <div class="card-body">
-                    <div class="section-title">
-                        <i class="fas fa-star"></i>
-                        <span>Phân tích Pareto (80/20)</span>
+                <div class="row mt-4">
+                    <!-- Revenue by Category -->
+                    <div class="col-lg-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="section-title">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <span>Doanh thu theo danh mục</span>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="categoryChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="chart-container">
-                        <canvas id="paretoChart"></canvas>
+
+                    <!-- Pareto Analysis -->
+                    <div class="col-lg-7">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="section-title">
+                                    <i class="fas fa-star"></i>
+                                    <span>Phân tích Pareto (80/20)</span>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="paretoChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -286,134 +269,142 @@
 </div>
 
 <script th:inline="javascript">
-    // Khởi tạo biểu đồ với dữ liệu từ backend
+    // Biểu đồ xu hướng doanh thu
     const revenueTrendData = /*[[${revenueTrend}]]*/ [];
     const revenueByRegionData = /*[[${revenueByRegion}]]*/ [];
     const revenueByCategoryData = /*[[${revenueByCategory}]]*/ [];
     const paretoData = /*[[${paretoData}]]*/ [];
 
-    // Biểu đồ xu hướng doanh thu
-    const trendCtx = document.getElementById('trendChart').getContext('2d');
-    new Chart(trendCtx, {
-        type: 'line',
-        data: {
-            labels: revenueTrendData.map(item => item[0]),
-            datasets: [{
-                label: 'Doanh thu',
-                data: revenueTrendData.map(item => item[1] / 1000000), // Triệu VNĐ
-                borderColor: '#0d6efd',
-                backgroundColor: 'rgba(13,110,253,0.1)',
-                fill: true,
-                tension: 0.3
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return 'Doanh thu: ' + context.parsed.y.toLocaleString('vi-VN') + ' triệu';
+    // Tạo biểu đồ xu hướng
+    if (revenueTrendData.length > 0) {
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: revenueTrendData.map(item => item[0]),
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: revenueTrendData.map(item => item[1] / 1000000),
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13,110,253,0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Doanh thu: ' + context.parsed.y.toLocaleString('vi-VN') + ' triệu';
+                            }
                         }
                     }
-                }
-            },
-            scales: {
-                y: {
-                    ticks: {
-                        callback: function(value) {
-                            return value + ' triệu';
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' triệu';
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    }
 
     // Biểu đồ doanh thu theo khu vực
-    const regionCtx = document.getElementById('regionChart').getContext('2d');
-    new Chart(regionCtx, {
-        type: 'doughnut',
-        data: {
-            labels: revenueByRegionData.map(item => item[0]),
-            datasets: [{
-                data: revenueByRegionData.map(item => item[1] / 1000000), // Triệu VNĐ
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return context.label + ': ' + context.parsed.toLocaleString('vi-VN') + ' triệu';
+    if (revenueByRegionData.length > 0) {
+        const regionCtx = document.getElementById('regionChart').getContext('2d');
+        new Chart(regionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: revenueByRegionData.map(item => item[0]),
+                datasets: [{
+                    data: revenueByRegionData.map(item => item[1] / 1000000),
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed.toLocaleString('vi-VN') + ' triệu';
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    }
 
     // Biểu đồ doanh thu theo danh mục
-    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    new Chart(categoryCtx, {
-        type: 'bar',
-        data: {
-            labels: revenueByCategoryData.map(item => item[0]),
-            datasets: [{
-                label: 'Doanh thu (triệu)',
-                data: revenueByCategoryData.map(item => item[1] / 1000000), // Triệu VNĐ
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } }
-        }
-    });
+    if (revenueByCategoryData.length > 0) {
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'bar',
+            data: {
+                labels: revenueByCategoryData.map(item => item[0]),
+                datasets: [{
+                    label: 'Doanh thu (triệu)',
+                    data: revenueByCategoryData.map(item => item[1] / 1000000),
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
 
     // Biểu đồ Pareto
-    const paretoCtx = document.getElementById('paretoChart').getContext('2d');
-    new Chart(paretoCtx, {
-        type: 'bar',
-        data: {
-            labels: paretoData.map(item => item[0]),
-            datasets: [{
-                label: 'Doanh thu',
-                data: paretoData.map(item => item[1] / 1000000), // Triệu VNĐ
-                backgroundColor: '#4e73df'
-            }, {
-                label: 'Tỷ lệ tích lũy',
-                data: paretoData.map(item => item[2]),
-                type: 'line',
-                borderColor: '#e74a3b',
-                backgroundColor: 'transparent',
-                yAxisID: 'y1'
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    title: { display: true, text: 'Doanh thu (triệu)' }
-                },
-                y1: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    title: { display: true, text: 'Tỷ lệ (%)' },
-                    min: 0,
-                    max: 100,
-                    grid: { drawOnChartArea: false }
+    if (paretoData.length > 0) {
+        const paretoCtx = document.getElementById('paretoChart').getContext('2d');
+        new Chart(paretoCtx, {
+            type: 'bar',
+            data: {
+                labels: paretoData.map(item => item[0]),
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: paretoData.map(item => item[1] / 1000000),
+                    backgroundColor: '#4e73df'
+                }, {
+                    label: 'Tỷ lệ tích lũy',
+                    data: paretoData.map(item => item[2]),
+                    type: 'line',
+                    borderColor: '#e74a3b',
+                    backgroundColor: 'transparent',
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Doanh thu (triệu)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Tỷ lệ (%)' },
+                        min: 0,
+                        max: 100,
+                        grid: { drawOnChartArea: false }
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 
     // Drilldown functionality
     document.querySelectorAll('.drilldown-btn').forEach(button => {

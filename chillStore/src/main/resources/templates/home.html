@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="">
 <head>
   <meta charset="UTF-8" />
   <title>Trang Chủ</title>
   <link rel="stylesheet" th:href="@{/static/style.css}" />
   <link rel="stylesheet" th:href="@{/css/navigationBar.css}">
   <link rel="stylesheet" th:href="@{/css/home.css}">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
 </head>
@@ -13,34 +17,17 @@
 
 
 <div th:insert="~{fragments/navigationBar :: navBar}"></div><br>
-
-
-<a class="container">
-<div class="video-background-container">
-  <video autoplay muted loop playsinline class="video-background">
-    <source th:src="@{/videos/video.mp4}" type="video/mp4" />
-    Trình duyệt của bạn không hỗ trợ video.
-  </video>
-
-  <div class="video-overlay">
-    <h1>Welcome</h1>
-    <p>ESMS – Plug In. Power Up. Live Smart.</p>
-    <a href="#" class="btn-read">HOME</a>
+<div class="guest-bar">
+  <img src="/images/logo.png">
+  <div sec:authorize="isAnonymous()" class="guest-info">
+    <p>Bạn đang ở chế độ khách.</p>
+    <p>Vui lòng đăng nhập hoặc đăng ký để trải nghiệm đầy đủ tính năng.</p>
+    <a th:href="@{/auth/login}">Đăng nhập</a> |
+    <a th:href="@{/auth/register}">Đăng ký</a>
   </div>
-</div>
-  </a>
-</div><br>
-
-<div class="image-row">
-  <img src="/images/maygiac.png">
-  <img src="/images/robot.png">
-  <img src="/images/tulanh3.png">
-</div>
 
 
-
-
-<div sec:authorize="isAuthenticated()">
+<div sec:authorize="isAuthenticated()" >
   <p>Xin chào, <span th:text="${loggedInUserName}"></span>!</p>
   <p>Bạn đã đăng nhập thành công.</p>
   <p>Email: <span th:text="${loggedInUserEmail}"></span></p>
@@ -65,16 +52,40 @@
     <p style="margin-top: 15px;">Bạn là Customer. Khám phá cửa hàng!</p>
   </div>
 
+</div></div>
+
+<div id="autoCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-pause="hover">
+  <div class="carousel-inner">
+    <div class="carousel-item active" data-bs-interval="2000">
+      <img src="/images/SA.png" class="d-block w-100 rounded" alt="Slide 1">
+    </div>
+    <div class="carousel-item" data-bs-interval="2000">
+      <img src="/images/SA1.png" class="d-block w-100 rounded" alt="Slide 2">
+    </div>
+    <div class="carousel-item" data-bs-interval="2000">
+      <img src="/images/SA2.png" class="d-block w-100 rounded" alt="Slide 3">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#autoCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#autoCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+
 </div>
-<div class="guest-bar">
-  <img src="/images/logo.png">
-<div sec:authorize="isAnonymous()" class="guest-info">
-  <p>Bạn đang ở chế độ khách.</p>
-  <p>Vui lòng đăng nhập hoặc đăng ký để trải nghiệm đầy đủ tính năng.</p>
-  <a th:href="@{/auth/login}">Đăng nhập</a> |
-  <a th:href="@{/auth/register}">Đăng ký</a>
+</div><br>
+
+<div class="image-row">
+  <img src="/images/maygiac.png">
+  <img src="/images/robot.png">
+  <img src="/images/tulanh3.png">
 </div>
-</div>
+
+
+
+
+
   <!--Category-->
   <div class="category-section">
     <div class="category-toggle" onclick="toggleCategories()">
@@ -130,6 +141,20 @@
 
 </div>
 </div>
+<a class="container">
+  <div class="video-background-container">
+    <video autoplay muted loop playsinline class="video-background">
+      <source th:src="@{/videos/video.mp4}" type="video/mp4" />
+      Trình duyệt của bạn không hỗ trợ video.
+    </video>
+
+    <div class="video-overlay">
+      <h1>Welcome</h1>
+      <p>ESMS – Plug In. Power Up. Live Smart.</p>
+      <a href="#" class="btn-read">SIGN IN</a>
+    </div>
+  </div>
+</a>
 
 <script>
   function toggleCategories() {

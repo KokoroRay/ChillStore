@@ -248,6 +248,8 @@ public class CustomerServiceImpl implements CustomerService {
         existingCustomer.setPhone(customerDto.getPhone());
         existingCustomer.setAddress(customerDto.getAddress());
         existingCustomer.setBirth_date(customerDto.getBirthDate());
+        existingCustomer.setGender(customerDto.getGender());
+        existingCustomer.setAvatar_url(customerDto.getAvatarUrl());
         existingCustomer.setUpdated_at(LocalDateTime.now());
 
         customerRepository.save(existingCustomer);
@@ -323,5 +325,25 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.save(customer);
     }
 
+    @Override
+    public Customer getCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email)
+            .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng với email: " + email));
+    }
+
+    @Override
+    public void changePassword(String email, ChangePasswordDto dto) {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng với email: " + email));
+        if (!passwordEncoder.matches(dto.getOldPassword(), customer.getPassword())) {
+            throw new IllegalArgumentException("Mật khẩu cũ không đúng.");
+        }
+        if (!dto.getNewPassword().equals(dto.getConfirmNewPassword())) {
+            throw new IllegalArgumentException("Mật khẩu mới và xác nhận không khớp.");
+        }
+        customer.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        customer.setUpdated_at(LocalDateTime.now());
+        customerRepository.save(customer);
+    }
 
 }

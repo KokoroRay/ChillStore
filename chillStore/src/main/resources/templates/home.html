@@ -25,7 +25,35 @@
     <a th:href="@{/auth/login}">Đăng nhập</a> |
     <a th:href="@{/auth/register}">Đăng ký</a>
   </div>
-</div>
+
+
+<div sec:authorize="isAuthenticated()" >
+  <p>Xin chào, <span th:text="${loggedInUserName}"></span>!</p>
+  <p>Bạn đã đăng nhập thành công.</p>
+  <p>Email: <span th:text="${loggedInUserEmail}"></span></p>
+  <p th:if="${loggedInProvider != null and loggedInProvider != ''}">Phương thức đăng nhập: <span th:text="${loggedInProvider}"></span></p>
+  <p>Vai trò: <span th:text="${loggedInUserRole}"></span></p>
+
+  <a th:href="@{/profile}">Xem hồ sơ của bạn</a> |
+  <form th:action="@{/auth/logout}" method="post" style="display:inline;">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button type="submit">Đăng xuất</button>
+  </form>
+
+  <div sec:authorize="hasRole('ADMIN')">
+    <p style="margin-top: 15px;">Bạn là Admin. <a th:href="@{/admin/category}">Đi tới trang quản trị Category</a></p>
+  </div>
+
+  <div sec:authorize="hasRole('STAFF')">
+    <p style="margin-top: 15px;">Bạn là Staff. <a th:href="@{/staff/category}">Đi tới trang nhân viên Category</a></p>
+  </div>
+
+  <div sec:authorize="hasRole('CUSTOMER')">
+    <p style="margin-top: 15px;">Bạn là Customer. Khám phá cửa hàng!</p>
+  </div>
+
+</div></div>
+
 <div id="autoCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-pause="hover">
   <div class="carousel-inner">
     <div class="carousel-item active" data-bs-interval="2000">
@@ -60,32 +88,6 @@
 
 
 
-<div sec:authorize="isAuthenticated()">
-  <p>Xin chào, <span th:text="${loggedInUserName}"></span>!</p>
-  <p>Bạn đã đăng nhập thành công.</p>
-  <p>Email: <span th:text="${loggedInUserEmail}"></span></p>
-  <p th:if="${loggedInProvider != null and loggedInProvider != ''}">Phương thức đăng nhập: <span th:text="${loggedInProvider}"></span></p>
-  <p>Vai trò: <span th:text="${loggedInUserRole}"></span></p>
-
-  <a th:href="@{/profile}">Xem hồ sơ của bạn</a> |
-  <form th:action="@{/auth/logout}" method="post" style="display:inline;">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-    <button type="submit">Đăng xuất</button>
-  </form>
-
-  <div sec:authorize="hasRole('ADMIN')">
-    <p style="margin-top: 15px;">Bạn là Admin. <a th:href="@{/admin/category}">Đi tới trang quản trị Category</a></p>
-  </div>
-
-  <div sec:authorize="hasRole('STAFF')">
-    <p style="margin-top: 15px;">Bạn là Staff. <a th:href="@{/staff/category}">Đi tới trang nhân viên Category</a></p>
-  </div>
-
-  <div sec:authorize="hasRole('CUSTOMER')">
-    <p style="margin-top: 15px;">Bạn là Customer. Khám phá cửa hàng!</p>
-  </div>
-
-</div>
 
   <!--Category-->
   <div class="category-section">

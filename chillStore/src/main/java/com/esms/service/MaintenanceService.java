@@ -1,7 +1,7 @@
 package com.esms.service;
 
-import com.esms.model.dto.MaintenanceDto;
 import java.util.List;
+import com.esms.model.dto.MaintenanceDto;
 
 public interface MaintenanceService {
     List<MaintenanceDto> getAllMaintenances();

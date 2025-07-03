@@ -1,14 +1,14 @@
 package com.esms.controller;
 
-import com.esms.model.dto.MaintenanceDto;
-import com.esms.model.entity.Maintenance;
 import com.esms.model.entity.Order;
 import com.esms.model.entity.Product;
 import com.esms.model.entity.Customer;
+import com.esms.model.entity.Staff;
 import com.esms.service.MaintenanceService;
 import com.esms.repository.OrderRepository;
 import com.esms.repository.ProductRepository;
 import com.esms.repository.CustomerRepository;
+import com.esms.repository.StaffRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.esms.model.dto.MaintenanceDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,6 +43,9 @@ public class MaintenanceController {
     
     @Autowired
     private CustomerRepository customerRepository;
+    
+    @Autowired
+    private StaffRepository staffRepository;
 
     @GetMapping
     public String viewMaintenanceList(Model model) {
@@ -93,10 +97,12 @@ public class MaintenanceController {
             List<Order> orders = orderRepository.findAll();
             List<Product> products = productRepository.findAll();
             List<Customer> customers = customerRepository.findAll();
+            List<Staff> staffList = staffRepository.findAll();
             
             model.addAttribute("orders", orders);
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
+            model.addAttribute("staffList", staffList);
             
             return "admin/maintenance/editmaintenance";
         } catch (Exception e) {
@@ -121,10 +127,12 @@ public class MaintenanceController {
             List<Order> orders = orderRepository.findAll();
             List<Product> products = productRepository.findAll();
             List<Customer> customers = customerRepository.findAll();
+            List<Staff> staffList = staffRepository.findAll();
             
             model.addAttribute("orders", orders);
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
+            model.addAttribute("staffList", staffList);
             
             return "admin/maintenance/editmaintenance";
         }
@@ -142,10 +150,12 @@ public class MaintenanceController {
             List<Order> orders = orderRepository.findAll();
             List<Product> products = productRepository.findAll();
             List<Customer> customers = customerRepository.findAll();
+            List<Staff> staffList = staffRepository.findAll();
             
             model.addAttribute("orders", orders);
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
+            model.addAttribute("staffList", staffList);
             
             return "admin/maintenance/editmaintenance";
         }
@@ -161,10 +171,12 @@ public class MaintenanceController {
         List<Order> orders = orderRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Customer> customers = customerRepository.findAll();
+        List<Staff> staffList = staffRepository.findAll();
         
         model.addAttribute("orders", orders);
         model.addAttribute("products", products);
         model.addAttribute("customers", customers);
+        model.addAttribute("staffList", staffList);
         
         return "admin/maintenance/addmaintenance";
     }
@@ -183,10 +195,12 @@ public class MaintenanceController {
             List<Order> orders = orderRepository.findAll();
             List<Product> products = productRepository.findAll();
             List<Customer> customers = customerRepository.findAll();
+            List<Staff> staffList = staffRepository.findAll();
             
             model.addAttribute("orders", orders);
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
+            model.addAttribute("staffList", staffList);
             
             return "admin/maintenance/addmaintenance";
         }
@@ -211,10 +225,12 @@ public class MaintenanceController {
             List<Order> orders = orderRepository.findAll();
             List<Product> products = productRepository.findAll();
             List<Customer> customers = customerRepository.findAll();
+            List<Staff> staffList = staffRepository.findAll();
             
             model.addAttribute("orders", orders);
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
+            model.addAttribute("staffList", staffList);
             
             return "admin/maintenance/addmaintenance";
         }

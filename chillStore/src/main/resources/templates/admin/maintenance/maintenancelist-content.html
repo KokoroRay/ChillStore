@@ -20,12 +20,13 @@
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 <table class="table table-bordered table-hover mb-0">
-                    <thead class="table-dark">
+                    <thead class="table-primary">
                     <tr>
                         <th>Request ID</th>
                         <th>Order Info</th>
                         <th>Product Info</th>
                         <th>Customer Info</th>
+                        <th>Staff Info</th>
                         <th>Request Type</th>
                         <th>Request Date</th>
                         <th>Reason</th>
@@ -39,16 +40,16 @@
                             <span class="badge bg-secondary" th:text="${m.requestId}"></span>
                         </td>
                         <td>
-                            <small class="text-muted">Order #</small><br>
-                            <strong th:text="${m.orderId}"></strong>
+                            <span th:text="${m.orderInfo}"></span>
                         </td>
                         <td>
-                            <small class="text-muted">Product #</small><br>
-                            <strong th:text="${m.productId}"></strong>
+                            <span th:text="${m.productInfo}"></span>
                         </td>
                         <td>
-                            <small class="text-muted">Customer #</small><br>
-                            <strong th:text="${m.customerId}"></strong>
+                            <span th:text="${m.customerInfo}"></span>
+                        </td>
+                        <td>
+                            <span th:text="${m.staffName}"></span>
                         </td>
                         <td>
                             <span th:if="${m.requestType == 'maintenance'}" class="badge bg-primary">Maintenance</span>

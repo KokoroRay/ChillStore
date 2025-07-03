@@ -12,7 +12,7 @@
                                     <option value="">Select an order</option>
                                     <option th:each="order : ${orders}" 
                                             th:value="${order.orderId}" 
-                                            th:text="'Order #' + ${order.orderId} + ' - ' + ${order.customer.name}">
+                                            th:text="'Order #' + ${order.orderId} + ' - ' + ${order.customer.name} + ' (' + ${#dates.format(order.orderDate, 'dd/MM/yyyy')} + ' - ' + ${order.status} + ')'">
                                     </option>
                                 </select>
                                 <div class="text-danger small mt-1" th:errors="*{orderId}" th:if="${#fields.hasErrors('orderId')}"></div>
@@ -30,7 +30,7 @@
                                     <option value="">Select a product</option>
                                     <option th:each="product : ${products}" 
                                             th:value="${product.productId}" 
-                                            th:text="${product.name}">
+                                            th:text="${product.name} + ' - ' + ${product.category.name} + ' (' + ${product.brand.name} + ')'">
                                     </option>
                                 </select>
                                 <div class="text-danger small mt-1" th:errors="*{productId}" th:if="${#fields.hasErrors('productId')}"></div>
@@ -42,7 +42,7 @@
                                     <option value="">Select a customer</option>
                                     <option th:each="customer : ${customers}" 
                                             th:value="${customer.customerId}" 
-                                            th:text="${customer.name}">
+                                            th:text="${customer.name} + ' (' + ${customer.phone} + ')'">
                                     </option>
                                 </select>
                                 <div class="text-danger small mt-1" th:errors="*{customerId}" th:if="${#fields.hasErrors('customerId')}"></div>
@@ -61,6 +61,18 @@
                                     <option value="warranty">Warranty</option>
                                 </select>
                                 <div class="text-danger small mt-1" th:errors="*{requestType}" th:if="${#fields.hasErrors('requestType')}"></div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="staffId">Staff</label>
+                                <select class="form-select" id="staffId" th:field="*{staffId}" required>
+                                    <option value="">Select a staff</option>
+                                    <option th:each="staff : ${staffList}"
+                                            th:value="${staff.id}"
+                                            th:text="${staff.name} + ' (' + staff.email + ')'">
+                                    </option>
+                                </select>
+                                <div class="text-danger small mt-1" th:errors="*{staffId}" th:if="${#fields.hasErrors('staffId')}"></div>
+                                <small class="text-muted">Select a staff to assign this maintenance</small>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end gap-2 mt-4">

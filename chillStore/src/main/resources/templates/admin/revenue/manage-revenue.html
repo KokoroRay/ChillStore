@@ -281,23 +281,27 @@
     const endDate = /*[[${#dates.format(endDate, 'yyyy-MM-dd')}]]*/ '';
 
     // Tạo biểu đồ xu hướng
-    if (revenueTrendData.length > 0) {
+    if (revenueTrendData && revenueTrendData.length > 0) {
         const trendCtx = document.getElementById('trendChart').getContext('2d');
 
         // Định dạng nhãn dựa trên period
         const formattedLabels = revenueTrendData.map(item => {
             const value = item[0];
-            if (period === 'custom') {
-                // Định dạng ngày cho custom: DD/MM
-                const parts = value.split('-');
-                if (parts.length === 3) {
-                    return `${parts[2]}/${parts[1]}`;
+            if (period === 'daily' || period === 'custom') {
+                if (value.includes('-')) {
+                    const [year, month, day] = value.split('-');
+                    return `${day}/${month}`;
                 }
                 return value;
             } else if (value.includes('Q')) {
                 return value.replace('-Q', ' Quý ');
             } else if (value.includes('-W')) {
                 return value.replace('-W', ' Tuần ');
+            } else if (value.includes('-') && value.length === 7) {
+                const [year, month] = value.split('-');
+                return `Tháng ${month}/${year}`;
+            } else if (value.length === 4) {
+                return `Năm ${value}`;
             }
             return value;
         });
@@ -341,7 +345,7 @@
     }
 
     // Biểu đồ doanh thu theo khu vực
-    if (revenueByRegionData.length > 0) {
+    if (revenueByRegionData && revenueByRegionData.length > 0) {
         const regionCtx = document.getElementById('regionChart').getContext('2d');
         new Chart(regionCtx, {
             type: 'doughnut',
@@ -368,7 +372,7 @@
     }
 
     // Biểu đồ doanh thu theo danh mục
-    if (revenueByCategoryData.length > 0) {
+    if (revenueByCategoryData && revenueByCategoryData.length > 0) {
         const categoryCtx = document.getElementById('categoryChart').getContext('2d');
         new Chart(categoryCtx, {
             type: 'bar',
@@ -388,7 +392,7 @@
     }
 
     // Biểu đồ Pareto
-    if (paretoData.length > 0) {
+    if (paretoData && paretoData.length > 0) {
         const paretoCtx = document.getElementById('paretoChart').getContext('2d');
         new Chart(paretoCtx, {
             type: 'bar',

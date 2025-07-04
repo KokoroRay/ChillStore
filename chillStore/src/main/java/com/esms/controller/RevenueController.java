@@ -43,14 +43,13 @@ public class RevenueController {
         Date startDate = null;
         Date endDate = null;
 
-        if (startLocalDate != null) {
-            startDate = Date.from(startLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        }
-        if (endLocalDate != null) {
-            endDate = Date.from(endLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        }
-
         if ("custom".equals(period)) {
+            if (startLocalDate != null) {
+                startDate = Date.from(startLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            }
+            if (endLocalDate != null) {
+                endDate = Date.from(endLocalDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+            }
             if (startDate == null) {
                 startDate = Date.from(LocalDate.now().minusDays(30).atStartOfDay(ZoneId.systemDefault()).toInstant());
             }
@@ -58,19 +57,10 @@ public class RevenueController {
                 endDate = new Date();
             }
         } else {
-            if (startDate == null || endDate == null) {
-                Date[] dateRange = new Date[2];
-                adjustDatesForPeriod(period, dateRange);
-                startDate = dateRange[0];
-                endDate = dateRange[1];
-            }
-        }
-        // Set default dates if not provided
-        if (startDate == null) {
-            startDate = Date.from(LocalDate.now().minusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
-        }
-        if (endDate == null) {
-            endDate = new Date();
+            Date[] dateRange = new Date[2];
+            adjustDatesForPeriod(period, dateRange);
+            startDate = dateRange[0];
+            endDate = dateRange[1];
         }
 
         // Get revenue data
@@ -87,6 +77,13 @@ public class RevenueController {
         List<Object[]> revenueByCategory = orderRepository.getRevenueByCategory(startDate, endDate);
         List<Object[]> revenueByRegion = orderRepository.getRevenueByRegion(startDate, endDate);
         List<Object[]> paretoData = orderRepository.getParetoDate(startDate, endDate);
+        
+        // Debug log
+        System.out.println("Period: " + period);
+        System.out.println("Start Date: " + startDate);
+        System.out.println("End Date: " + endDate);
+        System.out.println("Revenue Trend Size: " + (revenueTrend != null ? revenueTrend.size() : "null"));
+        System.out.println("Revenue By Category Size: " + (revenueByCategory != null ? revenueByCategory.size() : "null"));
 
         // Add data to model
         model.addAttribute("grossRevenue", grossRevenue);
@@ -128,32 +125,72 @@ public class RevenueController {
     private void adjustDatesForPeriod(String period, Date[] dates) {
         Calendar cal = Calendar.getInstance();
         Date now = new Date();
+        cal.setTime(now);
 
         if (period.equals("daily")) {
-            dates[0] = now;
-            dates[1] = now;
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            dates[0] = cal.getTime();
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            dates[1] = cal.getTime();
         } else if (period.equals("weekly")) {
             cal.setTime(now);
             cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
             dates[0] = cal.getTime();
-            dates[1] = now;
+            cal.add(Calendar.DAY_OF_WEEK, 6);
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            dates[1] = cal.getTime();
         } else if (period.equals("monthly")) {
-            cal.setTime(now);
             cal.set(Calendar.DAY_OF_MONTH, 1);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
             dates[0] = cal.getTime();
-            dates[1] = now;
+            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            dates[1] = cal.getTime();
         } else if (period.equals("quarterly")) {
-            cal.setTime(now);
-            int currentQuarterly = (cal.get(Calendar.MONTH) / 3) + 1;
-            cal.set(Calendar.MONTH, (currentQuarterly - 1) * 3);
+            int currenMonth = cal.get(Calendar.MONTH);
+            int startMonth = (currenMonth / 3) * 3;
+            cal.set(Calendar.MONTH, startMonth);
             cal.set(Calendar.DAY_OF_MONTH, 1);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
             dates[0] = cal.getTime();
-            dates[1] = now;
+            cal.add(Calendar.MONTH, 2);
+            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            dates[1] = cal.getTime();
         } else if (period.equals("yearly")) {
-            cal.setTime(now);
             cal.set(Calendar.DAY_OF_YEAR, 1);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
             dates[0] = cal.getTime();
-            dates[1] = now;
+            cal.set(Calendar.MONTH, 11);
+            cal.set(Calendar.DAY_OF_MONTH, 31);
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            dates[1] = cal.getTime();
         }
     }
 }

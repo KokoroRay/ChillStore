@@ -24,8 +24,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT coalesce(SUM(o.totalAmount + o.discountAmount), 0) " +
             "FROM Order o "
             + "WHERE o.status IN ('Paid', 'Shipped', 'Delivered') "
-            + "AND (:startDate IS NULL OR o.orderDate >= :startDate) "
-            + "AND (:endDate IS NULL OR o.orderDate <= :endDate)")
+            + "AND o.orderDate >= :startDate "
+            + "AND o.orderDate <= :endDate")
     BigDecimal getGrossRevenue(@Param("startDate") Date startDate,
                                @Param("endDate") Date endDate);
 
@@ -33,16 +33,16 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT COALESCE(SUM(o.totalAmount), 0) " +
             "FROM Order o " +
             "WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
-            "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
-            "AND (:endDate IS NULL OR o.orderDate <= :endDate)")
+            "AND o.orderDate >= :startDate " +
+            "AND o.orderDate <= :endDate")
     BigDecimal getNetRevenueBetween(@Param("startDate") Date startDate,
                                     @Param("endDate") Date endDate);
 
     //số lượng đơn
     @Query("SELECT COUNT(o) FROM Order o " +
-            "WHERE o.status IN ('Paid', 'Shipped', 'Delivered')" +
-            "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
-            "AND (:endDate IS NULL OR o.orderDate <= :endDate)")
+            "WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
+            "AND o.orderDate >= :startDate " +
+            "AND o.orderDate <= :endDate")
     Long getOrderCountBetween(@Param("startDate") Date startDate,
                               @Param("endDate") Date endDate);
 
@@ -51,22 +51,13 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
 
     //doanh thu theo thời gian
-    @Query(value = "WITH PeriodData AS ( " +
-            "SELECT " +
-            "CASE :period " +
-            "WHEN 'daily' THEN FORMAT(o.order_date, 'yyyy-MM-dd') " +
-            "WHEN 'weekly' THEN CONCAT(DATEPART(year, o.order_date), '-W', FORMAT(DATEPART(week, o.order_date), '00')) " +
-            "WHEN 'monthly' THEN FORMAT(o.order_date, 'yyyy-MM') " +
-            "WHEN 'quarterly' THEN CONCAT(DATEPART(year, o.order_date), '-Q', DATEPART(quarter, o.order_date))" +
-            "WHEN 'yearly' THEN FORMAT(YEAR(o.order_date), '0000') " +
-            "ELSE FORMAT(o.order_date, 'yyyy-MM-dd')" +
-            "END AS period, o.total_amount " +
+    @Query(value = "SELECT FORMAT(o.order_date, 'yyyy-MM-dd') AS period, SUM(o.total_amount) AS revenue " +
             "FROM orders o " +
             "WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
-            "AND (:startDate IS NULL OR o.order_date >= :startDate) " +
-            "AND (:endDate IS NULL OR o.order_date <= :endDate)) " +
-            "SELECT period, SUM(total_amount) AS revenue " +
-            "FROM PeriodData GROUP BY period ORDER BY period ", nativeQuery = true)
+            "AND o.order_date >= :startDate " +
+            "AND o.order_date <= :endDate " +
+            "GROUP BY FORMAT(o.order_date, 'yyyy-MM-dd') " +
+            "ORDER BY period ", nativeQuery = true)
     List<Object[]> getRevenueTrend(@Param("period") String period,
                                    @Param("startDate") Date startDate,
                                    @Param("endDate") Date endDate);
@@ -90,15 +81,15 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     //tỉ lệ hủy đơn
     @Query("SELECT COALESCE(CAST(SUM(CASE WHEN o.status = 'Cancelled' THEN 1.0 ELSE 0.0 END) / COUNT(o) AS double), 0.0) " +
             "FROM Order o " +
-            "WHERE (:startDate IS NULL OR o.orderDate >= :startDate) " +
-            "AND (:endDate IS NULL OR o.orderDate <= :endDate)")
+            "WHERE o.orderDate >= :startDate " +
+            "AND o.orderDate <= :endDate")
     Double getCancellationRate(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
 
     //Doanh thu theo khu vực
     @Query("SELECT SUBSTRING(c.address, 1, 20), SUM(o.totalAmount) " +
             "FROM Order o " +
-            "JOIN o.customer c WHERE o.status IN ('Paid', 'Shipped', 'Delivered')" +
+            "JOIN o.customer c WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
             "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
             "AND (:endDate IS NULL OR o.orderDate <= :endDate) " +
             "GROUP BY SUBSTRING(c.address, 1, 20)")
@@ -106,26 +97,15 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
                                       @Param("endDate") Date endDate);
 
 
-    //lấy danh sách đơn hàng
-    @Query("SELECT o FROM Order o " +
-            "WHERE (:startDate IS NULL OR o.orderDate >= :startDate) " +
-            "AND (:endDate IS NULL OR o.orderDate <= :endDate) " +
-            "AND (:status IS NULL OR o.status = :status)")
-    Page<Order> findOrdersByFilters(
-            @Param("startDate") Date startDate,
-            @Param("endDate") Date endDate,
-            @Param("status") String status,
-            Pageable pageable
-    );
 
-
+    //pareto
     @Query(value = "WITH TotalRevenue AS ( " +
             "  SELECT SUM(oi.quantity * oi.price_each) AS total " +
             "  FROM order_items oi " +
             "  JOIN orders o ON oi.order_id = o.order_id " +
             "  WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
-            "  AND (:startDate IS NULL OR o.order_date >= :startDate) " +
-            "  AND (:endDate IS NULL OR o.order_date <= :endDate) " +
+            "  AND o.order_date >= :startDate " +
+            "  AND o.order_date <= :endDate " +
             ") " +
             "SELECT TOP 10 p.name, " +
             "  SUM(oi.quantity * oi.price_each) AS revenue, " +
@@ -135,8 +115,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             "JOIN products p ON oi.product_id = p.product_id " +
             "CROSS JOIN TotalRevenue tr " +
             "WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
-            "AND (:startDate IS NULL OR o.order_date >= :startDate) " +
-            "AND (:endDate IS NULL OR o.order_date <= :endDate) " +
+            "AND o.order_date >= :startDate " +
+            "AND o.order_date <= :endDate " +
             "GROUP BY p.name, tr.total " +
             "ORDER BY revenue DESC", nativeQuery = true)
     List<Object[]> getParetoDate(

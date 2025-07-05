@@ -3,6 +3,7 @@ package com.esms.controller;
 import com.esms.model.entity.Category;
 import com.esms.repository.CategoryRepository;
 import com.esms.repository.OrderRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -66,19 +67,19 @@ public class RevenueController {
         }
 
         // Get revenue data
-        BigDecimal grossRevenue = orderRepository.getGrossRevenue(startDate, endDate);
-        BigDecimal netRevenue = orderRepository.getNetRevenueBetween(startDate, endDate);
-        Long orderCount = orderRepository.getOrderCountBetween(startDate, endDate);
+        BigDecimal grossRevenue = orderRepository.getGrossRevenue(startDate, endDate, category, region, status);
+        BigDecimal netRevenue = orderRepository.getNetRevenueBetween(startDate, endDate, category, region, status);
+        Long orderCount = orderRepository.getOrderCountBetween(startDate, endDate, category, region, status);
         Double aov = orderCount > 0 ? netRevenue.doubleValue() / orderCount : 0.0;
-        Double cancellationRate = orderRepository.getCancellationRate(startDate, endDate);
+        Double cancellationRate = orderRepository.getCancellationRate(startDate, endDate, category, region, status);
         Double grossMargin = netRevenue.doubleValue() > 0 ?
-                (netRevenue.doubleValue() - getCostOfGoodsSold(startDate, endDate)) / netRevenue.doubleValue() : 0.0;
+                (netRevenue.doubleValue() - getCostOfGoodsSold(startDate, endDate, category, region, status)) / netRevenue.doubleValue() : 0.0;
 
         // Get chart data
         List<Object[]> revenueTrend = orderRepository.getRevenueTrend(period, startDate, endDate, category, region, status);
-        List<Object[]> revenueByCategory = orderRepository.getRevenueByCategory(startDate, endDate);
-        List<Object[]> revenueByRegion = orderRepository.getRevenueByRegion(startDate, endDate, null, null, null);
-        List<Object[]> paretoData = orderRepository.getParetoDate(startDate, endDate);
+        List<Object[]> revenueByCategory = orderRepository.getRevenueByCategory(startDate, endDate, region, status);
+        List<Object[]> revenueByRegion = orderRepository.getRevenueByRegion(startDate, endDate, category, null, status);
+        List<Object[]> paretoData = orderRepository.getParetoDate(startDate, endDate, region, status);
 
         BigDecimal prevGrossRevenue = BigDecimal.ZERO;
         BigDecimal prevNetRevenue = BigDecimal.ZERO;
@@ -125,23 +126,23 @@ public class RevenueController {
 
         if (comparePeriod) {
             prevRevenueTrend = orderRepository.getRevenueTrend(period, prevStartDate, prevEndDate, category, region, status);
-            prevGrossRevenue = orderRepository.getGrossRevenue(prevStartDate, prevEndDate);
-            prevNetRevenue = orderRepository.getNetRevenueBetween(prevStartDate, prevEndDate);
-            prevOrderCount = orderRepository.getOrderCountBetween(prevStartDate, prevEndDate);
+            prevGrossRevenue = orderRepository.getGrossRevenue(prevStartDate, prevEndDate, category, region, status);
+            prevNetRevenue = orderRepository.getNetRevenueBetween(prevStartDate, prevEndDate, category, region, status);
+            prevOrderCount = orderRepository.getOrderCountBetween(prevStartDate, prevEndDate, category, region, status);
             prevAov = prevOrderCount > 0 ? prevNetRevenue.doubleValue() / prevOrderCount : 0.0;
-            prevCancellationRate = orderRepository.getCancellationRate(prevStartDate, prevEndDate);
+            prevCancellationRate = orderRepository.getCancellationRate(prevStartDate, prevEndDate, category, region, status);
             preGrossMargin = prevNetRevenue.doubleValue() > 0 ?
-                    (prevNetRevenue.doubleValue() - getCostOfGoodsSold(prevStartDate, prevEndDate)) / prevNetRevenue.doubleValue() : 0.0;
+                    (prevNetRevenue.doubleValue() - getCostOfGoodsSold(prevStartDate, prevEndDate, category, region, status)) / prevNetRevenue.doubleValue() : 0.0;
 
             if (compareYoY) {
-                yoyGrossRevenue = orderRepository.getGrossRevenue(yoyStartDate, yoyEndDate);
-                yoyNetRevenue = orderRepository.getNetRevenueBetween(yoyStartDate, yoyEndDate);
-                yoyOrderCount = orderRepository.getOrderCountBetween(yoyStartDate, yoyEndDate);
+                yoyGrossRevenue = orderRepository.getGrossRevenue(yoyStartDate, yoyEndDate, category, region, status);
+                yoyNetRevenue = orderRepository.getNetRevenueBetween(yoyStartDate, yoyEndDate, category, region, status);
+                yoyOrderCount = orderRepository.getOrderCountBetween(yoyStartDate, yoyEndDate, category, region, status);
                 yoyAov = yoyOrderCount > 0 ? yoyNetRevenue.doubleValue() / yoyOrderCount : 0.0;
                 yoyGrossMargin = yoyNetRevenue.doubleValue() > 0 ?
-                        (yoyNetRevenue.doubleValue() - getCostOfGoodsSold(yoyStartDate, yoyEndDate)) / yoyNetRevenue.doubleValue() : 0.0;
+                        (yoyNetRevenue.doubleValue() - getCostOfGoodsSold(yoyStartDate, yoyEndDate, category, region, status)) / yoyNetRevenue.doubleValue() : 0.0;
                 yoyRevenueTrend = orderRepository.getRevenueTrend(period, yoyStartDate, yoyEndDate, category, region, status);
-                yoyCancellationRate = orderRepository.getCancellationRate(yoyStartDate, yoyEndDate);
+                yoyCancellationRate = orderRepository.getCancellationRate(yoyStartDate, yoyEndDate, category, region, status);
             }
 
             grossRevenueChange = calculatePercentageChange(prevGrossRevenue, grossRevenue);
@@ -224,8 +225,8 @@ public class RevenueController {
         return "admin/revenue/manage-revenue";
     }
 
-    private double getCostOfGoodsSold(Date startDate, Date endDate) {
-        BigDecimal netRevenue = orderRepository.getNetRevenueBetween(startDate, endDate);
+    private double getCostOfGoodsSold(Date startDate, Date endDate, Integer category, String region, String status) {
+        BigDecimal netRevenue = orderRepository.getNetRevenueBetween(startDate, endDate, category, region, status);
         return netRevenue != null ? netRevenue.doubleValue() * 0.6 : 0;
     }
 

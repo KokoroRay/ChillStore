@@ -1,10 +1,10 @@
 /* Variables */
 :root {
-    --primary: #0d6efd;
-    --success: #1cc88a;
-    --info: #36b9cc;
-    --warning: #f6c23e;
-    --danger: #e74a3b;
+    --primary: #5EABD6;
+    --success: #23e8a0;
+    --info: #87C0CD;
+    --warning: #FEFBC7;
+    --danger: #E14434;
     --dark: #5a5c69;
     --light: #f8f9fa;
     --gray: #6c757d;
@@ -89,13 +89,7 @@
 .kpi-card.bg-danger::before { background: var(--danger); }
 .kpi-card.bg-secondary::before { background: var(--dark); }
 
-.kpi-icon {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 28px;
-    opacity: 0.7;
-}
+
 
 /* Chart containers */
 .chart-container {
@@ -263,13 +257,74 @@
 }
 
 .trend-up {
-    background: rgba(28, 200, 138, 0.2);
+    background: rgba(57, 246, 169, 0.2);
     color: var(--success);
 }
 
 .trend-down {
-    background: rgba(231, 74, 59, 0.2);
+    background: rgba(236, 52, 34, 0.2);
     color: var(--danger);
+}
+
+/* KPI Card Colors - Easy to customize */
+.kpi-gross-revenue {
+    background-color: #226597 !important;
+}
+
+.kpi-net-revenue {
+    background-color: #5EABD6 !important;
+}
+
+.kpi-order-count {
+    background-color: #87C0CD !important;
+}
+
+.kpi-aov {
+    background-color: #eddf70 !important;
+    color: #ffffff !important;
+}
+
+.kpi-cancellation {
+    background-color: #E14434 !important;
+}
+
+.kpi-margin {
+    background-color: #898c8e !important;
+}
+
+/* Icon positioning */
+.kpi-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    opacity: 0.7;
+    z-index: 1;
+}
+
+/* KPI Card uniform sizing */
+.kpi-card {
+    min-height: 140px;
+}
+
+.kpi-card .card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 108px;
+}
+
+.kpi-card .card-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.kpi-card .stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
 }
 
 /* Responsive adjustments */

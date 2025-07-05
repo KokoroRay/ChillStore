@@ -557,10 +557,7 @@
             data: {
                 labels: revenueByRegionData.map(item => item[0]),
                 datasets: [{
-                    data: revenueByRegionData.map(item => {
-                        const value = parseFloat(item[1]);
-                        return isNaN(value) ? 0 : value / 1000000;
-                    }),
+                    data: revenueByRegionData.map(item => item[1] / 1000000),
                     backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
                 }]
             },
@@ -578,12 +575,10 @@
                 }
             }
         });
-    } else {
-        regionCtx.font = '16px Arial';
-        regionCtx.fillText('Không có dữ liệu', 50, 50);
     }
 
     // Biểu đồ doanh thu theo danh mục
+    console.log('Category data:', revenueByCategoryData);
     const categoryCtx = document.getElementById('categoryChart').getContext('2d');
     if (revenueByCategoryData && revenueByCategoryData.length > 0) {
         new Chart(categoryCtx, {
@@ -592,10 +587,7 @@
                 labels: revenueByCategoryData.map(item => item[0]),
                 datasets: [{
                     label: 'Doanh thu (triệu)',
-                    data: revenueByCategoryData.map(item => {
-                        const value = parseFloat(item[1]);
-                        return isNaN(value) ? 0 : value / 1000000;
-                    }),
+                    data: revenueByCategoryData.map(item => item[1] / 1000000),
                     backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
                 }]
             },
@@ -605,12 +597,10 @@
                 plugins: { legend: { display: false } }
             }
         });
-    } else {
-        categoryCtx.font = '16px Arial';
-        categoryCtx.fillText('Không có dữ liệu', 50, 50);
     }
 
     // Biểu đồ Pareto
+    console.log('Pareto data:', paretoData);
     const paretoCtx = document.getElementById('paretoChart').getContext('2d');
     if (paretoData && paretoData.length > 0) {
         new Chart(paretoCtx, {
@@ -619,17 +609,11 @@
                 labels: paretoData.map(item => item[0]),
                 datasets: [{
                     label: 'Doanh thu',
-                    data: paretoData.map(item => {
-                        const value = parseFloat(item[1]);
-                        return isNaN(value) ? 0 : value / 1000000;
-                    }),
+                    data: paretoData.map(item => item[1] / 1000000),
                     backgroundColor: '#4e73df'
                 }, {
-                    label: 'Tỷ lệ tích lũy',
-                    data: paretoData.map(item => {
-                        const value = parseFloat(item[2]);
-                        return isNaN(value) ? 0 : value;
-                    }),
+                    label: 'Tỷ lệ',
+                    data: paretoData.map(item => item[2]),
                     type: 'line',
                     borderColor: '#e74a3b',
                     borderWidth: 2,
@@ -644,14 +628,12 @@
                     y: {
                         type: 'linear',
                         display: true,
-                        position: 'left',
-                        title: { display: true, text: 'Doanh thu (triệu)' }
+                        position: 'left'
                     },
                     y1: {
                         type: 'linear',
                         display: true,
                         position: 'right',
-                        title: { display: true, text: 'Tỷ lệ (%)' },
                         min: 0,
                         max: 100,
                         grid: { drawOnChartArea: false }
@@ -659,9 +641,6 @@
                 }
             }
         });
-    } else {
-        paretoCtx.font = '16px Arial';
-        paretoCtx.fillText('Không có dữ liệu', 50, 50);
     }
 
     // Drilldown functionality

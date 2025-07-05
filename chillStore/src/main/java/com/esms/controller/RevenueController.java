@@ -3,8 +3,6 @@ package com.esms.controller;
 import com.esms.model.entity.Category;
 import com.esms.repository.CategoryRepository;
 import com.esms.repository.OrderRepository;
-import com.fasterxml.jackson.databind.deser.impl.PropertyValueBuffer;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -16,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.WeekFields;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/revenue")
@@ -67,23 +65,20 @@ public class RevenueController {
             endDate = dateRange[1];
         }
 
-
         // Get revenue data
-        BigDecimal grossRevenue = orderRepository.getGrossRevenue(startDate, endDate, category, region, status);
-        BigDecimal netRevenue = orderRepository.getNetRevenueBetween(startDate, endDate, category, region, status);
-        Long orderCount = orderRepository.getOrderCountBetween(startDate, endDate, category, region, status);
+        BigDecimal grossRevenue = orderRepository.getGrossRevenue(startDate, endDate);
+        BigDecimal netRevenue = orderRepository.getNetRevenueBetween(startDate, endDate);
+        Long orderCount = orderRepository.getOrderCountBetween(startDate, endDate);
         Double aov = orderCount > 0 ? netRevenue.doubleValue() / orderCount : 0.0;
-        Double cancellationRate = orderRepository.getCancellationRate(startDate, endDate, category, region, status);
+        Double cancellationRate = orderRepository.getCancellationRate(startDate, endDate);
         Double grossMargin = netRevenue.doubleValue() > 0 ?
-                (netRevenue.doubleValue() - getCostOfGoodsSold(startDate, endDate, category, region, status)) / netRevenue.doubleValue() : 0.0;
+                (netRevenue.doubleValue() - getCostOfGoodsSold(startDate, endDate)) / netRevenue.doubleValue() : 0.0;
 
-
-        // Get chart data - sử dụng cùng logic cho tất cả period
-        List<Object[]> rawRevenueTrend = orderRepository.getRevenueTrend(period, startDate, endDate, category, region, status);
-        List<Object[]> revenueTrend = groupRevenueByPeriod(rawRevenueTrend, period);
-        List<Object[]> revenueByCategory = orderRepository.getRevenueByCategory(startDate, endDate, null, null, null);
+        // Get chart data
+        List<Object[]> revenueTrend = orderRepository.getRevenueTrend(period, startDate, endDate, category, region, status);
+        List<Object[]> revenueByCategory = orderRepository.getRevenueByCategory(startDate, endDate);
         List<Object[]> revenueByRegion = orderRepository.getRevenueByRegion(startDate, endDate, null, null, null);
-        List<Object[]> paretoData = orderRepository.getParetoDate(startDate, endDate, null, null, null);
+        List<Object[]> paretoData = orderRepository.getParetoDate(startDate, endDate);
 
         BigDecimal prevGrossRevenue = BigDecimal.ZERO;
         BigDecimal prevNetRevenue = BigDecimal.ZERO;
@@ -114,29 +109,40 @@ public class RevenueController {
         cal.add(Calendar.YEAR, -1);
         Date yoyEndDate = cal.getTime();
 
-        Double grossRevenueChange = null;
-        Double netRevenueChange = null;
-        Double orderCountChange = null;
-        Double aovChange = null;
-        Double cancellationRateChange = null;
-        Double grossMarginChange = null;
-        Double yoyGrossRevenueChange = null;
-        Double yoyNetRevenueChange = null;
-        Double yoyOrderCountChange = null;
-        Double yoyAovChange = null;
-        Double yoyCancellationRateChange = null;
-        Double yoyGrossMarginChange = null;
+        Double grossRevenueChange = 0.0;
+        Double netRevenueChange = 0.0;
+        Double orderCountChange = 0.0;
+        Double aovChange = 0.0;
+        Double cancellationRateChange = 0.0;
+        Double grossMarginChange = 0.0;
+
+        Double yoyGrossRevenueChange = 0.0;
+        Double yoyNetRevenueChange = 0.0;
+        Double yoyOrderCountChange = 0.0;
+        Double yoyAovChange = 0.0;
+        Double yoyCancellationRateChange = 0.0;
+        Double yoyGrossMarginChange = 0.0;
 
         if (comparePeriod) {
-            prevGrossRevenue = orderRepository.getGrossRevenue(prevStartDate, prevEndDate, category, region, status);
-            prevNetRevenue = orderRepository.getNetRevenueBetween(prevStartDate, prevEndDate, category, region, status);
-            prevOrderCount = orderRepository.getOrderCountBetween(prevStartDate, prevEndDate, category, region, status);
+            prevRevenueTrend = orderRepository.getRevenueTrend(period, prevStartDate, prevEndDate, category, region, status);
+            prevGrossRevenue = orderRepository.getGrossRevenue(prevStartDate, prevEndDate);
+            prevNetRevenue = orderRepository.getNetRevenueBetween(prevStartDate, prevEndDate);
+            prevOrderCount = orderRepository.getOrderCountBetween(prevStartDate, prevEndDate);
             prevAov = prevOrderCount > 0 ? prevNetRevenue.doubleValue() / prevOrderCount : 0.0;
-            prevCancellationRate = orderRepository.getCancellationRate(prevStartDate, prevEndDate, category, region, status);
+            prevCancellationRate = orderRepository.getCancellationRate(prevStartDate, prevEndDate);
             preGrossMargin = prevNetRevenue.doubleValue() > 0 ?
-                    (prevNetRevenue.doubleValue() - getCostOfGoodsSold(prevStartDate, prevEndDate, category, region, status)) / prevNetRevenue.doubleValue() : 0.0;
-            List<Object[]> rawPrevTrend = orderRepository.getRevenueTrend(period, prevStartDate, prevEndDate, category, region, status);
-            prevRevenueTrend = groupRevenueByPeriod(rawPrevTrend, period);
+                    (prevNetRevenue.doubleValue() - getCostOfGoodsSold(prevStartDate, prevEndDate)) / prevNetRevenue.doubleValue() : 0.0;
+
+            if (compareYoY) {
+                yoyGrossRevenue = orderRepository.getGrossRevenue(yoyStartDate, yoyEndDate);
+                yoyNetRevenue = orderRepository.getNetRevenueBetween(yoyStartDate, yoyEndDate);
+                yoyOrderCount = orderRepository.getOrderCountBetween(yoyStartDate, yoyEndDate);
+                yoyAov = yoyOrderCount > 0 ? yoyNetRevenue.doubleValue() / yoyOrderCount : 0.0;
+                yoyGrossMargin = yoyNetRevenue.doubleValue() > 0 ?
+                        (yoyNetRevenue.doubleValue() - getCostOfGoodsSold(yoyStartDate, yoyEndDate)) / yoyNetRevenue.doubleValue() : 0.0;
+                yoyRevenueTrend = orderRepository.getRevenueTrend(period, yoyStartDate, yoyEndDate, category, region, status);
+                yoyCancellationRate = orderRepository.getCancellationRate(yoyStartDate, yoyEndDate);
+            }
 
             grossRevenueChange = calculatePercentageChange(prevGrossRevenue, grossRevenue);
             netRevenueChange = calculatePercentageChange(prevNetRevenue, netRevenue);
@@ -144,18 +150,6 @@ public class RevenueController {
             aovChange = calculatePercentageChange(prevAov, aov);
             cancellationRateChange = calculatePercentageChange(prevCancellationRate, cancellationRate);
             grossMarginChange = calculatePercentageChange(preGrossMargin, grossMargin);
-        }
-
-        if (compareYoY) {
-            yoyGrossRevenue = orderRepository.getGrossRevenue(yoyStartDate, yoyEndDate, category, region, status);
-            yoyNetRevenue = orderRepository.getNetRevenueBetween(yoyStartDate, yoyEndDate, category, region, status);
-            yoyOrderCount = orderRepository.getOrderCountBetween(yoyStartDate, yoyEndDate, category, region, status);
-            yoyAov = yoyOrderCount > 0 ? yoyNetRevenue.doubleValue() / yoyOrderCount : 0.0;
-            yoyCancellationRate = orderRepository.getCancellationRate(yoyStartDate, yoyEndDate, category, region, status);
-            yoyGrossMargin = yoyNetRevenue.doubleValue() > 0 ?
-                    (yoyNetRevenue.doubleValue() - getCostOfGoodsSold(yoyStartDate, yoyEndDate, category, region, status)) / yoyNetRevenue.doubleValue() : 0.0;
-            List<Object[]> rawYoyTrend = orderRepository.getRevenueTrend(period, yoyStartDate, yoyEndDate, category, region, status);
-            yoyRevenueTrend = groupRevenueByPeriod(rawYoyTrend, period);
 
             yoyGrossRevenueChange = calculatePercentageChange(yoyGrossRevenue, grossRevenue);
             yoyNetRevenueChange = calculatePercentageChange(yoyNetRevenue, netRevenue);
@@ -178,17 +172,23 @@ public class RevenueController {
         model.addAttribute("revenueByRegion", revenueByRegion);
         model.addAttribute("paretoData", paretoData);
 
-        //lấy dữ liệu của kì trước
-        model.addAttribute("comparePeriod", comparePeriod);
+        model.addAttribute("prevRevenueTrend", prevRevenueTrend);
+        model.addAttribute("yoyRevenueTrend", yoyRevenueTrend);
+
         model.addAttribute("prevGrossRevenue", prevGrossRevenue);
         model.addAttribute("prevNetRevenue", prevNetRevenue);
         model.addAttribute("prevOrderCount", prevOrderCount);
         model.addAttribute("prevAov", prevAov);
         model.addAttribute("prevCancellationRate", prevCancellationRate);
-        model.addAttribute("preGrossMargin", preGrossMargin);
-        model.addAttribute("prevRevenueTrend", prevRevenueTrend);
-        model.addAttribute("prevStartDate", prevStartDate);
-        model.addAttribute("prevEndDate", prevEndDate);
+        model.addAttribute("prevGrossMargin", preGrossMargin);
+
+        model.addAttribute("yoyGrossRevenue", yoyGrossRevenue);
+        model.addAttribute("yoyNetRevenue", yoyNetRevenue);
+        model.addAttribute("yoyOrderCount", yoyOrderCount);
+        model.addAttribute("yoyAov", yoyAov);
+        model.addAttribute("yoyCancellationRate", yoyCancellationRate);
+        model.addAttribute("yoyGrossMargin", yoyGrossMargin);
+
         model.addAttribute("grossRevenueChange", grossRevenueChange);
         model.addAttribute("netRevenueChange", netRevenueChange);
         model.addAttribute("orderCountChange", orderCountChange);
@@ -196,24 +196,17 @@ public class RevenueController {
         model.addAttribute("cancellationRateChange", cancellationRateChange);
         model.addAttribute("grossMarginChange", grossMarginChange);
 
-        //lấy dữ liệu của năm trước
-
-        model.addAttribute("compareYoY", compareYoY);
-        model.addAttribute("yoyGrossRevenue", yoyGrossRevenue);
-        model.addAttribute("yoyNetRevenue", yoyNetRevenue);
-        model.addAttribute("yoyOrderCount", yoyOrderCount);
-        model.addAttribute("yoyAov", yoyAov);
-        model.addAttribute("yoyCancellationRate", yoyCancellationRate);
-        model.addAttribute("yoyGrossMargin", yoyGrossMargin);
-        model.addAttribute("yoyRevenueTrend", yoyRevenueTrend);
-        model.addAttribute("yoyStartDate", yoyStartDate);
-        model.addAttribute("yoyEndDate", yoyEndDate);
         model.addAttribute("yoyGrossRevenueChange", yoyGrossRevenueChange);
         model.addAttribute("yoyNetRevenueChange", yoyNetRevenueChange);
         model.addAttribute("yoyOrderCountChange", yoyOrderCountChange);
         model.addAttribute("yoyAovChange", yoyAovChange);
         model.addAttribute("yoyCancellationRateChange", yoyCancellationRateChange);
         model.addAttribute("yoyGrossMarginChange", yoyGrossMarginChange);
+
+        model.addAttribute("prevStartDate", prevStartDate);
+        model.addAttribute("prevEndDate", prevEndDate);
+        model.addAttribute("yoyStartDate", yoyStartDate);
+        model.addAttribute("yoyEndDate", yoyEndDate);
 
         model.addAttribute("categories", categoryRepository.findAll());
         model.addAttribute("regions", orderRepository.findAllRegions());
@@ -225,61 +218,14 @@ public class RevenueController {
         model.addAttribute("category", category);
         model.addAttribute("region", region);
         model.addAttribute("status", status);
-
-        // Set active menu for sidebar
-        model.addAttribute("activeMenu", "revenue");
+        model.addAttribute("comparePeriod", comparePeriod);
+        model.addAttribute("compareYoY", compareYoY);
 
         return "admin/revenue/manage-revenue";
     }
-    
-    private List<Object[]> groupRevenueByPeriod(List<Object[]> rawData, String period) {
-        if (rawData == null || rawData.isEmpty()) {
-            return rawData;
-        }
-        
-        if ("daily".equals(period) || "custom".equals(period)) {
-            return rawData;
-        }
-        
-        Map<String, Double> groupedData = new LinkedHashMap<>();
-        
-        for (Object[] row : rawData) {
-            String dateStr = (String) row[0];
-            Double revenue = ((Number) row[1]).doubleValue();
-            
-            String groupKey = formatDateByPeriod(dateStr, period);
-            groupedData.merge(groupKey, revenue, Double::sum);
-        }
-        
-        return groupedData.entrySet().stream()
-                .map(entry -> new Object[]{entry.getKey(), entry.getValue()})
-                .collect(Collectors.toList());
-    }
-    
-    private String formatDateByPeriod(String dateStr, String period) {
-        try {
-            LocalDate date = LocalDate.parse(dateStr);
-            switch (period) {
-                case "weekly":
-                    return date.getYear() + "-W" + date.get(WeekFields.ISO.weekOfYear());
-                case "monthly":
-                    return date.format(DateTimeFormatter.ofPattern("yyyy-MM"));
-                case "quarterly":
-                    int quarter = (date.getMonthValue() - 1) / 3 + 1;
-                    return date.getYear() + "-Q" + quarter;
-                case "yearly":
-                    return String.valueOf(date.getYear());
-                default:
-                    return dateStr;
-            }
-        } catch (Exception e) {
-            return dateStr;
-        }
-    }
 
-    private double getCostOfGoodsSold(Date startDate, Date endDate, Integer category, String region, String status) {
-        // Simplified calculation (60% of net revenue)
-        BigDecimal netRevenue = orderRepository.getNetRevenueBetween(startDate, endDate, category, region, status);
+    private double getCostOfGoodsSold(Date startDate, Date endDate) {
+        BigDecimal netRevenue = orderRepository.getNetRevenueBetween(startDate, endDate);
         return netRevenue != null ? netRevenue.doubleValue() * 0.6 : 0;
     }
 
@@ -287,13 +233,12 @@ public class RevenueController {
         if (previousValue == null || currentValue == null) return 0.0;
         double prev = previousValue.doubleValue();
         double curr = currentValue.doubleValue();
-        if(prev == 0) {
+        if (prev == 0) {
             return curr != 0 ? 100.0 : 0.0;
         }
         return ((curr - prev) / Math.abs(prev)) * 100;
     }
 
-    //cái này dùng để tính ngày
     private void adjustDatesForPeriod(String period, Date[] dates) {
         Calendar cal = Calendar.getInstance();
         Date now = new Date();
@@ -335,8 +280,8 @@ public class RevenueController {
             cal.set(Calendar.SECOND, 59);
             dates[1] = cal.getTime();
         } else if (period.equals("quarterly")) {
-            int currenMonth = cal.get(Calendar.MONTH);
-            int startMonth = (currenMonth / 3) * 3;
+            int currentMonth = cal.get(Calendar.MONTH);
+            int startMonth = (currentMonth / 3) * 3;
             cal.set(Calendar.MONTH, startMonth);
             cal.set(Calendar.DAY_OF_MONTH, 1);
             cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -365,6 +310,4 @@ public class RevenueController {
             dates[1] = cal.getTime();
         }
     }
-
-
 }

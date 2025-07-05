@@ -13,21 +13,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<!-- Header -->
-<div th:replace="fragments/header :: headerContent"></div>
+
+<div th:insert="~{fragments/header :: headerContent}"></div>
 
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-md-2 p-0">
-            <div th:replace="fragments/sidebar :: sidebar"></div>
-        </div>
-
+        <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+        
         <!-- Main Content -->
-        <div class="col-md-10">
-            <div class="container">
+        <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content" style="margin-top: 100px;">
                 <!-- Filters -->
-                <form th:action="@{/admin/revenue}" method="get" class="filter-section mt-4">
+                <form th:action="@{/admin/revenue}" method="get" class="revenue-filter-section">
                     <div class="row g-3">
                         <div class="col-lg-2 col-md-4">
                             <label class="form-label">Chu kỳ</label>
@@ -74,24 +71,28 @@
                             <label class="form-label">Trạng thái</label>
                             <select name="status" class="form-select">
                                 <option value="" th:selected="${status == null}">Tất cả</option>
-                                <option th:each="s : ${statuses}"
-                                        th:value="${s}"
-                                        th:text="${s}"
-                                        th:selected="${status == s}"></option>
+                                <option value="Paid" th:selected="${status == 'Paid'}">Paid</option>
+                                <option value="Shipped" th:selected="${status == 'Shipped'}">Shipped</option>
+                                <option value="Delivered" th:selected="${status == 'Delivered'}">Delivered</option>
+                                <option value="Cancelled" th:selected="${status == 'Cancelled'}">Cancelled</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="comparison-period mt-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="comparePeriod" name="comparePeriod">
+                    <!-- Comparison options -->
+                    <div class="comparison-options mt-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="comparePeriod" name="comparePeriod"
+                                   th:checked="${comparePeriod}">
                             <label class="form-check-label" for="comparePeriod">So sánh với kỳ trước</label>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="compareYoY" name="compareYoY">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="compareYoY" name="compareYoY"
+                                   th:checked="${compareYoY}">
                             <label class="form-check-label" for="compareYoY">So sánh cùng kỳ năm trước (YoY)</label>
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-primary mt-3">Áp dụng</button>
                 </form>
 
@@ -104,9 +105,25 @@
                                 <i class="fas fa-sack-dollar kpi-icon"></i>
                                 <h5 class="card-title">Tổng Doanh Thu</h5>
                                 <h3 class="stat-value" th:text="${grossRevenue != null ? #numbers.formatDecimal(grossRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : '0 tỷ'}">0 tỷ</h3>
-                                <p class="stat-label">
-                                    <span class="trend-up trend-badge">+12.5%</span>
-                                </p>
+
+                                <!-- Previous period comparison badge -->
+                                <div th:if="${comparePeriod}" class="comparison-badge">
+                                    <span th:classappend="${grossRevenueChange > 0} ? 'trend-up' : 'trend-down'">
+                                        <i th:classappend="${grossRevenueChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(grossRevenueChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>Kỳ trước</small>
+                                </div>
+
+                                <!-- YoY comparison badge -->
+                                <div th:if="${compareYoY}" class="comparison-badge">
+                                    <span th:classappend="${yoyGrossRevenueChange > 0} ? 'trend-up' : 'trend-down'">
+                                        <i th:classappend="${yoyGrossRevenueChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(yoyGrossRevenueChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>YoY</small>
+                                </div>
+
                                 <button class="drilldown-btn" data-type="gross">
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
@@ -121,9 +138,23 @@
                                 <i class="fas fa-wallet kpi-icon"></i>
                                 <h5 class="card-title">Doanh Thu Thuần</h5>
                                 <h3 class="stat-value" th:text="${netRevenue != null ? #numbers.formatDecimal(netRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : '0 tỷ'}">0 tỷ</h3>
-                                <p class="stat-label">
-                                    <span class="trend-up trend-badge">+10.3%</span>
-                                </p>
+
+                                <div th:if="${comparePeriod}" class="comparison-badge">
+                                    <span th:classappend="${netRevenueChange > 0} ? 'trend-up' : 'trend-down'">
+                                        <i th:classappend="${netRevenueChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(netRevenueChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>Kỳ trước</small>
+                                </div>
+
+                                <div th:if="${compareYoY}" class="comparison-badge">
+                                    <span th:classappend="${yoyNetRevenueChange > 0} ? 'trend-up' : 'trend-down'">
+                                        <i th:classappend="${yoyNetRevenueChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(yoyNetRevenueChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>YoY</small>
+                                </div>
+
                                 <button class="drilldown-btn" data-type="net">
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
@@ -138,9 +169,23 @@
                                 <i class="fas fa-shopping-cart kpi-icon"></i>
                                 <h5 class="card-title">Số Đơn Hàng</h5>
                                 <h3 class="stat-value" th:text="${orderCount != null ? #numbers.formatInteger(orderCount, 0, 'COMMA') : '0'}">0</h3>
-                                <p class="stat-label">
-                                    <span class="trend-up trend-badge">+8.7%</span>
-                                </p>
+
+                                <div th:if="${comparePeriod}" class="comparison-badge">
+                                    <span th:classappend="${orderCountChange > 0} ? 'trend-up' : 'trend-down'">
+                                        <i th:classappend="${orderCountChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(orderCountChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>Kỳ trước</small>
+                                </div>
+
+                                <div th:if="${compareYoY}" class="comparison-badge">
+                                    <span th:classappend="${yoyOrderCountChange > 0} ? 'trend-up' : 'trend-down'">
+                                        <i th:classappend="${yoyOrderCountChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(yoyOrderCountChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>YoY</small>
+                                </div>
+
                                 <button class="drilldown-btn" data-type="orders">
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
@@ -155,9 +200,23 @@
                                 <i class="fas fa-tag kpi-icon"></i>
                                 <h5 class="card-title">Giá Trị Đơn TB</h5>
                                 <h3 class="stat-value" th:text="${aov != null ? #numbers.formatDecimal(aov/1000, 1, 0, 'COMMA') + 'k' : '0k'}">0k</h3>
-                                <p class="stat-label">
-                                    <span class="trend-up trend-badge">+1.5%</span>
-                                </p>
+
+                                <div th:if="${comparePeriod}" class="comparison-badge">
+                                    <span th:classappend="${aovChange > 0} ? 'trend-up' : 'trend-down'">
+                                        <i th:classappend="${aovChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(aovChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>Kỳ trước</small>
+                                </div>
+
+                                <div th:if="${compareYoY}" class="comparison-badge">
+                                    <span th:classappend="${yoyAovChange > 0} ? 'trend-up' : 'trend-down'">
+                                        <i th:classappend="${yoyAovChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(yoyAovChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>YoY</small>
+                                </div>
+
                                 <button class="drilldown-btn" data-type="aov">
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
@@ -172,9 +231,23 @@
                                 <i class="fas fa-ban kpi-icon"></i>
                                 <h5 class="card-title">Tỷ Lệ Hủy Đơn</h5>
                                 <h3 class="stat-value" th:text="${cancellationRate != null ? #numbers.formatPercent(cancellationRate, 1, 1) : '0%'}">0%</h3>
-                                <p class="stat-label">
-                                    <span class="trend-down trend-badge">+0.8%</span>
-                                </p>
+
+                                <div th:if="${comparePeriod}" class="comparison-badge">
+                                    <span th:classappend="${cancellationRateChange > 0} ? 'trend-down' : 'trend-up'">
+                                        <i th:classappend="${cancellationRateChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(cancellationRateChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>Kỳ trước</small>
+                                </div>
+
+                                <div th:if="${compareYoY}" class="comparison-badge">
+                                    <span th:classappend="${yoyCancellationRateChange > 0} ? 'trend-down' : 'trend-up'">
+                                        <i th:classappend="${yoyCancellationRateChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(yoyCancellationRateChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>YoY</small>
+                                </div>
+
                                 <div class="alert-badge">!</div>
                                 <button class="drilldown-btn" data-type="cancellation">
                                     <i class="fas fa-arrow-right"></i>
@@ -190,15 +263,120 @@
                                 <i class="fas fa-percent kpi-icon"></i>
                                 <h5 class="card-title">Biên Lợi Nhuận</h5>
                                 <h3 class="stat-value" th:text="${grossMargin != null ? #numbers.formatPercent(grossMargin, 1, 1) : '0%'}">0%</h3>
-                                <p class="stat-label">
-                                    <span class="trend-up trend-badge">+1.2%</span>
-                                </p>
+
+                                <div th:if="${comparePeriod}" class="comparison-badge">
+                                    <span th:classappend="${grossMarginChange > 0} ? 'trend-up' : 'trend-down'">
+                                        <i th:classappend="${grossMarginChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(grossMarginChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>Kỳ trước</small>
+                                </div>
+
+                                <div th:if="${compareYoY}" class="comparison-badge">
+                                    <span th:classappend="${yoyGrossMarginChange > 0} ? 'trend-up' : 'trend-down'">
+                                        <i th:classappend="${yoyGrossMarginChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+                                        <span th:text="${#numbers.formatDecimal(yoyGrossMarginChange, 1, 1) + '%'}"></span>
+                                    </span>
+                                    <small>YoY</small>
+                                </div>
+
                                 <button class="drilldown-btn" data-type="margin">
                                     <i class="fas fa-arrow-right"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Comparison Section -->
+                <div th:if="${comparePeriod or compareYoY}" class="comparison-section">
+                    <div class="row">
+                        <!-- Period Comparison -->
+                        <div th:if="${comparePeriod}" class="col-lg-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <i class="fas fa-calendar-day me-2"></i>
+                                    So sánh với kỳ trước
+                                    <span class="comparison-period">
+                                        (<span th:text="${#dates.format(prevStartDate, 'dd/MM/yyyy')}"></span> -
+                                        <span th:text="${#dates.format(prevEndDate, 'dd/MM/yyyy')}"></span>)
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="comparison-grid">
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Tổng Doanh Thu</div>
+                                            <div class="comparison-value" th:text="${prevGrossRevenue != null ? #numbers.formatDecimal(prevGrossRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
+                                        </div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Doanh Thu Thuần</div>
+                                            <div class="comparison-value" th:text="${prevNetRevenue != null ? #numbers.formatDecimal(prevNetRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
+                                        </div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Số Đơn Hàng</div>
+                                            <div class="comparison-value" th:text="${prevOrderCount != null ? #numbers.formatInteger(prevOrderCount, 0, 'COMMA') : 'N/A'}"></div>
+                                        </div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Giá Trị Đơn TB</div>
+                                            <div class="comparison-value" th:text="${prevAov != null ? #numbers.formatDecimal(prevAov/1000, 1, 0, 'COMMA') + 'k' : 'N/A'}"></div>
+                                        </div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Tỷ Lệ Hủy Đơn</div>
+                                            <div class="comparison-value" th:text="${prevCancellationRate != null ? #numbers.formatPercent(prevCancellationRate, 1, 1) : 'N/A'}"></div>
+                                        </div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Biên Lợi Nhuận</div>
+                                            <div class="comparison-value" th:text="${prevGrossMargin != null ? #numbers.formatPercent(prevGrossMargin, 1, 1) : 'N/A'}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- YoY Comparison -->
+                        <div th:if="${compareYoY}" class="col-lg-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-warning text-dark">
+                                    <i class="fas fa-calendar-star me-2"></i>
+                                    So sánh cùng kỳ năm trước (YoY)
+                                    <span class="comparison-period">
+                                        (<span th:text="${#dates.format(yoyStartDate, 'dd/MM/yyyy')}"></span> -
+                                        <span th:text="${#dates.format(yoyEndDate, 'dd/MM/yyyy')}"></span>)
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="comparison-grid">
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Tổng Doanh Thu</div>
+                                            <div class="comparison-value" th:text="${yoyGrossRevenue != null ? #numbers.formatDecimal(yoyGrossRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
+                                        </div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Doanh Thu Thuần</div>
+                                            <div class="comparison-value" th:text="${yoyNetRevenue != null ? #numbers.formatDecimal(yoyNetRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
+                                        </div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Số Đơn Hàng</div>
+                                            <div class="comparison-value" th:text="${yoyOrderCount != null ? #numbers.formatInteger(yoyOrderCount, 0, 'COMMA') : 'N/A'}"></div>
+                                        </div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Giá Trị Đơn TB</div>
+                                            <div class="comparison-value" th:text="${yoyAov != null ? #numbers.formatDecimal(yoyAov/1000, 1, 0, 'COMMA') + 'k' : 'N/A'}"></div>
+                                        </div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Tỷ Lệ Hủy Đơn</div>
+                                            <div class="comparison-value" th:text="${yoyCancellationRate != null ? #numbers.formatPercent(yoyCancellationRate, 1, 1) : 'N/A'}"></div>
+                                        </div>
+                                        <div class="comparison-item">
+                                            <div class="comparison-label">Biên Lợi Nhuận</div>
+                                            <div class="comparison-value" th:text="${yoyGrossMargin != null ? #numbers.formatPercent(yoyGrossMargin, 1, 1) : 'N/A'}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
 
                 <!-- Charts and Visualization -->
@@ -211,7 +389,7 @@
                                     <i class="fas fa-chart-line"></i>
                                     <span>Xu hướng doanh thu theo thời gian</span>
                                 </div>
-                                <div class="chart-container">
+                                <div class="chart-container" onclick="openChartModal('trend')" style="cursor: pointer;">
                                     <canvas id="trendChart"></canvas>
                                 </div>
                             </div>
@@ -226,7 +404,7 @@
                                     <i class="fas fa-map-marked-alt"></i>
                                     <span>Doanh thu theo khu vực</span>
                                 </div>
-                                <div class="chart-container">
+                                <div class="chart-container" onclick="openChartModal('region')" style="cursor: pointer;">
                                     <canvas id="regionChart"></canvas>
                                 </div>
                             </div>
@@ -243,7 +421,7 @@
                                     <i class="fas fa-chart-pie"></i>
                                     <span>Doanh thu theo danh mục</span>
                                 </div>
-                                <div class="chart-container">
+                                <div class="chart-container" onclick="openChartModal('category')" style="cursor: pointer;">
                                     <canvas id="categoryChart"></canvas>
                                 </div>
                             </div>
@@ -258,12 +436,28 @@
                                     <i class="fas fa-star"></i>
                                     <span>Phân tích Pareto (80/20)</span>
                                 </div>
-                                <div class="chart-container">
+                                <div class="chart-container" onclick="openChartModal('pareto')" style="cursor: pointer;">
                                     <canvas id="paretoChart"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Modal -->
+<div class="modal fade" id="chartModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chartModalTitle">Chi tiết biểu đồ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div style="height: 500px;">
+                    <canvas id="modalChart"></canvas>
                 </div>
             </div>
         </div>
@@ -273,66 +467,73 @@
 <script th:inline="javascript">
     // Biểu đồ xu hướng doanh thu
     const revenueTrendData = /*[[${revenueTrend}]]*/ [];
+    const prevRevenueTrend = /*[[${prevRevenueTrend}]]*/ [];
+    const yoyRevenueTrend = /*[[${yoyRevenueTrend}]]*/ [];
     const revenueByRegionData = /*[[${revenueByRegion}]]*/ [];
     const revenueByCategoryData = /*[[${revenueByCategory}]]*/ [];
     const paretoData = /*[[${paretoData}]]*/ [];
     const period = /*[[${period}]]*/ 'weekly';
     const startDate = /*[[${#dates.format(startDate, 'yyyy-MM-dd')}]]*/ '';
     const endDate = /*[[${#dates.format(endDate, 'yyyy-MM-dd')}]]*/ '';
+    const comparePeriod = /*[[${comparePeriod}]]*/ false;
+    const compareYoY = /*[[${compareYoY}]]*/ false;
 
     // Tạo biểu đồ xu hướng
+    const trendCtx = document.getElementById('trendChart').getContext('2d');
+    
     if (revenueTrendData && revenueTrendData.length > 0) {
-        const trendCtx = document.getElementById('trendChart').getContext('2d');
-
-        // Định dạng nhãn dựa trên period
-        const formattedLabels = revenueTrendData.map(item => {
-            const value = item[0];
-            if (period === 'daily' || period === 'custom') {
-                if (value.includes('-')) {
-                    const [year, month, day] = value.split('-');
-                    return `${day}/${month}`;
-                }
-                return value;
-            } else if (value.includes('Q')) {
-                return value.replace('-Q', ' Quý ');
-            } else if (value.includes('-W')) {
-                return value.replace('-W', ' Tuần ');
-            } else if (value.includes('-') && value.length === 7) {
-                const [year, month] = value.split('-');
-                return `Tháng ${month}/${year}`;
-            } else if (value.length === 4) {
-                return `Năm ${value}`;
-            }
-            return value;
-        });
-
+        console.log('Revenue data:', revenueTrendData);
+        
+        const datasets = [{
+            label: 'Doanh thu hiện tại',
+            data: revenueTrendData.map(item => Number(item[1]) / 1000000),
+            borderColor: '#0d6efd',
+            backgroundColor: 'rgba(13,110,253,0.1)',
+            borderWidth: 3,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: false,
+            tension: 0.3
+        }];
+        
+        if (comparePeriod && prevRevenueTrend && prevRevenueTrend.length > 0) {
+            datasets.push({
+                label: 'Kỳ trước',
+                data: prevRevenueTrend.map(item => Number(item[1]) / 1000000),
+                borderColor: '#36b9cc',
+                borderDash: [5, 5],
+                borderWidth: 3,
+                pointRadius: 5,
+                fill: false,
+                tension: 0.3
+            });
+        }
+        
+        if (compareYoY && yoyRevenueTrend && yoyRevenueTrend.length > 0) {
+            datasets.push({
+                label: 'Cùng kỳ năm trước',
+                data: yoyRevenueTrend.map(item => Number(item[1]) / 1000000),
+                borderColor: '#f6c23e',
+                borderDash: [10, 5],
+                borderWidth: 3,
+                pointRadius: 5,
+                fill: false,
+                tension: 0.3
+            });
+        }
+        
         new Chart(trendCtx, {
             type: 'line',
             data: {
-                labels: formattedLabels,
-                datasets: [{
-                    label: 'Doanh thu',
-                    data: revenueTrendData.map(item => item[1] / 1000000),
-                    borderColor: '#0d6efd',
-                    backgroundColor: 'rgba(13,110,253,0.1)',
-                    fill: true,
-                    tension: 0.3
-                }]
+                labels: revenueTrendData.map(item => item[0]),
+                datasets: datasets
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return 'Doanh thu: ' + context.parsed.y.toLocaleString('vi-VN') + ' triệu';
-                            }
-                        }
-                    }
-                },
+                maintainAspectRatio: false,
                 scales: {
                     y: {
+                        beginAtZero: true,
                         ticks: {
                             callback: function(value) {
                                 return value + ' triệu';
@@ -342,22 +543,30 @@
                 }
             }
         });
+    } else {
+        console.log('No revenue trend data');
     }
 
+
+
     // Biểu đồ doanh thu theo khu vực
+    const regionCtx = document.getElementById('regionChart').getContext('2d');
     if (revenueByRegionData && revenueByRegionData.length > 0) {
-        const regionCtx = document.getElementById('regionChart').getContext('2d');
         new Chart(regionCtx, {
             type: 'doughnut',
             data: {
                 labels: revenueByRegionData.map(item => item[0]),
                 datasets: [{
-                    data: revenueByRegionData.map(item => item[1] / 1000000),
+                    data: revenueByRegionData.map(item => {
+                        const value = parseFloat(item[1]);
+                        return isNaN(value) ? 0 : value / 1000000;
+                    }),
                     backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     tooltip: {
                         callbacks: {
@@ -369,50 +578,68 @@
                 }
             }
         });
+    } else {
+        regionCtx.font = '16px Arial';
+        regionCtx.fillText('Không có dữ liệu', 50, 50);
     }
 
     // Biểu đồ doanh thu theo danh mục
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
     if (revenueByCategoryData && revenueByCategoryData.length > 0) {
-        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
         new Chart(categoryCtx, {
             type: 'bar',
             data: {
                 labels: revenueByCategoryData.map(item => item[0]),
                 datasets: [{
                     label: 'Doanh thu (triệu)',
-                    data: revenueByCategoryData.map(item => item[1] / 1000000),
+                    data: revenueByCategoryData.map(item => {
+                        const value = parseFloat(item[1]);
+                        return isNaN(value) ? 0 : value / 1000000;
+                    }),
                     backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: { legend: { display: false } }
             }
         });
+    } else {
+        categoryCtx.font = '16px Arial';
+        categoryCtx.fillText('Không có dữ liệu', 50, 50);
     }
 
     // Biểu đồ Pareto
+    const paretoCtx = document.getElementById('paretoChart').getContext('2d');
     if (paretoData && paretoData.length > 0) {
-        const paretoCtx = document.getElementById('paretoChart').getContext('2d');
         new Chart(paretoCtx, {
             type: 'bar',
             data: {
                 labels: paretoData.map(item => item[0]),
                 datasets: [{
                     label: 'Doanh thu',
-                    data: paretoData.map(item => item[1] / 1000000),
+                    data: paretoData.map(item => {
+                        const value = parseFloat(item[1]);
+                        return isNaN(value) ? 0 : value / 1000000;
+                    }),
                     backgroundColor: '#4e73df'
                 }, {
                     label: 'Tỷ lệ tích lũy',
-                    data: paretoData.map(item => item[2]),
+                    data: paretoData.map(item => {
+                        const value = parseFloat(item[2]);
+                        return isNaN(value) ? 0 : value;
+                    }),
                     type: 'line',
                     borderColor: '#e74a3b',
+                    borderWidth: 2,
                     backgroundColor: 'transparent',
                     yAxisID: 'y1'
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         type: 'linear',
@@ -432,6 +659,9 @@
                 }
             }
         });
+    } else {
+        paretoCtx.font = '16px Arial';
+        paretoCtx.fillText('Không có dữ liệu', 50, 50);
     }
 
     // Drilldown functionality
@@ -483,6 +713,126 @@
             }
         }
     });
+    
+    // Phóng to biểu đồ
+    function openChartModal(type) {
+        const modal = new bootstrap.Modal(document.getElementById('chartModal'));
+        const modalTitle = document.getElementById('chartModalTitle');
+        const modalCtx = document.getElementById('modalChart').getContext('2d');
+        
+        if (window.modalChartInstance) {
+            window.modalChartInstance.destroy();
+        }
+        
+        switch(type) {
+            case 'trend':
+                modalTitle.textContent = 'Xu hướng doanh thu theo thời gian';
+                if (revenueTrendData && revenueTrendData.length > 0) {
+                    window.modalChartInstance = new Chart(modalCtx, {
+                        type: 'line',
+                        data: {
+                            labels: revenueTrendData.map(item => item[0]),
+                            datasets: [{
+                                label: 'Doanh thu hiện tại',
+                                data: revenueTrendData.map(item => Number(item[1]) / 1000000),
+                                borderColor: '#0d6efd',
+                                backgroundColor: 'rgba(13,110,253,0.1)',
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                }
+                break;
+            case 'region':
+                modalTitle.textContent = 'Doanh thu theo khu vực';
+                if (revenueByRegionData && revenueByRegionData.length > 0) {
+                    window.modalChartInstance = new Chart(modalCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: revenueByRegionData.map(item => item[0]),
+                            datasets: [{
+                                data: revenueByRegionData.map(item => item[1] / 1000000),
+                                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                }
+                break;
+            case 'category':
+                modalTitle.textContent = 'Doanh thu theo danh mục';
+                if (revenueByCategoryData && revenueByCategoryData.length > 0) {
+                    window.modalChartInstance = new Chart(modalCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: revenueByCategoryData.map(item => item[0]),
+                            datasets: [{
+                                label: 'Doanh thu (triệu)',
+                                data: revenueByCategoryData.map(item => item[1] / 1000000),
+                                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                }
+                break;
+            case 'pareto':
+                modalTitle.textContent = 'Phân tích Pareto (80/20)';
+                if (paretoData && paretoData.length > 0) {
+                    window.modalChartInstance = new Chart(modalCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: paretoData.map(item => item[0]),
+                            datasets: [{
+                                label: 'Doanh thu',
+                                data: paretoData.map(item => item[1] / 1000000),
+                                backgroundColor: '#4e73df'
+                            }, {
+                                label: 'Tỷ lệ tích lũy',
+                                data: paretoData.map(item => item[2]),
+                                type: 'line',
+                                borderColor: '#e74a3b',
+                                backgroundColor: 'transparent',
+                                yAxisID: 'y1'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'left'
+                                },
+                                y1: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'right',
+                                    min: 0,
+                                    max: 100,
+                                    grid: { drawOnChartArea: false }
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
+        }
+        
+        modal.show();
+    }
 </script>
 </body>
 </html>

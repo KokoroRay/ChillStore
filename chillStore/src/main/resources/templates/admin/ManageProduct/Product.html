@@ -127,7 +127,7 @@
                         <img th:if="${product.imageUrl}"
                              th:src="${product.imageUrl}"
                              th:alt="${product.name}"
-                             class="product-image">
+                             style="width: 180px; height: 180px; object-fit: contain; border-radius: 6px; background: #f5f5f5;">
                         <div th:unless="${product.imageUrl}" class="no-image">
                             <i class="fas fa-image"></i>
                         </div>

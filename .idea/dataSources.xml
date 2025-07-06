@@ -15,7 +15,7 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="group4_swp_chillStore_Final11@localhost" uuid="78d643be-fd16-4b3f-bff8-902c8e6212de">
+    <data-source source="LOCAL" name="group4_swp_chillStore_Final11@localhost" uuid="24256b52-9269-4391-9dd7-f8fcc7b5fc7a">
       <driver-ref>sqlserver.ms</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

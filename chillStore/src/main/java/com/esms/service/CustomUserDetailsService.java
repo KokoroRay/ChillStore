@@ -62,7 +62,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         List<GrantedAuthority> authorities  = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
         return new org.springframework.security.core.userdetails.User(
                 customer.getEmail(),
                 customer.getPassword(),

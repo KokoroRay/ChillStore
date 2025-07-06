@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,6 +28,25 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Override
+    public void addItemToCart(int customerId, int productId, int quantity) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        Cart existingCartItem = cartRepository.findByCustomerAndProduct(customer, product);
+
+        if (existingCartItem != null) {
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+        } else {
+            existingCartItem = new Cart(customer, product, quantity);
+            existingCartItem.setCreatedAt(LocalDateTime.now());
+        }
+
+        cartRepository.save(existingCartItem);
+    }
     @Override
     public List<CartItemDTO> getCartItems(int customerId) {
         return cartRepository.findCartItemsByCustomerId(customerId);
@@ -79,6 +99,21 @@ public class CartServiceImpl implements CartService {
         }
 
         return Math.max(total, 0);
+    }
+    @Override
+    public void addItemToCart(int customerId, int productId, int quantity) {
+        Cart cartItem = cartRepository.findByCustomerAndProduct(customerId, productId);
+        if (cartItem != null) {
+            // Nếu đã tồn tại thì tăng số lượng
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        } else {
+            // Nếu chưa có thì tạo mới
+            cartItem = new Cart();
+            cartItem.setCustomer(customer);
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+        }
+        cartRepository.save(cartItem);
     }
 
 }

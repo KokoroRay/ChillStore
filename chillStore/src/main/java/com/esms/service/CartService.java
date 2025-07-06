@@ -5,6 +5,7 @@ import com.esms.model.dto.CartItemDTO;
 import java.util.List;
 
 public interface CartService {
+    void addItemToCart(int customerId, int productId, int quantity);
     List<CartItemDTO> getCartItems(int customerId);
 
     void updateQuantity(int cartId, int quantity);

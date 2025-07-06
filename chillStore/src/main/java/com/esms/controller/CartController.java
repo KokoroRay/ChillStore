@@ -25,7 +25,7 @@ public class CartController {
     @Autowired
     private VoucherService voucherService;
 
-    @GetMapping("/{customerId}")
+    @GetMapping("")
     public String viewCart(@RequestParam("customerId") int customerId,
                            @RequestParam(value = "voucher", required = false) String voucherCode,
                            Model model) {
@@ -72,6 +72,14 @@ public class CartController {
         model.addAttribute("total", total);
 
         return "cart";
+    }
+
+    @PostMapping("/add")
+    public String addToCart(@RequestParam int customerId,
+                            @RequestParam int productId,
+                            @RequestParam(defaultValue = "1") int quantity) {
+        cartService.addItemToCart(customerId, productId, quantity);
+        return "redirect:/cart?customerId=" + customerId;
     }
 
 

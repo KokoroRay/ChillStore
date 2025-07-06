@@ -74,12 +74,12 @@
   </button>
 
 </div>
-</div><br>
+<br>
 
 <div class="image-row">
-  <img src="/images/maygiac.png">
-  <img src="/images/robot.png">
-  <img src="/images/tulanh3.png">
+  <img src="/images/maygiac.png" alt="Banner quảng cáo">
+  <img src="/images/robot.png" alt="Banner quảng cáo">
+  <img src="/images/tulanh3.png" alt="Banner quảng cáo">
 </div>
 
 
@@ -102,7 +102,7 @@
         <p>Quạt điều hòa</p>
       </a>
       <a th:href="@{'/home?category=máy giặc'}" class="category-item">
-        <img src="/images/maygiaci.png" alt="Máy giặc">
+        <img src="/images/maygiaci.png" alt="Máy giặt">
         <p>Máy giặc</p>
       </a>
       <a th:href="@{'/home?category=máy lọc nước'}" class="category-item">
@@ -140,7 +140,7 @@
   <a th:if="${currentPage + 1 < totalPages}" th:href="@{'/home?page=' + ${nextPage}}">Sau »</a>
 
 </div>
-</div>
+
 <a class="container">
   <div class="video-background-container">
     <video autoplay muted loop playsinline class="video-background">

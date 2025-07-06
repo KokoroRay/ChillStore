@@ -8,6 +8,15 @@ container {
 .main-content {
     grid-column: 2 / span 10;
 }
+.carousel img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    max-width: 100%;
+    display: block;
+    object-fit: contain;
+}
+
 
 /*category*/
 .category-section {
@@ -88,12 +97,19 @@ container {
     font-size: 96px;
     font-weight: bold;
     margin-bottom: 20px;
+    color: white;
 }
 
 .video-overlay p {
     font-size: 1.2rem;
     margin-bottom: 30px;
+    color: white;
 }
+.video-overlay a {
+    text-decoration: none;
+    color: inherit;
+}
+
 
 .btn-read {
     display: inline-block;

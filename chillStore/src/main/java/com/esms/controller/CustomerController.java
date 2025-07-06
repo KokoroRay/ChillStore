@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -170,6 +172,7 @@ public class CustomerController {
         dto.setCreatedAt(customer.getCreated_at());
         dto.setUpdatedAt(customer.getUpdated_at());
         dto.setLocked(customer.isLocked());
+        dto.setAvatarUrl(customer.getAvatar_url());
         return dto;
     }
 
@@ -185,6 +188,7 @@ public class CustomerController {
         customer.setCreated_at(dto.getCreatedAt() != null ? dto.getCreatedAt() : LocalDateTime.now());
         customer.setUpdated_at(LocalDateTime.now());
         customer.setLocked(dto.isLocked());
+        customer.setAvatar_url(dto.getAvatarUrl());
         return customer;
     }
 }

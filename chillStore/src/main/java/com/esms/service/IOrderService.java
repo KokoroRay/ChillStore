@@ -8,4 +8,6 @@ public interface IOrderService {
     List<OrderDto> searchOrders(String keyword, String status);
     void confirmOrder(Integer orderId);
     java.util.List<com.esms.model.dto.OrderItemDetailDto> getOrderItemsDetail(Integer orderId);
+    void updateOrderStatus(Integer orderId, String status, String refundReason);
+    void confirmRefund(Integer orderId);
 } 

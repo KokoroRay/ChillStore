@@ -1,6 +1,7 @@
 package com.esms.model.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.parameters.P;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -47,6 +48,31 @@ public class Order {
         this.totalAmount = totalAmount;
         this.status = status;
         this.paymentMethod = paymentMethod;
+    }
+
+    // Xử lý hoàn tiền khi customer thanh toán bằng VNPay nhưng hủy đơn hàng
+    @Transient
+    public String getRefundStatus() {
+        if ("Cancelled".equals(this.status) && "VNpay".equals(this.paymentMethod)) {
+            if (discountAmount == null || discountAmount.intValue() == 0) return "pending_refund";
+            return discountAmount.intValue() == 2 ? "refunded" : "pending_refund";
+        }
+        return null;
+    }
+
+    public void setRefundStatus(String refundStatus) {
+        if ("VNpay".equals(this.paymentMethod)) {
+            switch (refundStatus) {
+                case "pending_refund":
+                    this.discountAmount = BigDecimal.ONE;
+                    break;
+                case "refunded":
+                    this.discountAmount = new BigDecimal(2);
+                    break;
+                default:
+                    this.discountAmount = BigDecimal.ONE;
+            }
+        }
     }
 
     public Integer getOrderId() {

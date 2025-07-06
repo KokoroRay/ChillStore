@@ -87,4 +87,13 @@ public class OrderDto {
     public void setItemsCount(int itemsCount) {
         this.itemsCount = itemsCount;
     }
+
+    // Method to get refund status for VNPay cancelled orders
+    public String getRefundStatus() {
+        if ("Cancelled".equals(this.status) && "VNpay".equals(this.paymentMethod)) {
+            if (discountAmount == null || discountAmount.intValue() == 0) return "pending_refund";
+            return discountAmount.intValue() == 2 ? "refunded" : "pending_refund";
+        }
+        return null;
+    }
 } 

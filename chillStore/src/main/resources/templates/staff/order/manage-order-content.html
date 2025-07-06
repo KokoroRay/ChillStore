@@ -1,0 +1,389 @@
+<div th:fragment="content(orders, statuses, keyword, selectedStatus, searchError)">
+
+    <div class="search-form">
+        <form th:action="@{/staff/orders}" method="get" class="d-flex w-100">
+            <input type="text"
+                   name="keyword"
+                   class="form-control"
+                   placeholder="Search by Receipt or Customer"
+                   th:value="${keyword}">
+            <select name="status" class="form-control ms-2" style="max-width: 150px;" onchange="this.form.submit()">
+                <option value="">All status</option>
+                <option th:each="st : ${statuses}"
+                        th:value="${st}"
+                        th:text="${st}"
+                        th:selected="${st == selectedStatus}"></option>
+            </select>
+            <button type="submit" class="btn btn-outline-primary ms-2">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </form>
+    </div>
+
+    <!-- Modal for refund status -->
+    <div class="modal fade" id="refundModal" tabindex="-1" aria-labelledby="refundModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="refundModalLabel">Select Refund Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Refund Status</label>
+                        <select class="form-select" id="refundStatusSelect">
+                            <option value="pending_refund">Pending Refund</option>
+                            <option value="refunded">Refunded</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitRefundStatus()">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${searchError}" class="alert alert-danger" th:text="${searchError}"></div>
+
+    <div th:if="${#lists.isEmpty(orders)}" class="text-center text-muted py-5">
+        <h4><i class="fas fa-inbox"></i> No orders found</h4>
+        <p>Try changing your search criteria.</p>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(orders)}" class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Order List</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0 order-table">
+                        <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Customer Name</th>
+                            <th>Order Date</th>
+                            <th>Items</th>
+                            <th>Total Amount</th>
+                            <th class="status-column">Status</th>
+                            <th>Payment Method</th>
+                            <th>Receipt</th>
+                            <th>Details</th>
+                            <th class="action-column">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order, i : ${orders}">
+                            <td th:text="${i.count}"></td>
+                            <td th:text="${order.customerName}"></td>
+                            <td th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+                            <td th:text="${order.itemsCount + ' item'}"></td>
+                            <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA')}"></td>
+                            <td class="status-column">
+                                <span class="badge"
+                                      th:classappend="${order.status == 'Pending'} ? ' status-pending' :
+                                      (order.status == 'Shipped' ? ' status-shipped' :
+                                      (order.status == 'Delivered' ? ' status-delivered' :
+                                      (order.status == 'Cancelled' ? ' status-cancelled' :
+                                      (order.status == 'Paid' ? ' status-paid' : ' bg-secondary'))))"
+                                      th:text="${order.status}"></span>
+
+                                <div th:if="${order.status == 'Cancelled' and order.paymentMethod == 'VNpay'}">
+                                    <span th:text="${order.refundStatus != null ? order.refundStatus : 'pending_refund'}"
+                                          th:classappend="${(order.refundStatus != null ? order.refundStatus : 'pending_refund') == 'pending_refund'} ? ' refund-pending' : ' refund-completed'"
+                                          class="badge refund-status"></span>
+                                </div>
+                            </td>
+                            <td th:text="${order.paymentMethod}"></td>
+                            <td th:text="${order.orderId}"></td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-sm"
+                                        th:attr="data-order-id=${order.orderId}" onclick="showOrderDetail(this)">
+                                    <i class="fas fa-eye"></i> Detail
+                                </button>
+                            </td>
+                            <td>
+                                <div th:if="${order.status == 'Pending' or order.status == 'Shipped'}"
+                                     th:id="'action-btns-' + ${order.orderId}">
+
+                                    <!-- Nút Confirm cho Pending -> Shipped -->
+                                    <button th:if="${order.status == 'Pending'}"
+                                            type="button" class="btn btn-confirm btn-sm me-1"
+                                            th:onclick="'updateOrderStatus(' + ${order.orderId} + ', \'Shipped\', this)'">
+                                        <i class="fas fa-check"></i> Confirm
+                                    </button>
+
+                                    <!-- Nút Confirm cho Shipped -> Delivered -->
+                                    <button th:if="${order.status == 'Shipped'}"
+                                            type="button" class="btn btn-confirm btn-sm me-1"
+                                            th:onclick="'updateOrderStatus(' + ${order.orderId} + ', \'Delivered\', this)'">
+                                        <i class="fas fa-check"></i> Confirm
+                                    </button>
+
+                                    <!-- Nút Cancel chung -->
+                                    <button type="button" class="btn btn-cancel btn-sm"
+                                            th:attr="data-payment-method=${order.paymentMethod}"
+                                            th:onclick="'handleCancelOrder(' + ${order.orderId} + ', this)'">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </div>
+
+                                <div th:if="${order.status != 'Pending' and order.status != 'Shipped'}"
+                                     th:id="'action-btns-' + ${order.orderId}">
+                                    <span th:text="${order.status}"></span>
+                                    
+                                    <div th:if="${order.status == 'Cancelled' and order.paymentMethod == 'VNpay'}">
+                                        <button th:if="${order.refundStatus == null or order.refundStatus == 'pending_refund'}"
+                                                type="button" class="btn btn-warning btn-sm mt-1 d-block"
+                                                th:onclick="'confirmRefund(' + ${order.orderId} + ', this)'">
+                                            <i class="fas fa-money-bill-wave"></i> Confirm Refund
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal hiển thị chi tiết sản phẩm đã mua -->
+    <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDetailModalLabel">Receipt <span id="receiptNumber"
+                                                                                     class="text-primary"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                        </tr>
+                        </thead>
+                        <tbody id="orderDetailTableBody">
+                        <!-- Nội dung sẽ được fill bằng JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentOrderId = null;
+        let currentBtn = null;
+
+        function showOrderDetail(btn) {
+            var orderId = btn.getAttribute('data-order-id');
+            document.getElementById('receiptNumber').textContent = '#' + orderId;
+            fetch('/staff/orders/' + orderId + '/items')
+                .then(res => res.json())
+                .then(items => {
+                    let tbody = document.getElementById('orderDetailTableBody');
+                    tbody.innerHTML = '';
+                    if (items.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center">No items found</td></tr>';
+                    } else {
+                        items.forEach(item => {
+                            tbody.innerHTML += `<tr>
+              <td>${item.productName}</td>
+              <td>${item.categoryName}</td>
+              <td>${item.quantity}</td>
+              <td>${item.priceEach.toLocaleString()}</td>
+            </tr>`;
+                        });
+                    }
+                    var modal = new bootstrap.Modal(document.getElementById('orderDetailModal'));
+                    modal.show();
+                });
+        }
+
+        function handleCancelOrder(orderId, btn) {
+            const paymentMethod = btn.getAttribute('data-payment-method');
+
+            if (paymentMethod === 'VNpay') {
+                // Hiển thị modal chọn refund status cho VNpay
+                showRefundModal(orderId, btn);
+            } else {
+                // Hủy trực tiếp cho các phương thức khác
+                updateOrderStatus(orderId, 'Cancelled', btn);
+            }
+        }
+
+        function showRefundModal(orderId, btn) {
+            currentOrderId = orderId;
+            currentBtn = btn;
+            var refundModal = new bootstrap.Modal(document.getElementById('refundModal'));
+            refundModal.show();
+        }
+
+        function submitRefundStatus() {
+            const refundStatus = document.getElementById('refundStatusSelect').value;
+            updateOrderStatusWithReason(currentOrderId, 'Cancelled', refundStatus, currentBtn);
+
+            // Close modal
+            var refundModal = bootstrap.Modal.getInstance(document.getElementById('refundModal'));
+            if (refundModal) {
+                refundModal.hide();
+            }
+        }
+
+        function updateOrderStatusWithReason(orderId, status, refundReason, btn) {
+            const formData = new FormData();
+            formData.append('status', status);
+            formData.append('refundReason', refundReason);
+            
+            fetch(`/staff/orders/${orderId}/update-status`, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (response.ok) {
+                        updateOrderStatusUI(orderId, status, btn, refundReason);
+                    } else {
+                        alert('Có lỗi xảy ra khi cập nhật trạng thái');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra');
+                });
+        }
+
+        function updateOrderStatus(orderId, status, btn) {
+            const formData = new FormData();
+            formData.append('status', status);
+            
+            fetch(`/staff/orders/${orderId}/update-status`, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (response.ok) {
+                        updateOrderStatusUI(orderId, status, btn, null);
+                    } else {
+                        alert('Có lỗi xảy ra khi cập nhật trạng thái');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra');
+                });
+        }
+
+        function updateOrderStatusUI(orderId, status, btn, refundReason) {
+            const row = btn.closest('tr');
+            const statusCell = row.querySelector('td:nth-child(6)');
+            const actionCell = document.getElementById('action-btns-' + orderId);
+
+            // Cập nhật status badge
+            const statusBadge = statusCell.querySelector('span:first-child');
+            statusBadge.textContent = status;
+            statusBadge.className = 'badge ' + getStatusClass(status);
+
+            // Cập nhật action cell dựa trên trạng thái
+            if (status === 'Shipped') {
+                // Trạng thái Shipped: hiển thị nút Confirm và Cancel
+                actionCell.innerHTML = `
+                    <button type="button" class="btn btn-confirm btn-sm me-1" onclick="updateOrderStatus(${orderId}, 'Delivered', this)">
+                        <i class="fas fa-check"></i> Confirm
+                    </button>
+                    <button type="button" class="btn btn-cancel btn-sm" data-payment-method="${getPaymentMethod(row)}" onclick="handleCancelOrder(${orderId}, this)">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                `;
+            } else if (status === 'Cancelled' || status === 'Delivered') {
+                // Trạng thái cuối: chỉ hiển thị text
+                let actionContent = `<span>${status}</span>`;
+                
+                // Thêm nút Confirm Refund cho VNpay cancelled
+                if (status === 'Cancelled' && refundReason === 'pending_refund') {
+                    actionContent += `<button type="button" class="btn btn-warning btn-sm mt-1 d-block" onclick="confirmRefund(${orderId}, this)"><i class="fas fa-money-bill-wave"></i> Confirm Refund</button>`;
+                }
+                
+                actionCell.innerHTML = actionContent;
+            }
+
+            // Hiển thị refund status cho VNpay cancelled
+            if (status === 'Cancelled' && getPaymentMethod(row) === 'VNpay') {
+                const refundStatus = refundReason || 'pending_refund';
+                
+                // Tạo div container cho refund status
+                let refundDiv = statusCell.querySelector('.refund-container');
+                if (!refundDiv) {
+                    refundDiv = document.createElement('div');
+                    refundDiv.className = 'refund-container';
+                    statusCell.appendChild(refundDiv);
+                }
+                
+                refundDiv.innerHTML = `<span class="badge refund-status ${getRefundStatusClass(refundStatus)}">${refundStatus}</span>`;
+            }
+        }
+
+        function getPaymentMethod(row) {
+            return row.querySelector('td:nth-child(7)').textContent.trim();
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Pending': return 'status-pending';
+                case 'Shipped': return 'status-shipped';
+                case 'Delivered': return 'status-delivered';
+                case 'Cancelled': return 'status-cancelled';
+                case 'Paid': return 'status-paid';
+                default: return 'status-pending';
+            }
+        }
+
+        function getRefundStatusClass(refundStatus) {
+            switch(refundStatus) {
+                case 'pending_refund': return 'refund-pending';
+                case 'refunded': return 'refund-completed';
+                default: return 'refund-pending';
+            }
+        }
+
+        function confirmRefund(orderId, btn) {
+            if (confirm('Xác nhận hoàn tiền cho đơn hàng này?')) {
+                fetch(`/staff/orders/${orderId}/confirm-refund`, {
+                    method: 'POST',
+                    body: new FormData()
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Cập nhật UI trực tiếp
+                        const row = btn.closest('tr');
+                        const statusCell = row.querySelector('td:nth-child(6)');
+                        const refundBadge = statusCell.querySelector('.refund-status');
+                        
+                        // Cập nhật refund badge
+                        if (refundBadge) {
+                            refundBadge.textContent = 'refunded';
+                            refundBadge.className = 'badge refund-status refund-completed';
+                        }
+                        
+                        // Xóa nút Confirm Refund
+                        btn.remove();
+                    } else {
+                        alert('Có lỗi xảy ra khi xác nhận hoàn tiền');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra');
+                });
+            }
+        }
+    </script>
+</div>

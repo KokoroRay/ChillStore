@@ -78,7 +78,7 @@ public class CartController {
     public String addToCart(@RequestParam int customerId,
                             @RequestParam int productId,
                             @RequestParam(defaultValue = "1") int quantity) {
-        cartService.addItemToCart(customerId, productId, quantity);
+        cartService.addToCart(customerId, productId, quantity);
         return "redirect:/cart?customerId=" + customerId;
     }
 

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,24 +30,29 @@ public class CartServiceImpl implements CartService {
     private CustomerRepository customerRepository;
 
     @Override
-    public void addItemToCart(int customerId, int productId, int quantity) {
+    public void addToCart(int customerId, int productId, int quantity) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Cart existingCartItem = cartRepository.findByCustomerAndProduct(customer, product);
+        Optional<Cart> optionalCart = cartRepository.findByCustomerAndProduct(customer, product);
 
-        if (existingCartItem != null) {
-            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+        Cart cartItem;
+        if (optionalCart.isPresent()) {
+            // Nếu sản phẩm đã có trong giỏ
+            cartItem = optionalCart.get();
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
         } else {
-            existingCartItem = new Cart(customer, product, quantity);
-            existingCartItem.setCreatedAt(LocalDateTime.now());
+            // Nếu chưa có
+            cartItem = new Cart(customer, product, quantity);
+            cartItem.setCreatedAt(LocalDateTime.now());
         }
 
-        cartRepository.save(existingCartItem);
+        cartRepository.save(cartItem);
     }
+
     @Override
     public List<CartItemDTO> getCartItems(int customerId) {
         return cartRepository.findCartItemsByCustomerId(customerId);
@@ -66,24 +72,7 @@ public class CartServiceImpl implements CartService {
         cartRepository.deleteById(cartId);
     }
 
-    @Override
-    public void addToCart(int customerId, int productId, int quantity) {
-        Cart existingCart = cartRepository.findByCustomerAndProduct(customerId, productId);
-        if (existingCart != null) {
-            existingCart.setQuantity(existingCart.getQuantity() + quantity);
-            cartRepository.save(existingCart);
-        } else {
-            Customer customer = customerRepository.findById(customerId).orElse(null);
-            Product product = productRepository.findById(productId).orElse(null);
-            if (customer != null && product != null) {
-                Cart cart = new Cart();
-                cart.setCustomer(customer);
-                cart.setProduct(product);
-                cart.setQuantity(quantity);
-                cartRepository.save(cart);
-            }
-        }
-    }
+
     @Override
     public double calculateTotal(List<CartItemDTO> cartItems, Double voucherDiscountPct, Double voucherDiscountAmount) {
         double total = 0.0;
@@ -100,20 +89,6 @@ public class CartServiceImpl implements CartService {
 
         return Math.max(total, 0);
     }
-    @Override
-    public void addItemToCart(int customerId, int productId, int quantity) {
-        Cart cartItem = cartRepository.findByCustomerAndProduct(customerId, productId);
-        if (cartItem != null) {
-            // Nếu đã tồn tại thì tăng số lượng
-            cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        } else {
-            // Nếu chưa có thì tạo mới
-            cartItem = new Cart();
-            cartItem.setCustomer(customer);
-            cartItem.setProduct(product);
-            cartItem.setQuantity(quantity);
-        }
-        cartRepository.save(cartItem);
-    }
+
 
 }

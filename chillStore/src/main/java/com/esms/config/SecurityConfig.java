@@ -55,7 +55,7 @@ public class SecurityConfig {
                         // giai cấp bị bóc lộ
                         .requestMatchers("/staff/**").hasAnyRole("STAFF", "ADMIN") //có thể qua lại giữ 2 giai cấp
                         //nguồn tiền duy trì hệ thống
-                        .requestMatchers("/customer/**", "/profile", "/cart", "/checkout")
+                        .requestMatchers("/customer/**", "/profile", "/cart","/order","/order-history", "/checkout")
                         .hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
                         .anyRequest().authenticated()
                 )

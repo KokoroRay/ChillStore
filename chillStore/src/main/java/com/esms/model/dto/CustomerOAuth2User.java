@@ -2,6 +2,7 @@ package com.esms.model.dto;
 
 import com.esms.model.entity.Customer;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
@@ -25,7 +26,7 @@ public class CustomerOAuth2User implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
     }
 
     @Override

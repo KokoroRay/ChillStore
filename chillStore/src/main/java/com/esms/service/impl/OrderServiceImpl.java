@@ -1,7 +1,9 @@
 package com.esms.service.impl;
 
+import com.esms.model.dto.CustomerOrderDetailDTO;
 import com.esms.model.dto.OrderDTO;
 import com.esms.model.dto.OrderItemDetailDTO;
+import com.esms.model.entity.Customer;
 import com.esms.model.entity.Order;
 import com.esms.model.entity.OrderItem;
 import com.esms.model.entity.Product;
@@ -114,6 +116,43 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
+    //khúc này của customer khi order
+
+    @Override
+    public List<OrderDTO> getOrderByCustomerId(Integer customerId) {
+        return orderRepository.findByCustomerCustomerId(customerId).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CustomerOrderDetailDTO getCustomerOrderDetail(Integer customerId, Integer orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Invalid order id: " + orderId));
+        if (!order.getCustomer().getCustomerId().equals(customerId)) {
+            throw new IllegalArgumentException("Order dose not belong to the customer");
+        }
+        CustomerOrderDetailDTO detailDTO = new CustomerOrderDetailDTO();
+        detailDTO.setOrderId(order.getOrderId());
+        detailDTO.setOrderDate(order.getOrderDate());
+        detailDTO.setTotalAmount(order.getTotalAmount());
+        detailDTO.setStatus(order.getStatus());
+        detailDTO.setPaymentMethod(order.getPaymentMethod());
+        detailDTO.setDiscountAmount(order.getDiscountAmount());
+        detailDTO.setRefundStatus(order.getRefundStatus());
+        detailDTO.setItems(getOrderItemsDetail(orderId));
+        
+        // Set customer information with null checks
+        Customer customer = order.getCustomer();
+        if (customer != null) {
+            detailDTO.setCustomerName(customer.getName());
+            detailDTO.setCustomerEmail(customer.getEmail());
+            detailDTO.setCustomerPhone(customer.getPhone());
+            detailDTO.setCustomerAddress(customer.getAddress());
+        }
+        
+        return detailDTO;
+    }
+
     private OrderDTO convertToDto(Order order) {
         int itemsCount = orderItemRepository.countItemsByOrderId(order.getOrderId());
         Double totalAmountRaw = orderItemRepository.sumTotalAmountByOrderId(order.getOrderId());
@@ -128,4 +167,5 @@ public class OrderServiceImpl implements IOrderService {
                 order.getPaymentMethod(),
                 itemsCount);
     }
+
 } 

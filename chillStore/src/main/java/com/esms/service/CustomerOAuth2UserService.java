@@ -28,6 +28,8 @@ public class CustomerOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         Customer customer = customerService.processOAuth2User(oAuth2User, registrationId);
-        return oAuth2User;
+        
+        // Create OAuth2User with CUSTOMER role
+        return new CustomerOAuth2User(customer, oAuth2User);
     }
 }

@@ -1,24 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <title>Navigation Bar</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" th:href="@{/css/navigationBar.css}">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/navigationBar.css}">
 </head>
 <body>
 <div th:fragment="navBar">
+    <nav class="horizontal-sidebar">
+        <div class="nav-left">
+            <ul>
+                <li><a href="/">Introduct</a></li>
+                <li><a th:href="@{/product}">Product</a></li>
+                <li><a th:href="@{/discount}">Discount</a></li>
+                <li sec:authorize="hasRole('CUSTOMER')">
+                    <a th:href="@{/order}">Order</a>
+                </li>
+                <li sec:authorize="hasRole('CUSTOMER')">
+                    <a th:href="@{/contact}">Contact</a>
+                </li>
+            </ul>
+        </div>
 
-<<nav class="horizontal-sidebar">
+        <div class="nav-right">
+            <!-- Cart and Avatar for Customer -->
+            <div sec:authorize="hasRole('CUSTOMER')" class="user-actions">
+                <a th:href="@{/customer/cart}" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge">0</span>
+                    <img src="/images/cart.png" alt="cart">
+                </a>
 
-  <ul>
-    <li><a href="/">Introduct</a></li>
-    <li><a href="#product">Product</a></li>
-    <li><a href="#discount">Discount</a></li>
-  </ul>
-</nav>
+                <div class="dropdown" id="avatarDropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <img src="/images/default-avatar.svg" alt="Avatar" class="avatar">
+                    </a>
+                    <ul class="dropdown-menu" id="dropdownMenu">
+                        <li>
+                            <a th:href="@{/customer/wishlist}">
+                                <span class="menu-icon"><img src="/images/wishlists.png" alt="wishlist"></span>
+                                Wishlist
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/customer/profile}">
+                                <span class="menu-icon"><img src="/images/settings.png" alt="profile"></span>
+                                Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/customer/notifications}">
+                                <span class="menu-icon"><img src="/images/notification.png" alt="notification"></span>
+                                Notifications
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/customer/order-history}">
+                                <span class="menu-icon"><img src="/images/order_history.png" alt="order_histtory"></span>
+                                Order History
+                            </a>
+                        </li>
+                        <li>
+                            <form th:action="@{/auth/logout}" method="post" class="logout-form">
+                                <button type="submit" class="logout-btn">
+                                    <span class="menu-icon"><img src="/images/logout.png" alt="logout"></span>
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-</div>
+            <!-- Login/Register for guest -->
+            <div sec:authorize="!isAuthenticated()" class="auth-buttons">
+                <a th:href="@{/auth/login}" class="btn-login">Login</a>
+                <a th:href="@{/auth/register}" class="btn-register">Register</a>
+            </div>
+
+            <!-- Hamburger menu for mobile -->
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul>
+            <li><a href="/">Introduct</a></li>
+            <li><a th:href="@{/product}">Product</a></li>
+            <li><a th:href="@{/discount}">Discount</a></li>
+            <li sec:authorize="hasRole('CUSTOMER')">
+                <a th:href="@{/order}">Order</a>
+            </li>
+            <li sec:authorize="hasRole('CUSTOMER')">
+                <a th:href="@{/contact}">Contact</a>
+            </li>
+        </ul>
+
+        <div sec:authorize="!isAuthenticated()" class="auth-buttons">
+            <a th:href="@{/auth/login}" class="btn-login">Login</a>
+            <a th:href="@{/auth/register}" class="btn-register">Register</a>
+        </div>
+    </div>
+
+
+<script>
+    // Enhanced dropdown functionality
+    const dropdown = document.getElementById('avatarDropdown');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    let dropdownTimeout;
+
+    dropdown.addEventListener('mouseenter', () => {
+        clearTimeout(dropdownTimeout);
+        dropdownMenu.classList.add('active');
+    });
+
+    dropdown.addEventListener('mouseleave', () => {
+        dropdownTimeout = setTimeout(() => {
+            if (!dropdownMenu.matches(':hover')) {
+                dropdownMenu.classList.remove('active');
+            }
+        }, 300); // Buffer time before closing
+    });
+
+    dropdownMenu.addEventListener('mouseenter', () => {
+        clearTimeout(dropdownTimeout);
+    });
+
+    dropdownMenu.addEventListener('mouseleave', () => {
+        dropdownTimeout = setTimeout(() => {
+            dropdownMenu.classList.remove('active');
+        }, 200);
+    });
+
+    // Mobile menu functionality
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('overlay');
+
+    hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.classList.toggle('no-scroll');
+    });
+
+    overlay.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+    });
+
+    // Close mobile menu when clicking on links
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        });
+    });
+
+    // Make navigation sticky on scroll
+    window.addEventListener('scroll', () => {
+        const nav = document.querySelector('.horizontal-sidebar');
+        if (window.scrollY > 50) {
+            nav.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+            nav.style.padding = '8px 20px';
+        } else {
+            nav.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)';
+            nav.style.padding = '10px 20px';
+        }
+    });
+</script>
 </body>
 </html>

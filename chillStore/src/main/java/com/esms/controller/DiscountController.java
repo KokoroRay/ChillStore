@@ -9,6 +9,7 @@ import com.esms.service.CategoryService;
 import com.esms.service.DiscountService;
 import com.esms.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +55,7 @@ public class DiscountController {
      * @return view name
      */
     @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String listDiscounts(Model model,
                                @RequestParam(value = "search", required = false) String search,
                                @RequestParam(value = "status", required = false) String status,
@@ -138,6 +140,7 @@ public class DiscountController {
      * @return redirect to list page
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String defaultDiscountPage(Model model) {
         return "redirect:/admin/discount/list";
     }
@@ -149,6 +152,7 @@ public class DiscountController {
      * @return String tên view
      */
     @GetMapping("/{promoId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String viewDiscountDetail(@PathVariable Integer promoId, Model model) {
         // Lấy thông tin chi tiết discount theo ID
         DiscountDTO discount = discountService.getDiscountById(promoId);
@@ -167,6 +171,7 @@ public class DiscountController {
      * @return view name
      */
     @GetMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showCreateForm(Model model) {
         try {
             // Tạo DTO mới cho discount
@@ -201,6 +206,7 @@ public class DiscountController {
      * @return redirect URL
      */
     @PostMapping("/save")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String saveDiscount(@ModelAttribute DiscountDTO discountDto,
                               @RequestParam(value = "productIds", required = false) List<Integer> productIds,
                               @RequestParam(value = "brandId", required = false) Integer brandId,
@@ -301,6 +307,7 @@ public class DiscountController {
      * @return view name
      */
     @GetMapping("/{id}/edit")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showEditForm(@PathVariable("id") Integer id, Model model) {
         try {
             // Lấy thông tin discount
@@ -335,6 +342,7 @@ public class DiscountController {
      * @return redirect URL
      */
     @PostMapping("/{id}/delete")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String deleteDiscount(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             // Xóa discount
@@ -357,6 +365,7 @@ public class DiscountController {
      * @return String redirect URL
      */
     @PostMapping("/{promoId}/toggle")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String toggleDiscountStatus(@PathVariable Integer promoId, 
                                      @RequestParam Boolean active) {
         try {
@@ -377,6 +386,7 @@ public class DiscountController {
      * @return List<DiscountDTO>
      */
     @GetMapping("/api/list")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @ResponseBody
     public List<DiscountDTO> getDiscountsApi() {
         // Trả về danh sách discount dưới dạng JSON
@@ -389,6 +399,7 @@ public class DiscountController {
      * @return DiscountDTO
      */
     @GetMapping("/api/{promoId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @ResponseBody
     public DiscountDTO getDiscountApi(@PathVariable Integer promoId) {
         // Trả về thông tin discount dưới dạng JSON

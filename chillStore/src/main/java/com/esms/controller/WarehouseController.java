@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,7 @@ public class WarehouseController {
 
     // Hiển thị tất cả các giao dịch kho với phân trang
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String viewWarehouse(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -54,6 +56,7 @@ public class WarehouseController {
 
     // Tìm kiếm theo tên sản phẩm với phân trang
     @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String searchByProductName(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
@@ -82,6 +85,7 @@ public class WarehouseController {
 
     // Hiển thị form nhập kho
     @GetMapping("/import")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showImportForm(Model model) {
         List<Product> products = productService.findAll();
         model.addAttribute("products", products);
@@ -90,6 +94,7 @@ public class WarehouseController {
 
     // Xử lý nhập kho
     @PostMapping("/import")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String importWarehouse(
             @RequestParam("productId") Integer productId,
             @RequestParam("quantity") Integer quantity,
@@ -130,6 +135,7 @@ public class WarehouseController {
 
     // Xem log với phân trang và search
     @GetMapping("/log")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String viewLog(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
@@ -155,6 +161,7 @@ public class WarehouseController {
 
     // Export log warehouse ra file Excel
     @GetMapping("/log/export-excel")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public void exportLogToExcel(@RequestParam(value = "range", required = false, defaultValue = "all") String range, HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=warehouse_log.xlsx");

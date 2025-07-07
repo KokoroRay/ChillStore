@@ -6,12 +6,13 @@ import com.esms.model.dto.ReplyFeedbackDTO;
 import com.esms.service.FeedbackService;
 import com.esms.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/staff/manageFeedback")
+@RequestMapping({"/admin/manageFeedback","/staff/manageFeedback"})
 public class FeedbackController {
 
     @Autowired
@@ -21,12 +22,14 @@ public class FeedbackController {
     private ReplyService replyService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String viewFeedbackList(Model model) {
         model.addAttribute("feedbacks", feedbackService.getAllFeedbacks());
         return "staff/feedback/manageFeedback";
     }
 
     @GetMapping("/{id}/reply")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String showReplyForm(@PathVariable("id") int feedbackId, Model model) {
         FeedbackDTO feedback = feedbackService.getAllFeedbacks()
                 .stream()
@@ -42,6 +45,7 @@ public class FeedbackController {
     }
 
     @PostMapping("/reply")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String submitReply(@ModelAttribute("reply") ReplyFeedbackDTO dto) {
         dto.setStaffId(1);
 

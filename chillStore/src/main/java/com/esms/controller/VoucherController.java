@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +39,7 @@ public class VoucherController {
     private BrandRepository brandRepository;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'Staff')")
     public String listVouchers(
             @RequestParam(name = "keyword", required = false)
             String keyword,
@@ -59,6 +61,7 @@ public class VoucherController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showAddForm(Model model) {
         VoucherDTO voucherDto = new VoucherDTO();
         model.addAttribute("voucherDto", voucherDto);
@@ -71,6 +74,7 @@ public class VoucherController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String addVoucher(
             @Valid @ModelAttribute("voucherDto")
             VoucherDTO voucherDto, BindingResult bindingResult,
@@ -105,6 +109,7 @@ public class VoucherController {
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showEditForm(@PathVariable("id") Integer id, Model model) {
         Voucher voucher = voucherService.getVoucherById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid voucher Id:" + id));
@@ -136,6 +141,7 @@ public class VoucherController {
     }
 
     @PostMapping("/edit/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String editVoucher(@PathVariable("id") Integer id,
                               @Valid @ModelAttribute("voucherDto") VoucherDTO voucherDto,
                               BindingResult bindingResult, Model model) {
@@ -168,6 +174,7 @@ public class VoucherController {
     }
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String deleteVoucher(@PathVariable("id") Integer id) {
         try {
             voucherService.deleteVoucher(id);
@@ -178,6 +185,7 @@ public class VoucherController {
     }
 
     @GetMapping("/categories/search")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @ResponseBody
     public Map<String, Object> searchCategories(
             @RequestParam(name = "q", required = false) String q,
@@ -206,6 +214,7 @@ public class VoucherController {
     }
 
     @GetMapping("/brands/search")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @ResponseBody
     public Map<String, Object> searchBrands(
             @RequestParam(name = "q", required = false) String q,

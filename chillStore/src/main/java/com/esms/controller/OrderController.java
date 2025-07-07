@@ -4,6 +4,7 @@ import com.esms.model.dto.OrderDTO;
 import com.esms.model.dto.OrderItemDetailDTO;
 import com.esms.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class OrderController {
     private IOrderService orderService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String listOrders(@RequestParam(value = "keyword", required = false) String keyword,
                              @RequestParam(value = "status", required = false) String status,
                              Model model) {
@@ -43,18 +45,21 @@ public class OrderController {
     }
 
     @PostMapping("/confirm/{orderId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String confirmOrder(@PathVariable Integer orderId) {
         orderService.confirmOrder(orderId);
         return "redirect:/staff/orders";
     }
 
     @GetMapping("/{orderId}/items")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @ResponseBody
     public java.util.List<OrderItemDetailDTO> getOrderItems(@PathVariable Integer orderId) {
         return orderService.getOrderItemsDetail(orderId);
     }
 
     @PostMapping("/{orderId}/update-status")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @ResponseBody
     public String updateOrderStatus(
             @PathVariable Integer orderId,
@@ -69,6 +74,7 @@ public class OrderController {
     }
 
     @PostMapping("/{orderId}/confirm-refund")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @ResponseBody
     public String confirmRefund(@PathVariable Integer orderId) {
         try {

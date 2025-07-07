@@ -1,7 +1,6 @@
 package com.esms.service;
 
-import com.esms.model.dto.DiscountDto;
-import com.esms.model.entity.Discount;
+import com.esms.model.dto.DiscountDTO;
 
 import java.util.List;
 
@@ -13,57 +12,57 @@ public interface DiscountService {
     
     /**
      * Lấy tất cả discount
-     * @return List<DiscountDto>
+     * @return List<DiscountDTO>
      */
-    List<DiscountDto> getAllDiscounts();
+    List<DiscountDTO> getAllDiscounts();
     
     /**
      * Lấy discount theo ID
      * @param promoId ID của discount
-     * @return DiscountDto
+     * @return DiscountDTO
      */
-    DiscountDto getDiscountById(Integer promoId);
+    DiscountDTO getDiscountById(Integer promoId);
     
     /**
      * Lấy discount theo code
      * @param code mã code của discount
-     * @return DiscountDto
+     * @return DiscountDTO
      */
-    DiscountDto getDiscountByCode(String code);
+    DiscountDTO getDiscountByCode(String code);
     
     /**
      * Lấy tất cả discount đang hoạt động
-     * @return List<DiscountDto>
+     * @return List<DiscountDTO>
      */
-    List<DiscountDto> getActiveDiscounts();
+    List<DiscountDTO> getActiveDiscounts();
     
     /**
      * Lấy discount theo loại áp dụng
      * @param applyType loại áp dụng (product, brand, category)
-     * @return List<DiscountDto>
+     * @return List<DiscountDTO>
      */
-    List<DiscountDto> getDiscountsByApplyType(String applyType);
+    List<DiscountDTO> getDiscountsByApplyType(String applyType);
     
     /**
      * Lấy discount đang trong thời gian áp dụng
-     * @return List<DiscountDto>
+     * @return List<DiscountDTO>
      */
-    List<DiscountDto> getCurrentActiveDiscounts();
+    List<DiscountDTO> getCurrentActiveDiscounts();
     
     /**
      * Tạo mới discount
      * @param discountDto thông tin discount cần tạo
-     * @return DiscountDto
+     * @return DiscountDTO
      */
-    DiscountDto createDiscount(DiscountDto discountDto);
+    DiscountDTO createDiscount(DiscountDTO discountDto);
     
     /**
      * Cập nhật discount
      * @param promoId ID của discount
      * @param discountDto thông tin discount cần cập nhật
-     * @return DiscountDto
+     * @return DiscountDTO
      */
-    DiscountDto updateDiscount(Integer promoId, DiscountDto discountDto);
+    DiscountDTO updateDiscount(Integer promoId, DiscountDTO discountDto);
     
     /**
      * Xóa discount
@@ -75,9 +74,9 @@ public interface DiscountService {
      * Kích hoạt/vô hiệu hóa discount
      * @param promoId ID của discount
      * @param active trạng thái mới
-     * @return DiscountDto
+     * @return DiscountDTO
      */
-    DiscountDto toggleDiscountStatus(Integer promoId, Boolean active);
+    DiscountDTO toggleDiscountStatus(Integer promoId, Boolean active);
     
     /**
      * Tìm kiếm và lọc discount theo nhiều tiêu chí
@@ -90,9 +89,9 @@ public interface DiscountService {
      * @param brandId ID brand
      * @param productId ID product
      * @param discountRange Khoảng discount percentage
-     * @return List<DiscountDto>
+     * @return List<DiscountDTO>
      */
-    List<DiscountDto> searchAndFilterDiscounts(String search, String status, String applyType,
-                                              String startDate, String endDate, Integer categoryId,
-                                              Integer brandId, Integer productId, String discountRange);
+    List<DiscountDTO> searchAndFilterDiscounts(String search, String status, String applyType,
+                                               String startDate, String endDate, Integer categoryId,
+                                               Integer brandId, Integer productId, String discountRange);
 } 

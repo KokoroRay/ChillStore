@@ -2,7 +2,7 @@ package com.esms.controller;
 
 import com.esms.exception.EmailAlreadyUsedException;
 import com.esms.exception.UserNotFoundException;
-import com.esms.model.dto.CustomerDto;
+import com.esms.model.dto.CustomerDTO;
 import com.esms.model.entity.Customer;
 import com.esms.service.CustomerService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,8 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +32,7 @@ public class CustomerController {
 
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String getAllCustomers(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String search,
@@ -67,12 +67,14 @@ public class CustomerController {
     }
 
     @GetMapping("/addform")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showCreateForm(Model model) {
-        model.addAttribute("customerDto", new CustomerDto());
+        model.addAttribute("customerDto", new CustomerDTO());
         return "admin/customer/addform";
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showEditForm(@PathVariable Integer id, Model model) {
         Customer customer = customerService.getCustomerById(id);
         model.addAttribute("customerDto", convertToDto(customer));
@@ -80,8 +82,9 @@ public class CustomerController {
     }
 
     @PostMapping("/save")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String createCustomer(
-            @Valid @ModelAttribute("customerDto") CustomerDto customerDto,
+            @Valid @ModelAttribute("customerDto") CustomerDTO customerDto,
             BindingResult result,
             Model model,
             RedirectAttributes redirectAttributes) {
@@ -99,9 +102,10 @@ public class CustomerController {
     }
 
     @PostMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String updateCustomer(
             @PathVariable Integer id,
-            @Valid @ModelAttribute("customerDto") CustomerDto customerDto,
+            @Valid @ModelAttribute("customerDto") CustomerDTO customerDto,
             BindingResult result,
             Model model,
             RedirectAttributes redirectAttributes) {
@@ -121,6 +125,7 @@ public class CustomerController {
     }
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String deleteCustomer(
             @PathVariable Integer id,
             RedirectAttributes redirectAttributes) {
@@ -134,12 +139,14 @@ public class CustomerController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showAddForm(Model model) {
-        model.addAttribute("customerDto", new CustomerDto());
+        model.addAttribute("customerDto", new CustomerDTO());
         return "admin/customer/addform";
     }
 
     @GetMapping("/suggest")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @ResponseBody
     public List<String> suggestCustomer(@RequestParam("keyword") String keyword,
                                         @RequestParam("type") String type) {
@@ -147,6 +154,7 @@ public class CustomerController {
     }
 
     @GetMapping("/unlock/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String unlockCustomer(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         try {
             Customer customer = customerService.getCustomerById(id);
@@ -159,8 +167,8 @@ public class CustomerController {
         return "redirect:/admin/customer";
     }
 
-    private CustomerDto convertToDto(Customer customer) {
-        CustomerDto dto = new CustomerDto();
+    private CustomerDTO convertToDto(Customer customer) {
+        CustomerDTO dto = new CustomerDTO();
         dto.setCustomerId(customer.getCustomerId());
         dto.setName(customer.getName());
         dto.setDisplayName(customer.getDisplay_name());
@@ -176,7 +184,7 @@ public class CustomerController {
         return dto;
     }
 
-    private Customer convertToEntity(CustomerDto dto) {
+    private Customer convertToEntity(CustomerDTO dto) {
         Customer customer = new Customer();
         customer.setName(dto.getName());
         customer.setDisplay_name(dto.getDisplayName());

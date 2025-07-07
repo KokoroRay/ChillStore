@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-public class VoucherDto {
+public class VoucherDTO {
 
     private Integer voucher_id;
 

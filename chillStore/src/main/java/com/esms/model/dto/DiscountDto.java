@@ -12,7 +12,7 @@ import java.util.List;
  * @version 1.0
  * @since 2024
  */
-public class DiscountDto {
+public class DiscountDTO {
     
     // ==================== BASIC INFORMATION ====================
     /**
@@ -104,7 +104,7 @@ public class DiscountDto {
      * Constructor mặc định (không tham số)
      * Cần thiết cho Spring MVC
      */
-    public DiscountDto() {
+    public DiscountDTO() {
         // Constructor mặc định
     }
     
@@ -126,10 +126,10 @@ public class DiscountDto {
      * @param brandId ID brand
      * @param categoryId ID category
      */
-    public DiscountDto(Integer promoId, String code, String description, BigDecimal discountPct,
-                      LocalDate startDate, LocalDate endDate, Boolean active, Integer createdBy,
-                      String applyType, String adminName, List<String> productNames, Integer productCount,
-                      List<Integer> productIds, Integer brandId, Integer categoryId) {
+    public DiscountDTO(Integer promoId, String code, String description, BigDecimal discountPct,
+                       LocalDate startDate, LocalDate endDate, Boolean active, Integer createdBy,
+                       String applyType, String adminName, List<String> productNames, Integer productCount,
+                       List<Integer> productIds, Integer brandId, Integer categoryId) {
         this.promoId = promoId;
         this.code = code;
         this.description = description;
@@ -420,12 +420,12 @@ public class DiscountDto {
     }
     
     /**
-     * Tạo chuỗi biểu diễn của đối tượng DiscountDto
+     * Tạo chuỗi biểu diễn của đối tượng DiscountDTO
      * @return Chuỗi thông tin discount
      */
     @Override
     public String toString() {
-        return "DiscountDto{" +
+        return "DiscountDTO{" +
                 "promoId=" + promoId +
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +

@@ -5,15 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
-@RequestMapping("/manageStaff")
-public class ManageStaffController {
+@RequestMapping("/admin/manageStaff")
+public class StaffController {
     @Autowired
     private IStaffService iStaffService;
 
@@ -24,17 +23,20 @@ public class ManageStaffController {
     }
 
     @GetMapping("/add-form")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String addForm(Model model) {
         model.addAttribute("staff", new Staff());
         return "admin/manageStaff/add-staff";
     }
     //API add staff
     @PostMapping("/addStaff")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String addStaff(@ModelAttribute Staff staff, Model  model) {
         iStaffService.addStaff(staff);
         return "redirect:/manageStaff/listStaff";
     }
     @GetMapping("/update-form")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showUpdateForm(@RequestParam("id") int id, Model model) {
         Staff staff = iStaffService.getOneStaff(id);
         model.addAttribute("staff", staff);
@@ -44,17 +46,20 @@ public class ManageStaffController {
 
     // API update staff
     @PostMapping("/updateStaff")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String updateStaff(@RequestParam("id") int id, @ModelAttribute Staff staff) {
         iStaffService.updateStaff(id, staff);
         return "redirect:/manageStaff/listStaff";
     }
     //API delete staff
     @GetMapping("/deleteStaff/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String deleteStaff(@PathVariable("id") int id) {
         iStaffService.deleteStaff(id);
         return "redirect:/manageStaff/listStaff";    }
     //API get list
     @GetMapping("/listStaff")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showStaffList(@RequestParam(value = "keyword", required = false) String keyword,
                                 @RequestParam(value = "gender", required = false) String gender,
                                 @RequestParam(value = "page", defaultValue = "0") int page,

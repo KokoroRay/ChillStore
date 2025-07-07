@@ -53,7 +53,7 @@ body {
 .horizontal-sidebar {
     background-color: #ffffff;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    padding: 10px 20px;
+    padding: 0px 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -61,19 +61,25 @@ body {
     top: 0;
     left: 0;
     width: 100%;
+    line-height: normal;
     z-index: 1000;
     transition: all 0.3s ease;
+    min-height: 80px;
 }
 
 .nav-left {
     flex: 1;
-    overflow-x: auto;
+    overflow-x: visible;
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
 
 .nav-left::-webkit-scrollbar {
     display: none;
+}
+.nav-left ul li {
+    display: flex;
+    align-items: center;
 }
 
 .nav-left ul {
@@ -91,6 +97,7 @@ body {
     align-items: center;
     gap: 15px;
     position: relative;
+    padding: 5px 0;
 }
 
 .user-actions {
@@ -114,14 +121,17 @@ body {
     color: black;
     text-decoration: none;
     font-weight: 500;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     border-radius: 8px;
     white-space: nowrap;
+    border: 2px solid transparent;
 }
 
 .horizontal-sidebar a:hover {
-    background-color: #3498db;
-    color: white;
+    border: 2px solid #3498db;
+    color: #3498db;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
 }
 
 .logout-btn {
@@ -129,16 +139,37 @@ body {
     border: none;
     width: 100%;
     text-align: left;
-    padding: 10px 15px;
+    padding: 12px 20px;
     cursor: pointer;
-    color: #333;
-    font-size: 1em;
+    color: #e74c3c;
+    font-size: 15px;
     display: flex;
     align-items: center;
+    transition: all 0.2s;
+    border-radius: 0;
 }
 
 .logout-btn:hover {
-    background: #f5f5f5;
+    background: #ffeaea;
+    color: #c0392b;
+}
+
+.logout-form {
+    width: 100%;
+    margin: 0;
+}
+
+.logout-item {
+    border-top: 1px solid #eee;
+    margin-top: 8px;
+    padding-top: 8px;
+}
+
+.divider {
+    height: 1px;
+    background: #eee;
+    margin: 8px 0;
+    padding: 0;
 }
 
 .cart-icon {
@@ -147,11 +178,16 @@ body {
     padding: 8px;
     font-size: 18px;
     color: #333;
-    transition: color 0.3s;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    border: 2px solid transparent;
 }
 
 .cart-icon:hover {
     color: #3498db;
+    border: 2px solid #3498db;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
 }
 
 .cart-badge {
@@ -181,14 +217,13 @@ body {
     height: 3em;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #ddd;
-    transition: all 0.3s;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
     cursor: pointer;
 }
 
-.avatar:hover {
-    border-color: #3498db;
-    transform: scale(1.05);
+.dropdown:hover .avatar {
+    border: 2px solid #3498db;
 }
 
 .dropdown {
@@ -249,8 +284,10 @@ body {
 }
 
 .dropdown-menu a:hover {
-    background: #f1f8ff;
+    background: rgba(52, 152, 219, 0.1);
     color: #3498db;
+    border-left: 3px solid #3498db;
+    padding-left: 17px;
 }
 
 .menu-icon {
@@ -280,23 +317,27 @@ body {
 
 .btn-login {
     color: #3498db;
-    border: 1px solid #3498db;
+    border: 2px solid #3498db;
 }
 
 .btn-login:hover {
     background: #3498db;
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
 }
 
 .btn-register {
     background: #3498db;
     color: white;
-    border: 1px solid #3498db;
+    border: 2px solid #3498db;
 }
 
 .btn-register:hover {
     background: #2980b9;
     border-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(41, 128, 185, 0.3);
 }
 
 .hamburger {

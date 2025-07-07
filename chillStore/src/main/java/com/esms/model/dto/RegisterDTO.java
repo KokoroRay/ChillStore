@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public class RegisterDto {
+public class RegisterDTO {
     private Integer customerId;
 
     @NotBlank(message = "tên đăng nhập không chứa khoản trắng nhá")
@@ -35,10 +35,10 @@ public class RegisterDto {
     private LocalDateTime updated_at;
 
 
-    public RegisterDto() {
+    public RegisterDTO() {
     }
 
-    public RegisterDto(Integer customerId, String name, String display_name, String email, String password, String phone, String address, Date birth_date, LocalDateTime created_at, LocalDateTime updated_at) {
+    public RegisterDTO(Integer customerId, String name, String display_name, String email, String password, String phone, String address, Date birth_date, LocalDateTime created_at, LocalDateTime updated_at) {
         this.customerId = customerId;
         this.name = name;
         this.display_name = display_name;

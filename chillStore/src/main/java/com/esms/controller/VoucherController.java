@@ -1,6 +1,6 @@
 package com.esms.controller;
 
-import com.esms.model.dto.VoucherDto;
+import com.esms.model.dto.VoucherDTO;
 import com.esms.model.entity.Brand;
 import com.esms.model.entity.Category;
 import com.esms.model.entity.Voucher;
@@ -60,7 +60,7 @@ public class VoucherController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        VoucherDto voucherDto = new VoucherDto();
+        VoucherDTO voucherDto = new VoucherDTO();
         model.addAttribute("voucherDto", voucherDto);
         model.addAttribute("selectedCategories", new ArrayList<Category>());
         model.addAttribute("selectedBrands", new ArrayList<Brand>());
@@ -73,7 +73,7 @@ public class VoucherController {
     @PostMapping("/add")
     public String addVoucher(
             @Valid @ModelAttribute("voucherDto")
-            VoucherDto voucherDto, BindingResult bindingResult,
+            VoucherDTO voucherDto, BindingResult bindingResult,
             Model model, Authentication  authentication) {
         if (bindingResult.hasErrors()) {
             List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
@@ -109,7 +109,7 @@ public class VoucherController {
         Voucher voucher = voucherService.getVoucherById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid voucher Id:" + id));
 
-        VoucherDto voucherDto = new VoucherDto();
+        VoucherDTO voucherDto = new VoucherDTO();
         voucherDto.setVoucher_id(voucher.getVoucher_id());
         voucherDto.setCode(voucher.getCode());
         voucherDto.setDescription(voucher.getDescription());
@@ -137,7 +137,7 @@ public class VoucherController {
 
     @PostMapping("/edit/{id}")
     public String editVoucher(@PathVariable("id") Integer id,
-                              @Valid @ModelAttribute("voucherDto") VoucherDto voucherDto,
+                              @Valid @ModelAttribute("voucherDto") VoucherDTO voucherDto,
                               BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();

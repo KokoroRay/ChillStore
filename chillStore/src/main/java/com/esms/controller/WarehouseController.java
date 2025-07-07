@@ -1,6 +1,6 @@
 package com.esms.controller;
 
-import com.esms.model.dto.WarehouseDto;
+import com.esms.model.dto.WarehouseDTO;
 import com.esms.model.entity.Warehouse;
 import com.esms.model.entity.Product;
 import com.esms.service.WarehouseService;
@@ -41,7 +41,7 @@ public class WarehouseController {
             Model model) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("transDate").descending());
         Page<Warehouse> warehousePage = warehouseService.getAllWarehouseTransactions(pageable);
-        List<WarehouseDto> transactions = warehousePage.getContent().stream()
+        List<WarehouseDTO> transactions = warehousePage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
 
@@ -68,7 +68,7 @@ public class WarehouseController {
             warehousePage = warehouseService.getAllWarehouseTransactions(pageable);
         }
 
-        List<WarehouseDto> transactions = warehousePage.getContent().stream()
+        List<WarehouseDTO> transactions = warehousePage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
 
@@ -105,8 +105,8 @@ public class WarehouseController {
     }
 
     // Chuyển đổi từ Entity sang DTO
-    private WarehouseDto convertToDTO(Warehouse warehouse) {
-        WarehouseDto dto = new WarehouseDto();
+    private WarehouseDTO convertToDTO(Warehouse warehouse) {
+        WarehouseDTO dto = new WarehouseDTO();
         dto.setTransId(warehouse.getTransId());
 
         if (warehouse.getProduct() != null) {
@@ -142,7 +142,7 @@ public class WarehouseController {
         } else {
             warehousePage = warehouseService.getAllWarehouseTransactions(pageable);
         }
-        List<WarehouseDto> transactions = warehousePage.getContent().stream()
+        List<WarehouseDTO> transactions = warehousePage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
         model.addAttribute("transactions", transactions);

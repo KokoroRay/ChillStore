@@ -1,13 +1,12 @@
 package com.esms.controller;
 
-import com.esms.model.dto.OrderDto;
-import com.esms.model.dto.OrderItemDetailDto;
+import com.esms.model.dto.OrderDTO;
+import com.esms.model.dto.OrderItemDetailDTO;
 import com.esms.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +22,7 @@ public class OrderController {
     public String listOrders(@RequestParam(value = "keyword", required = false) String keyword,
                              @RequestParam(value = "status", required = false) String status,
                              Model model) {
-        List<OrderDto> orders;
+        List<OrderDTO> orders;
 
         // Check if the keyword is a negative integer
         if (keyword != null && keyword.matches("^-\\d+$")) {
@@ -51,7 +50,7 @@ public class OrderController {
 
     @GetMapping("/{orderId}/items")
     @ResponseBody
-    public java.util.List<OrderItemDetailDto> getOrderItems(@PathVariable Integer orderId) {
+    public java.util.List<OrderItemDetailDTO> getOrderItems(@PathVariable Integer orderId) {
         return orderService.getOrderItemsDetail(orderId);
     }
 

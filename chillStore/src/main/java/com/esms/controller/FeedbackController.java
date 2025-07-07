@@ -1,7 +1,7 @@
 package com.esms.controller;
 
 
-import com.esms.model.dto.FeedbackDto;
+import com.esms.model.dto.FeedbackDTO;
 import com.esms.model.dto.ReplyFeedbackDTO;
 import com.esms.service.FeedbackService;
 import com.esms.service.ReplyService;
@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/staff/manageFeedback")
@@ -30,7 +28,7 @@ public class FeedbackController {
 
     @GetMapping("/{id}/reply")
     public String showReplyForm(@PathVariable("id") int feedbackId, Model model) {
-        FeedbackDto feedback = feedbackService.getAllFeedbacks()
+        FeedbackDTO feedback = feedbackService.getAllFeedbacks()
                 .stream()
                 .filter(f -> f.getId() == feedbackId)
                 .findFirst().orElse(null);

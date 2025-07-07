@@ -3,7 +3,7 @@ package com.esms.model.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class ForgotPasswordDto {
+public class ForgotPasswordDTO {
 
     @NotBlank(message = "email không được để trống")
     @Email(message = "email eo gi day")

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class CustomerDto {
+public class CustomerDTO {
     private Integer customerId;
 
     private String name;
@@ -31,9 +31,9 @@ public class CustomerDto {
 
     private String gender;
 
-    public CustomerDto() {}
+    public CustomerDTO() {}
 
-    public CustomerDto(Integer customerId, String name, String displayName, String email, String password,
+    public CustomerDTO(Integer customerId, String name, String displayName, String email, String password,
                        String phone, String address, LocalDate birthDate, LocalDateTime createdAt,
                        LocalDateTime updatedAt, String imageUrl) {
         this.customerId = customerId;

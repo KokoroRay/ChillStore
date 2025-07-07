@@ -1,16 +1,16 @@
 package com.esms.model.dto;
 
-public class CategoryDto {
+public class CategoryDTO {
     private Integer id;
     private String name;
     private Integer parentId;
 
-    public CategoryDto(Integer id, String name, Integer parentId) {
+    public CategoryDTO(Integer id, String name, Integer parentId) {
         this.id = id;
         this.name = name;
         this.parentId = parentId;
     }
-    public CategoryDto() {
+    public CategoryDTO() {
     }
 
     public Integer getId() {

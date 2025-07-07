@@ -1,12 +1,12 @@
 package com.esms.model.dto;
 
-public class OrderItemDetailDto {
+public class OrderItemDetailDTO {
     private String productName;
     private int quantity;
     private double priceEach;
     private String categoryName;
 
-    public OrderItemDetailDto(String productName, int quantity, double priceEach, String categoryName) {
+    public OrderItemDetailDTO(String productName, int quantity, double priceEach, String categoryName) {
         this.productName = productName;
         this.quantity = quantity;
         this.priceEach = priceEach;

@@ -1,13 +1,15 @@
 package com.esms.service;
 
-import com.esms.model.dto.OrderDto;
+import com.esms.model.dto.OrderDTO;
+import com.esms.model.dto.OrderItemDetailDTO;
+
 import java.util.List;
 
 public interface IOrderService {
-    List<OrderDto> getAllOrders();
-    List<OrderDto> searchOrders(String keyword, String status);
+    List<OrderDTO> getAllOrders();
+    List<OrderDTO> searchOrders(String keyword, String status);
     void confirmOrder(Integer orderId);
-    java.util.List<com.esms.model.dto.OrderItemDetailDto> getOrderItemsDetail(Integer orderId);
+    java.util.List<OrderItemDetailDTO> getOrderItemsDetail(Integer orderId);
     void updateOrderStatus(Integer orderId, String status, String refundReason);
     void confirmRefund(Integer orderId);
 } 

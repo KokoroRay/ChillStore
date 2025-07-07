@@ -3,7 +3,7 @@ package com.esms.model.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class ChangePasswordDto {
+public class ChangePasswordDTO {
     @NotBlank(message = "Mật khẩu cũ không được để trống")
     private String oldPassword;
 

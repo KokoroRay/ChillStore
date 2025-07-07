@@ -70,7 +70,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public void register(RegisterDto dto) {
+    public void register(RegisterDTO dto) {
         customerRepository.findByEmail(dto.getEmail()).ifPresent(customer -> {
             throw new EmailAlreadyUsedException("Email " + dto.getEmail() + " đã tồn tại chọn cái khác đeeeee");
         });
@@ -84,7 +84,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void sendResetOtp(ForgotPasswordDto dto) {
+    public void sendResetOtp(ForgotPasswordDTO dto) {
         Optional<Customer> userOpt = customerRepository.findByEmail(dto.getEmail());
         if (userOpt.isEmpty()) {
             throw new UserNotFoundException("Không tìm thấy tài khoản với email này.");
@@ -110,7 +110,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public boolean verifyOtp(OtpDto dto) {
+    public boolean verifyOtp(OtpDTO dto) {
         Optional<Customer> userOpt = customerRepository.findByEmail(dto.getEmail());
         if (userOpt.isEmpty()) {
             throw new UserNotFoundException("Không tìm thấy tài khoản với email này.");
@@ -159,7 +159,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void resetPassword(ResetPasswordDto dto) {
+    public void resetPassword(ResetPasswordDTO dto) {
         Optional<Customer> userOpt = customerRepository.findByEmail(dto.getEmail());
         if (userOpt.isEmpty()) {
             throw new UserNotFoundException("Không tìm thấy tài khoản với email này.");
@@ -228,7 +228,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void updateCustomer(Integer id, CustomerDto customerDto) {
+    public void updateCustomer(Integer id, CustomerDTO customerDto) {
         Customer existingCustomer = getCustomerById(id);
 
         // Kiểm tra email trùng (nếu email thay đổi)
@@ -332,7 +332,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void changePassword(String email, ChangePasswordDto dto) {
+    public void changePassword(String email, ChangePasswordDTO dto) {
         Customer customer = customerRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng với email: " + email));
         if (!passwordEncoder.matches(dto.getOldPassword(), customer.getPassword())) {

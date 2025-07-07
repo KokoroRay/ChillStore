@@ -4,17 +4,15 @@ package com.esms.controller;
 import com.esms.exception.EmailAlreadyUsedException;
 import com.esms.exception.InvalidOtpException;
 import com.esms.exception.UserNotFoundException;
-import com.esms.model.dto.ForgotPasswordDto;
-import com.esms.model.dto.RegisterDto;
-import com.esms.model.dto.OtpDto;
-import com.esms.model.dto.ResetPasswordDto;
-import com.esms.model.entity.Customer;
+import com.esms.model.dto.ForgotPasswordDTO;
+import com.esms.model.dto.RegisterDTO;
+import com.esms.model.dto.OtpDTO;
+import com.esms.model.dto.ResetPasswordDTO;
 import com.esms.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -41,7 +39,7 @@ public class AuthController {
     //form đăng kí đây nhá trả về register.html
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
-        model.addAttribute("registerDto", new RegisterDto());
+        model.addAttribute("registerDto", new RegisterDTO());
         return "register";
     }
 
@@ -49,7 +47,7 @@ public class AuthController {
     //xử lý post khi cờ lai ờn sụp mít form register
     @PostMapping("/register")
     public String register(
-            @Valid @ModelAttribute("registerDto") RegisterDto registerDto,
+            @Valid @ModelAttribute("registerDto") RegisterDTO registerDto,
             BindingResult bindingResult,
             Model model) {
         if (bindingResult.hasErrors()) {
@@ -128,15 +126,15 @@ public class AuthController {
     //hiểu thị form để forget
     @GetMapping("/forgot-password")
     public String showForgotForm(Model model) {
-        // Sửa lỗi: Phải là ForgotPasswordDto, không phải RegisterDto
-        model.addAttribute("forgotPasswordDto", new ForgotPasswordDto());
+        // Sửa lỗi: Phải là ForgotPasswordDTO, không phải RegisterDTO
+        model.addAttribute("forgotPasswordDto", new ForgotPasswordDTO());
         return "forgot-password";
     }
 
     @PostMapping("/forgot-password")
     public String processForgot(
             // Sửa lỗi: Tên model attribute phải khớp với tên trong Model
-            @Valid @ModelAttribute("forgotPasswordDto") ForgotPasswordDto dto,
+            @Valid @ModelAttribute("forgotPasswordDto") ForgotPasswordDTO dto,
             BindingResult bindingResult,
             Model model, RedirectAttributes redirectAttributes) {
 
@@ -158,7 +156,7 @@ public class AuthController {
     // --- Form xác thực OTP ---
     @GetMapping("/verify-otp")
     public String showOtpForm(@RequestParam(value = "email", required = false) String email, Model model) {
-        OtpDto otpDto = new OtpDto();
+        OtpDTO otpDto = new OtpDTO();
         if (email != null) {
             otpDto.setEmail(email);
         } else {
@@ -170,7 +168,7 @@ public class AuthController {
 
     @PostMapping("/verify-otp")
     public String processVerifyOtp(
-            @Valid @ModelAttribute("otpDto") OtpDto otpDto,
+            @Valid @ModelAttribute("otpDto") OtpDTO otpDto,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes) {
@@ -226,18 +224,18 @@ public class AuthController {
     @PostMapping("/resend-otp")
     public String resendOtp(@RequestParam("email") String email, Model model) {
         try {
-            ForgotPasswordDto forgotPasswordDto = new ForgotPasswordDto();
+            ForgotPasswordDTO forgotPasswordDto = new ForgotPasswordDTO();
             forgotPasswordDto.setEmail(email);
             customerService.sendResetOtp(forgotPasswordDto);
 
-            OtpDto otpDto = new OtpDto();
+            OtpDTO otpDto = new OtpDTO();
             otpDto.setEmail(email);
             model.addAttribute("otpDto", otpDto);
             model.addAttribute("message", "Mã OTP mới đã được gửi lại. Vui lòng kiểm tra email của bạn.");
             return "verify-otp";
         } catch (UserNotFoundException e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("forgotPasswordDto", new ForgotPasswordDto());
+            model.addAttribute("forgotPasswordDto", new ForgotPasswordDTO());
             return "forgot-password";
         }
     }
@@ -246,7 +244,7 @@ public class AuthController {
     @GetMapping("/reset-password")
     public String showResetForm(@RequestParam("email") String email, // Only need email
                                 Model model) {
-        ResetPasswordDto resetPasswordDto = new ResetPasswordDto();
+        ResetPasswordDTO resetPasswordDto = new ResetPasswordDTO();
         resetPasswordDto.setEmail(email);
         // Ensure the DTO is added to the model
         model.addAttribute("resetPasswordDto", resetPasswordDto);
@@ -254,7 +252,7 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public String processReset(@Valid @ModelAttribute("resetPasswordDto") ResetPasswordDto dto,
+    public String processReset(@Valid @ModelAttribute("resetPasswordDto") ResetPasswordDTO dto,
                                BindingResult bindingResult,
                                Model model) {
         System.out.println("--- Debug Reset Password (From Controller) ---");

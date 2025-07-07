@@ -6,6 +6,7 @@ import com.esms.repository.OrderRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class RevenueController {
     private CategoryRepository categoryRepository;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String getRevenue(
             @RequestParam(value = "period", defaultValue = "weekly") String period,
             @RequestParam(value = "startDate", required = false)
@@ -76,7 +78,7 @@ public class RevenueController {
                 (netRevenue.doubleValue() - getCostOfGoodsSold(startDate, endDate, category, region, status)) / netRevenue.doubleValue() : 0.0;
 
         // Get chart data
-        List<Object[]> revenueTrend = orderRepository.getRevenueTrend(period, startDate, endDate, category, region, status);
+        List<Object[]> revenueTrend = orderRepository.getRevenueTrend(startDate, endDate, category, region, status);
         List<Object[]> revenueByCategory = orderRepository.getRevenueByCategory(startDate, endDate, region, status);
         List<Object[]> revenueByRegion = orderRepository.getRevenueByRegion(startDate, endDate, category, null, status);
         List<Object[]> paretoData = orderRepository.getParetoDate(startDate, endDate, region, status);
@@ -125,7 +127,7 @@ public class RevenueController {
         Double yoyGrossMarginChange = 0.0;
 
         if (comparePeriod) {
-            prevRevenueTrend = orderRepository.getRevenueTrend(period, prevStartDate, prevEndDate, category, region, status);
+            prevRevenueTrend = orderRepository.getRevenueTrend(prevStartDate, prevEndDate, category, region, status);
             prevGrossRevenue = orderRepository.getGrossRevenue(prevStartDate, prevEndDate, category, region, status);
             prevNetRevenue = orderRepository.getNetRevenueBetween(prevStartDate, prevEndDate, category, region, status);
             prevOrderCount = orderRepository.getOrderCountBetween(prevStartDate, prevEndDate, category, region, status);
@@ -141,7 +143,7 @@ public class RevenueController {
                 yoyAov = yoyOrderCount > 0 ? yoyNetRevenue.doubleValue() / yoyOrderCount : 0.0;
                 yoyGrossMargin = yoyNetRevenue.doubleValue() > 0 ?
                         (yoyNetRevenue.doubleValue() - getCostOfGoodsSold(yoyStartDate, yoyEndDate, category, region, status)) / yoyNetRevenue.doubleValue() : 0.0;
-                yoyRevenueTrend = orderRepository.getRevenueTrend(period, yoyStartDate, yoyEndDate, category, region, status);
+                yoyRevenueTrend = orderRepository.getRevenueTrend(yoyStartDate, yoyEndDate, category, region, status);
                 yoyCancellationRate = orderRepository.getCancellationRate(yoyStartDate, yoyEndDate, category, region, status);
             }
 

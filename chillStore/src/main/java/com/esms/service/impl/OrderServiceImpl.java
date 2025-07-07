@@ -1,7 +1,7 @@
 package com.esms.service.impl;
 
-import com.esms.model.dto.OrderDto;
-import com.esms.model.dto.OrderItemDetailDto;
+import com.esms.model.dto.OrderDTO;
+import com.esms.model.dto.OrderItemDetailDTO;
 import com.esms.model.entity.Order;
 import com.esms.model.entity.OrderItem;
 import com.esms.model.entity.Product;
@@ -11,7 +11,6 @@ import com.esms.repository.ProductRepository;
 import com.esms.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.support.PropertiesLoaderSupport;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,14 +31,14 @@ public class OrderServiceImpl implements IOrderService {
     private PropertiesLoaderSupport propertiesLoaderSupport;
 
     @Override
-    public List<OrderDto> getAllOrders() {
+    public List<OrderDTO> getAllOrders() {
         return orderRepository.findAll().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<OrderDto> searchOrders(String keyword, String status) {
+    public List<OrderDTO> searchOrders(String keyword, String status) {
         return orderRepository.searchOrders(keyword, status).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -53,14 +52,14 @@ public class OrderServiceImpl implements IOrderService {
         orderRepository.save(order);
     }
 
-    public java.util.List<OrderItemDetailDto> getOrderItemsDetail(Integer orderId) {
+    public java.util.List<OrderItemDetailDTO> getOrderItemsDetail(Integer orderId) {
         java.util.List<OrderItem> items = orderItemRepository.findByIdOrderId(orderId);
-        java.util.List<OrderItemDetailDto> result = new ArrayList<>();
+        java.util.List<OrderItemDetailDTO> result = new ArrayList<>();
         for (OrderItem item : items) {
             Product product = productRepository.findById(item.getId().getProductId()).orElse(null);
             String productName = (product != null) ? product.getName() : "Unknown";
             String categoryName = (product != null && product.getCategory() != null) ? product.getCategory().getName() : "Unknown";
-            result.add(new OrderItemDetailDto(productName, item.getQuantity(),
+            result.add(new OrderItemDetailDTO(productName, item.getQuantity(),
                                               item.getPriceEach().doubleValue(), categoryName));
         }
         return result;
@@ -115,11 +114,11 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
-    private OrderDto convertToDto(Order order) {
+    private OrderDTO convertToDto(Order order) {
         int itemsCount = orderItemRepository.countItemsByOrderId(order.getOrderId());
         Double totalAmountRaw = orderItemRepository.sumTotalAmountByOrderId(order.getOrderId());
         java.math.BigDecimal totalAmount = totalAmountRaw != null ? java.math.BigDecimal.valueOf(totalAmountRaw) : java.math.BigDecimal.ZERO;
-        return new OrderDto(
+        return new OrderDTO(
                 order.getOrderId(),
                 order.getCustomer().getName(),
                 order.getDiscountAmount(),

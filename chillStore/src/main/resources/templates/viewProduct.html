@@ -104,18 +104,26 @@
                 <h5 class="text-muted">No products found</h5>
             </div>
             <div th:each="product : ${products}" class="col-6 col-sm-4 col-md-3 mb-3 d-flex">
-                <div class="product-card w-100">
-                    <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img">
-                    <h5 class="product-title" th:text="${product.name}">Tên sản phẩm</h5>
-                    <div class="product-actions mt-auto">
-                        <button class="btn btn-buy flex-grow-1">Buy now</button>
-                        <button class="wishlist-btn" title="Thêm vào wishlist"
-                            th:data-product-id="${product.productId}"
-                            th:data-product-name="${product.name}"
-                            th:data-product-imageurl="${product.imageUrl}">
-                            <i class="fa fa-heart"></i>
-                        </button>
-                    </div>
+                <div class="product-card w-100 position-relative">
+                    <a th:href="@{'/viewProduct/' + ${product.productId}}" style="text-decoration:none; color:inherit; display:block;">
+                        <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img">
+                        <h5 class="product-title" th:text="${product.name}" style="color:#2196f3; font-size:1.1rem; font-weight:400; margin-bottom:4px;">Tên sản phẩm</h5>
+                        <div>
+                            <span style="color:#e53935; font-size:1.1rem; font-weight:700;">
+                                <span th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
+                            </span>
+                            <span style="color:#e53935; font-size:0.85rem; font-weight:700; vertical-align:super;">đ</span>
+                        </div>
+                        <div class="product-actions mt-auto">
+                            <button class="btn btn-buy flex-grow-1 mt-3">Buy now</button>
+                        </div>
+                    </a>
+                    <button class="wishlist-btn position-absolute" style="top:10px;right:10px;z-index:2;" title="Thêm vào wishlist"
+                        th:data-product-id="${product.productId}"
+                        th:data-product-name="${product.name}"
+                        th:data-product-imageurl="${product.imageUrl}">
+                        <i class="fa fa-heart"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -128,8 +136,8 @@
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${currentPage == i} ? 'active'">
                     <a class="page-link" th:href="@{/viewProduct(page=${i}, size=${size}, brandId=${brandId}, categoryId=${categoryId}, keyword=${keyword})}" th:text="${i+1}"></a>
                 </li>
-                <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/viewProduct(page=${totalPages-1}, size=${size}, brandId=${brandId}, categoryId=${categoryId}, keyword=${keyword})}">&raquo;</a>
+                <li class="page-item" th:classappend="${currentPage == (totalPages - 1)} ? 'disabled'">
+                    <a class="page-link" th:href="@{/viewProduct(page=${totalPages - 1}, size=${size}, brandId=${brandId}, categoryId=${categoryId}, keyword=${keyword})}">&raquo;</a>
                 </li>
             </ul>
         </div>

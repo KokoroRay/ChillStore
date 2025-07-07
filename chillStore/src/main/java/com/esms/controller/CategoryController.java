@@ -1,7 +1,7 @@
 package com.esms.controller;
 
 
-import com.esms.model.dto.CategoryDto;
+import com.esms.model.dto.CategoryDTO;
 import com.esms.model.entity.Category;
 import com.esms.service.CategoryService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,7 +47,7 @@ public class CategoryController {
     @GetMapping("/add")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public String showAddForm(Model model) {
-        CategoryDto categoryDto = new CategoryDto();
+        CategoryDTO categoryDto = new CategoryDTO();
         List<Category> parenOptions = categoryService.getAllParentOptions();
         model.addAttribute("categoryDto", categoryDto);
         model.addAttribute("parenOptions", parenOptions);
@@ -57,7 +57,7 @@ public class CategoryController {
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public String addCategory(
-            @Valid @ModelAttribute("categoryDto") CategoryDto categoryDto,
+            @Valid @ModelAttribute("categoryDto") CategoryDTO categoryDto,
             Model model, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<Category> parenOptions = categoryService.getAllParentOptions();
@@ -80,7 +80,7 @@ public class CategoryController {
             @PathVariable("id") Integer id,
             Model model) {
         Category category = categoryService.getCategoryById(id).orElseThrow(() -> new RuntimeException("Category not fount"));
-        CategoryDto categoryDto = new CategoryDto();
+        CategoryDTO categoryDto = new CategoryDTO();
         categoryDto.setId(category.getId());
         categoryDto.setName(category.getName());
         categoryDto.setParentId(category.getParent() != null ? category.getParent().getId() : null);
@@ -95,7 +95,7 @@ public class CategoryController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public String editCategory(
             @PathVariable("id") Integer id,
-            @Valid @ModelAttribute("categoryDto") CategoryDto categoryDto,
+            @Valid @ModelAttribute("categoryDto") CategoryDTO categoryDto,
             BindingResult bindingResult,
             Model model) {
         if (bindingResult.hasErrors()) {

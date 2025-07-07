@@ -1,6 +1,6 @@
 package com.esms.service;
 
-import com.esms.model.dto.ProductDto;
+import com.esms.model.dto.ProductDTO;
 import com.esms.model.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,10 +31,10 @@ public interface ProductService {
     Product saveProduct(Product product);
 
 
-    List<ProductDto> getAllProductDTOs();
+    List<ProductDTO> getAllProductDTOs();
 
-    Page<ProductDto> getProductDTOsPaginated(Pageable pageable);
+    Page<ProductDTO> getProductDTOsPaginated(Pageable pageable);
 
-    Page<ProductDto> getProductsByCategory(String category, Pageable pageable);
+    Page<ProductDTO> getProductsByCategory(String category, Pageable pageable);
 }
 

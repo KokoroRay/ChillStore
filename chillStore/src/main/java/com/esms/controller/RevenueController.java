@@ -6,6 +6,7 @@ import com.esms.repository.OrderRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class RevenueController {
     private CategoryRepository categoryRepository;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String getRevenue(
             @RequestParam(value = "period", defaultValue = "weekly") String period,
             @RequestParam(value = "startDate", required = false)

@@ -1,6 +1,6 @@
 package com.esms.util.MapperUtils;
 
-import com.esms.model.dto.ProductDto;
+import com.esms.model.dto.ProductDTO;
 import com.esms.model.entity.Product;
 import com.esms.model.entity.Category;
 import com.esms.model.entity.Brand;
@@ -8,14 +8,14 @@ import com.esms.model.entity.Brand;
 public class ProductMapper {
     
     /**
-     * Chuyển đổi từ Product entity sang ProductDto
+     * Chuyển đổi từ Product entity sang ProductDTO
      */
-    public static ProductDto toDto(Product product) {
+    public static ProductDTO toDto(Product product) {
         if (product == null) {
             return null;
         }
         
-        ProductDto dto = new ProductDto();
+        ProductDTO dto = new ProductDTO();
         dto.setProductId(product.getProductId());
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
@@ -40,9 +40,9 @@ public class ProductMapper {
     }
     
     /**
-     * Chuyển đổi từ ProductDto sang Product entity
+     * Chuyển đổi từ ProductDTO sang Product entity
      */
-    public static Product toEntity(ProductDto dto) {
+    public static Product toEntity(ProductDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -74,9 +74,9 @@ public class ProductMapper {
     }
     
     /**
-     * Cập nhật Product entity từ ProductDto
+     * Cập nhật Product entity từ ProductDTO
      */
-    public static void updateEntityFromDto(Product product, ProductDto dto) {
+    public static void updateEntityFromDto(Product product, ProductDTO dto) {
         if (product == null || dto == null) {
             return;
         }

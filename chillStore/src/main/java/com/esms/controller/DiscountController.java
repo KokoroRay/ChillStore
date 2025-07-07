@@ -1,6 +1,6 @@
 package com.esms.controller;
 
-import com.esms.model.dto.DiscountDto;
+import com.esms.model.dto.DiscountDTO;
 import com.esms.model.entity.Brand;
 import com.esms.model.entity.Category;
 import com.esms.model.entity.Product;
@@ -9,7 +9,7 @@ import com.esms.service.CategoryService;
 import com.esms.service.DiscountService;
 import com.esms.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +55,7 @@ public class DiscountController {
      * @return view name
      */
     @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String listDiscounts(Model model,
                                @RequestParam(value = "search", required = false) String search,
                                @RequestParam(value = "status", required = false) String status,
@@ -69,7 +70,7 @@ public class DiscountController {
                                @RequestParam(value = "size", defaultValue = "3") int size) {
         try {
             // Get filtered discounts from service
-            List<DiscountDto> allDiscounts = discountService.searchAndFilterDiscounts(
+            List<DiscountDTO> allDiscounts = discountService.searchAndFilterDiscounts(
                 search, status, applyType, startDate, endDate, 
                 categoryId, brandId, productId, discountRange
             );
@@ -86,7 +87,7 @@ public class DiscountController {
             int startIndex = page * size;
             int endIndex = Math.min(startIndex + size, allDiscounts.size());
             
-            List<DiscountDto> paginatedDiscounts = allDiscounts.subList(startIndex, endIndex);
+            List<DiscountDTO> paginatedDiscounts = allDiscounts.subList(startIndex, endIndex);
             
             // Get data for filter dropdowns
             List<Product> products = productService.findAll();
@@ -139,6 +140,7 @@ public class DiscountController {
      * @return redirect to list page
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String defaultDiscountPage(Model model) {
         return "redirect:/admin/discount/list";
     }
@@ -150,9 +152,10 @@ public class DiscountController {
      * @return String tên view
      */
     @GetMapping("/{promoId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String viewDiscountDetail(@PathVariable Integer promoId, Model model) {
         // Lấy thông tin chi tiết discount theo ID
-        DiscountDto discount = discountService.getDiscountById(promoId);
+        DiscountDTO discount = discountService.getDiscountById(promoId);
         
         // Thêm thông tin discount vào model
         model.addAttribute("discount", discount);
@@ -168,10 +171,11 @@ public class DiscountController {
      * @return view name
      */
     @GetMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showCreateForm(Model model) {
         try {
             // Tạo DTO mới cho discount
-            DiscountDto discountDto = new DiscountDto();
+            DiscountDTO discountDto = new DiscountDTO();
             discountDto.setActive(true); // Mặc định là active
             
             // Lấy danh sách sản phẩm, brands, categories để hiển thị trong form
@@ -202,7 +206,8 @@ public class DiscountController {
      * @return redirect URL
      */
     @PostMapping("/save")
-    public String saveDiscount(@ModelAttribute DiscountDto discountDto,
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public String saveDiscount(@ModelAttribute DiscountDTO discountDto,
                               @RequestParam(value = "productIds", required = false) List<Integer> productIds,
                               @RequestParam(value = "brandId", required = false) Integer brandId,
                               @RequestParam(value = "categoryId", required = false) Integer categoryId,
@@ -269,7 +274,7 @@ public class DiscountController {
             }
             
             // Lưu discount
-            DiscountDto savedDiscount;
+            DiscountDTO savedDiscount;
             if (discountDto.getPromoId() == null) {
                 // Tạo mới
                 savedDiscount = discountService.createDiscount(discountDto);
@@ -302,10 +307,11 @@ public class DiscountController {
      * @return view name
      */
     @GetMapping("/{id}/edit")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showEditForm(@PathVariable("id") Integer id, Model model) {
         try {
             // Lấy thông tin discount
-            DiscountDto discount = discountService.getDiscountById(id);
+            DiscountDTO discount = discountService.getDiscountById(id);
             if (discount == null) {
                 return "redirect:/admin/discount/list?error=Discount not found";
             }
@@ -336,6 +342,7 @@ public class DiscountController {
      * @return redirect URL
      */
     @PostMapping("/{id}/delete")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String deleteDiscount(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             // Xóa discount
@@ -358,6 +365,7 @@ public class DiscountController {
      * @return String redirect URL
      */
     @PostMapping("/{promoId}/toggle")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String toggleDiscountStatus(@PathVariable Integer promoId, 
                                      @RequestParam Boolean active) {
         try {
@@ -375,11 +383,12 @@ public class DiscountController {
     
     /**
      * API endpoint để lấy danh sách discount dưới dạng JSON
-     * @return List<DiscountDto>
+     * @return List<DiscountDTO>
      */
     @GetMapping("/api/list")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @ResponseBody
-    public List<DiscountDto> getDiscountsApi() {
+    public List<DiscountDTO> getDiscountsApi() {
         // Trả về danh sách discount dưới dạng JSON
         return discountService.getAllDiscounts();
     }
@@ -387,11 +396,12 @@ public class DiscountController {
     /**
      * API endpoint để lấy discount theo ID dưới dạng JSON
      * @param promoId ID của discount
-     * @return DiscountDto
+     * @return DiscountDTO
      */
     @GetMapping("/api/{promoId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @ResponseBody
-    public DiscountDto getDiscountApi(@PathVariable Integer promoId) {
+    public DiscountDTO getDiscountApi(@PathVariable Integer promoId) {
         // Trả về thông tin discount dưới dạng JSON
         return discountService.getDiscountById(promoId);
     }

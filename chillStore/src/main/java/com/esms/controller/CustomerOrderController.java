@@ -8,11 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -76,7 +72,12 @@ public class CustomerOrderController {
             // Filter by status if specified
             if (!"all".equals(status)) {
                 orders = orders.stream()
-                    .filter(order -> status.equalsIgnoreCase(order.getStatus()))
+                    .filter(order -> {
+                        if ("confirmed".equalsIgnoreCase(status)) {
+                            return "Paid".equalsIgnoreCase(order.getStatus());
+                        }
+                        return status.equalsIgnoreCase(order.getStatus());
+                    })
                     .toList();
             }
             
@@ -103,13 +104,60 @@ public class CustomerOrderController {
             // Filter by status if specified
             if (!"all".equals(status)) {
                 orders = orders.stream()
-                    .filter(order -> status.equalsIgnoreCase(order.getStatus()))
+                    .filter(order -> {
+                        if ("confirmed".equalsIgnoreCase(status)) {
+                            return "Paid".equalsIgnoreCase(order.getStatus());
+                        }
+                        return status.equalsIgnoreCase(order.getStatus());
+                    })
                     .toList();
             }
             
             return ResponseEntity.ok(orders);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Unable to load orders");
+        }
+    }
+
+@GetMapping("/api/order/{orderId}/items")
+    @ResponseBody
+    public ResponseEntity<?> getOrderItems(@PathVariable Integer orderId, Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            Integer customerId = customerService.getCustomerByEmail(email).getCustomerId();
+            
+            // Verify order belongs to customer
+            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, orderId);
+            if (orderDetail == null) {
+                return ResponseEntity.badRequest().body("Order not found");
+            }
+            
+            return ResponseEntity.ok(orderDetail.getItems());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Unable to load order items");
+        }
+    }
+
+    @PostMapping("/order/{orderId}/cancel")
+    public String cancelOrder(@PathVariable Integer orderId, Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            Integer customerId = customerService.getCustomerByEmail(email).getCustomerId();
+            
+            // Verify order belongs to customer and is in Pending status
+            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, orderId);
+            if (orderDetail == null) {
+                return "redirect:/customer/order-history?error=Order not found";
+            }
+            
+            if (!"Pending".equals(orderDetail.getStatus())) {
+                return "redirect:/customer/order-history?error=Cannot cancel order after confirmation";
+            }
+            
+            orderService.updateOrderStatus(orderId, "Cancelled", "Customer cancelled");
+            return "redirect:/customer/order-history?success=Order cancelled successfully";
+        } catch (Exception e) {
+            return "redirect:/customer/order-history?error=Unable to cancel order";
         }
     }
 }

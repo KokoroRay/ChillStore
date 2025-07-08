@@ -25,7 +25,7 @@
             border-radius: 20px;
         }
         .status-pending { background-color: #fff3cd; color: #856404; }
-        .status-confirmed { background-color: #d1ecf1; color: #0c5460; }
+        .status-confirmed { background-color: #cff4fc; color: #055160; }
         .status-shipped { background-color: #d4edda; color: #155724; }
         .status-delivered { background-color: #d1ecf1; color: #0c5460; }
         .status-cancelled { background-color: #f8d7da; color: #721c24; }
@@ -73,13 +73,13 @@
                 <li class="nav-item">
                     <a class="nav-link status-filter" th:classappend="${selectedStatus == 'pending'} ? 'active' : ''" 
                        href="#" data-status="pending">
-                        <i class="fas fa-clock"></i> Pending
+                        <img src="/images/pending.png" alt="pending"> Pending
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link status-filter" th:classappend="${selectedStatus == 'confirmed'} ? 'active' : ''" 
                        href="#" data-status="confirmed">
-                        <i class="fas fa-check"></i> Confirmed
+                        <img src="/images/booking.png" alt="confirmed"> Confirmed
                     </a>
                 </li>
                 <li class="nav-item">
@@ -91,7 +91,13 @@
                 <li class="nav-item">
                     <a class="nav-link status-filter" th:classappend="${selectedStatus == 'delivered'} ? 'active' : ''" 
                        href="#" data-status="delivered">
-                        <i class="fas fa-check-circle"></i> Delivered
+                        <img src="/images/delivery-box.png" alt=""> Delivered
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link status-filter" th:classappend="${selectedStatus == 'cancelled'} ? 'active' : ''" 
+                       href="#" data-status="cancelled">
+                        <img src="/images/delivery-cancelled.png" alt="cancelled"> Cancelled
                     </a>
                 </li>
             </ul>
@@ -102,10 +108,10 @@
             </div>
 
             <!-- Empty State -->
-            <div th:if="${orders == null or orders.empty}" class="text-center py-5">
+            <div th:if="${orders == null || #lists.isEmpty(orders)}" class="text-center py-5">
                 <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
                 <h4 class="text-muted">No Orders Found</h4>
-                <p class="text-muted" th:text="${selectedStatus == 'all'} ? 'You haven\'t placed any orders yet.' : 'No orders found with status: ' + ${selectedStatus}"></p>
+                <p class="text-muted" th:text="${selectedStatus == 'all'} ? 'You haven\'t placed any orders yet.' : |No orders found with status: ${selectedStatus}|"></p>
                 <a th:href="@{/product}" class="btn btn-primary">
                     <i class="fas fa-shopping-bag"></i> Start Shopping
                 </a>
@@ -122,49 +128,77 @@
             <!-- Orders Container -->
             <div id="orders-container">
                 <!-- Empty State -->
-                <div id="empty-state" th:if="${orders == null or orders.empty}" class="text-center py-5">
+                <div id="empty-state" th:if="${orders == null || #lists.isEmpty(orders)}" class="text-center py-5">
                     <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
                     <h4 class="text-muted">No Orders Found</h4>
-                    <p class="text-muted" th:text="${selectedStatus == 'all'} ? 'You haven\'t placed any orders yet.' : 'No orders found with status: ' + ${selectedStatus}"></p>
+                    <p class="text-muted" th:text="${selectedStatus == 'all'} ? 'You haven\'t placed any orders yet.' : |No orders found with status: ${selectedStatus}|"></p>
                     <a th:href="@{/product}" class="btn btn-primary">
                         <i class="fas fa-shopping-bag"></i> Start Shopping
                     </a>
                 </div>
 
                 <!-- Orders List -->
-                <div id="orders-list" th:unless="${orders == null or orders.empty}">
+                <div id="orders-list" th:unless="${orders == null || #lists.isEmpty(orders)}">
                     <div th:each="order : ${orders}" class="order-card">
                         <div class="card-body">
                             <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <h6 class="mb-1">Order #<span th:text="${order.orderId}"></span></h6>
-                                    <small class="text-muted" th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></small>
+                                <!-- Product Image & Info -->
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <img th:src="${order.representativeProductImage != null ? order.representativeProductImage : '/images/default-product.png'}" 
+                                             alt="Product" class="product-thumb me-3" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                        <div>
+                                            <h6 class="mb-1" th:text="${order.representativeProductName != null ? order.representativeProductName : 'Product'}"></h6>
+                                            <small class="text-muted" th:if="${order.itemsCount > 1}" th:text="|+${order.itemsCount - 1} more items|"></small>
+                                            <small class="text-muted" th:unless="${order.itemsCount > 1}" th:text="|${order.itemsCount} item|"></small>
+                                            <br><small class="text-muted">Order #<span th:text="${order.orderId}"></span></small>
+                                        </div>
+                                    </div>
                                 </div>
+                                
+                                <!-- Price & Date -->
                                 <div class="col-md-2">
-                                    <span class="fw-bold" th:text="'$' + ${order.totalAmount}"></span>
-                                    <br>
-                                    <small class="text-muted" th:text="${order.itemsCount} + ' items'"></small>
+                                    <span class="fw-bold text-primary" th:text="|$${#numbers.formatDecimal(order.totalAmount, 2, 'POINT', 3, 'COMMA')}|"></span>
+                                    <br><small class="text-muted" th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></small>
                                 </div>
+                                
+                                <!-- Status -->
                                 <div class="col-md-2">
                                     <span class="status-badge" 
-                                          th:classappend="'status-' + ${#strings.toLowerCase(order.status)}"
-                                          th:text="${order.status}"></span>
+                                          th:classappend="|status-${#strings.toLowerCase(order.displayStatus)}|"
+                                          th:text="${order.displayStatus}"></span>
                                 </div>
+                                
+                                <!-- Payment Method -->
                                 <div class="col-md-2">
                                     <small class="text-muted">Payment:</small><br>
                                     <span th:text="${order.paymentMethod}"></span>
+                                    <div th:if="${order.refundStatus != null}">
+                                        <span class="badge mt-1" 
+                                              th:classappend="${order.refundStatus == 'refunded'} ? 'bg-success' : 'bg-warning'"
+                                              th:text="${order.refundStatus == 'refunded'} ? 'Refunded' : 'Refund Pending'"></span>
+                                    </div>
                                 </div>
-                                <div class="col-md-2" th:if="${order.refundStatus != null}">
-                                    <small class="text-muted">Refund:</small><br>
-                                    <span class="badge" 
-                                          th:classappend="${order.refundStatus == 'refunded'} ? 'bg-success' : 'bg-warning'"
-                                          th:text="${order.refundStatus == 'refunded'} ? 'Refunded' : 'Pending'"></span>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <a th:href="@{/customer/order/{id}(id=${order.orderId})}" 
-                                       class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-eye"></i> View Details
-                                    </a>
+                                
+                                <!-- Actions -->
+                                <div class="col-md-3 text-end">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" 
+                                                th:onclick="|showOrderItems(${order.orderId})|"
+                                                th:if="${order.itemsCount > 1}">
+                                            <i class="fas fa-list"></i> Items
+                                        </button>
+                                        <a th:href="@{/customer/order/{id}(id=${order.orderId})}" 
+                                           class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-eye"></i> Details
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                th:if="${order.status == 'Pending'}"
+                                                th:onclick="|cancelOrder(${order.orderId})|"
+                                                title="Cancel Order">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -180,6 +214,48 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Items Modal -->
+<div class="modal fade" id="orderItemsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Items</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="orderItemsContent">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Order Modal -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancel Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this order?</p>
+                <p class="text-muted">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Keep Order</button>
+                <form id="cancelOrderForm" method="post" style="display: inline;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-danger">Yes, Cancel Order</button>
+                </form>
             </div>
         </div>
     </div>
@@ -247,43 +323,52 @@
                 const orderDate = new Date(order.orderDate).toLocaleDateString('en-GB', {
                     day: '2-digit',
                     month: '2-digit', 
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    year: 'numeric'
                 });
+                
+                const productImage = order.representativeProductImage || '/images/default-product.png';
+                const productName = order.representativeProductName || 'Product';
+                const totalUSD = new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(order.totalAmount);
                 
                 html += `
                     <div class="order-card">
                         <div class="card-body">
                             <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <h6 class="mb-1">Order #${order.orderId}</h6>
-                                    <small class="text-muted">${orderDate}</small>
+                                <div class="col-md-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${productImage}" alt="Product" class="product-thumb me-3" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                        <div>
+                                            <h6 class="mb-1">${productName}</h6>
+                                            ${order.itemsCount > 1 ? `<small class="text-muted">+${order.itemsCount - 1} more items</small>` : `<small class="text-muted">${order.itemsCount} item</small>`}
+                                            <br><small class="text-muted">Order #${order.orderId}</small>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <span class="fw-bold">$${order.totalAmount}</span>
-                                    <br>
-                                    <small class="text-muted">${order.itemsCount} items</small>
+                                    <span class="fw-bold text-primary">$${totalUSD}</span>
+                                    <br><small class="text-muted">${orderDate}</small>
                                 </div>
                                 <div class="col-md-2">
-                                    <span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span>
+                                    <span class="status-badge status-${order.displayStatus ? order.displayStatus.toLowerCase() : order.status.toLowerCase()}">${order.displayStatus || order.status}</span>
                                 </div>
                                 <div class="col-md-2">
                                     <small class="text-muted">Payment:</small><br>
                                     <span>${order.paymentMethod}</span>
+                                    ${order.refundStatus ? `
+                                    <div><span class="badge mt-1 ${order.refundStatus === 'refunded' ? 'bg-success' : 'bg-warning'}">
+                                        ${order.refundStatus === 'refunded' ? 'Refunded' : 'Refund Pending'}
+                                    </span></div>
+                                    ` : ''}
                                 </div>
-                                ${order.refundStatus ? `
-                                <div class="col-md-2">
-                                    <small class="text-muted">Refund:</small><br>
-                                    <span class="badge ${order.refundStatus === 'refunded' ? 'bg-success' : 'bg-warning'}">
-                                        ${order.refundStatus === 'refunded' ? 'Refunded' : 'Pending'}
-                                    </span>
-                                </div>
-                                ` : ''}
-                                <div class="col-md-2 text-end">
-                                    <a href="/customer/order/${order.orderId}" class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-eye"></i> View Details
-                                    </a>
+                                <div class="col-md-3 text-end">
+                                    <div class="btn-group" role="group">
+                                        ${order.itemsCount > 1 ? `<button type="button" class="btn btn-outline-secondary btn-sm" onclick="showOrderItems(${order.orderId})"><i class="fas fa-list"></i> Items</button>` : ''}
+                                        <a href="/customer/order/${order.orderId}" class="btn btn-outline-primary btn-sm"><i class="fas fa-eye"></i> Details</a>
+                                        ${order.status === 'Pending' ? `<button type="button" class="btn btn-outline-danger btn-sm" onclick="cancelOrder(${order.orderId})" title="Cancel Order"><i class="fas fa-times"></i> Cancel</button>` : ''}
+                                    </div>
                                 </div>
                             </div>
                             ${order.status === 'Pending' ? `
@@ -303,6 +388,50 @@
             
             ordersContainer.innerHTML = html;
         }
+        
+        window.showOrderItems = function(orderId) {
+            const modal = new bootstrap.Modal(document.getElementById('orderItemsModal'));
+            const content = document.getElementById('orderItemsContent');
+            
+            content.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            modal.show();
+            
+            fetch(`/customer/api/order/${orderId}/items`)
+                .then(response => response.json())
+                .then(items => {
+                    let html = '';
+                    items.forEach(item => {
+                        html += `
+                            <div class="row align-items-center border-bottom py-2">
+                                <div class="col-6">
+                                    <strong>${item.productName}</strong><br>
+                                    <small class="text-muted">Category: ${item.categoryName}</small>
+                                </div>
+                                <div class="col-2 text-center">
+                                    <span class="badge bg-secondary">Qty: ${item.quantity}</span>
+                                </div>
+                                <div class="col-2 text-center">
+                                    $${new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(item.priceEach)}
+                                </div>
+                                <div class="col-2 text-end">
+                                    <strong>$${new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(item.priceEach * item.quantity)}</strong>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    content.innerHTML = html || '<p class="text-muted">No items found.</p>';
+                })
+                .catch(error => {
+                    content.innerHTML = '<div class="alert alert-danger">Error loading items</div>';
+                });
+        };
+        
+        window.cancelOrder = function(orderId) {
+            const modal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
+            const form = document.getElementById('cancelOrderForm');
+            form.action = `/customer/order/${orderId}/cancel`;
+            modal.show();
+        };
     });
 </script>
 </body>

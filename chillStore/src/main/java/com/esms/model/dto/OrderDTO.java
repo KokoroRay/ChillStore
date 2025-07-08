@@ -12,8 +12,20 @@ public class OrderDTO {
     private String status;
     private String paymentMethod;
     private int itemsCount;
+    private String representativeProductName;
+    private String representativeProductImage;
+    private String customerEmail;
+    private String customerPhone;
 
     public OrderDTO(Integer orderId, String customerName, BigDecimal discountAmount, Date orderDate, BigDecimal totalAmount, String status, String paymentMethod, int itemsCount) {
+        this(orderId, customerName, discountAmount, orderDate, totalAmount, status, paymentMethod, itemsCount, null, null, null, null);
+    }
+
+    public OrderDTO(Integer orderId, String customerName, BigDecimal discountAmount, Date orderDate, BigDecimal totalAmount, String status, String paymentMethod, int itemsCount, String representativeProductName, String representativeProductImage) {
+        this(orderId, customerName, discountAmount, orderDate, totalAmount, status, paymentMethod, itemsCount, representativeProductName, representativeProductImage, null, null);
+    }
+
+    public OrderDTO(Integer orderId, String customerName, BigDecimal discountAmount, Date orderDate, BigDecimal totalAmount, String status, String paymentMethod, int itemsCount, String representativeProductName, String representativeProductImage, String customerEmail, String customerPhone) {
         this.orderId = orderId;
         this.customerName = customerName;
         this.discountAmount = discountAmount;
@@ -22,6 +34,10 @@ public class OrderDTO {
         this.status = status;
         this.paymentMethod = paymentMethod;
         this.itemsCount = itemsCount;
+        this.representativeProductName = representativeProductName;
+        this.representativeProductImage = representativeProductImage;
+        this.customerEmail = customerEmail;
+        this.customerPhone = customerPhone;
     }
 
     public Integer getOrderId() {
@@ -88,6 +104,38 @@ public class OrderDTO {
         this.itemsCount = itemsCount;
     }
 
+    public String getRepresentativeProductName() {
+        return representativeProductName;
+    }
+
+    public void setRepresentativeProductName(String representativeProductName) {
+        this.representativeProductName = representativeProductName;
+    }
+
+    public String getRepresentativeProductImage() {
+        return representativeProductImage;
+    }
+
+    public void setRepresentativeProductImage(String representativeProductImage) {
+        this.representativeProductImage = representativeProductImage;
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
+    }
+
     // Method to get refund status for VNPay cancelled orders
     public String getRefundStatus() {
         if ("Cancelled".equals(this.status) && "VNpay".equals(this.paymentMethod)) {
@@ -95,5 +143,10 @@ public class OrderDTO {
             return discountAmount.intValue() == 2 ? "refunded" : "pending_refund";
         }
         return null;
+    }
+    
+    // Method to get display status (convert Paid to Confirmed for display)
+    public String getDisplayStatus() {
+        return "Paid".equals(this.status) ? "Confirmed" : this.status;
     }
 } 

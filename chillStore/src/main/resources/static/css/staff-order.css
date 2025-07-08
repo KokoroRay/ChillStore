@@ -6,8 +6,13 @@
     color: #212529 !important;
 }
 
-.status-shipped {
+.status-confirmed {
     background-color: #17a2b8 !important;
+    color: white !important;
+}
+
+.status-shipped {
+    background-color: #6f42c1 !important;
     color: white !important;
 }
 
@@ -130,18 +135,34 @@
 }
 
 /* Responsive Design */
+.table-responsive {
+    border-radius: 8px;
+}
+
 @media (max-width: 768px) {
     .order-table {
         font-size: 0.875rem;
+        min-width: 1000px;
     }
     
     .order-table td {
         padding: 8px 4px;
+        white-space: nowrap;
     }
     
     .btn-sm {
         padding: 0.25rem 0.5rem;
         font-size: 0.75rem;
+    }
+    
+    .search-form .row {
+        flex-direction: column;
+    }
+    
+    .search-form .col-md-3,
+    .search-form .col-md-2,
+    .search-form .col-md-1 {
+        margin-bottom: 10px;
     }
 }
 

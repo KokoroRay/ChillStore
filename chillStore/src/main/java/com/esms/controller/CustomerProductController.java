@@ -27,7 +27,7 @@ public class CustomerProductController {
     @Autowired
     private BrandService brandService;
 
-    @GetMapping("/viewProduct")
+    @GetMapping("/Customer/Product")
     public String viewProductPage(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "categoryId", required = false) Integer categoryId,
@@ -93,12 +93,12 @@ public class CustomerProductController {
         return "viewProduct";
     }
 
-    @GetMapping("/Wishlist")
+    @GetMapping("/Customer/Wishlist")
     public String wishlistPage() {
         return "Wishlist";
     }
 
-    @GetMapping("/viewProduct/{id}")
+    @GetMapping("/Customer/Product/{id}")
     public String viewProductDetail(@PathVariable("id") Integer id, Model model) {
         Product product = productService.getProductById(id);
         model.addAttribute("product", product);

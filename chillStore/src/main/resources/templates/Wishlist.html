@@ -51,7 +51,7 @@
     </style>
 </head>
 <body>
-    <a href="/viewProduct" class="btn btn-outline-secondary position-fixed" style="top:90px;left:30px;z-index:1000;">
+    <a href="/Customer/Product" class="btn btn-outline-secondary position-fixed" style="top:90px;left:30px;z-index:1000;">
         <i class="fa fa-arrow-left"></i> Back
     </a>
     <div style="position:fixed;top:90px;right:30px;z-index:1000;display:flex;gap:10px;">
@@ -107,7 +107,7 @@
             // Gán sự kiện click cho card
             const card = col.querySelector('.product-card');
             card.addEventListener('click', function() {
-                window.location = '/viewProduct/' + product.productId;
+                window.location = '/Customer/Product/' + product.productId;
             });
             // Gán sự kiện cho checkbox
             const checkbox = col.querySelector('.custom-checkbox');

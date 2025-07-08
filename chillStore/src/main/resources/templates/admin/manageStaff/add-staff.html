@@ -16,7 +16,6 @@
   <div class="content">
     <h2 style="padding-top: 100px;">Add New Staff</h2>
 
-    <!-- ✅ Đường dẫn đã sửa lại đúng -->
     <form method="post" th:action="@{/admin/addStaff}" th:object="${staff}">
       <label>Name: </label>
       <input type="text" th:field="*{name}" required pattern="^[A-Za-z\s]+$"
@@ -24,9 +23,16 @@
 
       <label>Email: </label>
       <input type="email" th:field="*{email}" required><br>
+      <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
 
       <label>Password: </label>
       <input type="text" th:field="*{password}" required><br>
+      <label>Confirm Password: </label>
+      <input type="password" th:field="*{confirmPassword}" required><br>
+      <div class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}">
+        <p th:errors="*{confirmPassword}"></p>
+      </div>
 
       <label>Phone: </label>
       <input type="text" th:field="*{phone}" required pattern="^[0-9]{10}$"
@@ -38,6 +44,8 @@
       <label>National Id: </label>
       <input type="text" th:field="*{nationalId}" required pattern="^[0-9]{12}$"
              title="National ID must be exactly 12 digits."><br>
+      <div class="text-danger" th:if="${#fields.hasErrors('nationalId')}" th:errors="*{nationalId}"></div>
+
 
       <label>Gender: </label>
       <select th:field="*{gender}" required>

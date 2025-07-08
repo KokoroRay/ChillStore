@@ -1,5 +1,6 @@
 package com.esms.config;
 
+import com.esms.service.CustomOidcUserService;
 import com.esms.service.CustomUserDetailsService;
 import com.esms.service.CustomerOAuth2UserService;
 import jakarta.servlet.ServletException;
@@ -35,6 +36,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomerOAuth2UserService customerOAuth2UserService;
+    
+    @Autowired
+    private CustomOidcUserService customOidcUserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -66,11 +70,13 @@ public class SecurityConfig {
                         .failureUrl("/auth/login?error=true") // Khi đăng nhập thất bại
                         .permitAll() // Cho phép tất cả truy cập trang login
                 )
+                // Cấu hình đăng nhập OAuth2/Google
                 .oauth2Login(oauth2Login -> oauth2Login
-                        .loginPage("/auth/login")
-                        .successHandler(authenticationSuccessHandler())
+                        .loginPage("/auth/login")  // Trang đăng nhập tùy chỉnh
+                        .successHandler(authenticationSuccessHandler())  // Xử lý sau khi đăng nhập thành công
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customerOAuth2UserService))
+                                .userService(customerOAuth2UserService)      // Xử lý OAuth2 thông thường
+                                .oidcUserService(customOidcUserService))     // Xử lý Google OIDC
                 )
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout") // URL để kích hoạt logout
@@ -88,21 +94,28 @@ public class SecurityConfig {
     //đã chuyển passwordEncoder qua AppConfig để trách phụ thuộc
 
 
+    /**
+     * Xử lý chuyển hướng sau khi đăng nhập thành công
+     * Dựa vào role để chuyển đến trang phù hợp
+     */
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return new AuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                                 Authentication authentication) throws IOException, ServletException {
+                // Lấy danh sách quyền của user
                 Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-                // Chuyển hướng về trang mặt định
                 String redirectUrl = "/";
+                
+                // Chuyển hướng dựa trên role
                 if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-                    redirectUrl = "/admin/category";
+                    redirectUrl = "/admin/category";   // Admin dashboard
                 } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_STAFF"))) {
-                    redirectUrl = "/staff/category";
+                    redirectUrl = "/staff/category";   // Staff dashboard
                 } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER"))) {
-                    redirectUrl = "/home";
+                    redirectUrl = "/home";             // Customer home page
                 }
+                
                 response.sendRedirect(redirectUrl);
             }
 

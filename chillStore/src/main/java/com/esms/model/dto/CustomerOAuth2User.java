@@ -9,10 +9,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * Wrapper class kết hợp thông tin Customer và OAuth2User
+ * Tự động gán role CUSTOMER cho user đăng nhập bằng Google/OAuth2
+ */
 public class CustomerOAuth2User implements OAuth2User {
 
-    private Customer customer;
-    private OAuth2User oauth2User;
+    private Customer customer;      // Thông tin customer trong database
+    private OAuth2User oauth2User;  // Thông tin từ OAuth2 provider
 
     public CustomerOAuth2User(Customer customer, OAuth2User oauth2User) {
         this.customer = customer;
@@ -24,6 +28,10 @@ public class CustomerOAuth2User implements OAuth2User {
         return oauth2User.getAttributes();
     }
 
+    /**
+     * Phương thức quan trọng nhất: Gán role CUSTOMER cho user
+     * Spring Security sử dụng để kiểm tra quyền truy cập
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
@@ -34,6 +42,7 @@ public class CustomerOAuth2User implements OAuth2User {
         return oauth2User.getName();
     }
 
+    // Các phương thức tiện ích để lấy thông tin customer
     public Customer getCustomer() {
         return customer;
     }

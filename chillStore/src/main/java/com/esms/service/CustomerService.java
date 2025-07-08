@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CustomerService {
-    void register(RegisterDto dto);
+    void register(RegisterDTO dto);
 
-    void sendResetOtp(ForgotPasswordDto dto);
-    boolean verifyOtp(OtpDto dto);
-    void resetPassword(ResetPasswordDto dto);
+    void sendResetOtp(ForgotPasswordDTO dto);
+    boolean verifyOtp(OtpDTO dto);
+    void resetPassword(ResetPasswordDTO dto);
     // Quản lý người dùng
     Page<Customer> getAllCustomers(Pageable pageable);
     Page<Customer> searchCustomers(String search, Pageable pageable);
     Customer getCustomerById(Integer id);
-    void updateCustomer(Integer id, CustomerDto customerDto);
+    void updateCustomer(Integer id, CustomerDTO customerDto);
     void deleteCustomer(Integer id);
 
     @Transactional
@@ -45,5 +45,5 @@ public interface CustomerService {
 
     Customer getCustomerByEmail(String email);
 
-    void changePassword(String email, ChangePasswordDto dto);
+    void changePassword(String email, ChangePasswordDTO dto);
 }

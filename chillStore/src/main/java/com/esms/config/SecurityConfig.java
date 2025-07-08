@@ -78,6 +78,9 @@ public class SecurityConfig {
                         .invalidateHttpSession(true) // Hủy bỏ session hiện tại
                         .deleteCookies("JSESSIONID") // Xóa cookie phiên
                         .permitAll() // Cho phép tất cả truy cập URL logout
+                )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/staff/orders/*/update-status", "/staff/orders/*/confirm-refund")
                 );
         return http.build();
     }

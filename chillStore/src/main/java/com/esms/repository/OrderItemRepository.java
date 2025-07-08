@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -19,20 +20,15 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, OrderItemI
 
     List<OrderItem> findByIdOrderId(Integer orderId);
 
-    @Query(value = "SELECT p.name, SUM(oi.quantity), oi.price_each, SUM(oi.quantity * oi.price_each) " +
-           "FROM order_items oi " +
-           "JOIN orders o ON oi.order_id = o.order_id " +
-           "JOIN products p ON oi.product_id = p.product_id " +
-           "WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
-           "GROUP BY p.name, oi.price_each", nativeQuery = true)
-    List<Object[]> getProductSalesStatistics();
+    @Query(value = "SELECT p.name, SUM(oi.quantity), oi.price_each, SUM(oi.quantity * oi.price_each) FROM order_items oi " +
+            "JOIN orders o ON oi.order_id = o.order_id " +
+            "JOIN products p ON oi.product_id = p.product_id " +
+            "WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
+            "AND (:startDate IS NULL OR o.order_date >= :startDate) " +
+            "AND (:endDate IS NULL OR o.order_date <= :endDate) " +
+            "GROUP BY p.name, oi.price_each " +
+            "ORDER BY SUM(oi.quantity) DESC", nativeQuery = true)
+    List<Object[]> getProductSalesStatistics(@Param("startDate") Date startDate,
+                                              @Param("endDate") Date endDate);
 
-    @Query(value = "SELECT TOP 10 s.name, SUM(oi.quantity) as total_sold " +
-           "FROM order_items oi " +
-           "JOIN orders o ON oi.order_id = o.order_id " +
-           "JOIN staff s ON o.staff_id = s.staff_id " +
-           "WHERE o.status IN ('Paid', 'Shipped', 'Delivered') " +
-           "GROUP BY s.name " +
-           "ORDER BY total_sold DESC", nativeQuery = true)
-    List<Object[]> getTop10StaffBySales();
 } 

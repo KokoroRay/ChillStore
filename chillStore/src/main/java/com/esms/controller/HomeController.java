@@ -1,8 +1,7 @@
 package com.esms.controller;
 
 
-import com.esms.model.dto.ProductDto;
-import com.esms.model.entity.Product;
+import com.esms.model.dto.ProductDTO;
 import com.esms.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,9 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.security.Principal;
-import java.util.List;
 
 @Controller
 public class HomeController {
@@ -47,7 +43,7 @@ public class HomeController {
 
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDto> productPage = productService.getProductDTOsPaginated(pageable);
+        Page<ProductDTO> productPage = productService.getProductDTOsPaginated(pageable);
 
         if (category != null && !category.equalsIgnoreCase("tất cả")) {
             productPage = productService.getProductsByCategory(category, pageable);

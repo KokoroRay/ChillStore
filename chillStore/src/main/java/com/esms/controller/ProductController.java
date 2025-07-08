@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +40,7 @@ public class ProductController {
     private BrandService brandService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String listProducts(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "categoryId", required = false) Integer categoryId,
@@ -134,6 +136,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String productDetail(
             @PathVariable("id") Integer id,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -168,6 +171,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/edit")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String editProduct(
             @PathVariable("id") Integer id,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -201,6 +205,7 @@ public class ProductController {
     }
 
     @PostMapping("/{id}/edit")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String updateProduct(
             @PathVariable("id") Integer id,
             @ModelAttribute("product") Product product,
@@ -312,6 +317,7 @@ public class ProductController {
     }
 
     @PostMapping("/{id}/delete")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String deleteProduct(
             @PathVariable("id") Integer id,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -338,6 +344,7 @@ public class ProductController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showAddProductForm(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryService.getAllCategory());
@@ -346,6 +353,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String addProduct(
             @ModelAttribute("product") Product product,
             @RequestParam(value = "image", required = false) MultipartFile image,

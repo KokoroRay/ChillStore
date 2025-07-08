@@ -1,0 +1,375 @@
+/* Variables */
+:root {
+    --primary: #5EABD6;
+    --success: #23e8a0;
+    --info: #87C0CD;
+    --warning: #FEFBC7;
+    --danger: #E14434;
+    --dark: #5a5c69;
+    --light: #f8f9fa;
+    --gray: #6c757d;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    --transition: all 0.3s ease;
+}
+
+/* Revenue specific styles */
+.revenue-container {
+    background-color: #f5f7fb;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    padding: 20px;
+}
+
+/* Filter section */
+.revenue-filter-section {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 30px;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.revenue-filter-section:hover {
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.comparison-options {
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+    margin-top: 15px;
+}
+
+/* KPI cards */
+.kpi-card {
+    min-height: 160px;
+    position: relative;
+    overflow: hidden;
+    border-left: 5px solid;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    margin-bottom: 24px;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.kpi-card.bg-primary { border-left-color: var(--primary); }
+.kpi-card.bg-success { border-left-color: var(--success); }
+.kpi-card.bg-info { border-left-color: var(--info); }
+.kpi-card.bg-warning { border-left-color: var(--warning); }
+.kpi-card.bg-danger { border-left-color: var(--danger); }
+.kpi-card.bg-secondary { border-left-color: var(--dark); }
+
+.kpi-card .card-body {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+}
+
+.kpi-card::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    opacity: 0.15;
+}
+
+.kpi-card.bg-primary::before { background: var(--primary); }
+.kpi-card.bg-success::before { background: var(--success); }
+.kpi-card.bg-info::before { background: var(--info); }
+.kpi-card.bg-warning::before { background: var(--warning); }
+.kpi-card.bg-danger::before { background: var(--danger); }
+.kpi-card.bg-secondary::before { background: var(--dark); }
+
+
+
+/* Chart containers */
+.chart-container {
+    height: 320px;
+    position: relative;
+    margin-top: 20px;
+}
+
+/* Section titles */
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.section-title i {
+    margin-right: 12px;
+    background: rgba(13, 110, 253, 0.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+/* Stats */
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 10px 0 5px;
+}
+
+.stat-label {
+    font-size: 0.95rem;
+    color: #6c757d;
+}
+
+/* Drilldown button */
+.drilldown-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.drilldown-btn:hover {
+    opacity: 1;
+    background: rgba(255,255,255,0.3);
+}
+
+/* Alert badge */
+.alert-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    z-index: 2;
+}
+
+/* Comparison section */
+.comparison-section {
+    margin-bottom: 30px;
+    padding: 20px 0;
+}
+
+.comparison-section .card {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.comparison-section .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.comparison-section .card-header {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.comparison-period {
+    font-size: 0.9rem;
+    font-weight: normal;
+    margin-left: 10px;
+    opacity: 0.9;
+}
+
+/* Comparison grid */
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.comparison-item {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 8px;
+}
+
+.comparison-label {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 5px;
+}
+
+.comparison-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+/* Comparison badges in KPI cards */
+.comparison-badge {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comparison-badge span {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.comparison-badge small {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.trend-up {
+    background: rgba(57, 246, 169, 0.2);
+    color: var(--success);
+}
+
+.trend-down {
+    background: rgba(236, 52, 34, 0.2);
+    color: var(--danger);
+}
+
+/* KPI Card Colors - Easy to customize */
+.kpi-gross-revenue {
+    background-color: #226597 !important;
+}
+
+.kpi-net-revenue {
+    background-color: #5EABD6 !important;
+}
+
+.kpi-order-count {
+    background-color: #87C0CD !important;
+}
+
+.kpi-aov {
+    background-color: #eddf70 !important;
+    color: #ffffff !important;
+}
+
+.kpi-cancellation {
+    background-color: #E14434 !important;
+}
+
+.kpi-margin {
+    background-color: #898c8e !important;
+}
+
+/* Icon positioning */
+.kpi-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    opacity: 0.7;
+    z-index: 1;
+}
+
+/* KPI Card uniform sizing */
+.kpi-card {
+    min-height: 140px;
+}
+
+.kpi-card .card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 108px;
+}
+
+.kpi-card .card-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.kpi-card .stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .kpi-card .card-title {
+        font-size: 1rem;
+    }
+
+    .kpi-card h3 {
+        font-size: 1.4rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .kpi-card h3 {
+        font-size: 1.3rem;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+    }
+
+    .stat-value {
+        font-size: 1.4rem;
+    }
+
+    .comparison-badge {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 576px) {
+    .revenue-filter-section .row > div {
+        margin-bottom: 15px;
+    }
+
+    .kpi-card {
+        min-height: 180px;
+    }
+}

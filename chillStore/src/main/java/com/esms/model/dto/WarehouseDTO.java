@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  * được sử dụng để truyền dữ liệu warehouse giữa các tầng khác nhau (Controller, Service, Repository).
  */
 
-public class WarehouseDto {
+public class WarehouseDTO {
     private Integer transId;
     private Integer productId;//Id product liên quan đến giao dịch
     private String productName;//name product
@@ -19,7 +19,7 @@ public class WarehouseDto {
     private String adminName; //Name admin thực hiện giao dịch
     private String notes; //Ghi chú
 
-    public WarehouseDto() {
+    public WarehouseDTO() {
     }
 
     public Integer getTransId() {

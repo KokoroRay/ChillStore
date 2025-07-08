@@ -1,6 +1,6 @@
 package com.esms.service.impl;
 
-import com.esms.model.dto.CategoryDto;
+import com.esms.model.dto.CategoryDTO;
 import com.esms.model.entity.Category;
 import com.esms.repository.CategoryRepository;
 import com.esms.service.CategoryService;
@@ -43,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category createCategory(CategoryDto categoryDto) {
+    public Category createCategory(CategoryDTO categoryDto) {
         if(categoryDto.getName() == null || categoryDto.getName().trim().isEmpty()){
             throw new RuntimeException("Tên thư mục không được để trống");
         }
@@ -58,7 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(Integer id, CategoryDto categoryDto) {
+    public Category updateCategory(Integer id, CategoryDTO categoryDto) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Categorry không tồn tại" + id));
         if (categoryDto.getParentId() != null && categoryDto.getParentId().equals(id)) {

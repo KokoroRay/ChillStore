@@ -14,7 +14,7 @@
         <div class="nav-left">
             <ul>
                 <li><a href="/">Introduct</a></li>
-                <li><a th:href="@{/viewProduct}">Product</a></li>
+                <li><a th:href="@{/product}">Product</a></li>
                 <li><a th:href="@{/discount}">Discount</a></li>
                 <li sec:authorize="hasRole('CUSTOMER')">
                     <a th:href="@{/order}">Order</a>
@@ -95,7 +95,7 @@
     <div class="mobile-menu" id="mobileMenu">
         <ul>
             <li><a href="/">Introduct</a></li>
-            <li><a th:href="@{/viewProduct}">Product</a></li>
+            <li><a th:href="@{/product}">Product</a></li>
             <li><a th:href="@{/discount}">Discount</a></li>
             <li sec:authorize="hasRole('CUSTOMER')">
                 <a th:href="@{/order}">Order</a>
@@ -110,7 +110,7 @@
             <a th:href="@{/auth/register}" class="btn-register">Register</a>
         </div>
     </div>
-</div>
+
 
 <script>
     // Enhanced dropdown functionality

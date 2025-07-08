@@ -80,7 +80,7 @@
                                     <tbody>
                                         <tr>
                                             <th>Price:</th>
-                                            <td><span class="price-highlight" th:text="${#numbers.formatCurrency(product.price)}"></span></td>
+                                            <td><span class="price-highlight" th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span> <span style="color:#e53935; font-weight:700;">VND</span></td>
                                         </tr>
                                         <tr>
                                             <th>Status:</th>
@@ -115,9 +115,9 @@
                             <input type="hidden" name="quantity" value="1" />
                             <button type="submit" class="btn btn-primary">Buy now</button>
                         </form>
-                        <a th:href="@{/viewProduct}" class="btn btn-secondary">
+                        <button type="button" class="btn btn-secondary" onclick="history.back()">
                             <i class="fas fa-arrow-left"></i> Back
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

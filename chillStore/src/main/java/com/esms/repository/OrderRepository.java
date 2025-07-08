@@ -81,12 +81,12 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             "AND (:status IS NULL OR :status = '' OR o.status = :status) " +
             "GROUP BY FORMAT(o.order_date, 'yyyy-MM-dd') " +
             "ORDER BY period ", nativeQuery = true)
-    List<Object[]> getRevenueTrend(@Param("period") String period,
-                                   @Param("startDate") Date startDate,
-                                   @Param("endDate") Date endDate,
-                                   @Param("categoryId") Integer categoryId,
-                                   @Param("region") String region,
-                                   @Param("status") String status);
+    List<Object[]> getRevenueTrend(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("categoryId") Integer categoryId,
+            @Param("region") String region,
+            @Param("status") String status);
 
 
     //doanh thu theo category

@@ -6,9 +6,11 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface IStaffService {
+public interface StaffService {
     // add
     Staff addStaff(Staff staff);
+    boolean isNationalIdExists(String nationalId);
+    boolean isEmailExists(String email);
 
     //update
     Staff updateStaff(int id, Staff staff);

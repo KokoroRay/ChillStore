@@ -14,7 +14,7 @@
         <div class="nav-left">
             <ul>
                 <li><a href="/">Introduct</a></li>
-                <li><a th:href="@{/product}">Product</a></li>
+                <li><a th:href="@{/Customer/Product}">Product</a></li>
                 <li><a th:href="@{/discount}">Discount</a></li>
                 <li sec:authorize="hasRole('CUSTOMER')">
                     <a th:href="@{/customer/order}">Order</a>
@@ -39,7 +39,7 @@
                     </a>
                     <ul class="dropdown-menu" id="dropdownMenu">
                         <li>
-                            <a th:href="@{/customer/wishlist}">
+                            <a th:href="@{/Customer/Wishlist}">
                                 <span class="menu-icon"><img src="/images/wishlists.png" alt="wishlist"></span>
                                 Wishlist
                             </a>
@@ -94,7 +94,7 @@
     <div class="mobile-menu" id="mobileMenu">
         <ul>
             <li><a href="/">Introduct</a></li>
-            <li><a th:href="@{/product}">Product</a></li>
+            <li><a th:href="@{/Customer/Product}">Product</a></li>
             <li><a th:href="@{/discount}">Discount</a></li>
             <li sec:authorize="hasRole('CUSTOMER')">
                 <a th:href="@{/order}">Order</a>

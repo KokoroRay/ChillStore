@@ -1,12 +1,11 @@
 package com.esms.util.MapperUtils;
 
 
-import com.esms.model.dto.RegisterDto;
+import com.esms.model.dto.RegisterDTO;
 import com.esms.model.entity.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -22,7 +21,7 @@ public interface CustomerMapper {
     }
 
     @Mapping(target = "birth_date", source = "birth_date") // Dòng này có vẻ đúng nếu birth_date có trong DTO
-    Customer toEntity(RegisterDto dto);
+    Customer toEntity(RegisterDTO dto);
 
     // TODO: Nếu dùng MapStruct, bổ sung mapping avatar_url <-> avatarUrl ở đây. Nếu mapping thủ công, sẽ xử lý ở controller/service.
 }

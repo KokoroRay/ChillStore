@@ -9,6 +9,7 @@ public class OrderItemId implements Serializable {
     private Integer orderId;
     private Integer productId;
 
+
     public OrderItemId() {}
     public OrderItemId(Integer orderId, Integer productId) {
         this.orderId = orderId;

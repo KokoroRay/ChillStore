@@ -1,6 +1,6 @@
 package com.esms.controller;
 
-import com.esms.model.dto.CustomerDto;
+import com.esms.model.dto.CustomerDTO;
 import com.esms.model.entity.Customer;
 import com.esms.service.CustomerService;
 import org.springframework.security.core.Authentication;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.esms.model.dto.ChangePasswordDto;
+import com.esms.model.dto.ChangePasswordDTO;
 import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -33,7 +33,7 @@ public class  ProfileController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         Customer customer = customerService.getCustomerByEmail(email);
-        CustomerDto customerDto = convertToDto(customer);
+        CustomerDTO customerDto = convertToDto(customer);
         model.addAttribute("customerDto", customerDto);
         return "customer/profile";
     }
@@ -44,7 +44,7 @@ public class  ProfileController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         Customer customer = customerService.getCustomerByEmail(email);
-        CustomerDto customerDto = convertToDto(customer);
+        CustomerDTO customerDto = convertToDto(customer);
         
         // Debug logging
         System.out.println("DEBUG: Edit Form - Customer Birth Date: " + customer.getBirth_date());
@@ -56,7 +56,7 @@ public class  ProfileController {
 
     // Xử lý cập nhật profile cho customer hiện tại
     @PostMapping("/edit")
-    public String updateProfile(@ModelAttribute("customerDto") CustomerDto customerDto, 
+    public String updateProfile(@ModelAttribute("customerDto") CustomerDTO customerDto,
                                BindingResult bindingResult,
                                Model model, 
                                RedirectAttributes redirectAttributes) {
@@ -141,13 +141,13 @@ public class  ProfileController {
     // Hiển thị form đổi mật khẩu
     @GetMapping("/change-password")
     public String showChangePasswordForm(Model model) {
-        model.addAttribute("changePasswordDto", new ChangePasswordDto());
+        model.addAttribute("changePasswordDto", new ChangePasswordDTO());
         return "customer/changePassword";
     }
 
     // Xử lý đổi mật khẩu
     @PostMapping("/change-password")
-    public String changePassword(@ModelAttribute("changePasswordDto") @Valid ChangePasswordDto changePasswordDto,
+    public String changePassword(@ModelAttribute("changePasswordDto") @Valid ChangePasswordDTO changePasswordDto,
                                  BindingResult bindingResult,
                                  Model model,
                                  RedirectAttributes redirectAttributes) {
@@ -166,8 +166,8 @@ public class  ProfileController {
     }
 
     // Hàm convert giống CustomerController
-    private CustomerDto convertToDto(Customer customer) {
-        CustomerDto dto = new CustomerDto();
+    private CustomerDTO convertToDto(Customer customer) {
+        CustomerDTO dto = new CustomerDTO();
         dto.setCustomerId(customer.getCustomerId());
         dto.setName(customer.getName());
         dto.setDisplayName(customer.getDisplay_name());

@@ -3,7 +3,7 @@ package com.esms.model.dto;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class OrderDto {
+public class OrderDTO {
     private Integer orderId;
     private String customerName;
     private BigDecimal discountAmount;
@@ -13,7 +13,7 @@ public class OrderDto {
     private String paymentMethod;
     private int itemsCount;
 
-    public OrderDto(Integer orderId, String customerName, BigDecimal discountAmount, Date orderDate, BigDecimal totalAmount, String status, String paymentMethod, int itemsCount) {
+    public OrderDTO(Integer orderId, String customerName, BigDecimal discountAmount, Date orderDate, BigDecimal totalAmount, String status, String paymentMethod, int itemsCount) {
         this.orderId = orderId;
         this.customerName = customerName;
         this.discountAmount = discountAmount;
@@ -86,5 +86,14 @@ public class OrderDto {
 
     public void setItemsCount(int itemsCount) {
         this.itemsCount = itemsCount;
+    }
+
+    // Method to get refund status for VNPay cancelled orders
+    public String getRefundStatus() {
+        if ("Cancelled".equals(this.status) && "VNpay".equals(this.paymentMethod)) {
+            if (discountAmount == null || discountAmount.intValue() == 0) return "pending_refund";
+            return discountAmount.intValue() == 2 ? "refunded" : "pending_refund";
+        }
+        return null;
     }
 } 

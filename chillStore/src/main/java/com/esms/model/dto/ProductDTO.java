@@ -4,7 +4,7 @@ import com.esms.model.entity.Category;
 
 import java.math.BigDecimal;
 
-public class ProductDto {
+public class ProductDTO {
     private Integer productId;
     private String name;
     private String imageUrl;
@@ -18,20 +18,20 @@ public class ProductDto {
     private Integer brandId;
     private String brandName;
 
-    public ProductDto(Integer productId, String name, BigDecimal price, String imageUrl) {
+    public ProductDTO(Integer productId, String name, BigDecimal price, String imageUrl) {
         this.productId = productId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.price = price;
     }
 
-    public ProductDto(String name, String imageUrl, BigDecimal price) {
+    public ProductDTO(String name, String imageUrl, BigDecimal price) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.price = price;
     }
 
-    public ProductDto(Integer productId, String name, String imageUrl, BigDecimal price, Category category) {
+    public ProductDTO(Integer productId, String name, String imageUrl, BigDecimal price, Category category) {
         this.productId = productId;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -39,7 +39,7 @@ public class ProductDto {
         this.category = category;
     }
 
-    public ProductDto() {
+    public ProductDTO() {
 
     }
 // Getters and Setters

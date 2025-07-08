@@ -3,12 +3,9 @@ package com.esms.model.dto;
 import com.esms.validation.PasswordMatch;
 import com.esms.validation.StrongPassword;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 @PasswordMatch
-public class ResetPasswordDto {
+public class ResetPasswordDTO {
 
     @NotBlank(message = "email không được để trống")
     private String email;

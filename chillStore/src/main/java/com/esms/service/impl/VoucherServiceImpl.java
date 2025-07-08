@@ -1,6 +1,6 @@
 package com.esms.service.impl;
 
-import com.esms.model.dto.VoucherDto;
+import com.esms.model.dto.VoucherDTO;
 import com.esms.model.entity.Admin;
 import com.esms.model.entity.Brand;
 import com.esms.model.entity.Category;
@@ -16,7 +16,6 @@ import org.springframework.security.core.Transient;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transient
@@ -57,7 +56,7 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Voucher createVoucher(VoucherDto voucherDto, String createdByEmail) {
+    public Voucher createVoucher(VoucherDTO voucherDto, String createdByEmail) {
         if (voucherRepository.findByCode(voucherDto.getCode()).isPresent()) {
             throw new RuntimeException("Voucher da ton tai");
         }
@@ -91,7 +90,7 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Voucher updateVoucher(Integer id, VoucherDto voucherDto) {
+    public Voucher updateVoucher(Integer id, VoucherDTO voucherDto) {
         Voucher voucher = voucherRepository.findById(id).orElseThrow(() -> new RuntimeException("Voucher khong ton tai"));
         if (!voucher.getCode().equals(voucherDto.getCode())) {
             if (voucherRepository.findByCode(voucherDto.getCode()).isPresent()) {

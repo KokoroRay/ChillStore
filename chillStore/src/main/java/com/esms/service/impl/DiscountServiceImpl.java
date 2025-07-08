@@ -1,7 +1,7 @@
 package com.esms.service.impl;
 
 import com.esms.exception.ResourceNotFoundException;
-import com.esms.model.dto.DiscountDto;
+import com.esms.model.dto.DiscountDTO;
 import com.esms.model.entity.Discount;
 import com.esms.model.entity.DiscountProduct;
 import com.esms.model.entity.DiscountProductId;
@@ -37,10 +37,10 @@ public class DiscountServiceImpl implements DiscountService {
     
     /**
      * Lấy tất cả discount
-     * @return List<DiscountDto>
+     * @return List<DiscountDTO>
      */
     @Override
-    public List<DiscountDto> getAllDiscounts() {
+    public List<DiscountDTO> getAllDiscounts() {
         // Lấy tất cả discount từ database
         List<Discount> discounts = discountRepository.findAll();
         
@@ -53,10 +53,10 @@ public class DiscountServiceImpl implements DiscountService {
     /**
      * Lấy discount theo ID
      * @param promoId ID của discount
-     * @return DiscountDto
+     * @return DiscountDTO
      */
     @Override
-    public DiscountDto getDiscountById(Integer promoId) {
+    public DiscountDTO getDiscountById(Integer promoId) {
         // Tìm discount theo ID, nếu không tìm thấy thì throw exception
         Discount discount = discountRepository.findById(promoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Discount not found with id: " + promoId));
@@ -68,10 +68,10 @@ public class DiscountServiceImpl implements DiscountService {
     /**
      * Lấy discount theo code
      * @param code mã code của discount
-     * @return DiscountDto
+     * @return DiscountDTO
      */
     @Override
-    public DiscountDto getDiscountByCode(String code) {
+    public DiscountDTO getDiscountByCode(String code) {
         // Tìm discount theo code, nếu không tìm thấy thì throw exception
         Discount discount = discountRepository.findByCode(code)
                 .orElseThrow(() -> new ResourceNotFoundException("Discount not found with code: " + code));
@@ -82,10 +82,10 @@ public class DiscountServiceImpl implements DiscountService {
     
     /**
      * Lấy tất cả discount đang hoạt động
-     * @return List<DiscountDto>
+     * @return List<DiscountDTO>
      */
     @Override
-    public List<DiscountDto> getActiveDiscounts() {
+    public List<DiscountDTO> getActiveDiscounts() {
         // Lấy tất cả discount đang active
         List<Discount> discounts = discountRepository.findByActiveTrue();
         
@@ -98,10 +98,10 @@ public class DiscountServiceImpl implements DiscountService {
     /**
      * Lấy discount theo loại áp dụng
      * @param applyType loại áp dụng (product, brand, category)
-     * @return List<DiscountDto>
+     * @return List<DiscountDTO>
      */
     @Override
-    public List<DiscountDto> getDiscountsByApplyType(String applyType) {
+    public List<DiscountDTO> getDiscountsByApplyType(String applyType) {
         // Lấy discount theo loại áp dụng
         List<Discount> discounts = discountRepository.findByApplyType(applyType);
         
@@ -113,10 +113,10 @@ public class DiscountServiceImpl implements DiscountService {
     
     /**
      * Lấy discount đang trong thời gian áp dụng
-     * @return List<DiscountDto>
+     * @return List<DiscountDTO>
      */
     @Override
-    public List<DiscountDto> getCurrentActiveDiscounts() {
+    public List<DiscountDTO> getCurrentActiveDiscounts() {
         // Lấy discount đang trong thời gian áp dụng
         List<Discount> discounts = discountRepository.findActiveDiscountsByDate(LocalDate.now());
         
@@ -129,10 +129,10 @@ public class DiscountServiceImpl implements DiscountService {
     /**
      * Tạo mới discount
      * @param discountDto thông tin discount cần tạo
-     * @return DiscountDto
+     * @return DiscountDTO
      */
     @Override
-    public DiscountDto createDiscount(DiscountDto discountDto) {
+    public DiscountDTO createDiscount(DiscountDTO discountDto) {
         // Kiểm tra code đã tồn tại chưa
         if (discountRepository.existsByCode(discountDto.getCode())) {
             throw new IllegalArgumentException("Discount code already exists: " + discountDto.getCode());
@@ -157,10 +157,10 @@ public class DiscountServiceImpl implements DiscountService {
      * Cập nhật discount
      * @param promoId ID của discount
      * @param discountDto thông tin discount cần cập nhật
-     * @return DiscountDto
+     * @return DiscountDTO
      */
     @Override
-    public DiscountDto updateDiscount(Integer promoId, DiscountDto discountDto) {
+    public DiscountDTO updateDiscount(Integer promoId, DiscountDTO discountDto) {
         // Tìm discount theo ID, nếu không tìm thấy thì throw exception
         Discount existingDiscount = discountRepository.findById(promoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Discount not found with id: " + promoId));
@@ -208,10 +208,10 @@ public class DiscountServiceImpl implements DiscountService {
      * Kích hoạt/vô hiệu hóa discount
      * @param promoId ID của discount
      * @param active trạng thái mới
-     * @return DiscountDto
+     * @return DiscountDTO
      */
     @Override
-    public DiscountDto toggleDiscountStatus(Integer promoId, Boolean active) {
+    public DiscountDTO toggleDiscountStatus(Integer promoId, Boolean active) {
         // Tìm discount theo ID, nếu không tìm thấy thì throw exception
         Discount discount = discountRepository.findById(promoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Discount not found with id: " + promoId));
@@ -229,10 +229,10 @@ public class DiscountServiceImpl implements DiscountService {
     /**
      * Chuyển đổi từ Entity sang DTO
      * @param discount entity cần chuyển đổi
-     * @return DiscountDto
+     * @return DiscountDTO
      */
-    private DiscountDto convertToDto(Discount discount) {
-        DiscountDto dto = new DiscountDto();
+    private DiscountDTO convertToDto(Discount discount) {
+        DiscountDTO dto = new DiscountDTO();
         
         // Copy các thuộc tính cơ bản
         dto.setPromoId(discount.getPromoId());
@@ -276,7 +276,7 @@ public class DiscountServiceImpl implements DiscountService {
      * @param discountDto DTO cần chuyển đổi
      * @return Discount
      */
-    private Discount convertToEntity(DiscountDto discountDto) {
+    private Discount convertToEntity(DiscountDTO discountDto) {
         Discount discount = new Discount();
         
         // Copy các thuộc tính cơ bản
@@ -337,12 +337,12 @@ public class DiscountServiceImpl implements DiscountService {
      * @param brandId ID brand - lọc discount áp dụng cho sản phẩm thuộc brand này
      * @param productId ID product - lọc discount áp dụng cho sản phẩm cụ thể này
      * @param discountRange Khoảng discount percentage (0-10, 10-20, 20-30, 30-50, 50+) - lọc theo % giảm giá
-     * @return List<DiscountDto> Danh sách discount đã được lọc theo các tiêu chí
+     * @return List<DiscountDTO> Danh sách discount đã được lọc theo các tiêu chí
      */
     @Override
-    public List<DiscountDto> searchAndFilterDiscounts(String search, String status, String applyType,
-                                                     String startDate, String endDate, Integer categoryId,
-                                                     Integer brandId, Integer productId, String discountRange) {
+    public List<DiscountDTO> searchAndFilterDiscounts(String search, String status, String applyType,
+                                                      String startDate, String endDate, Integer categoryId,
+                                                      Integer brandId, Integer productId, String discountRange) {
         // Lấy tất cả discount từ database để xử lý filtering
         List<Discount> allDiscounts = discountRepository.findAll();
         

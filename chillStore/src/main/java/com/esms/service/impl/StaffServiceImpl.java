@@ -2,7 +2,7 @@ package com.esms.service.impl;
 
 import com.esms.model.entity.Staff;
 import com.esms.repository.StaffRepository;
-import com.esms.service.IStaffService;
+import com.esms.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-public class StaffServiceImpl implements IStaffService {
+public class StaffServiceImpl implements StaffService {
     @Autowired
     private StaffRepository staffRepository;
 
@@ -83,6 +83,16 @@ public class StaffServiceImpl implements IStaffService {
     public Page<Staff> searchStaff(String keyword, Staff.Gender gender, Pageable pageable) {
         return staffRepository.searchStaff(keyword, gender, pageable);
     }
+    @Override
+    public boolean isNationalIdExists(String nationalId) {
+        return staffRepository.existsByNationalId(nationalId);
+    }
+    @Override
+    public boolean isEmailExists(String email) {
+        return staffRepository.existsByEmail(email);
+    }
+
+
 
 
 

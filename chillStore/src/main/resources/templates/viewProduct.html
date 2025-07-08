@@ -97,25 +97,86 @@
 <body>
     <div class="header" th:insert="fragments/header :: headerContent"></div>
     <div class="container main-content">
-        <h2 class="text-center mb-4">Product List</h2>
+        <!-- Filter Section -->
+        <div class="filter-section mb-4">
+            <form th:action="@{/Customer/Product}" method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Search products...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="categoryId">
+                        <option value="">All Categories</option>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${categoryId == category.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="brandId">
+                        <option value="">All Brands</option>
+                        <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brandId == brand.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" name="minPrice" th:value="${minPrice != null ? #numbers.formatInteger(minPrice, 0) : ''}" placeholder="Price from (VND)">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" name="maxPrice" th:value="${maxPrice != null ? #numbers.formatInteger(maxPrice, 0) : ''}" placeholder="To (VND)">
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="sortOption">
+                        <option value="default" th:selected="${sortOption == null || sortOption == 'default'}">Default</option>
+                        <option value="name_asc" th:selected="${sortOption == 'name_asc'}">Name (A-Z)</option>
+                        <option value="name_desc" th:selected="${sortOption == 'name_desc'}">Name (Z-A)</option>
+                        <option value="price_asc" th:selected="${sortOption == 'price_asc'}">Price (Low to High)</option>
+                        <option value="price_desc" th:selected="${sortOption == 'price_desc'}">Price (High to Low)</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter me-2"></i> Filter
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetFilters()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div th:if="${priceError != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${priceError}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <script>
+        function resetFilters() {
+            window.location.href = '/Customer/Product';
+        }
+        </script>
         <div class="row">
             <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
                 <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
                 <h5 class="text-muted">No products found</h5>
             </div>
             <div th:each="product : ${products}" class="col-6 col-sm-4 col-md-3 mb-3 d-flex">
-                <div class="product-card w-100">
-                    <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img">
-                    <h5 class="product-title" th:text="${product.name}">Tên sản phẩm</h5>
-                    <div class="product-actions mt-auto">
-                        <button class="btn btn-buy flex-grow-1">Buy now</button>
-                        <button class="wishlist-btn" title="Thêm vào wishlist"
-                            th:data-product-id="${product.productId}"
-                            th:data-product-name="${product.name}"
-                            th:data-product-imageurl="${product.imageUrl}">
-                            <i class="fa fa-heart"></i>
-                        </button>
-                    </div>
+                <div class="product-card w-100 position-relative">
+                    <a th:href="@{'/Customer/Product/' + ${product.productId}}" style="text-decoration:none; color:inherit; display:block;">
+                        <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img">
+                        <h5 class="product-title" th:text="${product.name}" style="color:#2196f3; font-size:1.1rem; font-weight:400; margin-bottom:4px;">Tên sản phẩm</h5>
+                        <div>
+                            <span style="color:#e53935; font-size:1.1rem; font-weight:700;">
+                                <span th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
+                            </span>
+                            <span style="color:#e53935; font-size:0.85rem; font-weight:700; vertical-align:super;">VND</span>
+                        </div>
+                    </a>
+                    <button class="wishlist-btn position-absolute" style="top:10px;right:10px;z-index:2;" title="Thêm vào wishlist"
+                        th:data-product-id="${product.productId}"
+                        th:data-product-name="${product.name}"
+                        th:data-product-imageurl="${product.imageUrl}"
+                        th:data-product-price="${product.price}">
+                        <i class="fa fa-heart"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -123,18 +184,18 @@
         <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
             <ul class="pagination">
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/viewProduct(page=0, size=${size}, brandId=${brandId}, categoryId=${categoryId}, keyword=${keyword})}">&laquo;</a>
+                    <a class="page-link" th:href="@{/Customer/Product(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&laquo;</a>
                 </li>
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${currentPage == i} ? 'active'">
-                    <a class="page-link" th:href="@{/viewProduct(page=${i}, size=${size}, brandId=${brandId}, categoryId=${categoryId}, keyword=${keyword})}" th:text="${i+1}"></a>
+                    <a class="page-link" th:href="@{/Customer/Product(page=${i}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${i+1}"></a>
                 </li>
-                <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/viewProduct(page=${totalPages-1}, size=${size}, brandId=${brandId}, categoryId=${categoryId}, keyword=${keyword})}">&raquo;</a>
+                <li class="page-item" th:classappend="${currentPage == (totalPages - 1)} ? 'disabled'">
+                    <a class="page-link" th:href="@{/Customer/Product(page=${totalPages - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&raquo;</a>
                 </li>
             </ul>
         </div>
     </div>
-    <a href="/Wishlist" class="btn btn-outline-danger position-fixed" style="top:90px;right:30px;z-index:1000;">
+    <a href="/Customer/Wishlist" class="btn btn-outline-danger position-fixed" style="top:90px;right:30px;z-index:1000;">
         <i class="fa fa-heart"></i> Wishlist
     </a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -168,7 +229,8 @@
             const product = {
                 productId: parseInt(btn.getAttribute('data-product-id')),
                 name: btn.getAttribute('data-product-name'),
-                imageUrl: btn.getAttribute('data-product-imageurl')
+                imageUrl: btn.getAttribute('data-product-imageurl'),
+                price: btn.getAttribute('data-product-price') ? parseInt(btn.getAttribute('data-product-price')) : null
             };
             const icon = btn.querySelector('i');
             if (isInWishlist(product.productId)) {

@@ -4,6 +4,7 @@
             <div class="col-12 col-md-10 col-lg-8 col-xl-6">
                 <div class="card shadow p-4 mt-5 mb-5">
                     <h2 class="mb-4 text-center">Add New Maintenance</h2>
+                    <div th:if="${error}" class="alert alert-danger mb-3" th:text="${error}"></div>
                     <form th:action="@{'/admin/maintenance/save'}" th:object="${maintenanceDto}" method="post">
                         <div class="row g-3">
                             <div class="col-12 col-md-6">

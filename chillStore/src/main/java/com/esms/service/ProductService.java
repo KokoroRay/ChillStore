@@ -30,11 +30,18 @@ public interface ProductService {
     void deleteProduct(Integer productId);
     Product saveProduct(Product product);
 
+    // Lấy discount còn hiệu lực cho 1 sản phẩm (nếu có)
+    com.esms.model.entity.Discount getActiveDiscountForProduct(Product product);
 
     List<ProductDTO> getAllProductDTOs();
 
     Page<ProductDTO> getProductDTOsPaginated(Pageable pageable);
 
     Page<ProductDTO> getProductsByCategory(String category, Pageable pageable);
+
+    /**
+     * Lấy danh sách sản phẩm đang có discount còn hiệu lực (active và trong thời gian áp dụng)
+     */
+    Page<Product> getDiscountProducts(Pageable pageable);
 }
 

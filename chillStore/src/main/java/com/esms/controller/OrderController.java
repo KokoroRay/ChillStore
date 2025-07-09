@@ -23,15 +23,19 @@ public class OrderController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String listOrders(@RequestParam(value = "keyword", required = false) String keyword,
                              @RequestParam(value = "status", required = false) String status,
+                             @RequestParam(value = "fromDate", required = false) String fromDate,
+                             @RequestParam(value = "toDate", required = false) String toDate,
+                             @RequestParam(value = "sortBy", defaultValue = "orderDate") String sortBy,
+                             @RequestParam(value = "sortDir", defaultValue = "desc") String sortDir,
                              Model model) {
         List<OrderDTO> orders;
 
         // Check if the keyword is a negative integer
         if (keyword != null && keyword.matches("^-\\d+$")) {
             orders = new java.util.ArrayList<>();
-            model.addAttribute("searchError", "Mã đơn hàng (Receipt) không thể là số âm.");
+            model.addAttribute("searchError", "Mã đơn hàng không thể là số âm.");
         } else {
-            orders = orderService.searchOrders(keyword, status);
+            orders = orderService.searchOrdersWithFilter(keyword, status, fromDate, toDate, sortBy, sortDir);
         }
 
         List<String> statuses = Arrays.asList("Pending", "Paid", "Shipped", "Delivered", "Cancelled");
@@ -40,6 +44,10 @@ public class OrderController {
         model.addAttribute("statuses", statuses);
         model.addAttribute("keyword", keyword);
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("fromDate", fromDate);
+        model.addAttribute("toDate", toDate);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
 
         return "staff/order/manage-order";
     }

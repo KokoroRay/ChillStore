@@ -4,6 +4,7 @@ package com.esms.controller;
 import com.esms.exception.EmailAlreadyUsedException;
 import com.esms.exception.InvalidOtpException;
 import com.esms.exception.UserNotFoundException;
+import com.esms.model.dto.CustomerOAuth2User;
 import com.esms.model.dto.ForgotPasswordDTO;
 import com.esms.model.dto.RegisterDTO;
 import com.esms.model.dto.OtpDTO;
@@ -86,12 +87,21 @@ public class AuthController {
     @GetMapping("/home")
     public String home(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser".equals(authentication.getPrincipal()))) {
+        
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
             Object principal = authentication.getPrincipal();
             String name = "";
             String email = "";
             String provider = "local";
-            if (principal instanceof OAuth2User) {
+            Integer customerId = null;
+            
+            if (principal instanceof CustomerOAuth2User) {
+                CustomerOAuth2User customerOAuth2User = (CustomerOAuth2User) principal;
+                name = customerOAuth2User.getCustomerName();
+                email = customerOAuth2User.getEmail();
+                provider = customerOAuth2User.getProvider();
+                customerId = customerOAuth2User.getCustomerId();
+            } else if (principal instanceof OAuth2User) {
                 OAuth2User oauth2User = (OAuth2User) principal;
                 name = oauth2User.getAttribute("name");
                 email = oauth2User.getAttribute("email");
@@ -103,6 +113,10 @@ public class AuthController {
                     model.addAttribute("loggedInCustomerId", customer.getCustomerId());
                     model.addAttribute("loggedInUserName", customer.getDisplay_name() != null ? customer.getDisplay_name() : customer.getName());
                 });
+            }
+            
+            if (customerId != null) {
+                model.addAttribute("loggedInCustomerId", customerId);
             }
             model.addAttribute("loggedInUserEmail", email);
             model.addAttribute("loggedInUserName", name);
@@ -120,6 +134,7 @@ public class AuthController {
             model.addAttribute("loggedInProvider", "none");
             model.addAttribute("loggedInUserRole", "GUEST");
         }
+        
         return "home";
     }
 

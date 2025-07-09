@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - ChillStore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/navigationBar.css}" />
+</head>
+<body>
+<div th:insert="~{fragments/navigationBar :: navBar}"></div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-shipping-fast"></i> Delivery Information</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/checkout/submit}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" name="customerName" class="form-control" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number *</label>
+                            <input type="tel" name="customerPhone" class="form-control" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Delivery Address *</label>
+                            <div id="address-selector-container"></div>
+                            <input type="hidden" name="deliveryAddress" id="address-hidden" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Payment Method *</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" value="COD" id="cod" checked>
+                                <label class="form-check-label" for="cod">
+                                    <i class="fas fa-money-bill-wave"></i> Cash on Delivery (COD)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" value="VNpay" id="vnpay">
+                                <label class="form-check-label" for="vnpay">
+                                    <i class="fas fa-credit-card"></i> VNPay
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Order Notes</label>
+                            <textarea name="orderNotes" class="form-control" rows="3" placeholder="Special instructions for delivery..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-check"></i> Place Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-shopping-cart"></i> Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div th:each="item : ${cartItems}" class="d-flex justify-content-between mb-2">
+                        <span th:text="${item.productName}"></span>
+                        <span th:text="|$${#numbers.formatDecimal(item.totalPrice, 2, 'POINT', 3, 'COMMA')}|"></span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Total:</strong>
+                        <strong th:text="|$${#numbers.formatDecimal(total, 2, 'POINT', 3, 'COMMA')}|"></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/address-selector.js}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    new AddressSelector('address-selector-container', 'address-hidden');
+});
+</script>
+</body>
+</html>

@@ -13,6 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.text.Normalizer;
+import com.esms.repository.DiscountProductRepository;
+import com.esms.repository.DiscountRepository;
+import com.esms.model.entity.Discount;
+import java.time.LocalDate;
+import com.esms.model.entity.DiscountProduct;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -232,6 +237,46 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product saveProduct(Product product) {
         return productRepository.save(product);
+    }
+
+    @Autowired
+    private DiscountProductRepository discountProductRepository;
+    @Autowired
+    private DiscountRepository discountRepository;
+
+    @Override
+    public Page<Product> getDiscountProducts(Pageable pageable) {
+        // Lấy tất cả Discount còn hiệu lực (active, trong thời gian áp dụng, loại áp dụng là product)
+        List<Discount> activeDiscounts = discountRepository.findActiveDiscountsByDate(LocalDate.now());
+        List<Integer> promoIds = activeDiscounts.stream()
+                .filter(d -> "product".equalsIgnoreCase(d.getApplyType()))
+                .map(Discount::getPromoId)
+                .toList();
+        // Lấy tất cả DiscountProduct liên quan
+        List<Product> discountProducts = discountProductRepository.findAll().stream()
+                .filter(dp -> promoIds.contains(dp.getDiscount().getPromoId()))
+                .map(dp -> dp.getProduct())
+                .distinct()
+                .toList();
+        // Phân trang thủ công
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), discountProducts.size());
+        List<Product> pageContent = (start > discountProducts.size()) ? List.of() : discountProducts.subList(start, end);
+        return new PageImpl<>(pageContent, pageable, discountProducts.size());
+    }
+
+    public Discount getActiveDiscountForProduct(Product product) {
+        List<DiscountProduct> discountProducts = discountProductRepository.findByProductId(product.getProductId());
+        for (DiscountProduct dp : discountProducts) {
+            Discount discount = dp.getDiscount();
+            if (discount.getActive() != null && discount.getActive()
+                && discount.getStartDate() != null && discount.getEndDate() != null
+                && !discount.getStartDate().isAfter(LocalDate.now())
+                && !discount.getEndDate().isBefore(LocalDate.now())) {
+                return discount;
+            }
+        }
+        return null;
     }
 
 }

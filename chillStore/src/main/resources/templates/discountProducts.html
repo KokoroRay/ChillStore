@@ -35,6 +35,19 @@
             </div>
             <div th:each="product : ${products}" class="col-6 col-sm-4 col-md-3 mb-3 d-flex">
                 <div class="product-card w-100 position-relative">
+                    <!-- Badge giảm giá -->
+                    <div th:if="${productDiscountMap[product.productId] != null}"
+                         class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 rounded-end"
+                         style="z-index:3; font-size:0.95rem; font-weight:600;">
+                        <div>
+                            <span th:if="${productDiscountMap[product.productId].discountPct != null}"
+                                  th:text="${#numbers.formatDecimal(productDiscountMap[product.productId].discountPct, 0, 'POINT', 0, 'COMMA')} + '%'">-10%</span>
+                        </div>
+                        <div style="font-size:0.8rem; margin-top:2px;">
+                            <span th:if="${productDiscountMap[product.productId].discountPct != null and product.price != null}"
+                                  th:text="${#numbers.formatDecimal(product.price * productDiscountMap[product.productId].discountPct / 100, 0, 'POINT', 0, 'COMMA')} + ' VND'">-50,000 VND</span>
+                        </div>
+                    </div>
                     <a th:href="@{'/Customer/Product/' + ${product.productId}}" style="text-decoration:none; color:inherit; display:block;">
                         <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img">
                         <h5 class="product-title" th:text="${product.name}" style="color:#2196f3; font-size:1.1rem; font-weight:400; margin-bottom:4px;">Tên sản phẩm</h5>

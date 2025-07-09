@@ -1,0 +1,103 @@
+<div th:fragment="content">
+    <div>
+        <h2 class="mb-4">Maintenance Management</h2>
+
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Maintenance Table -->
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-bordered table-hover mb-0">
+                    <thead class="table-primary">
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Order Info</th>
+                        <th>Product Info</th>
+                        <th>Customer Info</th>
+                        <th>Request Type</th>
+                        <th>Request Date</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="m : ${maintenances}">
+                        <td th:text="${m.requestId}"></td>
+                        <td th:text="${m.orderInfo}"></td>
+                        <td th:text="${m.productInfo}"></td>
+                        <td th:text="${m.customerInfo}"></td>
+                        <td>
+                            <span th:class="${m.requestType == 'maintenance'} ? 'badge bg-warning' : 'badge bg-info'"
+                                  th:text="${m.requestType}"></span>
+                        </td>
+                        <td th:text="${#temporals.format(m.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td>
+                            <span th:text="${#strings.abbreviate(m.reason, 50)}" 
+                                  th:title="${m.reason}"></span>
+                        </td>
+                        <td>
+                            <span th:class="${m.status == 'Completed'} ? 'badge bg-success' : (${m.status == 'In Progress'} ? 'badge bg-warning' : 'badge bg-secondary')"
+                                  th:text="${m.status}"></span>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/staff/maintenance/detail/{id}(id=${m.requestId})}"
+                                   class="btn btn-sm btn-info" title="View Details">
+                                   <i class="bi bi-eye"></i> View
+                                </a>
+                                <button type="button" class="btn btn-sm btn-success dropdown-toggle" 
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-check-circle"></i> Update Status
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}" 
+                                              method="post" style="display: inline;">
+                                            <input type="hidden" name="status" value="Pending">
+                                            <button type="submit" class="dropdown-item" 
+                                                    th:disabled="${m.status == 'Pending'}">
+                                                <i class="bi bi-clock"></i> Set Pending
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}" 
+                                              method="post" style="display: inline;">
+                                            <input type="hidden" name="status" value="In Progress">
+                                            <button type="submit" class="dropdown-item" 
+                                                    th:disabled="${m.status == 'In Progress'}">
+                                                <i class="bi bi-tools"></i> Set In Progress
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}" 
+                                              method="post" style="display: inline;">
+                                            <input type="hidden" name="status" value="Completed">
+                                            <button type="submit" class="dropdown-item" 
+                                                    th:disabled="${m.status == 'Completed'}">
+                                                <i class="bi bi-check-circle"></i> Set Completed
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(maintenances)}">
+                        <td colspan="9" class="text-center py-4">
+                            <div class="text-muted">
+                                <i class="bi bi-inbox fs-1"></i>
+                                <p class="mt-2">No maintenance records found</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 

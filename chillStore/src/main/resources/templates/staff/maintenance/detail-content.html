@@ -1,0 +1,104 @@
+<div th:fragment="content">
+    <div th:if="${(isAdmin != null and isAdmin) or maintenance.staffId == currentStaffId}">
+        <h2 class="mb-4">Maintenance Detail</h2>
+        <!-- Alert Messages -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Maintenance Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="fw-bold">Request ID:</td>
+                                        <td th:text="${maintenance.requestId}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Order Info:</td>
+                                        <td th:text="${maintenance.orderInfo}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Product Info:</td>
+                                        <td th:text="${maintenance.productInfo}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Customer Info:</td>
+                                        <td th:text="${maintenance.customerInfo}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Staff Info:</td>
+                                        <td th:text="${maintenance.staffName}"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="fw-bold">Request Type:</td>
+                                        <td>
+                                            <span th:class="${maintenance.requestType == 'maintenance'} ? 'badge bg-warning' : 'badge bg-info'"
+                                                  th:text="${maintenance.requestType}"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Request Date:</td>
+                                        <td th:text="${#temporals.format(maintenance.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Status:</td>
+                                        <td>
+                                            <span th:if="${maintenance.status == 'Completed'}" class="badge bg-success" th:text="${maintenance.status}"></span>
+                                            <span th:if="${maintenance.status == 'In Progress'}" class="badge bg-warning" th:text="${maintenance.status}"></span>
+                                            <span th:if="${maintenance.status != 'Completed' and maintenance.status != 'In Progress'}" class="badge bg-secondary" th:text="${maintenance.status}"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Reason:</td>
+                                        <td th:text="${maintenance.reason}"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Update Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${maintenance.requestId})}" method="post">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Current Status</label>
+                                <select class="form-select" id="status" name="status" required>
+                                    <option value="Pending" th:selected="${maintenance.status == 'Pending'}">Pending</option>
+                                    <option value="In Progress" th:selected="${maintenance.status == 'In Progress'}">In Progress</option>
+                                    <option value="Completed" th:selected="${maintenance.status == 'Completed'}">Completed</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-check-circle"></i> Update Status
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <a th:href="@{/staff/maintenance}" class="btn btn-secondary w-100">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:unless="${(isAdmin != null and isAdmin) or maintenance.staffId == currentStaffId}">
+        <div class="alert alert-danger">You do not have permission to view this maintenance request.</div>
+    </div>
+</div> 

@@ -104,4 +104,23 @@ public class CustomerProductController {
         model.addAttribute("product", product);
         return "viewProductDetail";
     }
+
+    @GetMapping("/Customer/DiscountProducts")
+    public String viewDiscountProducts(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size,
+            Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> products = productService.getDiscountProducts(pageable);
+        List<Category> categories = categoryService.getAllCategory();
+        List<Brand> brands = brandService.getAllBrands();
+        model.addAttribute("products", products);
+        model.addAttribute("categories", categories);
+        model.addAttribute("brands", brands);
+        model.addAttribute("size", size);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", products.getTotalPages());
+        model.addAttribute("totalItems", products.getTotalElements());
+        return "discountProducts";
+    }
 } 

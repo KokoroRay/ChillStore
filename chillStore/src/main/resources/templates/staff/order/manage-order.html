@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/sidebarStaff.css">
     <link rel="stylesheet" href="/css/staff-order.css">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 <div class="content flex-grow-1 mt-4" th:replace="~{fragments/layoutStaff :: layout(

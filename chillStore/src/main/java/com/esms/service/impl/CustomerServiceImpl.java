@@ -304,15 +304,23 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findByProviderAndProviderId(provider, providerId);
     }
 
+    /**
+     * Xử lý đăng ký/đăng nhập bằng tài khoản Google/OAuth2
+     * Tự động tạo Customer mới hoặc cập nhật thông tin nếu đã tồn tại
+     */
     @Override
     public Customer processOAuth2User(OAuth2User oAuth2User, String provider) {
+        // Lấy thông tin cơ bản từ OAuth2 provider
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
         String providerId = oAuth2User.getName();
 
+        // Kiểm tra xem email đã tồn tại trong hệ thống chưa
         Optional<Customer> existingCustomer = findCustomerByEmail(email);
         Customer customer;
+        
         if (existingCustomer.isPresent()) {
+            // Nếu đã tồn tại: cập nhật thông tin provider
             customer = existingCustomer.get();
             customer.setName(name);
             customer.setDisplay_name(name);
@@ -320,8 +328,11 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setProviderId(providerId);
             customer.setUpdated_at(LocalDateTime.now());
         } else {
+            // Nếu chưa tồn tại: tạo Customer mới
             customer = new Customer(email, name, provider, providerId);
         }
+        
+        // Lưu vào database và trả về
         return customerRepository.save(customer);
     }
 

@@ -174,5 +174,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             @Param("status") String status
     );
 
+    List<Order> findByCustomerCustomerId(Integer customerId);
+
 
     }

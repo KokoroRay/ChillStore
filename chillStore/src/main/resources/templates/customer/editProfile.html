@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - ChillStore</title>
     <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="/css/address-selector.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/header.css">
 </head>
@@ -119,15 +120,12 @@
                         </h4>
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="address" class="form-label">
+                                <label class="form-label">
                                     <i class="fas fa-map-marker-alt"></i>
                                     Address
                                 </label>
-                                <textarea id="address" 
-                                          th:field="*{address}" 
-                                          class="form-input" 
-                                          rows="3" 
-                                          placeholder="Enter your address"></textarea>
+                                <div id="address-selector-container"></div>
+                                <input type="hidden" th:field="*{address}" id="address-hidden" />
                                 <div class="form-error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
                             </div>
 
@@ -263,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const birthDate = new Date(this.value);
             const today = new Date();
-            const age = today.getFullYear() - birthDate.getFullYear();
+            let age = today.getFullYear() - birthDate.getFullYear();
             const monthDiff = today.getMonth() - birthDate.getMonth();
             
             // Adjust age if birthday hasn't occurred this year
@@ -303,7 +301,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Initialize Address Selector
+    const addressSelector = new AddressSelector('address-selector-container', 'address-hidden');
+    // Set existing address if available
+    const existingAddress = document.getElementById('address-hidden').value;
+    if (existingAddress) {
+        setTimeout(() => {
+            addressSelector.setAddress(existingAddress);
+        }, 1000);
+    }
 });
 </script>
+<script th:src="@{/js/address-selector.js}"></script>
 </body>
 </html> 

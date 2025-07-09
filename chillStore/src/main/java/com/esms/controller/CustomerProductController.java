@@ -3,6 +3,7 @@ package com.esms.controller;
 import com.esms.model.entity.Brand;
 import com.esms.model.entity.Category;
 import com.esms.model.entity.Product;
+import com.esms.model.entity.Discount;
 import com.esms.service.BrandService;
 import com.esms.service.CategoryService;
 import com.esms.service.ProductService;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class CustomerProductController {
@@ -101,7 +104,38 @@ public class CustomerProductController {
     @GetMapping("/Customer/Product/{id}")
     public String viewProductDetail(@PathVariable("id") Integer id, Model model) {
         Product product = productService.getProductById(id);
+        // Lấy discount cho sản phẩm này (nếu có)
+        com.esms.model.entity.Discount discount = productService.getActiveDiscountForProduct(product);
         model.addAttribute("product", product);
+        model.addAttribute("discount", discount);
         return "viewProductDetail";
+    }
+
+    @GetMapping("/Customer/DiscountProducts")
+    public String viewDiscountProducts(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size,
+            Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> products = productService.getDiscountProducts(pageable);
+        List<Category> categories = categoryService.getAllCategory();
+        List<Brand> brands = brandService.getAllBrands();
+        // Map productId -> discount (nếu có)
+        Map<Integer, Discount> productDiscountMap = new HashMap<>();
+        for (Product product : products) {
+            Discount discount = productService.getActiveDiscountForProduct(product);
+            if (discount != null) {
+                productDiscountMap.put(product.getProductId(), discount);
+            }
+        }
+        model.addAttribute("products", products);
+        model.addAttribute("categories", categories);
+        model.addAttribute("brands", brands);
+        model.addAttribute("size", size);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", products.getTotalPages());
+        model.addAttribute("totalItems", products.getTotalElements());
+        model.addAttribute("productDiscountMap", productDiscountMap);
+        return "discountProducts";
     }
 } 

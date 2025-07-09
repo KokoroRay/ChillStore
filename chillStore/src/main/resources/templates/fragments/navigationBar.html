@@ -15,9 +15,9 @@
             <ul>
                 <li><a href="/">Introduct</a></li>
                 <li><a th:href="@{/Customer/Product}">Product</a></li>
-                <li><a th:href="@{/discount}">Discount</a></li>
+                <li><a th:href="@{/Customer/DiscountProducts}">Discount</a></li>
                 <li sec:authorize="hasRole('CUSTOMER')">
-                    <a th:href="@{/order}">Order</a>
+                    <a th:href="@{/customer/order}">Order</a>
                 </li>
                 <li sec:authorize="hasRole('CUSTOMER')">
                     <a th:href="@{/contact}">Contact</a>
@@ -29,7 +29,6 @@
             <!-- Cart and Avatar for Customer -->
             <div sec:authorize="hasRole('CUSTOMER')" class="user-actions">
                 <a th:href="@{/customer/cart}" class="cart-icon">
-                    <i class="fas fa-shopping-cart"></i>
                     <span class="cart-badge">0</span>
                     <img src="/images/cart.png" alt="cart">
                 </a>
@@ -48,7 +47,7 @@
                         <li>
                             <a th:href="@{/customer/profile}">
                                 <span class="menu-icon"><img src="/images/settings.png" alt="profile"></span>
-                                Profile
+                                Settings
                             </a>
                         </li>
                         <li>
@@ -59,7 +58,7 @@
                         </li>
                         <li>
                             <a th:href="@{/customer/order-history}">
-                                <span class="menu-icon"><img src="/images/order_history.png" alt="order_histtory"></span>
+                                <span class="menu-icon"><img src="/images/order_history.png" alt="order_history"></span>
                                 Order History
                             </a>
                         </li>
@@ -96,7 +95,7 @@
         <ul>
             <li><a href="/">Introduct</a></li>
             <li><a th:href="@{/Customer/Product}">Product</a></li>
-            <li><a th:href="@{/discount}">Discount</a></li>
+            <li><a th:href="@{/Customer/DiscountProducts}">Discount</a></li>
             <li sec:authorize="hasRole('CUSTOMER')">
                 <a th:href="@{/order}">Order</a>
             </li>

@@ -1,22 +1,39 @@
 <div th:fragment="content(orders, statuses, keyword, selectedStatus, searchError)">
 
     <div class="search-form">
-        <form th:action="@{/staff/orders}" method="get" class="d-flex w-100">
-            <input type="text"
-                   name="keyword"
-                   class="form-control"
-                   placeholder="Search by Receipt or Customer"
-                   th:value="${keyword}">
-            <select name="status" class="form-control ms-2" style="max-width: 150px;" onchange="this.form.submit()">
-                <option value="">All status</option>
-                <option th:each="st : ${statuses}"
-                        th:value="${st}"
-                        th:text="${st}"
-                        th:selected="${st == selectedStatus}"></option>
-            </select>
-            <button type="submit" class="btn btn-outline-primary ms-2">
-                <i class="fas fa-search"></i> Search
-            </button>
+        <form th:action="@{/staff/orders}" method="get">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" name="keyword" class="form-control" 
+                           placeholder="Search by Order ID or Customer" th:value="${keyword}">
+                </div>
+                <div class="col-md-2">
+                    <select name="status" class="form-control">
+                        <option value="">All Status</option>
+                        <option th:each="st : ${statuses}" th:value="${st}" th:text="${st}" 
+                                th:selected="${st == selectedStatus}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="fromDate" class="form-control" 
+                           placeholder="From Date" th:value="${fromDate}">
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="toDate" class="form-control" 
+                           placeholder="To Date" th:value="${toDate}">
+                </div>
+                <div class="col-md-2">
+                    <select name="sortDir" class="form-control">
+                        <option value="desc" th:selected="${sortDir == 'desc'}">Newest First</option>
+                        <option value="asc" th:selected="${sortDir == 'asc'}">Oldest First</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
         </form>
     </div>
 
@@ -59,35 +76,36 @@
                     <h5 class="mb-0">Order List</h5>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-hover mb-0 order-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 order-table">
                         <thead class="table-light">
                         <tr>
-                            <th>#</th>
+                            <th>Order ID</th>
                             <th>Customer Name</th>
                             <th>Order Date</th>
                             <th>Items</th>
                             <th>Total Amount</th>
                             <th class="status-column">Status</th>
                             <th>Payment Method</th>
-                            <th>Receipt</th>
+                            <th>Customer Info</th>
                             <th>Details</th>
                             <th class="action-column">Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="order, i : ${orders}">
-                            <td th:text="${i.count}"></td>
+                        <tr th:each="order : ${orders}">
+                            <td><strong th:text="|#${order.orderId}|"></strong></td>
                             <td th:text="${order.customerName}"></td>
-                            <td th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
-                            <td th:text="${order.itemsCount + ' item'}"></td>
-                            <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA')}"></td>
+                            <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="|${order.itemsCount} item(s)|"></td>
+                            <td><strong th:text="|$${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 2, 'COMMA')}|"></strong></td>
                             <td class="status-column">
                                 <span class="badge"
                                       th:classappend="${order.status == 'Pending'} ? ' status-pending' :
+                                      (order.status == 'Paid' ? ' status-paid' :
                                       (order.status == 'Shipped' ? ' status-shipped' :
                                       (order.status == 'Delivered' ? ' status-delivered' :
-                                      (order.status == 'Cancelled' ? ' status-cancelled' :
-                                      (order.status == 'Paid' ? ' status-paid' : ' bg-secondary'))))"
+                                      (order.status == 'Cancelled' ? ' status-cancelled' : ' bg-secondary'))))"
                                       th:text="${order.status}"></span>
 
                                 <div th:if="${order.status == 'Cancelled' and order.paymentMethod == 'VNpay'}">
@@ -97,7 +115,10 @@
                                 </div>
                             </td>
                             <td th:text="${order.paymentMethod}"></td>
-                            <td th:text="${order.orderId}"></td>
+                            <td>
+                                <small class="text-muted">Email:</small> <span th:text="${order.customerEmail ?: 'N/A'}"></span><br>
+                                <small class="text-muted">Phone:</small> <span th:text="${order.customerPhone ?: 'N/A'}"></span>
+                            </td>
                             <td>
                                 <button type="button" class="btn btn-info btn-sm"
                                         th:attr="data-order-id=${order.orderId}" onclick="showOrderDetail(this)">
@@ -105,21 +126,28 @@
                                 </button>
                             </td>
                             <td>
-                                <div th:if="${order.status == 'Pending' or order.status == 'Shipped'}"
+                                <div th:if="${order.status == 'Pending' or order.status == 'Paid' or order.status == 'Shipped'}"
                                      th:id="'action-btns-' + ${order.orderId}">
 
-                                    <!-- Nút Confirm cho Pending -> Shipped -->
+                                    <!-- Nút Confirm cho Pending -> Paid -->
                                     <button th:if="${order.status == 'Pending'}"
                                             type="button" class="btn btn-confirm btn-sm me-1"
-                                            th:onclick="'updateOrderStatus(' + ${order.orderId} + ', \'Shipped\', this)'">
+                                            th:onclick="'confirmOrder(' + ${order.orderId} + ', this, \'Confirm Payment\')'">
                                         <i class="fas fa-check"></i> Confirm
+                                    </button>
+
+                                    <!-- Nút Confirm cho Paid -> Shipped -->
+                                    <button th:if="${order.status == 'Paid'}"
+                                            type="button" class="btn btn-success btn-sm me-1"
+                                            th:onclick="'confirmOrder(' + ${order.orderId} + ', this, \'Ship Order\')'">
+                                        <i class="fas fa-shipping-fast"></i> Ship Order
                                     </button>
 
                                     <!-- Nút Confirm cho Shipped -> Delivered -->
                                     <button th:if="${order.status == 'Shipped'}"
-                                            type="button" class="btn btn-confirm btn-sm me-1"
+                                            type="button" class="btn btn-info btn-sm me-1"
                                             th:onclick="'updateOrderStatus(' + ${order.orderId} + ', \'Delivered\', this)'">
-                                        <i class="fas fa-check"></i> Confirm
+                                        <i class="fas fa-check-circle"></i> Mark Delivered
                                     </button>
 
                                     <!-- Nút Cancel chung -->
@@ -130,7 +158,7 @@
                                     </button>
                                 </div>
 
-                                <div th:if="${order.status != 'Pending' and order.status != 'Shipped'}"
+                                <div th:if="${order.status != 'Pending' and order.status != 'Paid' and order.status != 'Shipped'}"
                                      th:id="'action-btns-' + ${order.orderId}">
                                     <span th:text="${order.status}"></span>
                                     
@@ -261,6 +289,36 @@
                 });
         }
 
+        function confirmOrder(orderId, btn, actionType) {
+            if (confirm(`Xác nhận ${actionType} cho đơn hàng #${orderId}?`)) {
+                const formData = new FormData();
+                const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+                
+                const headers = {};
+                if (csrfToken && csrfHeader) {
+                    headers[csrfHeader] = csrfToken;
+                }
+                
+                fetch(`/staff/orders/confirm/${orderId}`, {
+                    method: 'POST',
+                    headers: headers,
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload(); // Reload để cập nhật UI
+                    } else {
+                        alert('Có lỗi xảy ra khi xác nhận đơn hàng');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra');
+                });
+            }
+        }
+
         function updateOrderStatus(orderId, status, btn) {
             const formData = new FormData();
             formData.append('status', status);
@@ -338,10 +396,10 @@
         function getStatusClass(status) {
             switch(status) {
                 case 'Pending': return 'status-pending';
+                case 'Paid': return 'status-paid';
                 case 'Shipped': return 'status-shipped';
                 case 'Delivered': return 'status-delivered';
                 case 'Cancelled': return 'status-cancelled';
-                case 'Paid': return 'status-paid';
                 default: return 'status-pending';
             }
         }

@@ -15,7 +15,7 @@
             <ul>
                 <li><a href="/">Introduct</a></li>
                 <li><a th:href="@{/Customer/Product}">Product</a></li>
-                <li><a th:href="@{/discount}">Discount</a></li>
+                <li><a th:href="@{/Customer/DiscountProducts}">Discount</a></li>
                 <li sec:authorize="hasRole('CUSTOMER')">
                     <a th:href="@{/customer/order}">Order</a>
                 </li>
@@ -95,7 +95,7 @@
         <ul>
             <li><a href="/">Introduct</a></li>
             <li><a th:href="@{/Customer/Product}">Product</a></li>
-            <li><a th:href="@{/discount}">Discount</a></li>
+            <li><a th:href="@{/Customer/DiscountProducts}">Discount</a></li>
             <li sec:authorize="hasRole('CUSTOMER')">
                 <a th:href="@{/order}">Order</a>
             </li>

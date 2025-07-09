@@ -17,6 +17,7 @@ import com.esms.repository.DiscountProductRepository;
 import com.esms.repository.DiscountRepository;
 import com.esms.model.entity.Discount;
 import java.time.LocalDate;
+import com.esms.model.entity.DiscountProduct;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -262,6 +263,20 @@ public class ProductServiceImpl implements ProductService {
         int end = Math.min((start + pageable.getPageSize()), discountProducts.size());
         List<Product> pageContent = (start > discountProducts.size()) ? List.of() : discountProducts.subList(start, end);
         return new PageImpl<>(pageContent, pageable, discountProducts.size());
+    }
+
+    public Discount getActiveDiscountForProduct(Product product) {
+        List<DiscountProduct> discountProducts = discountProductRepository.findByProductId(product.getProductId());
+        for (DiscountProduct dp : discountProducts) {
+            Discount discount = dp.getDiscount();
+            if (discount.getActive() != null && discount.getActive()
+                && discount.getStartDate() != null && discount.getEndDate() != null
+                && !discount.getStartDate().isAfter(LocalDate.now())
+                && !discount.getEndDate().isBefore(LocalDate.now())) {
+                return discount;
+            }
+        }
+        return null;
     }
 
 }

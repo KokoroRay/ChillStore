@@ -73,6 +73,22 @@
                         <div class="col-md-7">
                             <div class="product-detail-info">
                                 <h3 class="product-detail-title mb-4" th:text="${product.name}"></h3>
+                                
+                                <!-- Badge giảm giá -->
+                                <div th:if="${discount != null}" class="mb-3">
+                                    <div class="badge bg-danger fs-6 px-3 py-2">
+                                        <i class="fas fa-tags me-2"></i>
+                                        <span th:if="${discount.discountPct != null}"
+                                              th:text="${#numbers.formatDecimal(discount.discountPct, 0, 'POINT', 0, 'COMMA')} + '% OFF'">10% OFF</span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            <span th:if="${discount.discountPct != null and product.price != null}"
+                                                  th:text="${'Tiết kiệm: ' + #numbers.formatDecimal(product.price * discount.discountPct / 100, 0, 'POINT', 0, 'COMMA')} + ' VND'">Tiết kiệm: 50,000 VND</span>
+                                        </small>
+                                    </div>
+                                </div>
+                                
                                 <div class="mb-3">
                                     <strong>Description:</strong>
                                     <div class="product-description border rounded p-2 bg-light mt-1" th:text="${product.description}"></div>
@@ -81,7 +97,16 @@
                                     <tbody>
                                         <tr>
                                             <th>Price:</th>
-                                            <td><span class="price-highlight" th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span> <span style="color:#e53935; font-weight:700;">VND</span></td>
+                                            <td>
+                                                <span th:if="${discount != null and discount.discountPct != null and product.price != null}" class="text-decoration-line-through text-muted me-2">
+                                                    <span th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span> VND
+                                                </span>
+                                                <span class="price-highlight" 
+                                                      th:text="${discount != null and discount.discountPct != null and product.price != null ? 
+                                                               #numbers.formatDecimal(product.price * (100 - discount.discountPct) / 100, 0, 'POINT', 0, 'COMMA') : 
+                                                               #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span> 
+                                                <span style="color:#e53935; font-weight:700;">VND</span>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Status:</th>

@@ -75,6 +75,64 @@
                 </div>
             </div>
 
+            <!-- Avatar for Admin -->
+            <div sec:authorize="hasRole('ADMIN')" class="user-actions">
+                <div class="dropdown" id="adminAvatarDropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <img src="/images/default-avatar.svg" alt="Avatar" class="avatar">
+                    </a>
+                    <ul class="dropdown-menu" id="adminDropdownMenu">
+                        <li>
+                            <a th:href="@{/staff/category}">
+                                <span class="menu-icon"><img src="/images/staff.png" alt="category"></span>
+                                Staff
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{admin/category}">
+                                <span class="menu-icon"><img src="/images/administrator.png" alt="admin"></span>
+                                Admin
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="logout-item">
+                            <form th:action="@{/auth/logout}" method="post" class="logout-form">
+                                <button type="submit" class="logout-btn">
+                                    <span class="menu-icon"><img src="/images/logout.png" alt="logout"></span>
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Avatar for Staff -->
+            <div sec:authorize="hasRole('STAFF')" class="user-actions">
+                <div class="dropdown" id="staffAvatarDropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <img src="/images/default-avatar.svg" alt="Avatar" class="avatar">
+                    </a>
+                    <ul class="dropdown-menu" id="staffDropdownMenu">
+                        <li>
+                            <a th:href="@{/staff/category}">
+                                <span class="menu-icon"><img src="/images/staff.png" alt="staff"></span>
+                                Staff
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="logout-item">
+                            <form th:action="@{/auth/logout}" method="post" class="logout-form">
+                                <button type="submit" class="logout-btn">
+                                    <span class="menu-icon"><img src="/images/logout.png" alt="logout"></span>
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
             <!-- Login/Register for guest -->
             <div sec:authorize="!isAuthenticated()" class="auth-buttons">
                 <a th:href="@{/auth/login}" class="btn-login">Login</a>
@@ -112,33 +170,42 @@
 
 
 <script>
-    // Enhanced dropdown functionality
-    const dropdown = document.getElementById('avatarDropdown');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    let dropdownTimeout;
+    // Enhanced dropdown functionality for all roles
+    function setupDropdown(dropdownId, menuId) {
+        const dropdown = document.getElementById(dropdownId);
+        const dropdownMenu = document.getElementById(menuId);
+        let dropdownTimeout;
 
-    dropdown.addEventListener('mouseenter', () => {
-        clearTimeout(dropdownTimeout);
-        dropdownMenu.classList.add('active');
-    });
+        if (dropdown && dropdownMenu) {
+            dropdown.addEventListener('mouseenter', () => {
+                clearTimeout(dropdownTimeout);
+                dropdownMenu.classList.add('active');
+            });
 
-    dropdown.addEventListener('mouseleave', () => {
-        dropdownTimeout = setTimeout(() => {
-            if (!dropdownMenu.matches(':hover')) {
-                dropdownMenu.classList.remove('active');
-            }
-        }, 300); // Buffer time before closing
-    });
+            dropdown.addEventListener('mouseleave', () => {
+                dropdownTimeout = setTimeout(() => {
+                    if (!dropdownMenu.matches(':hover')) {
+                        dropdownMenu.classList.remove('active');
+                    }
+                }, 300);
+            });
 
-    dropdownMenu.addEventListener('mouseenter', () => {
-        clearTimeout(dropdownTimeout);
-    });
+            dropdownMenu.addEventListener('mouseenter', () => {
+                clearTimeout(dropdownTimeout);
+            });
 
-    dropdownMenu.addEventListener('mouseleave', () => {
-        dropdownTimeout = setTimeout(() => {
-            dropdownMenu.classList.remove('active');
-        }, 200);
-    });
+            dropdownMenu.addEventListener('mouseleave', () => {
+                dropdownTimeout = setTimeout(() => {
+                    dropdownMenu.classList.remove('active');
+                }, 200);
+            });
+        }
+    }
+
+    // Setup dropdowns for all roles
+    setupDropdown('avatarDropdown', 'dropdownMenu'); // Customer
+    setupDropdown('adminAvatarDropdown', 'adminDropdownMenu'); // Admin
+    setupDropdown('staffAvatarDropdown', 'staffDropdownMenu'); // Staff
 
     // Mobile menu functionality
     const hamburger = document.getElementById('hamburger');

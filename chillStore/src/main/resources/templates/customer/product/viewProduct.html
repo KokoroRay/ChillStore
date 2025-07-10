@@ -100,7 +100,7 @@
     <div class="container main-content">
         <!-- Filter Section -->
         <div class="filter-section mb-4">
-            <form th:action="@{/Customer/Product}" method="get" class="row g-3 align-items-end">
+            <form th:action="@{/Product}" method="get" class="row g-3 align-items-end">
                 <div class="col-md-3">
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
@@ -151,7 +151,7 @@
         </div>
         <script>
         function resetFilters() {
-            window.location.href = '/Customer/Product';
+            window.location.href = '';
         }
         </script>
         <div class="row">
@@ -161,7 +161,7 @@
             </div>
             <div th:each="product : ${products}" class="col-6 col-sm-4 col-md-3 mb-3 d-flex">
                 <div class="product-card w-100 position-relative">
-                    <a th:href="@{'/Customer/Product/' + ${product.productId}}" style="text-decoration:none; color:inherit; display:block;">
+                    <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration:none; color:inherit; display:block;">
                         <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img">
                         <h5 class="product-title" th:text="${product.name}" style="color:#2196f3; font-size:1.1rem; font-weight:400; margin-bottom:4px;">Tên sản phẩm</h5>
                         <div>
@@ -185,13 +185,13 @@
         <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
             <ul class="pagination">
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/Customer/Product(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&laquo;</a>
+                    <a class="page-link" th:href="@{/Product(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&laquo;</a>
                 </li>
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${currentPage == i} ? 'active'">
-                    <a class="page-link" th:href="@{/Customer/Product(page=${i}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${i+1}"></a>
+                    <a class="page-link" th:href="@{/Product(page=${i}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${i+1}"></a>
                 </li>
                 <li class="page-item" th:classappend="${currentPage == (totalPages - 1)} ? 'disabled'">
-                    <a class="page-link" th:href="@{/Customer/Product(page=${totalPages - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&raquo;</a>
+                    <a class="page-link" th:href="@{/Product(page=${totalPages - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&raquo;</a>
                 </li>
             </ul>
         </div>

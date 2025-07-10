@@ -11,7 +11,7 @@
     padding: 0 1rem;
     border-bottom: 1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
+    position: relative;
 }
 
 .logo-image {
@@ -27,6 +27,13 @@
     transform: translate(-50%, -50%);
 }
 
+#headerDropdown {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 .profile-icon {
     width: 40px;
     height: 40px;
@@ -37,10 +44,11 @@
     justify-content: center;
     background-color: white;
     cursor: pointer;
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
+    transition: all 0.3s ease;
+}
+
+.profile-icon:hover {
+    border: 2px solid #3498db;
 }
 
 .profile-icon svg {
@@ -55,4 +63,65 @@
     padding: 20px;
     background-color: #f8f9fa;
     flex: 1;
+}
+
+#headerDropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 15px);
+    background: white;
+    min-width: 180px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    padding: 8px 0;
+    z-index: 10000;
+    list-style: none;
+    margin: 0;
+}
+
+#headerDropdown:hover .dropdown-menu {
+    display: block;
+}
+
+#headerDropdown .dropdown-menu li {
+    margin: 0;
+}
+
+#headerDropdown .dropdown-menu a {
+    display: block;
+    padding: 10px 16px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+#headerDropdown .dropdown-menu a:hover {
+    background: #f5f5f5;
+}
+
+#headerDropdown .divider {
+    height: 1px;
+    background: #eee;
+    margin: 5px 0;
+}
+
+#headerDropdown .logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: #e74c3c;
+    font-size: 14px;
+}
+
+#headerDropdown .logout-btn:hover {
+    background: #f5f5f5;
+}
+.dropdown-menu img {
+    width: 2em;
+    height: 2em;
 }

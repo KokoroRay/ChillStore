@@ -65,6 +65,8 @@ public class VoucherController {
     public String showAddForm(Model model) {
         VoucherDTO voucherDto = new VoucherDTO();
         model.addAttribute("voucherDto", voucherDto);
+        model.addAttribute("allCategories", categoryRepository.findAll());
+        model.addAttribute("allBrands", brandRepository.findAll());
         model.addAttribute("selectedCategories", new ArrayList<Category>());
         model.addAttribute("selectedBrands", new ArrayList<Brand>());
         model.addAttribute("activeMenu", "vouchers");
@@ -82,6 +84,8 @@ public class VoucherController {
         if (bindingResult.hasErrors()) {
             List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
             List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
+            model.addAttribute("allCategories", categoryRepository.findAll());
+            model.addAttribute("allBrands", brandRepository.findAll());
             model.addAttribute("selectedCategories", selCats);
             model.addAttribute("selectedBrands",selBrands);
             model.addAttribute("voucherDto", voucherDto);
@@ -96,6 +100,8 @@ public class VoucherController {
         } catch (Exception e) {
             List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
             List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
+            model.addAttribute("allCategories", categoryRepository.findAll());
+            model.addAttribute("allBrands", brandRepository.findAll());
             model.addAttribute("selectedCategories", selCats);
             model.addAttribute("selectedBrands",selBrands);
             model.addAttribute("voucherDto", voucherDto);
@@ -132,6 +138,8 @@ public class VoucherController {
         voucherDto.setBrandIds(selBrands.stream().map(Brand::getId).toList());
 
         model.addAttribute("voucherDto", voucherDto);
+        model.addAttribute("allCategories", categoryRepository.findAll());
+        model.addAttribute("allBrands", brandRepository.findAll());
         model.addAttribute("selectedCategories", selCats);
         model.addAttribute("selectedBrands", selBrands);
         model.addAttribute("activeMenu", "vouchers");
@@ -148,7 +156,8 @@ public class VoucherController {
         if (bindingResult.hasErrors()) {
             List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
             List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
-            model.addAttribute("selectedCategories", selCats);
+            model.addAttribute("allCategories", categoryRepository.findAll());
+            model.addAttribute("allBrands", brandRepository.findAll());
             model.addAttribute("selectedCategories", selCats);
             model.addAttribute("selectedBrands", selBrands);
             model.addAttribute("activeMenu", "vouchers");
@@ -161,10 +170,12 @@ public class VoucherController {
         } catch (Exception e) {
             List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
             List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
+            model.addAttribute("allCategories", categoryRepository.findAll());
+            model.addAttribute("allBrands", brandRepository.findAll());
             model.addAttribute("selectedCategories", selCats);
             model.addAttribute("selectedBrands", selBrands);
             model.addAttribute("voucherDto", voucherDto);
-            model.addAttribute("error Message", e.getMessage());
+            model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("activeMenu", "vouchers");
             model.addAttribute("currentSection", "voucher");
             model.addAttribute("keyword", "");

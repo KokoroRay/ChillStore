@@ -4,13 +4,11 @@ import com.esms.model.dto.CartItemDTO;
 import com.esms.model.entity.Voucher;
 import com.esms.service.CartService;
 import com.esms.service.VoucherService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +17,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/cart")
 public class CartController {
+
     @Autowired
     private CartService cartService;
 
@@ -26,15 +25,22 @@ public class CartController {
     private VoucherService voucherService;
 
     @GetMapping("")
-    public String viewCart(@RequestParam("customerId") int customerId,
-                           @RequestParam(value = "voucher", required = false) String voucherCode,
-                           Model model) {
+    public String viewCart(@RequestParam(value = "voucher", required = false) String voucherCode,
+                           Model model,
+                           HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+
+        //if (customerId == null) {
+      //      return "redirect:/login"; // hoặc hiển thị trang thông báo chưa đăng nhập
+      //  }
+
         List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
 
+        // Lấy voucher còn hiệu lực
         List<Voucher> allVouchers = voucherService.getAllVouchers();
         LocalDate today = LocalDate.now();
         List<Voucher> availableVouchers = allVouchers.stream()
-                .filter(v -> v.isActive())
+                .filter(Voucher::isActive)
                 .filter(v -> v.getQuantity_available() > 0)
                 .filter(v -> !today.isBefore(v.getStart_date()) && !today.isAfter(v.getEnd_date()))
                 .collect(Collectors.toList());
@@ -44,11 +50,11 @@ public class CartController {
                 .mapToDouble(CartItemDTO::getTotalPrice)
                 .sum();
 
-        // Voucher
+        // Xử lý voucher được chọn
         Voucher selectedVoucher = null;
-        if (voucherCode != null && !voucherCode.isEmpty()) {
+        if (voucherCode != null && !voucherCode.trim().isEmpty()) {
             selectedVoucher = availableVouchers.stream()
-                    .filter(v -> v.getCode().equalsIgnoreCase(voucherCode))
+                    .filter(v -> v.getCode().equalsIgnoreCase(voucherCode.trim()))
                     .filter(v -> subtotal >= (v.getMin_order_amount() != null ? v.getMin_order_amount().doubleValue() : 0.0))
                     .findFirst()
                     .orElse(null);
@@ -65,6 +71,8 @@ public class CartController {
                         : null
         );
 
+        // Đẩy dữ liệu ra view
+        model.addAttribute("customerId", customerId);
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("vouchers", availableVouchers);
         model.addAttribute("selectedVoucher", selectedVoucher);
@@ -75,30 +83,51 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public String addToCart(@RequestParam int customerId,
-                            @RequestParam int productId,
-                            @RequestParam(defaultValue = "1") int quantity) {
+    public String addToCart(@RequestParam int productId,
+                            @RequestParam(defaultValue = "1") int quantity,
+                            HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+        if (customerId == null) {
+            return "redirect:/auth/login";
+        }
+
         cartService.addToCart(customerId, productId, quantity);
-        return "redirect:/cart?customerId=" + customerId;
+        return "redirect:/cart";
     }
 
-
-
     @PostMapping("/update")
-    public String updateCart(@RequestParam int cartId, @RequestParam int quantity) {
+    public String updateCart(@RequestParam int cartId,
+                             @RequestParam int quantity,
+                             HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+        if (customerId == null) {
+            return "redirect:/auth/login";
+        }
+
         cartService.updateQuantity(cartId, quantity);
-        return "redirect:/cart?customerId=1";
+        return "redirect:/cart";
     }
 
     @PostMapping("/delete")
-    public String deleteItem(@RequestParam int cartId) {
+    public String deleteItem(@RequestParam int cartId,
+                             HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+        if (customerId == null) {
+            return "redirect:/auth/login";
+        }
+
         cartService.deleteCartItem(cartId);
-        return "redirect:/cart?customerId=1";
+        return "redirect:/cart";
     }
 
     @PostMapping("/apply-voucher")
-    public String applyVoucher(@RequestParam String voucherCode, Model model) {
+    public String applyVoucher(@RequestParam String voucherCode,
+                               HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+        if (customerId == null) {
+            return "redirect:/auth/login";
+        }
 
-        return "redirect:/cart?customerId=1&voucher=" + voucherCode;
+        return "redirect:/cart?voucher=" + voucherCode;
     }
 }

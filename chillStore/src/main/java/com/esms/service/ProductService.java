@@ -43,5 +43,7 @@ public interface ProductService {
      * Lấy danh sách sản phẩm đang có discount còn hiệu lực (active và trong thời gian áp dụng)
      */
     Page<Product> getDiscountProducts(Pageable pageable);
+
+    Product getProductWithDetails(Integer productId);
 }
 

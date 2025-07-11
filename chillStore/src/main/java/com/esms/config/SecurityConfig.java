@@ -45,15 +45,12 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/home",
+                                "/Product", "/Product/**", "/DiscountProducts",
+                                "/product/view/**", "/customer/product/view/**",
                                 "/css/**", "/js/**", "/videos/**", "/img/**", "/images/**",
                                 "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
                                 "/auth/login", "/auth/register", "/auth/resend-otp"
                         ).permitAll()
-
-                        // Cho phép truy cập các trang công khai (Guest Home, CSS, JS, Auth flows)
-                        .requestMatchers("/", "/home", "/videos/**", "/css/**", "/js/**", "/img/**", // Thêm /img/** nếu bạn có ảnh
-                                "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
-                                "/auth/login", "/auth/register", "/auth/resend-otp").permitAll()
                         // Phân quyền công dân cao nhất
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN") //role cao nhất
                         // giai cấp bị bóc lộ
@@ -117,6 +114,22 @@ public class SecurityConfig {
                 }
                 
                 response.sendRedirect(redirectUrl);
+                // Lưu thông tin người dùng vào session
+                Object principal = authentication.getPrincipal();
+                if (principal instanceof org.springframework.security.core.userdetails.User userDetails) {
+                    // Dùng username để lấy thông tin customer
+                    String email = userDetails.getUsername();
+
+                    // Gọi CustomUserDetailsService để lấy thông tin chi tiết từ DB
+                    com.esms.model.entity.Customer customer = userDetailsService.getCustomerByEmail(email);
+
+                    if (customer != null) {
+                        request.getSession().setAttribute("loggedInCustomerId", customer.getCustomerId());
+                        request.getSession().setAttribute("loggedInUserEmail", customer.getEmail());
+                        request.getSession().setAttribute("loggedInUserName", customer.getName());
+                    }
+                }
+
             }
 
         };

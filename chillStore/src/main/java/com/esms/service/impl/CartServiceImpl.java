@@ -37,7 +37,7 @@ public class CartServiceImpl implements CartService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Optional<Cart> optionalCart = cartRepository.findByCustomerAndProduct(customer, product);
+        Optional<Cart> optionalCart = cartRepository.findByCustomerAndProduct(customer.getCustomerId(), product.getProductId());
 
         Cart cartItem;
         if (optionalCart.isPresent()) {

@@ -189,6 +189,13 @@
                                 <input type="hidden" name="quantity" value="1" />
                                 <button type="submit" class="btn btn-primary">Buy now</button>
                             </form>
+                            <button type="button" class="btn btn-outline-danger ms-2" id="wishlist-btn-detail"
+                                th:data-product-id="${product.productId}"
+                                th:data-product-name="${product.name}"
+                                th:data-product-imageurl="${product.imageUrl}"
+                                th:data-product-price="${product.price}">
+                                <i class="fa fa-heart"></i>
+                            </button>
                         </div>
                         <button type="button" class="btn btn-secondary" onclick="history.back()">
                             <i class="fas fa-arrow-left"></i> Back
@@ -238,6 +245,53 @@
         });
         event.target.classList.add('active-thumbnail');
     }
+
+    // Wishlist button logic for product detail
+    function getWishlist() {
+        return JSON.parse(localStorage.getItem('wishlist') || '[]');
+    }
+    function saveWishlist(wishlist) {
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    }
+    function isInWishlist(productId) {
+        const wishlist = getWishlist();
+        return wishlist.some(p => p.productId === productId);
+    }
+    function toggleWishlist(product) {
+        let wishlist = getWishlist();
+        const idx = wishlist.findIndex(p => p.productId === product.productId);
+        if (idx === -1) {
+            wishlist.push(product);
+        } else {
+            wishlist.splice(idx, 1);
+        }
+        saveWishlist(wishlist);
+        window.dispatchEvent(new Event('wishlist-updated'));
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('wishlist-btn-detail');
+        if (!btn) return;
+        const icon = btn.querySelector('i');
+        const product = {
+            productId: parseInt(btn.getAttribute('data-product-id')),
+            name: btn.getAttribute('data-product-name'),
+            imageUrl: btn.getAttribute('data-product-imageurl'),
+            price: btn.getAttribute('data-product-price') ? parseInt(btn.getAttribute('data-product-price')) : null
+        };
+        function updateBtn() {
+            if (isInWishlist(product.productId)) {
+                icon.style.color = '#e0245e';
+            } else {
+                icon.style.color = '#aaa';
+            }
+        }
+        updateBtn();
+        btn.onclick = function() {
+            toggleWishlist(product);
+            updateBtn();
+        };
+        window.addEventListener('wishlist-updated', updateBtn);
+    });
 </script>
 </body>
 </html>

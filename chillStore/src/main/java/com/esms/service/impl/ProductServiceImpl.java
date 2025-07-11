@@ -4,6 +4,8 @@ import com.esms.model.dto.ProductDTO;
 import com.esms.model.entity.Product;
 import com.esms.repository.ProductRepository;
 import com.esms.service.ProductService;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -263,6 +265,15 @@ public class ProductServiceImpl implements ProductService {
         int end = Math.min((start + pageable.getPageSize()), discountProducts.size());
         List<Product> pageContent = (start > discountProducts.size()) ? List.of() : discountProducts.subList(start, end);
         return new PageImpl<>(pageContent, pageable, discountProducts.size());
+    }
+
+    @Override
+    @Transactional
+    public Product getProductWithDetails(Integer productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+        Hibernate.initialize(product.getImages());
+        Hibernate.initialize(product.getSpecifications());
+        return product;
     }
 
     public Discount getActiveDiscountForProduct(Product product) {

@@ -28,7 +28,7 @@
         <div class="nav-right">
             <!-- Cart and Avatar for Customer -->
             <div sec:authorize="hasRole('CUSTOMER')" class="user-actions">
-                <a th:href="@{/customer/cart}" class="cart-icon">
+                <a th:href="@{/cart}" class="cart-icon">
                     <span class="cart-badge">0</span>
                     <img src="/images/cart.png" alt="cart">
                 </a>

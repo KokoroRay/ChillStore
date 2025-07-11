@@ -117,6 +117,22 @@ public class SecurityConfig {
                 }
                 
                 response.sendRedirect(redirectUrl);
+                // Lưu thông tin người dùng vào session
+                Object principal = authentication.getPrincipal();
+                if (principal instanceof org.springframework.security.core.userdetails.User userDetails) {
+                    // Dùng username để lấy thông tin customer
+                    String email = userDetails.getUsername();
+
+                    // Gọi CustomUserDetailsService để lấy thông tin chi tiết từ DB
+                    com.esms.model.entity.Customer customer = userDetailsService.getCustomerByEmail(email);
+
+                    if (customer != null) {
+                        request.getSession().setAttribute("loggedInCustomerId", customer.getCustomerId());
+                        request.getSession().setAttribute("loggedInUserEmail", customer.getEmail());
+                        request.getSession().setAttribute("loggedInUserName", customer.getName());
+                    }
+                }
+
             }
 
         };

@@ -2,6 +2,7 @@ package com.esms.model.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,6 +50,15 @@ public class Product {
      */
     @OneToMany(mappedBy = "product")
     private List<Warehouse> warehouseTransactions;
+
+    //chèn thêm thuộc tính mới cho phần mô tả thông số sản phầm và thêm hình ảnh sản phẩm
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
+    private List<ProductImage> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductSpecification> specifications = new ArrayList<>();
+
 
     public Product() {
     }
@@ -131,5 +141,21 @@ public class Product {
 
     public void setWarehouseTransactions(List<Warehouse> warehouseTransactions) {
         this.warehouseTransactions = warehouseTransactions;
+    }
+
+    public List<ProductImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ProductImage> images) {
+        this.images = images;
+    }
+
+    public List<ProductSpecification> getSpecifications() {
+        return specifications;
+    }
+
+    public void setSpecifications(List<ProductSpecification> specifications) {
+        this.specifications = specifications;
     }
 }

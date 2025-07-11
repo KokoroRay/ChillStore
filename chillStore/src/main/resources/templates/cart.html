@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:javascript="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Shopping Cart</title>
@@ -8,6 +8,13 @@
 <body>
 <div class="container mt-4">
     <h1 class="text-center mb-4">Your Shopping Cart</h1>
+
+    <div class="mb-3">
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+            &larr; Back
+        </a>
+
+    </div>
 
     <!-- Table of Cart Items -->
     <table class="table table-bordered shopping-cart">

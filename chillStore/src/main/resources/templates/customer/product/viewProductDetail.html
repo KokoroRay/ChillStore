@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,7 +120,7 @@
                         <div class="col-md-7">
                             <div class="product-detail-info">
                                 <h3 class="product-detail-title mb-4" th:text="${product.name}"></h3>
-                                
+
                                 <!-- Badge giảm giá -->
                                 <div th:if="${discount != null}" class="mb-3">
                                     <div class="badge bg-danger fs-6 px-3 py-2">
@@ -135,7 +135,7 @@
                                         </small>
                                     </div>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <strong>Description:</strong>
                                     <div class="product-description border rounded p-2 bg-light mt-1" th:text="${product.description}"></div>
@@ -148,10 +148,10 @@
                                                 <span th:if="${discount != null and discount.discountPct != null and product.price != null}" class="text-decoration-line-through text-muted me-2">
                                                     <span th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span> VND
                                                 </span>
-                                                <span class="price-highlight" 
-                                                      th:text="${discount != null and discount.discountPct != null and product.price != null ? 
-                                                               #numbers.formatDecimal(product.price * (100 - discount.discountPct) / 100, 0, 'POINT', 0, 'COMMA') : 
-                                                               #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span> 
+                                                <span class="price-highlight"
+                                                      th:text="${discount != null and discount.discountPct != null and product.price != null ?
+                                                               #numbers.formatDecimal(product.price * (100 - discount.discountPct) / 100, 0, 'POINT', 0, 'COMMA') :
+                                                               #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
                                                 <span style="color:#e53935; font-weight:700;">VND</span>
                                             </td>
                                         </tr>
@@ -178,16 +178,25 @@
                 </div>
                 <div class="card-footer">
                     <div class="d-flex justify-content-end gap-2">
-                        <form th:action="@{/cart/add}" method="post" class="d-inline">
-                            <input type="hidden" name="productId" th:value="${product.productId}" />
-                            <input type="hidden" name="quantity" value="1" />
-                            <button type="submit" class="btn btn-warning text-white">Add to cart</button>
-                        </form>
-                        <form th:action="@{/cart/add}" method="post" class="d-inline">
-                            <input type="hidden" name="productId" th:value="${product.productId}" />
-                            <input type="hidden" name="quantity" value="1" />
-                            <button type="submit" class="btn btn-primary">Buy now</button>
-                        </form>
+                        <div sec:authorize="hasRole('CUSTOMER')">
+                            <form th:action="@{/cart/add}" method="post" class="d-inline">
+                                <input type="hidden" name="productId" th:value="${product.productId}" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-warning text-white">Add to cart</button>
+                            </form>
+                            <form  th:action="@{/cart/add}" method="post" class="d-inline">
+                                <input type="hidden" name="productId" th:value="${product.productId}" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-primary">Buy now</button>
+                            </form>
+                            <button type="button" class="btn btn-outline-danger ms-2" id="wishlist-btn-detail"
+                                th:data-product-id="${product.productId}"
+                                th:data-product-name="${product.name}"
+                                th:data-product-imageurl="${product.imageUrl}"
+                                th:data-product-price="${product.price}">
+                                <i class="fa fa-heart"></i>
+                            </button>
+                        </div>
                         <button type="button" class="btn btn-secondary" onclick="history.back()">
                             <i class="fas fa-arrow-left"></i> Back
                         </button>
@@ -236,6 +245,53 @@
         });
         event.target.classList.add('active-thumbnail');
     }
+
+    // Wishlist button logic for product detail
+    function getWishlist() {
+        return JSON.parse(localStorage.getItem('wishlist') || '[]');
+    }
+    function saveWishlist(wishlist) {
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    }
+    function isInWishlist(productId) {
+        const wishlist = getWishlist();
+        return wishlist.some(p => p.productId === productId);
+    }
+    function toggleWishlist(product) {
+        let wishlist = getWishlist();
+        const idx = wishlist.findIndex(p => p.productId === product.productId);
+        if (idx === -1) {
+            wishlist.push(product);
+        } else {
+            wishlist.splice(idx, 1);
+        }
+        saveWishlist(wishlist);
+        window.dispatchEvent(new Event('wishlist-updated'));
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('wishlist-btn-detail');
+        if (!btn) return;
+        const icon = btn.querySelector('i');
+        const product = {
+            productId: parseInt(btn.getAttribute('data-product-id')),
+            name: btn.getAttribute('data-product-name'),
+            imageUrl: btn.getAttribute('data-product-imageurl'),
+            price: btn.getAttribute('data-product-price') ? parseInt(btn.getAttribute('data-product-price')) : null
+        };
+        function updateBtn() {
+            if (isInWishlist(product.productId)) {
+                icon.style.color = '#e0245e';
+            } else {
+                icon.style.color = '#aaa';
+            }
+        }
+        updateBtn();
+        btn.onclick = function() {
+            toggleWishlist(product);
+            updateBtn();
+        };
+        window.addEventListener('wishlist-updated', updateBtn);
+    });
 </script>
 </body>
 </html>

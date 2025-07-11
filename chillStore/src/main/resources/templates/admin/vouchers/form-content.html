@@ -7,7 +7,7 @@
       <h2 class="mb-4 text-center"
           th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Chỉnh sửa Voucher' : 'Tạo Voucher Mới'">
         Voucher Form
-      </h2>
+      x`
       <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
       <form th:action="${voucherDto != null and voucherDto.voucher_id != null}

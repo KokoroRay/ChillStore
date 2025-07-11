@@ -134,7 +134,6 @@
                         <form th:action="@{/cart/add}" method="post" class="d-inline">
                             <input type="hidden" name="productId" th:value="${product.productId}" />
                             <input type="hidden" name="quantity" value="1" />
-                            <input type="hidden" name="customerId" th:value="${customerId}" />
                             <button type="submit" class="btn btn-warning text-white">Add to cart</button>
                         </form>
                         <form th:action="@{/cart/add}" method="post" class="d-inline">

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +31,7 @@ public class CustomerProductController {
     @Autowired
     private BrandService brandService;
 
-    @GetMapping("/Customer/Product")
+    @GetMapping("/Product")
     public String viewProductPage(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "categoryId", required = false) Integer categoryId,
@@ -93,25 +94,26 @@ public class CustomerProductController {
         model.addAttribute("totalPages", products.getTotalPages());
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("priceError", priceError);
-        return "viewProduct";
+        return "customer/product/viewProduct";
     }
 
     @GetMapping("/Customer/Wishlist")
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
     public String wishlistPage() {
-        return "Wishlist";
+        return "wishlist/Wishlist";
     }
 
-    @GetMapping("/Customer/Product/{id}")
+    @GetMapping("/Product/{id}")
     public String viewProductDetail(@PathVariable("id") Integer id, Model model) {
         Product product = productService.getProductById(id);
         // Lấy discount cho sản phẩm này (nếu có)
         com.esms.model.entity.Discount discount = productService.getActiveDiscountForProduct(product);
         model.addAttribute("product", product);
         model.addAttribute("discount", discount);
-        return "viewProductDetail";
+        return "customer/product/viewProductDetail";
     }
 
-    @GetMapping("/Customer/DiscountProducts")
+    @GetMapping("/DiscountProducts")
     public String viewDiscountProducts(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size,
@@ -136,6 +138,6 @@ public class CustomerProductController {
         model.addAttribute("totalPages", products.getTotalPages());
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("productDiscountMap", productDiscountMap);
-        return "discountProducts";
+        return "customer/product/discountProducts";
     }
 } 

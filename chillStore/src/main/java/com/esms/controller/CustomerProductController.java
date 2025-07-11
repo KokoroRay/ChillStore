@@ -1,9 +1,6 @@
 package com.esms.controller;
 
-import com.esms.model.entity.Brand;
-import com.esms.model.entity.Category;
-import com.esms.model.entity.Product;
-import com.esms.model.entity.Discount;
+import com.esms.model.entity.*;
 import com.esms.service.BrandService;
 import com.esms.service.CategoryService;
 import com.esms.service.ProductService;
@@ -100,16 +97,25 @@ public class CustomerProductController {
     @GetMapping("/Customer/Wishlist")
     @PreAuthorize("hasAnyRole('CUSTOMER')")
     public String wishlistPage() {
-        return "wishlist/Wishlist";
+        return "customer/wishlist/Wishlist";
     }
 
     @GetMapping("/Product/{id}")
-    public String viewProductDetail(@PathVariable("id") Integer id, Model model) {
+    public String viewProductDetail(
+            @PathVariable("id") Integer id,
+            Model model) {
         Product product = productService.getProductById(id);
         // Lấy discount cho sản phẩm này (nếu có)
         com.esms.model.entity.Discount discount = productService.getActiveDiscountForProduct(product);
+        String primaryImage = product.getImages()
+                .stream()
+                .filter(ProductImage::isPrimary)
+                .map(ProductImage::getImageUrl).findFirst().orElse(product.getImageUrl());
         model.addAttribute("product", product);
         model.addAttribute("discount", discount);
+        model.addAttribute("primaryImage", primaryImage);
+        model.addAttribute("specifications", product.getSpecifications());
+        model.addAttribute("imageGallery", product.getImages());
         return "customer/product/viewProductDetail";
     }
 

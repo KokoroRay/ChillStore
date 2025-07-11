@@ -318,7 +318,7 @@ public class CustomerServiceImpl implements CustomerService {
         // Kiểm tra xem email đã tồn tại trong hệ thống chưa
         Optional<Customer> existingCustomer = findCustomerByEmail(email);
         Customer customer;
-        
+
         if (existingCustomer.isPresent()) {
             // Nếu đã tồn tại: cập nhật thông tin provider
             customer = existingCustomer.get();
@@ -331,7 +331,7 @@ public class CustomerServiceImpl implements CustomerService {
             // Nếu chưa tồn tại: tạo Customer mới
             customer = new Customer(email, name, provider, providerId);
         }
-        
+
         // Lưu vào database và trả về
         return customerRepository.save(customer);
     }
@@ -355,6 +355,12 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         customer.setUpdated_at(LocalDateTime.now());
         customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer getCustomerByUsername(String username) {
+        return customerRepository.findByEmail(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
 }

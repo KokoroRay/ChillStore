@@ -166,9 +166,14 @@
                         <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img">
                         <h5 class="product-title" th:text="${product.name}" style="color:#2196f3; font-size:1.1rem; font-weight:400; margin-bottom:4px;">Tên sản phẩm</h5>
                         <div>
-                            <span style="color:#e53935; font-size:1.1rem; font-weight:700;">
-                                <span th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
-                            </span>
+                            <!-- Hiển thị giá: Nếu có discount thì hiện giá gốc gạch ngang + giá sau giảm -->
+                            <span th:if="${productDiscountMap[product.productId] != null and product.price != null}"
+                                  class="text-decoration-line-through text-muted me-2"
+                                  th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
+                            <span style="color:#e53935; font-size:1.1rem; font-weight:700;"
+                                  th:text="${productDiscountMap[product.productId] != null and product.price != null and productDiscountMap[product.productId].discountPct != null ?
+                                            #numbers.formatDecimal(product.price * (100 - productDiscountMap[product.productId].discountPct) / 100, 0, 'POINT', 0, 'COMMA') :
+                                            #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
                             <span style="color:#e53935; font-size:0.85rem; font-weight:700; vertical-align:super;">VND</span>
                         </div>
                     </a>

@@ -77,6 +77,14 @@ public class CustomerProductController {
                 keyword, categoryId, brandId, minPrice, maxPrice, null, sortBy, sortDir, pageable, null);
         List<Category> categories = categoryService.getAllCategory();
         List<Brand> brands = brandService.getAllBrands();
+        // Bổ sung: Map productId -> discount (nếu có) để hiển thị giá gốc gạch ngang ngoài trang danh sách
+        Map<Integer, Discount> productDiscountMap = new HashMap<>();
+        for (Product product : products) {
+            Discount discount = productService.getActiveDiscountForProduct(product);
+            if (discount != null) {
+                productDiscountMap.put(product.getProductId(), discount);
+            }
+        }
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
@@ -91,6 +99,8 @@ public class CustomerProductController {
         model.addAttribute("totalPages", products.getTotalPages());
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("priceError", priceError);
+        // Bổ sung: truyền map discount ra view
+        model.addAttribute("productDiscountMap", productDiscountMap);
         return "customer/product/viewProduct";
     }
 

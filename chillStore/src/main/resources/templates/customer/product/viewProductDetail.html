@@ -6,406 +6,19 @@
     <title>Product Details - ESMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/static/style.css}" />
-    <link rel="stylesheet" th:href="@{/css/navigationBar.css}" />
-    <style>
-        :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --danger-color: #dc3545;
-            --success-color: #198754;
-            --light-bg: #f8f9fa;
-            --border-color: #dee2e6;
-        }
+    <link rel="stylesheet" th:href="@{/static/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navigationBar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/viewProductDetail.css}" />
 
-        .main-content {
-            margin-top: 0;
-            padding-bottom: 100px;
-        }
-
-        .product-card {
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            border: none;
-        }
-
-        .product-header {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 25px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .product-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #212529;
-        }
-
-        .product-subtitle {
-            font-size: 1.1rem;
-            color: var(--secondary-color);
-            margin-bottom: 25px;
-        }
-
-        .product-image-container {
-            background-color: white;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .product-main-image {
-            max-width: 100%;
-            max-height: 500px;
-            object-fit: contain;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .thumbnail-container {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .product-thumbnail {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border: 2px solid transparent;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .product-thumbnail:hover,
-        .product-thumbnail.active {
-            border-color: var(--primary-color);
-            transform: scale(1.05);
-        }
-
-        .price-container {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .current-price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--danger-color);
-        }
-
-        .original-price {
-            font-size: 1.4rem;
-            text-decoration: line-through;
-            color: var(--secondary-color);
-        }
-
-        .discount-badge {
-            font-size: 1.1rem;
-            padding: 6px 14px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
-            color: white;
-            font-weight: 600;
-        }
-
-        .saving-badge {
-            background-color: #e9f7ef;
-            color: var(--success-color);
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .product-meta {
-            background-color: var(--light-bg);
-            border-radius: 8px;
-            padding: 30px;
-            margin-bottom: 25px;
-        }
-
-        .meta-item {
-            display: flex;
-            margin-bottom: 12px;
-        }
-
-        .meta-label {
-            font-weight: 600;
-            min-width: 120px;
-            color: var(--secondary-color);
-        }
-
-        .meta-value {
-            font-weight: 500;
-        }
-
-        .status-badge {
-            font-size: 0.95rem;
-            padding: 5px 12px;
-            border-radius: 30px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 30px;
-        }
-
-        .btn-action {
-            flex: 1;
-            min-width: 150px;
-            padding: 15px 25px;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-cart {
-            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-            border: none;
-            color: #212529;
-        }
-
-        .btn-buy {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #0b5ed7 100%);
-            border: none;
-            color: white;
-        }
-
-        .btn-back {
-            background-color: white;
-            border: 1px solid var(--border-color);
-            color: var(--secondary-color);
-        }
-
-        .specs-section {
-            margin-top: 40px;
-            background-color: white;
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--primary-color);
-            display: inline-block;
-        }
-
-        .specs-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .specs-table th {
-            background-color: var(--light-bg);
-            font-weight: 600;
-            padding: 14px 20px;
-            text-align: left;
-            width: 30%;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .specs-table td {
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border-color);
-            background-color: white;
-        }
-
-        .specs-table tr:last-child th,
-        .specs-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .description-section {
-            margin-top: 30px;
-            padding: 40px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            line-height: 1.7;
-        }
-
-        .description-content {
-            white-space: pre-line;
-            font-size: 1.1rem;
-        }
-
-        /* Modal for address selection */
-        .address-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            z-index: 1050;
-            overflow-y: auto;
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 700px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        .modal-header {
-            border-bottom: 1px solid #dee2e6;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .close-modal {
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #6c757d;
-        }
-
-        .address-option {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            margin-bottom: 10px;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .address-option:hover {
-            border-color: var(--primary-color);
-            background-color: #f8f9fa;
-        }
-
-        .address-option.selected {
-            border-color: var(--primary-color);
-            background-color: #e7f0ff;
-        }
-
-        .address-icon {
-            font-size: 1.5rem;
-            margin-right: 15px;
-            color: var(--primary-color);
-        }
-
-        .address-text {
-            flex-grow: 1;
-        }
-
-        .address-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-save-address {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-
-        .btn-save-address:hover {
-            background-color: #0b5ed7;
-        }
-
-        .temporary-badge {
-            background-color: #ffc107;
-            color: #212529;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin-left: 10px;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 992px) {
-            .product-title {
-                font-size: 2.0rem;
-            }
-
-            .current-price {
-                font-size: 2.0rem;
-            }
-
-            .original-price {
-                font-size: 1.3rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .product-main-image {
-                max-height: 350px;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .btn-action {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .product-title {
-                font-size: 1.8rem;
-            }
-
-            .product-main-image {
-                max-height: 280px;
-            }
-
-            .meta-item {
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .meta-label {
-                min-width: auto;
-            }
-
-            .modal-content {
-                padding: 15px;
-                width: 95%;
-                margin: 10% auto;
-            }
-        }
-    </style>
 </head>
 <body>
 
 <div th:insert="~{fragments/navigationBar :: navBar}"></div>
+
+<div id="floatingMessage" class="floating-message">
+    <i class="fas fa-check-circle me-2"></i>
+    <span id="messageText"></span>
+</div>
 
 <div class="container main-content">
     <div class="row justify-content-center">
@@ -417,11 +30,13 @@
                             <div class="col-md-7">
                                 <h1 class="product-title" th:text="${product.name}"></h1>
                                 <div class="product-subtitle" th:if="${product.category != null}">
-                                    <a th:href="@{'/products/category/' + ${product.category.id}}" class="text-decoration-none">
+                                    <a th:href="@{'/products/category/' + ${product.category.id}}"
+                                       class="text-decoration-none">
                                         <span th:text="${product.category.name}"></span>
                                     </a>
                                     <span th:if="${product.brand != null}"> •
-                                        <a th:href="@{'/products/brand/' + ${product.brand.id}}" class="text-decoration-none">
+                                        <a th:href="@{'/products/brand/' + ${product.brand.id}}"
+                                           class="text-decoration-none">
                                             <span th:text="${product.brand.name}"></span>
                                         </a>
                                     </span>
@@ -447,7 +62,8 @@
                                      alt="Main Product Image"
                                      id="mainProductImage">
 
-                                <div th:unless="${primaryImage}" class="d-flex flex-column align-items-center justify-content-center py-5">
+                                <div th:unless="${primaryImage}"
+                                     class="d-flex flex-column align-items-center justify-content-center py-5">
                                     <i class="fas fa-image fa-4x text-secondary mb-3"></i>
                                     <p class="text-muted fs-5">No Image Available</p>
                                 </div>
@@ -456,10 +72,43 @@
                                     <div th:each="image : ${imageGallery}">
                                         <img th:src="${image.imageUrl}"
                                              th:class="${image.isPrimary} ?
-                                                 'product-thumbnail active' :
-                                                 'product-thumbnail'"
+                         'product-thumbnail active' :
+                         'product-thumbnail'"
                                              onclick="changeMainImage(event)"
                                              alt="Product thumbnail">
+                                    </div>
+                                </div>
+
+                                <div class="wishlist-container">
+                                    <button class="wishlist-btn" id="wishlistBtn" onclick="toggleWishlist()">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </div>
+
+                                <div class="container">
+                                    <div>
+                                        <div class="commitment-title">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <span>Product Commitment</span>
+                                        </div>
+                                        <div class="commitment-items">
+                                            <div class="commitment-item">
+                                                <i class="fas fa-check-circle"></i>
+                                                <span>100% Authentic</span>
+                                            </div>
+                                            <div class="commitment-item">
+                                                <i class="fas fa-truck"></i>
+                                                <span>Free Shipping</span>
+                                            </div>
+                                            <div class="commitment-item">
+                                                <i class="fas fa-sync-alt"></i>
+                                                <span>7-Day Returns</span>
+                                            </div>
+                                            <div class="commitment-item">
+                                                <i class="fas fa-headset"></i>
+                                                <span>24/7 Support</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -505,7 +154,8 @@
                                 <div class="meta-item">
                                     <span class="meta-label">Status:</span>
                                     <span class="meta-value">
-                                        <span th:if="${product.status}" class="badge bg-success status-badge">In Stock</span>
+                                        <span th:if="${product.status}"
+                                              class="badge bg-success status-badge">In Stock</span>
                                         <span th:unless="${product.status}" class="badge bg-danger status-badge">Out of Stock</span>
                                     </span>
                                 </div>
@@ -526,10 +176,12 @@
                                 </div>
 
                                 <!-- Quick specifications preview -->
-                                <div th:if="${not #lists.isEmpty(specifications) and #lists.size(specifications) > 0}" class="meta-item">
+                                <div th:if="${not #lists.isEmpty(specifications) and #lists.size(specifications) > 0}"
+                                     class="meta-item">
                                     <span class="meta-label">Key Specs:</span>
                                     <span class="meta-value">
-                                        <span th:each="spec, iterStat : ${specifications}" th:if="${iterStat.index < 2}">
+                                        <span th:each="spec, iterStat : ${specifications}"
+                                              th:if="${iterStat.index < 2}">
                                             <span th:text="${spec.specKey + ': ' + spec.specValue}"></span>
                                             <span th:if="${iterStat.index < 1 and #lists.size(specifications) > 1}">&bull;</span>
                                         </span>
@@ -547,11 +199,14 @@
                                             <div class="d-flex align-items-center mb-2">
                                                 <i class="fas fa-map-marker-alt text-danger me-2"></i>
                                                 <span class="fw-medium">Delivery Address</span>
-                                                <button class="ms-auto btn btn-sm btn-outline-primary" onclick="openAddressModal()">Change</button>
+                                                <button class="ms-auto btn btn-sm btn-outline-primary"
+                                                        onclick="openAddressModal()">Change
+                                                </button>
                                             </div>
                                             <p class="mb-2" id="displayed-address">
                                                 <span th:text="${customer.address != null ? customer.address : 'No address provided'}"></span>
-                                                <span id="temporary-badge" class="temporary-badge" style="display: none;">Temporary</span>
+                                                <span id="temporary-badge" class="temporary-badge"
+                                                      style="display: none;">Temporary</span>
                                             </p>
                                             <p class="mb-0 text-muted small">Estimated delivery: 2-3 business days</p>
 
@@ -561,7 +216,8 @@
                                                 <div class="d-flex">
                                                     <div class="me-3" id="shipping-info">
                                                         <i class="fas fa-truck text-primary me-2"></i>
-                                                        <span class="fw-medium">Shipping fee: <span id="shipping-fee" th:text="${#numbers.formatDecimal(shippingCost, 0, 'POINT', 0, 'COMMA')} + ' VND'"></span></span>
+                                                        <span class="fw-medium">Shipping fee: <span id="shipping-fee"
+                                                                                                    th:text="${#numbers.formatDecimal(shippingCost, 0, 'POINT', 0, 'COMMA')} + ' VND'"></span></span>
                                                     </div>
                                                     <div>
                                                         <i class="fas fa-exchange-alt text-warning me-2"></i>
@@ -582,7 +238,8 @@
                                                 <h6 class="mb-3">Quick Shipping Estimate</h6>
                                                 <div class="mb-3">
                                                     <label for="province" class="form-label">Province/City</label>
-                                                    <select id="province" class="form-select form-select-sm" onchange="handleProvinceChange()">
+                                                    <select id="province" class="form-select form-select-sm"
+                                                            onchange="handleProvinceChange()">
                                                         <option value="">Select Province</option>
                                                         <!-- Will be populated by JavaScript -->
                                                     </select>
@@ -605,16 +262,19 @@
                             </div>
 
                             <!-- Quantity Selector and Total Price -->
-                            <div class="mb-4">
+                            <div class="mb-5">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <label for="quantity" class="form-label fw-medium">Quantity:</label>
-                                        <div class="input-group quantity-selector" style="width: 140px;">
-                                            <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity()">
+                                        <div class="input-group quantity-selector" style="width: 135px;">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                    onclick="decrementQuantity()">
                                                 <i class="fas fa-minus"></i>
                                             </button>
-                                            <input type="number" id="quantity" class="form-control text-center" value="1" min="1" max="99">
-                                            <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity()">
+                                            <input type="number" id="quantity" class="form-control text-center"
+                                                   value="1" min="1" max="99">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                    onclick="incrementQuantity()">
                                                 <i class="fas fa-plus"></i>
                                             </button>
                                         </div>
@@ -638,7 +298,9 @@
                                                 </div>
                                                 <div class="d-flex justify-content-between mb-2">
                                                     <span>Shipping Fee:</span>
-                                                    <span class="fw-medium shipping-cost" id="shipping-cost-display" th:text="${#numbers.formatDecimal(shippingCost, 0, 'POINT', 0, 'COMMA')} + ' VND'" th:attr="data-shipping=${shippingCost}"></span>
+                                                    <span class="fw-medium shipping-cost" id="shipping-cost-display"
+                                                          th:text="${#numbers.formatDecimal(shippingCost, 0, 'POINT', 0, 'COMMA')} + ' VND'"
+                                                          th:attr="data-shipping=${shippingCost}"></span>
                                                 </div>
                                                 <div class="d-flex justify-content-between fw-bold pt-2 border-top mt-2">
                                                     <span>Total:</span>
@@ -653,18 +315,18 @@
                             <!-- Action Buttons -->
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <form th:action="@{/cart/add}" method="post" class="w-100">
-                                        <input type="hidden" name="productId" th:value="${product.productId}" />
-                                        <input type="hidden" name="quantity" id="cartQuantity" value="1" />
-                                        <button type="submit" class="btn btn-action btn-cart w-100">
+                                    <form th:action="@{/cart/add}" method="post" class="w-100" id="addToCartForm">
+                                        <input type="hidden" name="productId" th:value="${product.productId}"/>
+                                        <input type="hidden" name="quantity" id="cartQuantity" value="1"/>
+                                        <button type="submit" class="btn btn-action btn-cart w-100" id="cartBtn">
                                             <i class="fas fa-shopping-cart me-2"></i>Add to Cart
                                         </button>
                                     </form>
                                 </div>
                                 <div class="col-md-6">
                                     <form th:action="@{/cart/add}" method="post" class="w-100">
-                                        <input type="hidden" name="productId" th:value="${product.productId}" />
-                                        <input type="hidden" name="quantity" id="buyQuantity" value="1" />
+                                        <input type="hidden" name="productId" th:value="${product.productId}"/>
+                                        <input type="hidden" name="quantity" id="buyQuantity" value="1"/>
                                         <button type="submit" class="btn btn-action btn-buy w-100">
                                             <i class="fas fa-bolt me-2"></i>Buy Now
                                         </button>
@@ -689,7 +351,8 @@
                     <!-- Description Section -->
                     <div class="description-section">
                         <h3 class="section-title">Product Description</h3>
-                        <div class="description-content" th:utext="${product.description != null ? product.description : 'No description available for this product.'}"></div>
+                        <div class="description-content"
+                             th:utext="${product.description != null ? product.description : 'No description available for this product.'}"></div>
                     </div>
                 </div>
             </div>
@@ -713,7 +376,8 @@
                 </div>
                 <div class="address-text">
                     <h5>Default Address</h5>
-                    <p id="default-address-text" th:text="${customer.address != null ? customer.address : 'No default address set'}"></p>
+                    <p id="default-address-text"
+                       th:text="${customer.address != null ? customer.address : 'No default address set'}"></p>
                 </div>
                 <div class="address-actions">
                     <span class="badge bg-primary">Default</span>
@@ -754,17 +418,21 @@
                 </div>
                 <div class="mb-3">
                     <label for="new-street" class="form-label">Street Address</label>
-                    <input type="text" id="new-street" class="form-control form-control-lg" placeholder="Enter street address">
+                    <input type="text" id="new-street" class="form-control form-control-lg"
+                           placeholder="Enter street address">
                 </div>
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="button" class="btn btn-outline-secondary me-2" onclick="cancelAddressChange()">Cancel</button>
-                    <button type="button" class="btn btn-save-address" onclick="saveTemporaryAddress()">Use This Address</button>
+                    <button type="button" class="btn btn-outline-secondary me-2" onclick="cancelAddressChange()">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-save-address" onclick="saveTemporaryAddress()">Use This
+                        Address
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Function to change main product image
@@ -833,13 +501,13 @@
     }
 
     // Initialize quantity change event listener
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const quantityInput = document.getElementById('quantity');
 
         // Calculate initial total price
         updateTotalPrice(1);
 
-        quantityInput.addEventListener('change', function() {
+        quantityInput.addEventListener('change', function () {
             let value = parseInt(this.value);
             if (isNaN(value) || value < 1) value = 1;
             if (value > 99) value = 99;
@@ -851,7 +519,7 @@
         // Smooth scroll to specifications when clicking the "See all" link
         const specLink = document.querySelector('a[href="#specifications"]');
         if (specLink) {
-            specLink.addEventListener('click', function(e) {
+            specLink.addEventListener('click', function (e) {
                 e.preventDefault();
                 document.getElementById('specifications').scrollIntoView({
                     behavior: 'smooth'
@@ -861,6 +529,15 @@
 
         // Add province selector for guest users or when customer address is empty
         initializeAddressSelector();
+
+        // Add event listener for cart button
+        document.getElementById('addToCartForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            animateToCart();
+            setTimeout(() => {
+                this.submit();
+            }, 1000);
+        });
     });
 
     function initializeAddressSelector() {
@@ -1031,11 +708,68 @@
     }
 
     // Close modal when clicking outside
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         const modal = document.getElementById('addressModal');
         if (event.target === modal) {
             closeAddressModal();
         }
+    }
+
+    // Wishlist functionality
+    function toggleWishlist() {
+        const wishlistBtn = document.getElementById('wishlistBtn');
+        const heartIcon = wishlistBtn.querySelector('i');
+
+        if (wishlistBtn.classList.contains('active')) {
+            // Remove from wishlist
+            wishlistBtn.classList.remove('active');
+            heartIcon.classList.remove('fas', 'fa-heart');
+            heartIcon.classList.add('far', 'fa-heart');
+            showFloatingMessage('Removed from wishlist');
+        } else {
+            // Add to wishlist
+            wishlistBtn.classList.add('active');
+            heartIcon.classList.remove('far', 'fa-heart');
+            heartIcon.classList.add('fas', 'fa-heart');
+            showFloatingMessage('Added to wishlist');
+        }
+    }
+
+    // Show floating message
+    function showFloatingMessage(message) {
+        const floatingMessage = document.getElementById('floatingMessage');
+        const messageText = document.getElementById('messageText');
+
+        messageText.textContent = message;
+        floatingMessage.classList.add('show');
+
+        setTimeout(() => {
+            floatingMessage.classList.remove('show');
+        }, 3000);
+    }
+
+    // Animation for adding to cart
+    function animateToCart() {
+        const productImage = document.getElementById('mainProductImage');
+        const cartBtn = document.getElementById('cartBtn');
+
+        // Create a clone of the product image
+        const clone = productImage.cloneNode(true);
+        clone.classList.add('animate-to-cart');
+        clone.style.position = 'fixed';
+        clone.style.top = productImage.getBoundingClientRect().top + 'px';
+        clone.style.left = productImage.getBoundingClientRect().left + 'px';
+        clone.style.width = productImage.offsetWidth + 'px';
+        clone.style.height = productImage.offsetHeight + 'px';
+        clone.style.zIndex = '1000';
+
+        document.body.appendChild(clone);
+
+        // Remove the clone after animation completes
+        setTimeout(() => {
+            clone.remove();
+            showFloatingMessage('Added to cart!');
+        }, 1000);
     }
 </script>
 </body>

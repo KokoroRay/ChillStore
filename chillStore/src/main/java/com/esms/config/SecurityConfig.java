@@ -45,15 +45,12 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/home",
+                                "/Product", "/Product/**", "/DiscountProducts",
+                                "/product/view/**", "/customer/product/view/**",
                                 "/css/**", "/js/**", "/videos/**", "/img/**", "/images/**",
                                 "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
                                 "/auth/login", "/auth/register", "/auth/resend-otp"
                         ).permitAll()
-
-                        // Cho phép truy cập các trang công khai (Guest Home, CSS, JS, Auth flows)
-                        .requestMatchers("/", "/home", "/videos/**", "/css/**", "/js/**", "/img/**", // Thêm /img/** nếu bạn có ảnh
-                                "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
-                                "/auth/login", "/auth/register", "/auth/resend-otp").permitAll()
                         // Phân quyền công dân cao nhất
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN") //role cao nhất
                         // giai cấp bị bóc lộ

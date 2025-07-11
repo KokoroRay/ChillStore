@@ -63,12 +63,12 @@
 
 .sidebar .nav-item:hover .nav-link::before {
     top: -50px;
-    box-shadow: 35px 35px 0 10px white;
+    box-shadow: 29px 36px 0 10px white;
 }
 
 .sidebar .nav-item:hover .nav-link::after {
     bottom: -50px;
-    box-shadow: 35px -35px 0 10px white;
+    box-shadow: 29px -36px 0 10px white;
 }
 .sidebar .nav-item:active  .nav-link::before,
 .sidebar .nav-item:active  .nav-link::after {

@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details - ESMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/navigationBar.css}">
     <link rel="stylesheet" href="/css/styleproduct.css">
+    <link rel="stylesheet" th:href="@{/static/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/navigationBar.css}" />
     <style>
         .main-content {
-            margin-top: 90px;
+            margin-top: 100px;
         }
         .product-detail-card {
             max-width: 900px;
@@ -44,14 +45,12 @@
         }
         @media (max-width: 768px) {
             .product-detail-image { max-height: 180px; }
-            .main-content { margin-top: 70px; }
         }
     </style>
 </head>
 <body>
 
-<div th:replace="fragments/navigationBar :: navBar"></div>
-<div id="overlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.2);z-index:998;"></div>
+<div th:insert="~{fragments/navigationBar :: navBar}"></div>
 
 <div class="container main-content">
     <div class="row">
@@ -74,6 +73,22 @@
                         <div class="col-md-7">
                             <div class="product-detail-info">
                                 <h3 class="product-detail-title mb-4" th:text="${product.name}"></h3>
+
+                                <!-- Badge giảm giá -->
+                                <div th:if="${discount != null}" class="mb-3">
+                                    <div class="badge bg-danger fs-6 px-3 py-2">
+                                        <i class="fas fa-tags me-2"></i>
+                                        <span th:if="${discount.discountPct != null}"
+                                              th:text="${#numbers.formatDecimal(discount.discountPct, 0, 'POINT', 0, 'COMMA')} + '% OFF'">10% OFF</span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            <span th:if="${discount.discountPct != null and product.price != null}"
+                                                  th:text="${'Tiết kiệm: ' + #numbers.formatDecimal(product.price * discount.discountPct / 100, 0, 'POINT', 0, 'COMMA')} + ' VND'">Tiết kiệm: 50,000 VND</span>
+                                        </small>
+                                    </div>
+                                </div>
+
                                 <div class="mb-3">
                                     <strong>Description:</strong>
                                     <div class="product-description border rounded p-2 bg-light mt-1" th:text="${product.description}"></div>
@@ -82,7 +97,16 @@
                                     <tbody>
                                         <tr>
                                             <th>Price:</th>
-                                            <td><span class="price-highlight" th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span> <span style="color:#e53935; font-weight:700;">VND</span></td>
+                                            <td>
+                                                <span th:if="${discount != null and discount.discountPct != null and product.price != null}" class="text-decoration-line-through text-muted me-2">
+                                                    <span th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span> VND
+                                                </span>
+                                                <span class="price-highlight"
+                                                      th:text="${discount != null and discount.discountPct != null and product.price != null ?
+                                                               #numbers.formatDecimal(product.price * (100 - discount.discountPct) / 100, 0, 'POINT', 0, 'COMMA') :
+                                                               #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
+                                                <span style="color:#e53935; font-weight:700;">VND</span>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Status:</th>
@@ -107,16 +131,18 @@
                 </div>
                 <div class="card-footer">
                     <div class="d-flex justify-content-end gap-2">
-                        <form th:action="@{/cart/add}" method="post" class="d-inline">
-                            <input type="hidden" name="productId" th:value="${product.productId}" />
-                            <input type="hidden" name="quantity" value="1" />
-                            <button type="submit" class="btn btn-warning text-white">Add to cart</button>
-                        </form>
-                        <form th:action="@{/cart/add}" method="post" class="d-inline">
-                            <input type="hidden" name="productId" th:value="${product.productId}" />
-                            <input type="hidden" name="quantity" value="1" />
-                            <button type="submit" class="btn btn-primary">Buy now</button>
-                        </form>
+                        <div sec:authorize="hasRole('CUSTOMER')">
+                            <form th:action="@{/cart/add}" method="post" class="d-inline">
+                                <input type="hidden" name="productId" th:value="${product.productId}" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-warning text-white">Add to cart</button>
+                            </form>
+                            <form  th:action="@{/cart/add}" method="post" class="d-inline">
+                                <input type="hidden" name="productId" th:value="${product.productId}" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-primary">Buy now</button>
+                            </form>
+                        </div>
                         <button type="button" class="btn btn-secondary" onclick="history.back()">
                             <i class="fas fa-arrow-left"></i> Back
                         </button>
@@ -129,4 +155,4 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>

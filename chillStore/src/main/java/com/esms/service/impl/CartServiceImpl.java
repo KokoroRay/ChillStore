@@ -90,5 +90,9 @@ public class CartServiceImpl implements CartService {
         return Math.max(total, 0);
     }
 
+    @Override
+    public void clearCart(int customerId) {
+        cartRepository.deleteByCustomerCustomerId(customerId);
+    }
 
 }

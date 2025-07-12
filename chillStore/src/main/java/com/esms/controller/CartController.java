@@ -130,4 +130,19 @@ public class CartController {
 
         return "redirect:/cart?voucher=" + voucherCode;
     }
+
+    @PostMapping("/checkout")
+    public String proceedToCheckout(@RequestParam(value = "voucher", required = false) String voucherCode,
+                                   HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+        if (customerId == null) {
+            return "redirect:/auth/login";
+        }
+
+        String redirectUrl = "/checkout";
+        if (voucherCode != null && !voucherCode.trim().isEmpty()) {
+            redirectUrl += "?voucher=" + voucherCode;
+        }
+        return "redirect:" + redirectUrl;
+    }
 }

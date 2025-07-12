@@ -44,6 +44,20 @@ public interface ProductService {
      */
     Page<Product> getDiscountProducts(Pageable pageable);
 
+    /**
+     * Tìm kiếm và lọc sản phẩm có discount với các filter
+     */
+    Page<Product> searchDiscountProductsWithFilters(
+            String keyword,
+            Integer categoryId,
+            Integer brandId,
+            Double minPrice,
+            Double maxPrice,
+            String sortBy,
+            String sortDir,
+            Pageable pageable
+    );
+
     Product getProductWithDetails(Integer productId);
 }
 

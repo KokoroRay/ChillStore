@@ -6,32 +6,248 @@
     <title>Discount Products</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/static/style.css}" />
-    <link rel="stylesheet" th:href="@{/css/navigationBar.css}" />
+    <link rel="stylesheet" th:href="@{/css/navigationBar.css}">
     <style>
-        body { background: #f8f9fa; }
-        .header { height: 80px; position: fixed; top: 0; left: 0; right: 0; background-color: white; z-index: 999; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-        .main-content { margin-top: 100px; }
-        .product-card { border: 1px solid #e0e0e0; border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); padding: 12px 12px 16px 12px; margin-bottom: 24px; transition: box-shadow 0.2s; height: 320px; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
-        .product-img { width: 100%; height: 140px; object-fit: contain; margin-bottom: 8px; background: #f5f5f5; border-radius: 8px; }
-        .product-title { font-size: 1rem; font-weight: 500; color: #222; text-align: center; margin-bottom: 8px; min-height: 40px; }
-        .product-actions { display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .wishlist-btn { background: none; border: none; color: #dc3545; font-size: 1.3rem; vertical-align: middle; margin-left: 0; }
-        .wishlist-btn.active { color: #e0245e; }
-        .btn-buy { background: #e3f0ff; color: #007bff; border: none; border-radius: 6px; font-weight: 500; padding: 6px 18px; font-size: 1rem; transition: background 0.2s; }
-        .btn-buy:hover { background: #cce3ff; color: #0056b3; }
-        @media (max-width: 768px) { .main-content { margin-top: 90px; } .product-card { height: 270px; padding: 8px; } .product-img { height: 90px; } }
+        body {
+            background: #f8f9fa;
+        }
+        .header {
+            height: 80px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            z-index: 999;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .main-content {
+            margin-top: 0px;
+        }
+        .product-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 12px 12px 16px 12px;
+            margin-bottom: 24px;
+            transition: box-shadow 0.2s;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .product-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+        }
+        .product-img {
+            width: 100%;
+            height: 140px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        .product-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #222;
+            text-align: center;
+            margin-bottom: 8px;
+            min-height: 40px;
+        }
+        .product-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .wishlist-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: 1.3rem;
+            vertical-align: middle;
+            margin-left: 0;
+        }
+        .wishlist-btn.active {
+            color: #e0245e;
+        }
+        .btn-buy {
+            background: #e3f0ff;
+            color: #007bff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            padding: 6px 18px;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        .btn-buy:hover {
+            background: #cce3ff;
+            color: #0056b3;
+        }
+        @media (max-width: 768px) {
+            .main-content { margin-top: 0px; }
+            .product-card { height: 270px; padding: 8px; }
+            .product-img { height: 90px; }
+        }
+        
+        /* Đảm bảo form hoạt động */
+        .filter-section form {
+            margin-bottom: 20px;
+        }
+        
+        .filter-section .btn {
+            cursor: pointer;
+        }
+        
+        .filter-section input,
+        .filter-section select {
+            border: 1px solid #ced4da;
+        }
+        
+        .filter-section input:focus,
+        .filter-section select:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        /* Pagination styles */
+        .pagination {
+            margin-bottom: 0;
+        }
+        
+        .pagination .page-link {
+            color: #007bff;
+            border: 1px solid #dee2e6;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+        
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
+        
+        .pagination .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+            color: #0056b3;
+        }
     </style>
 </head>
 <body>
-<div th:insert="~{fragments/navigationBar :: navBar}"></div>
+    <div th:replace="fragments/navigationBar :: navBar"></div>
+    <div id="overlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.2);z-index:998;"></div>
+    <h2 class="text-center" style="margin-top:24px;margin-bottom:10px;font-size:2.7rem;font-weight:700;letter-spacing:1px;color:#e53935;">Discounted Products</h2>
     <div class="container main-content">
-        <h2 class="mb-4 text-center" style="color:#e53935; font-weight:700;">Discounted products</h2>
+        <!-- Filter Section -->
+        <div class="filter-section mb-4">
+            <form th:action="@{/DiscountProducts}" method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Search products...">
+                        <button type="submit" class="btn btn-outline-secondary" title="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="categoryId">
+                        <option value="">All Categories</option>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${categoryId != null and categoryId == category.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="brandId">
+                        <option value="">All Brands</option>
+                        <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brandId != null and brandId == brand.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" name="minPrice" th:value="${minPrice}" placeholder="Price from (VND)" min="0">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" name="maxPrice" th:value="${maxPrice}" placeholder="To (VND)" min="0">
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="sortOption">
+                        <option value="default" th:selected="${sortOption == null || sortOption == 'default'}">Default</option>
+                        <option value="name_asc" th:selected="${sortOption != null and sortOption == 'name_asc'}">Name (A-Z)</option>
+                        <option value="name_desc" th:selected="${sortOption != null and sortOption == 'name_desc'}">Name (Z-A)</option>
+                        <option value="price_asc" th:selected="${sortOption != null and sortOption == 'price_asc'}">Price (Low to High)</option>
+                        <option value="price_desc" th:selected="${sortOption != null and sortOption == 'price_desc'}">Price (High to Low)</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary" onclick="console.log('Filter button clicked')">
+                        <i class="fas fa-filter me-2"></i> Filter
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetFilters()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div th:if="${priceError != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${priceError}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <script>
+        function resetFilters() {
+            window.location.href = '/DiscountProducts';
+        }
+        
+        // Debug: Kiểm tra form submit và pagination
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form[th\\:action*="DiscountProducts"]');
+            if (form) {
+                console.log('Form found:', form);
+                form.addEventListener('submit', function(e) {
+                    console.log('Form submitted');
+                    console.log('Form data:', new FormData(form));
+                });
+            } else {
+                console.log('Form not found');
+            }
+            
+            // Kiểm tra các button
+            const buttons = document.querySelectorAll('button[type="submit"]');
+            console.log('Submit buttons found:', buttons.length);
+            buttons.forEach((btn, index) => {
+                console.log(`Button ${index}:`, btn);
+                btn.addEventListener('click', function(e) {
+                    console.log(`Button ${index} clicked`);
+                });
+            });
+            
+            // Kiểm tra pagination
+            const paginationLinks = document.querySelectorAll('.pagination .page-link');
+            console.log('Pagination links found:', paginationLinks.length);
+            paginationLinks.forEach((link, index) => {
+                console.log(`Pagination link ${index}:`, link.href);
+            });
+            
+            // Log pagination info
+            console.log('Current page:', '[[${currentPage}]]');
+            console.log('Total pages:', '[[${totalPages}]]');
+            console.log('Total items:', '[[${totalItems}]]');
+            console.log('Page size:', '[[${size}]]');
+        });
+        </script>
         <div class="row">
             <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
                 <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">Không có sản phẩm giảm giá nào</h5>
+                <h5 class="text-muted">No discounted products found</h5>
             </div>
             <div th:each="product : ${products}" class="col-6 col-sm-4 col-md-3 mb-3 d-flex">
                 <div class="product-card w-100 position-relative">
@@ -52,35 +268,66 @@
                         <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img">
                         <h5 class="product-title" th:text="${product.name}" style="color:#2196f3; font-size:1.1rem; font-weight:400; margin-bottom:4px;">Tên sản phẩm</h5>
                         <div>
-                            <!-- Hiển thị giá: Nếu có discount thì hiện giá gốc gạch ngang + giá sau giảm -->
-                            <span th:if="${productDiscountMap[product.productId] != null and product.price != null}"
-                                  class="text-decoration-line-through text-muted me-2"
-                                  th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
-                            <span style="color:#e53935; font-size:1.1rem; font-weight:700;"
-                                  th:text="${productDiscountMap[product.productId] != null and product.price != null and productDiscountMap[product.productId].discountPct != null ?
-                                            #numbers.formatDecimal(product.price * (100 - productDiscountMap[product.productId].discountPct) / 100, 0, 'POINT', 0, 'COMMA') :
-                                            #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
-                            <span style="color:#e53935; font-size:0.85rem; font-weight:700; vertical-align:super;">VND</span>
+                            <!-- Hiển thị giá: Giá gốc gạch ngang ở trên, giá sau discount ở dưới -->
+                            <div th:if="${productDiscountMap[product.productId] != null and product.price != null}" class="mb-1">
+                                <span class="text-decoration-line-through text-muted"
+                                      th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'"></span>
+                            </div>
+                            <div>
+                                <span style="color:#e53935; font-size:1.1rem; font-weight:700;"
+                                      th:text="${productDiscountMap[product.productId] != null and product.price != null and productDiscountMap[product.productId].discountPct != null ?
+                                                #numbers.formatDecimal(product.price * (100 - productDiscountMap[product.productId].discountPct) / 100, 0, 'POINT', 0, 'COMMA') :
+                                                #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
+                                <span style="color:#e53935; font-size:0.85rem; font-weight:700; vertical-align:super;">VND</span>
+                            </div>
                         </div>
                     </a>
-                    <!-- Đã xóa nút wishlist ở đây -->
                 </div>
             </div>
         </div>
-        <!-- Pagination -->
-        <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
-            <ul class="pagination">
-                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/Customer/DiscountProducts(page=0, size=${size})}">&laquo;</a>
-                </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${currentPage == i} ? 'active'">
-                    <a class="page-link" th:href="@{/Customer/DiscountProducts(page=${i}, size=${size})}" th:text="${i+1}"></a>
-                </li>
-                <li class="page-item" th:classappend="${currentPage == (totalPages - 1)} ? 'disabled'">
-                    <a class="page-link" th:href="@{/Customer/DiscountProducts(page=${totalPages - 1}, size=${size})}">&raquo;</a>
-                </li>
-            </ul>
+        <!-- Pagination modern style -->
+        <div th:if="${totalPages > 1}" class="d-flex flex-column align-items-center mt-4">
+            <nav aria-label="Page navigation">
+                <ul class="pagination mb-1">
+                    <!-- Previous button -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/DiscountProducts(page=${currentPage - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <!-- First page -->
+                    <li class="page-item" th:if="${currentPage > 2}">
+                        <a class="page-link" th:href="@{/DiscountProducts(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">1</a>
+                    </li>
+                    <li class="page-item disabled" th:if="${currentPage > 3}"><span class="page-link">...</span></li>
+                    <!-- Page numbers around current -->
+                    <li class="page-item" th:each="i : ${#numbers.sequence((currentPage-2 > 0 ? currentPage-2 : 0), (currentPage+2 < totalPages-1 ? currentPage+2 : totalPages-1))}" th:classappend="${currentPage == i} ? 'active'">
+                        <a class="page-link" th:href="@{/DiscountProducts(page=${i}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${i+1}"></a>
+                    </li>
+                    <li class="page-item disabled" th:if="${currentPage < totalPages-4}"><span class="page-link">...</span></li>
+                    <!-- Last page -->
+                    <li class="page-item" th:if="${currentPage < totalPages-3}">
+                        <a class="page-link" th:href="@{/DiscountProducts(page=${totalPages-1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${totalPages}"></a>
+                    </li>
+                    <!-- Next button -->
+                    <li class="page-item" th:classappend="${currentPage == (totalPages - 1)} ? 'disabled'">
+                        <a class="page-link" th:href="@{/DiscountProducts(page=${currentPage + 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- Page info -->
+            <div class="text-center">
+                <small class="text-muted">
+                    Page <span th:text="${currentPage + 1}">1</span> of <span th:text="${totalPages}">1</span> |
+                    Showing <span th:text="${currentPage * size + 1}">1</span> to 
+                    <span th:text="${currentPage * size + products.size()}">9</span> of 
+                    <span th:text="${totalItems}">0</span> discounted products
+                </small>
+            </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 

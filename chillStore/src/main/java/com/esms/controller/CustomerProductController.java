@@ -58,9 +58,8 @@ public class CustomerProductController {
         String sortBy = null;
         String sortDir = null;
         if (sortOption != null && !sortOption.equals("default")) {
-            sortBy = "name";
-            sortDir = "asc";
             switch (sortOption) {
+                case "name_asc": sortBy = "name"; sortDir = "asc"; break;
                 case "name_desc": sortBy = "name"; sortDir = "desc"; break;
                 case "price_asc": sortBy = "price"; sortDir = "asc"; break;
                 case "price_desc": sortBy = "price"; sortDir = "desc"; break;
@@ -131,11 +130,58 @@ public class CustomerProductController {
 
     @GetMapping("/DiscountProducts")
     public String viewDiscountProducts(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "brandId", required = false) Integer brandId,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "sortOption", required = false, defaultValue = "default") String sortOption,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "9") int size,
+            @RequestParam(value = "size", defaultValue = "12") int size,
             Model model) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Product> products = productService.getDiscountProducts(pageable);
+        // Price validation logic (relaxed for discount page)
+        String priceError = null;
+        if (minPrice != null && minPrice < 0) {
+            priceError = "Minimum price cannot be negative";
+            minPrice = null;
+        }
+        if (maxPrice != null && maxPrice < 0) {
+            priceError = "Maximum price cannot be negative";
+            maxPrice = null;
+        }
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            priceError = "Minimum price cannot be greater than maximum price";
+            minPrice = null;
+            maxPrice = null;
+        }
+        // Parse sortBy and sortDir from sortOption
+        String sortBy = null;
+        String sortDir = null;
+        if (sortOption != null && !sortOption.equals("default")) {
+            switch (sortOption) {
+                case "name_asc": sortBy = "name"; sortDir = "asc"; break;
+                case "name_desc": sortBy = "name"; sortDir = "desc"; break;
+                case "price_asc": sortBy = "price"; sortDir = "asc"; break;
+                case "price_desc": sortBy = "price"; sortDir = "desc"; break;
+                default: break;
+            }
+        }
+        Pageable pageable;
+        if (sortBy != null && sortDir != null) {
+            pageable = PageRequest.of(page, size, org.springframework.data.domain.Sort.by(sortDir.equalsIgnoreCase("asc") ? org.springframework.data.domain.Sort.Direction.ASC : org.springframework.data.domain.Sort.Direction.DESC, sortBy));
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
+        Page<Product> products = productService.searchDiscountProductsWithFilters(
+                keyword, categoryId, brandId, minPrice, maxPrice, sortBy, sortDir, pageable);
+        // Nếu page vượt quá giới hạn, chuyển về trang cuối cùng
+        if (page >= products.getTotalPages() && products.getTotalPages() > 0) {
+            int lastPage = products.getTotalPages() - 1;
+            pageable = PageRequest.of(lastPage, size, pageable.getSort());
+            products = productService.searchDiscountProductsWithFilters(
+                keyword, categoryId, brandId, minPrice, maxPrice, sortBy, sortDir, pageable);
+            page = lastPage;
+        }
         List<Category> categories = categoryService.getAllCategory();
         List<Brand> brands = brandService.getAllBrands();
         // Map productId -> discount (nếu có)
@@ -149,10 +195,17 @@ public class CustomerProductController {
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("brandId", brandId);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("sortOption", sortOption);
         model.addAttribute("size", size);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", products.getTotalPages());
         model.addAttribute("totalItems", products.getTotalElements());
+        model.addAttribute("priceError", priceError);
         model.addAttribute("productDiscountMap", productDiscountMap);
         return "customer/product/discountProducts";
     }

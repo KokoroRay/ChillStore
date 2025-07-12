@@ -217,6 +217,7 @@ public class ProductServiceImpl implements ProductService {
         return new ProductDTO(product.getProductId(), product.getName(), product.getPrice(), product.getImageUrl());
     }
 
+    @Override
     public Page<ProductDTO> getProductsByCategory(String category, Pageable pageable) {
         Page<Product> productPage = productRepository.findByCategoryNameIgnoreCase(category, pageable);
 
@@ -276,6 +277,7 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    @Override
     public Discount getActiveDiscountForProduct(Product product) {
         List<DiscountProduct> discountProducts = discountProductRepository.findByProductId(product.getProductId());
         for (DiscountProduct dp : discountProducts) {
@@ -288,6 +290,156 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         return null;
+    }
+
+    @Override
+    public Page<Product> searchDiscountProductsWithFilters(
+            String keyword,
+            Integer categoryId,
+            Integer brandId,
+            Double minPrice,
+            Double maxPrice,
+            String sortBy,
+            String sortDir,
+            Pageable pageable) {
+        
+        // Lấy tất cả sản phẩm có discount trước
+        List<Discount> activeDiscounts = discountRepository.findActiveDiscountsByDate(LocalDate.now());
+        List<Integer> promoIds = activeDiscounts.stream()
+                .filter(d -> "product".equalsIgnoreCase(d.getApplyType()))
+                .map(Discount::getPromoId)
+                .toList();
+        
+        List<Product> products = discountProductRepository.findAll().stream()
+                .filter(dp -> promoIds.contains(dp.getDiscount().getPromoId()))
+                .map(dp -> dp.getProduct())
+                .distinct()
+                .toList();
+
+        // Filter by keyword (tên sản phẩm, tên danh mục, mô tả)
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            String finalKeyword = removeDiacritics(keyword.trim().toLowerCase());
+            products = products.stream()
+                    .filter(p -> {
+                        String productName = removeDiacritics(p.getName() != null ? p.getName().toLowerCase() : "");
+                        String productDesc = removeDiacritics(p.getDescription() != null ? p.getDescription().toLowerCase() : "");
+                        String categoryName = removeDiacritics(p.getCategory() != null && p.getCategory().getName() != null ? p.getCategory().getName().toLowerCase() : "");
+                        return productName.contains(finalKeyword)
+                                || productDesc.contains(finalKeyword)
+                                || categoryName.contains(finalKeyword);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        // Filter by category
+        if (categoryId != null) {
+            products = products.stream()
+                    .filter(p -> p.getCategory() != null && p.getCategory().getId().equals(categoryId))
+                    .collect(Collectors.toList());
+        }
+
+        // Filter by brand
+        if (brandId != null) {
+            products = products.stream()
+                    .filter(p -> p.getBrand() != null && p.getBrand().getId().equals(brandId))
+                    .collect(Collectors.toList());
+        }
+
+        // Filter by price range (giá sau discount)
+        if (minPrice != null) {
+            products = products.stream()
+                    .filter(p -> {
+                        try {
+                            // Tính giá sau discount
+                            Discount discount = getActiveDiscountForProduct(p);
+                            double finalPrice = p.getPrice().doubleValue();
+                            if (discount != null && discount.getDiscountPct() != null) {
+                                double discountPct = discount.getDiscountPct().doubleValue();
+                                finalPrice = p.getPrice().doubleValue() * (100.0 - discountPct) / 100.0;
+                            }
+                            return finalPrice >= minPrice;
+                        } catch (Exception e) {
+                            // Nếu có lỗi, sử dụng giá gốc
+                            return p.getPrice().doubleValue() >= minPrice;
+                        }
+                    })
+                    .collect(Collectors.toList());
+        }
+        if (maxPrice != null) {
+            products = products.stream()
+                    .filter(p -> {
+                        try {
+                            // Tính giá sau discount
+                            Discount discount = getActiveDiscountForProduct(p);
+                            double finalPrice = p.getPrice().doubleValue();
+                            if (discount != null && discount.getDiscountPct() != null) {
+                                double discountPct = discount.getDiscountPct().doubleValue();
+                                finalPrice = p.getPrice().doubleValue() * (100 - discountPct) / 100;
+                            }
+                            return finalPrice <= maxPrice;
+                        } catch (Exception e) {
+                            // Nếu có lỗi, sử dụng giá gốc
+                            return p.getPrice().doubleValue() <= maxPrice;
+                        }
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        // Sort products
+        if (sortBy != null && sortDir != null) {
+            boolean isAsc = sortDir.equalsIgnoreCase("asc");
+            switch (sortBy.toLowerCase()) {
+                case "name":
+                    products.sort((p1, p2) -> isAsc ?
+                            p1.getName().compareTo(p2.getName()) :
+                            p2.getName().compareTo(p1.getName()));
+                    break;
+                case "price":
+                    products.sort((p1, p2) -> {
+                        try {
+                            // Tính giá sau discount cho cả hai sản phẩm
+                            Discount discount1 = getActiveDiscountForProduct(p1);
+                            Discount discount2 = getActiveDiscountForProduct(p2);
+                            
+                            double price1 = p1.getPrice().doubleValue();
+                            double price2 = p2.getPrice().doubleValue();
+                            
+                            if (discount1 != null && discount1.getDiscountPct() != null) {
+                                double discountPct1 = discount1.getDiscountPct().doubleValue();
+                                price1 = p1.getPrice().doubleValue() * (100.0 - discountPct1) / 100.0;
+                            }
+                            if (discount2 != null && discount2.getDiscountPct() != null) {
+                                double discountPct2 = discount2.getDiscountPct().doubleValue();
+                                price2 = p2.getPrice().doubleValue() * (100.0 - discountPct2) / 100.0;
+                            }
+                            
+                            return isAsc ? Double.compare(price1, price2) : Double.compare(price2, price1);
+                        } catch (Exception e) {
+                            // Nếu có lỗi, sort theo giá gốc
+                            return isAsc ? 
+                                p1.getPrice().compareTo(p2.getPrice()) : 
+                                p2.getPrice().compareTo(p1.getPrice());
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Apply pagination
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), products.size());
+
+        if (start > products.size()) {
+            return new PageImpl<>(List.of(), pageable, products.size());
+        }
+
+        return new PageImpl<>(
+                products.subList(start, end),
+                pageable,
+                products.size()
+        );
     }
 
 }

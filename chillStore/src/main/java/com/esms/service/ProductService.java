@@ -59,5 +59,7 @@ public interface ProductService {
     );
 
     Product getProductWithDetails(Integer productId);
+
+    List<String> suggestProductNames(String keyword, int limit);
 }
 

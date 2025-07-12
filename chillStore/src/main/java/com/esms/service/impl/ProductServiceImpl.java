@@ -442,4 +442,16 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
+    @Override
+    public List<String> suggestProductNames(String keyword, int limit) {
+        if (keyword == null || keyword.trim().isEmpty()) return List.of();
+        return productRepository
+            .searchProducts(keyword)
+            .stream()
+            .map(Product::getName)
+            .distinct()
+            .limit(limit)
+            .collect(Collectors.toList());
+    }
+
 }

@@ -3,21 +3,28 @@ package com.esms.controller;
 import com.esms.model.entity.*;
 import com.esms.service.BrandService;
 import com.esms.service.CategoryService;
+import com.esms.service.CustomerService;
 import com.esms.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Controller
 public class CustomerProductController {
@@ -27,6 +34,8 @@ public class CustomerProductController {
     private CategoryService categoryService;
     @Autowired
     private BrandService brandService;
+    @Autowired
+    private CustomerService customerService;
 
     @GetMapping("/Product")
     public String viewProductPage(
@@ -100,6 +109,7 @@ public class CustomerProductController {
         model.addAttribute("priceError", priceError);
         // Bổ sung: truyền map discount ra view
         model.addAttribute("productDiscountMap", productDiscountMap);
+        
         return "customer/product/viewProduct";
     }
 
@@ -207,6 +217,99 @@ public class CustomerProductController {
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("priceError", priceError);
         model.addAttribute("productDiscountMap", productDiscountMap);
+        
         return "customer/product/discountProducts";
     }
+
+    @GetMapping("/Product/api/products/suggest")
+    @ResponseBody
+    public Map<String, Object> suggestProducts(@RequestParam("q") String keyword) {
+        Map<String, Object> result = new HashMap<>();
+        // Danh sách từ khóa mặc định
+        List<String> defaultKeywords = List.of("Tivi", "Tủ lạnh", "Máy lạnh", "Robot hút bụi", "Quạt", "Máy lọc nước");
+        // Lọc tất cả từ khóa chứa keyword (không phân biệt vị trí, không phân biệt hoa thường)
+        List<String> filteredKeywords = defaultKeywords.stream()
+            .filter(k -> keyword == null || keyword.isEmpty() || k.toLowerCase().contains(keyword.toLowerCase()))
+            .distinct()
+            .limit(8)
+            .toList();
+        result.put("keywords", filteredKeywords);
+        // Gợi ý sản phẩm với cache
+        List<Product> products = productService.searchProducts(keyword);
+        List<Map<String, Object>> productList = products.stream()
+            .limit(6)
+            .map(p -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", p.getProductId());
+                map.put("name", p.getName());
+                map.put("image", p.getImageUrl());
+                map.put("price", p.getPrice());
+                // Thêm discount nếu có
+                Discount discount = productService.getActiveDiscountForProduct(p);
+                if (discount != null) {
+                    map.put("hasDiscount", true);
+                    map.put("discountPercent", discount.getDiscountPct() != null ? discount.getDiscountPct().intValue() : 0);
+                } else {
+                    map.put("hasDiscount", false);
+                }
+                return map;
+            })
+            .toList();
+        result.put("products", productList);
+        return result;
+    }
+
+    @GetMapping("/search")
+    public String searchPage(@RequestParam(value = "keyword", required = false) String keyword,
+                             @RequestParam(value = "categoryId", required = false) Integer categoryId,
+                             @RequestParam(value = "brandId", required = false) Integer brandId,
+                             @RequestParam(value = "minPrice", required = false) Double minPrice,
+                             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+                             @RequestParam(value = "sortOption", required = false, defaultValue = "default") String sortOption,
+                             @RequestParam(value = "page", defaultValue = "0") int page,
+                             @RequestParam(value = "size", defaultValue = "12") int size,
+                             Model model) {
+        String priceError = null;
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            priceError = "Minimum price cannot be greater than maximum price";
+            minPrice = null;
+            maxPrice = null;
+        }
+        String sortBy = null;
+        String sortDir = null;
+        if (sortOption != null && !sortOption.equals("default")) {
+            switch (sortOption) {
+                case "name_asc": sortBy = "name"; sortDir = "asc"; break;
+                case "name_desc": sortBy = "name"; sortDir = "desc"; break;
+                case "price_asc": sortBy = "price"; sortDir = "asc"; break;
+                case "price_desc": sortBy = "price"; sortDir = "desc"; break;
+                default: break;
+            }
+        }
+        Pageable pageable = (sortBy != null && sortDir != null)
+            ? PageRequest.of(page, size, org.springframework.data.domain.Sort.by(sortDir.equalsIgnoreCase("asc") ? org.springframework.data.domain.Sort.Direction.ASC : org.springframework.data.domain.Sort.Direction.DESC, sortBy))
+            : PageRequest.of(page, size);
+        Page<Product> products = productService.searchProductsWithFilters(
+            keyword, categoryId, brandId, minPrice, maxPrice, null, sortBy, sortDir, pageable, null);
+        List<Category> categories = categoryService.getAllCategory();
+        List<Brand> brands = brandService.getAllBrands();
+        model.addAttribute("products", products);
+        model.addAttribute("categories", categories);
+        model.addAttribute("brands", brands);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("brandId", brandId);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("sortOption", sortOption);
+        model.addAttribute("size", size);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", products.getTotalPages());
+        model.addAttribute("totalItems", products.getTotalElements());
+        model.addAttribute("priceError", priceError);
+        
+        return "search";
+    }
+    
+    // Đã xóa toàn bộ code liên quan search history
 } 

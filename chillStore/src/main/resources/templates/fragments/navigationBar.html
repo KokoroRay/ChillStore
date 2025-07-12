@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/navigationBar.css}">
+    <link rel="stylesheet" th:href="@{/css/autocomplete.css}">
 </head>
 <body>
 <div th:fragment="navBar">
@@ -23,6 +24,15 @@
                     <a th:href="@{/contact}">Contact</a>
                 </li>
             </ul>
+        </div>
+
+        <!-- Thanh tìm kiếm với autocomplete -->
+        <div class="nav-search" style="flex:1; display:flex; align-items:center; justify-content:center;">
+            <form class="search-bar" method="get" autocomplete="off" style="position:relative; width:350px;">
+                <input type="text" name="keyword" placeholder="Bạn cần tìm gì hôm nay?" style="width:100%; padding-right:40px;">
+                <button type="submit" style="position:absolute; right:0; top:0; height:100%; border:none; background:#0074d9; color:white; border-radius:0 20px 20px 0; padding:0 16px;"><i class="fa fa-search"></i></button>
+                <div class="autocomplete-suggestions" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #ccc; z-index:9999; max-height:250px; overflow-y:auto;"></div>
+            </form>
         </div>
 
         <div class="nav-right">
@@ -245,5 +255,6 @@
         }
     });
 </script>
+<script src="/js/autocomplete.js"></script>
 </body>
 </html>

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
@@ -428,5 +429,11 @@ public class ProductController {
                 maxPrice != null ? maxPrice : "",
                 minStock != null ? minStock : "",
                 sortOption != null ? sortOption : "");
+    }
+
+    @GetMapping("/api/products/suggest")
+    @ResponseBody
+    public List<String> suggestProducts(@RequestParam("q") String keyword) {
+        return productService.suggestProductNames(keyword, 10);
     }
 }

@@ -29,6 +29,7 @@
             <td>
                 <form th:action="@{/cart/update}" method="post" class="d-flex">
                     <input type="hidden" name="cartId" th:value="${item.cartItemId}">
+                    <input type="hidden" name="customerId" th:value="${customerId}" />
                     <input type="number" name="quantity" th:value="${item.quantity}" class="form-control form-control-sm me-2" style="width: 70px;" min="1">
                     <button type="submit" class="btn btn-sm btn-outline-secondary">Update</button>
                 </form>
@@ -37,6 +38,7 @@
             <td>
                 <form th:action="@{/cart/delete}" method="post">
                     <input type="hidden" name="cartId" th:value="${item.cartItemId}">
+                    <input type="hidden" name="customerId" th:value="${customerId}" />
                     <button type="submit" class="btn btn-sm btn-danger">Remove</button>
                 </form>
             </td>
@@ -46,6 +48,7 @@
 
     <!-- Voucher Application -->
     <form th:action="@{/cart/apply-voucher}" method="post" class="row g-3 mb-3">
+        <input type="hidden" name="customerId" th:value="${customerId}" />
         <div class="col-md-6">
             <label for="voucher" class="form-label">Apply Voucher</label>
             <select name="voucherCode" id="voucher" class="form-select">
@@ -85,7 +88,7 @@
     <!-- Placeholder Payment Form -->
     <div class="text-end">
         <form th:action="@{/cart/submit}" method="post">
-            <input type="hidden" name="customerId" value="1"/> <!-- hoặc dùng biến nếu có -->
+            <input type="hidden" name="customerId" th:value="${customerId}" />
             <button type="submit" class="btn btn-success">Pay Now</button>
         </form>
     </div>

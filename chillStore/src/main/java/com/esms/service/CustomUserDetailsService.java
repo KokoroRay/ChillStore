@@ -71,5 +71,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     }
+    public Customer getCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email)
+                .orElse(null);
+    }
+
 
 }

@@ -27,7 +27,7 @@
 <body>
 <div th:insert="~{fragments/navigationBar :: navBar}"></div>
     <div class="container main-content">
-        <h2 class="mb-4 text-center" style="color:#e53935; font-weight:700;">Sản phẩm đang giảm giá</h2>
+        <h2 class="mb-4 text-center" style="color:#e53935; font-weight:700;">Discounted products</h2>
         <div class="row">
             <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
                 <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
@@ -48,23 +48,22 @@
                                   th:text="${#numbers.formatDecimal(product.price * productDiscountMap[product.productId].discountPct / 100, 0, 'POINT', 0, 'COMMA')} + ' VND'">-50,000 VND</span>
                         </div>
                     </div>
-                    <a th:href="@{'/Customer/Product/' + ${product.productId}}" style="text-decoration:none; color:inherit; display:block;">
+                    <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration:none; color:inherit; display:block;">
                         <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img">
                         <h5 class="product-title" th:text="${product.name}" style="color:#2196f3; font-size:1.1rem; font-weight:400; margin-bottom:4px;">Tên sản phẩm</h5>
                         <div>
-                            <span style="color:#e53935; font-size:1.1rem; font-weight:700;">
-                                <span th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
-                            </span>
+                            <!-- Hiển thị giá: Nếu có discount thì hiện giá gốc gạch ngang + giá sau giảm -->
+                            <span th:if="${productDiscountMap[product.productId] != null and product.price != null}"
+                                  class="text-decoration-line-through text-muted me-2"
+                                  th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
+                            <span style="color:#e53935; font-size:1.1rem; font-weight:700;"
+                                  th:text="${productDiscountMap[product.productId] != null and product.price != null and productDiscountMap[product.productId].discountPct != null ?
+                                            #numbers.formatDecimal(product.price * (100 - productDiscountMap[product.productId].discountPct) / 100, 0, 'POINT', 0, 'COMMA') :
+                                            #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
                             <span style="color:#e53935; font-size:0.85rem; font-weight:700; vertical-align:super;">VND</span>
                         </div>
                     </a>
-                    <button class="wishlist-btn position-absolute" style="top:10px;right:10px;z-index:2;" title="Thêm vào wishlist"
-                        th:data-product-id="${product.productId}"
-                        th:data-product-name="${product.name}"
-                        th:data-product-imageurl="${product.imageUrl}"
-                        th:data-product-price="${product.price}">
-                        <i class="fa fa-heart"></i>
-                    </button>
+                    <!-- Đã xóa nút wishlist ở đây -->
                 </div>
             </div>
         </div>
@@ -83,8 +82,5 @@
             </ul>
         </div>
     </div>
-    <a href="/Customer/Wishlist" class="btn btn-outline-danger position-fixed" style="top:90px;right:30px;z-index:1000;">
-        <i class="fa fa-heart"></i> Wishlist
-    </a>
 </body>
 </html> 

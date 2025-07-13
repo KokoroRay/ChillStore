@@ -1,50 +1,88 @@
 /* search.css - Chỉ dành cho search bar hiện đại, bo tròn lớn, nút kính lúp nằm trong */
 
-.search-bar {
+/* Container cho search bar */
+.search-container {
     position: relative;
     width: 100%;
     max-width: 400px;
+}
+
+/* search bar với icon kính lúp bên trái */
+.search-bar {
+    position: relative;
+    width: 100%;
     display: flex;
     align-items: center;
     background: #fff;
     border-radius: 24px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     border: 1.5px solid #e0e0e0;
-    padding: 0 8px;
+    padding: 0 8px 0 0;
+    transition: box-shadow 0.2s, border-color 0.2s;
 }
 
-.search-bar input {
+.search-bar:focus-within {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    border-color: #0074d9;
+}
+
+.search-input {
     flex: 1;
     border: none;
     outline: none;
     background: transparent;
-    padding: 12px 8px 12px 16px;
+    padding: 12px 16px 12px 8px;
     font-size: 16px;
     border-radius: 24px;
     color: #222;
 }
 
-.search-bar input::placeholder {
+.search-input::placeholder {
     color: #aaa;
     font-style: italic;
 }
 
-.search-bar button {
+.search-button {
     background: none;
     border: none;
     color: #0074d9;
     font-size: 20px;
-    padding: 0 8px;
+    padding: 0 8px 0 16px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background 0.2s;
+    height: 40px;
+    width: 40px;
+    flex-shrink: 0;
 }
 
-.search-bar button:hover {
+.search-button:hover {
     background: #e3f2fd;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .search-container {
+        max-width: 100%;
+    }
+    
+    .search-bar {
+        border-radius: 20px;
+    }
+    
+    .search-input {
+        font-size: 14px;
+        padding: 10px 8px 10px 14px;
+    }
+    
+    .search-button {
+        font-size: 18px;
+        height: 36px;
+        width: 36px;
+    }
 }
 
 /* search.css */
@@ -108,4 +146,13 @@
     .filter-section {
         flex-direction: column;
     }
+}
+
+/* Ép icon kính lúp luôn hiển thị */
+.search-button i.fa-search {
+    display: inline !important;
+    color: #0074d9 !important;
+    font-size: 20px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }

@@ -1,5 +1,12 @@
 /* autocomplete.css - Chỉ dành cho autocomplete box */
 
+/* Container cho search bar và autocomplete */
+.search-container {
+    position: relative;
+    width: 100%;
+}
+
+/* Autocomplete suggestions */
 .autocomplete-suggestions {
     position: absolute;
     top: 100%;
@@ -8,7 +15,7 @@
     background: #fff;
     border: 1px solid #e0e0e0;
     border-top: none;
-    border-radius: 0 0 10px 10px;
+    border-radius: 0 0 16px 16px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
     z-index: 9999;
     max-height: 400px;
@@ -16,6 +23,11 @@
     animation: slideDown 0.2s ease-out;
     opacity: 1;
     transition: opacity 0.2s;
+    display: none; /* Ẩn mặc định */
+}
+
+.autocomplete-suggestions.show {
+    display: block; /* Hiện khi có gợi ý */
 }
 
 @keyframes slideDown {

@@ -17,7 +17,22 @@
 <body>
 
 
+<section id="hero" class="hero-section">
+  <video autoplay muted loop playsinline class="bg-video">
+    <source th:src="@{/videos/video.mp4}" type="video/mp4" />
+    Trình duyệt của bạn không hỗ trợ video.
+  </video>
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <h1>Welcome</h1>
+    <p>ESMS – Plug In. Power Up. Live Smart.</p>
+    <a href="#main-content" class="scroll-down">&#x25BC;</a>
+  </div>
+</section>
+<section id="main-content">
+
 <div th:insert="~{fragments/navigationBar :: navBar}"></div><br>
+
 <div class="guest-bar">
   <img src="/images/logo.png">
   
@@ -142,18 +157,7 @@
 
 </div>
 
-  <div class="video-background-container">
-    <video autoplay muted loop playsinline class="video-background">
-      <source th:src="@{/videos/video.mp4}" type="video/mp4" />
-      Trình duyệt của bạn không hỗ trợ video.
-    </video>
 
-    <div class="video-overlay">
-      <h1>Welcome</h1>
-      <p>ESMS – Plug In. Power Up. Live Smart.</p>
-      <a href="#" class="btn-read">SIGN IN</a>
-    </div>
-  </div>
 
 <script>
   function toggleCategories() {
@@ -170,6 +174,14 @@
   }
 
 </script>
+  <script>
+    document.querySelector('.scroll-down').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelector('#main-content').scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+
+</section>
 
 </body>
 </html>

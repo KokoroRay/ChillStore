@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     div.style.backgroundColor = 'transparent';
                                 };
                                 div.onclick = () => {
+                                    saveRecentKeyword(item);
                                     window.location.href = '/search?keyword=' + encodeURIComponent(item);
                                 };
                                 suggestionBox.appendChild(div);
@@ -159,6 +160,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300); // Debounce 300ms
         });
         
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length === 0) {
+                showRecentKeywords();
+            }
+        });
+        
         // Keyboard navigation
         searchInput.addEventListener('keydown', function(e) {
             const items = suggestionBox.querySelectorAll('.suggestion-item');
@@ -242,6 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 div.style.cursor = 'pointer';
                 div.style.borderBottom = '1px solid #f0f0f0';
                 div.onclick = () => {
+                    saveRecentKeyword(item);
                     window.location.href = '/search?keyword=' + encodeURIComponent(item);
                 };
                 suggestionBox.appendChild(div);

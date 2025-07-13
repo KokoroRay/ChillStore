@@ -114,34 +114,7 @@
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
         
-        /* Pagination styles */
-        .pagination {
-            margin-bottom: 0;
-        }
-        
-        .pagination .page-link {
-            color: #007bff;
-            border: 1px solid #dee2e6;
-        }
-        
-        .pagination .page-item.active .page-link {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: white;
-        }
-        
-        .pagination .page-item.disabled .page-link {
-            color: #6c757d;
-            pointer-events: none;
-            background-color: #fff;
-            border-color: #dee2e6;
-        }
-        
-        .pagination .page-link:hover {
-            background-color: #e9ecef;
-            border-color: #dee2e6;
-            color: #0056b3;
-        }
+
     </style>
 </head>
 <body>
@@ -207,42 +180,7 @@
             window.location.href = '/DiscountProducts';
         }
         
-        // Debug: Kiểm tra form submit và pagination
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form[th\\:action*="DiscountProducts"]');
-            if (form) {
-                console.log('Form found:', form);
-                form.addEventListener('submit', function(e) {
-                    console.log('Form submitted');
-                    console.log('Form data:', new FormData(form));
-                });
-            } else {
-                console.log('Form not found');
-            }
-            
-            // Kiểm tra các button
-            const buttons = document.querySelectorAll('button[type="submit"]');
-            console.log('Submit buttons found:', buttons.length);
-            buttons.forEach((btn, index) => {
-                console.log(`Button ${index}:`, btn);
-                btn.addEventListener('click', function(e) {
-                    console.log(`Button ${index} clicked`);
-                });
-            });
-            
-            // Kiểm tra pagination
-            const paginationLinks = document.querySelectorAll('.pagination .page-link');
-            console.log('Pagination links found:', paginationLinks.length);
-            paginationLinks.forEach((link, index) => {
-                console.log(`Pagination link ${index}:`, link.href);
-            });
-            
-            // Log pagination info
-            console.log('Current page:', '[[${currentPage}]]');
-            console.log('Total pages:', '[[${totalPages}]]');
-            console.log('Total items:', '[[${totalItems}]]');
-            console.log('Page size:', '[[${size}]]');
-        });
+
         </script>
         <div class="row">
             <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
@@ -285,49 +223,11 @@
                 </div>
             </div>
         </div>
-        <!-- Pagination modern style -->
-        <div th:if="${totalPages > 1}" class="d-flex flex-column align-items-center mt-4">
-            <nav aria-label="Page navigation">
-                <ul class="pagination mb-1">
-                    <!-- Previous button -->
-                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link" th:href="@{/DiscountProducts(page=${currentPage - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <!-- First page -->
-                    <li class="page-item" th:if="${currentPage > 2}">
-                        <a class="page-link" th:href="@{/DiscountProducts(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">1</a>
-                    </li>
-                    <li class="page-item disabled" th:if="${currentPage > 3}"><span class="page-link">...</span></li>
-                    <!-- Page numbers around current -->
-                    <li class="page-item" th:each="i : ${#numbers.sequence((currentPage-2 > 0 ? currentPage-2 : 0), (currentPage+2 < totalPages-1 ? currentPage+2 : totalPages-1))}" th:classappend="${currentPage == i} ? 'active'">
-                        <a class="page-link" th:href="@{/DiscountProducts(page=${i}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${i+1}"></a>
-                    </li>
-                    <li class="page-item disabled" th:if="${currentPage < totalPages-4}"><span class="page-link">...</span></li>
-                    <!-- Last page -->
-                    <li class="page-item" th:if="${currentPage < totalPages-3}">
-                        <a class="page-link" th:href="@{/DiscountProducts(page=${totalPages-1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${totalPages}"></a>
-                    </li>
-                    <!-- Next button -->
-                    <li class="page-item" th:classappend="${currentPage == (totalPages - 1)} ? 'disabled'">
-                        <a class="page-link" th:href="@{/DiscountProducts(page=${currentPage + 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <!-- Page info -->
-            <div class="text-center">
-                <small class="text-muted">
-                    Page <span th:text="${currentPage + 1}">1</span> of <span th:text="${totalPages}">1</span> |
-                    Showing <span th:text="${currentPage * size + 1}">1</span> to 
-                    <span th:text="${currentPage * size + products.size()}">9</span> of 
-                    <span th:text="${totalItems}">0</span> discounted products
-                </small>
-            </div>
-        </div>
     </div>
+    
+    <!-- Footer -->
+    <div th:replace="fragments/footer :: footer"></div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 

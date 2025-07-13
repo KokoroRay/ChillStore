@@ -40,6 +40,57 @@
     gap: 6px;
 }
 
+.suggestion-close {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-size: 18px;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+    z-index: 2;
+}
+.suggestion-close:hover {
+    color: #e53935;
+}
+
+.recent-keyword-chip {
+    display: inline-block;
+    background: #f0f0f0;
+    color: #222;
+    border-radius: 16px;
+    padding: 6px 16px;
+    margin: 0 6px 6px 0;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.recent-keyword-chip:hover {
+    background: #e3f2fd;
+}
+
+.suggestion-special {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #e3f2fd;
+    border-radius: 12px;
+    padding: 8px 16px;
+    margin-bottom: 8px;
+    color: #1976d2;
+    font-weight: 500;
+    font-size: 15px;
+    margin-top: 4px;
+}
+.suggestion-special .special-title {
+    background: #1976d2;
+    color: #fff;
+    border-radius: 8px;
+    padding: 4px 12px;
+    margin-right: 12px;
+    font-size: 15px;
+}
+
 .suggestion-item {
     padding: 12px 18px;
     cursor: pointer;

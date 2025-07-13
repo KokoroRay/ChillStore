@@ -328,5 +328,5 @@ public class CustomerProductController {
         return "search";
     }
     
-    // Đã xóa toàn bộ code liên quan search history
+
 } 

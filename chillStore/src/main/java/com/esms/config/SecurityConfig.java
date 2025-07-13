@@ -113,7 +113,7 @@ public class SecurityConfig {
                     redirectUrl = "/home";             // Customer home page
                 }
                 
-                response.sendRedirect(redirectUrl);
+
                 // Lưu thông tin người dùng vào session
                 Object principal = authentication.getPrincipal();
                 if (principal instanceof org.springframework.security.core.userdetails.User userDetails) {
@@ -128,10 +128,20 @@ public class SecurityConfig {
                         request.getSession().setAttribute("loggedInUserEmail", customer.getEmail());
                         request.getSession().setAttribute("loggedInUserName", customer.getName());
                     }
+                } else if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User oauthUser) {
+                    // Đăng nhập Google
+                    String email = oauthUser.getAttribute("email");
+
+                    com.esms.model.entity.Customer customer = userDetailsService.getCustomerByEmail(email);
+                    if (customer != null) {
+                        request.getSession().setAttribute("loggedInCustomerId", customer.getCustomerId());
+                        request.getSession().setAttribute("loggedInUserEmail", customer.getEmail());
+                        request.getSession().setAttribute("loggedInUserName", customer.getName());
+                    }
                 }
 
+                response.sendRedirect(redirectUrl);
             }
-
         };
     }
 

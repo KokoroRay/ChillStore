@@ -74,6 +74,11 @@ body {
     scrollbar-width: none;
 }
 
+.nav-left img {
+    width: 3em;
+    height: 3em;
+}
+
 .nav-left::-webkit-scrollbar {
     display: none;
 }

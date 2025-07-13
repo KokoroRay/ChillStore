@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         searchForm.addEventListener('submit', function(e) {
             e.preventDefault();
             if (searchInput.value.trim()) {
+                saveRecentKeyword(searchInput.value.trim());
                 window.location.href = '/search?keyword=' + encodeURIComponent(searchInput.value.trim());
             }
         });
@@ -20,9 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
         searchInput.addEventListener('input', function() {
             const keyword = this.value.trim();
             if (timeout) clearTimeout(timeout);
+            
+            // Nếu không có keyword, hiển thị từ khóa gần đây (nếu có)
             if (keyword.length === 0) {
-                suggestionBox.innerHTML = '';
-                suggestionBox.style.display = 'none';
+                showRecentKeywords();
                 suggestions = [];
                 productSuggestions = [];
                 selectedIndex = -1;
@@ -205,6 +207,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 style: 'currency',
                 currency: 'VND'
             }).format(price);
+        }
+        
+        // Hàm lưu từ khóa vào localStorage
+        function saveRecentKeyword(keyword) {
+            if (!keyword) return;
+            let history = JSON.parse(localStorage.getItem('recentKeywords') || '[]');
+            history = history.filter(item => item.toLowerCase() !== keyword.toLowerCase());
+            history.unshift(keyword);
+            if (history.length > 8) history = history.slice(0, 8);
+            localStorage.setItem('recentKeywords', JSON.stringify(history));
+        }
+
+        // Hàm hiển thị từ khóa gần đây
+        function showRecentKeywords() {
+            let history = JSON.parse(localStorage.getItem('recentKeywords') || '[]');
+            suggestionBox.innerHTML = '';
+            if (history.length === 0) {
+                suggestionBox.style.display = 'none';
+                return;
+            }
+            const header = document.createElement('div');
+            header.innerHTML = '<i class="fas fa-history"></i> Từ khóa gần đây';
+            header.style.fontWeight = 'bold';
+            header.style.padding = '8px 12px 4px 12px';
+            header.style.color = '#666';
+            header.style.fontSize = '0.9rem';
+            suggestionBox.appendChild(header);
+            history.forEach(item => {
+                const div = document.createElement('div');
+                div.textContent = item;
+                div.className = 'suggestion-item';
+                div.style.padding = '8px 16px';
+                div.style.cursor = 'pointer';
+                div.style.borderBottom = '1px solid #f0f0f0';
+                div.onclick = () => {
+                    window.location.href = '/search?keyword=' + encodeURIComponent(item);
+                };
+                suggestionBox.appendChild(div);
+            });
+            suggestionBox.style.display = 'block';
         }
         
         document.addEventListener('click', function(e) {

@@ -225,14 +225,31 @@ public class CustomerProductController {
     @ResponseBody
     public Map<String, Object> suggestProducts(@RequestParam("q") String keyword) {
         Map<String, Object> result = new HashMap<>();
-        // Danh sách từ khóa mặc định
-        List<String> defaultKeywords = List.of("Tivi", "Tủ lạnh", "Máy lạnh", "Robot hút bụi", "Quạt", "Máy lọc nước");
-        // Lọc tất cả từ khóa chứa keyword (không phân biệt vị trí, không phân biệt hoa thường)
-        List<String> filteredKeywords = defaultKeywords.stream()
-            .filter(k -> keyword == null || keyword.isEmpty() || k.toLowerCase().contains(keyword.toLowerCase()))
-            .distinct()
-            .limit(8)
-            .toList();
+        
+        // Danh sách từ khóa mặc định - mở rộng thêm nhiều từ khóa hơn
+        List<String> defaultKeywords = List.of(
+            "Tivi", "Tủ lạnh", "Máy lạnh", "Robot hút bụi", "Quạt", "Máy lọc nước",
+            "Máy giặt", "Lò vi sóng", "Bếp điện", "Nồi cơm điện", "Máy xay sinh tố",
+            "Máy hút bụi", "Quạt điều hòa", "Điều hòa", "Tủ đông", "Tủ mát"
+        );
+        
+        // Cải thiện logic lọc từ khóa gợi ý
+        List<String> filteredKeywords;
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // Nếu không có keyword, hiển thị tất cả từ khóa phổ biến
+            filteredKeywords = defaultKeywords.stream()
+                .limit(6)
+                .toList();
+        } else {
+            String searchTerm = keyword.toLowerCase().trim();
+            // Lọc từ khóa chứa search term (không phân biệt hoa thường)
+            filteredKeywords = defaultKeywords.stream()
+                .filter(k -> k.toLowerCase().contains(searchTerm))
+                .distinct()
+                .limit(8)
+                .toList();
+        }
+        
         result.put("keywords", filteredKeywords);
         // Gợi ý sản phẩm với cache
         List<Product> products = productService.searchProducts(keyword);

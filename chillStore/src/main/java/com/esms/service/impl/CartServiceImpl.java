@@ -37,25 +37,13 @@ public class CartServiceImpl implements CartService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Kiểm tra số lượng tồn kho
-        if (product.getStockQty() < quantity) {
-            throw new RuntimeException("Insufficient stock. Available: " + product.getStockQty() + ", Requested: " + quantity);
-        }
-
         Optional<Cart> optionalCart = cartRepository.findByCustomerAndProduct(customer.getCustomerId(), product.getProductId());
 
         Cart cartItem;
         if (optionalCart.isPresent()) {
             // Nếu sản phẩm đã có trong giỏ
             cartItem = optionalCart.get();
-            int newQuantity = cartItem.getQuantity() + quantity;
-            
-            // Kiểm tra lại tổng số lượng sau khi cộng thêm
-            if (product.getStockQty() < newQuantity) {
-                throw new RuntimeException("Insufficient stock. Available: " + product.getStockQty() + ", Total requested: " + newQuantity);
-            }
-            
-            cartItem.setQuantity(newQuantity);
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
         } else {
             // Nếu chưa có
             cartItem = new Cart(customer, product, quantity);
@@ -74,12 +62,6 @@ public class CartServiceImpl implements CartService {
     public void updateQuantity(int cartId, int quantity) {
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart != null && quantity > 0) {
-            // Kiểm tra số lượng tồn kho
-            Product product = cart.getProduct();
-            if (product.getStockQty() < quantity) {
-                throw new RuntimeException("Insufficient stock. Available: " + product.getStockQty() + ", Requested: " + quantity);
-            }
-            
             cart.setQuantity(quantity);
             cartRepository.save(cart);
         }
@@ -108,9 +90,5 @@ public class CartServiceImpl implements CartService {
         return Math.max(total, 0);
     }
 
-    @Override
-    public void clearCart(int customerId) {
-        cartRepository.deleteByCustomerCustomerId(customerId);
-    }
 
 }

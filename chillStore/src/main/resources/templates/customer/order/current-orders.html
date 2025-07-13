@@ -190,10 +190,10 @@
                                                 th:if="${order.itemsCount > 1}">
                                             <i class="fas fa-list"></i> Items
                                         </button>
-                                        <button type="button" class="btn btn-info btn-sm ms-1"
-                                                th:onclick="'showOrderDetail(' + ${order.orderId} + ')'">
-                                            <i class="fas fa-info-circle"></i> Quick View
-                                        </button>
+                                        <a th:href="@{/customer/order/{id}(id=${order.orderId})}" 
+                                           class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-eye"></i> Details
+                                        </a>
                                         <button type="button" class="btn btn-outline-danger btn-sm" 
                                                 th:if="${order.status == 'Pending'}"
                                                 th:onclick="|cancelOrder(${order.orderId})|"
@@ -262,9 +262,6 @@
         </div>
     </div>
 </div>
-
-<!-- Footer -->
-<div th:replace="fragments/footer :: footer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/autocomplete.js"></script>

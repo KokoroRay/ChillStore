@@ -141,14 +141,4 @@ public class VoucherServiceImpl implements VoucherService {
         String sql = String.format("DBCC CHECKIDENT('%s', RESEED, %d)", table, seed);
         jdbcTemplate.execute(sql);
     }
-
-    @Override
-    public Voucher getVoucherByCode(String code) {
-        return voucherRepository.findByCode(code).orElse(null);
-    }
-
-    @Override
-    public Voucher updateVoucher(Voucher voucher) {
-        return voucherRepository.save(voucher);
-    }
 }

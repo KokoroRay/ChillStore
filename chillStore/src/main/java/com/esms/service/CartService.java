@@ -15,5 +15,4 @@ public interface CartService {
 
     double calculateTotal(List<CartItemDTO> cartItems, Double voucherDiscountPct, Double voucherDiscountAmount);
 
-    void clearCart(int customerId);
 }

@@ -115,41 +115,4 @@ public class CustomerOrderDetailDTO {
     public void setCustomerAddress(String customerAddress) {
         this.customerAddress = customerAddress;
     }
-
-    public BigDecimal getShippingCost() {
-        return calculateShippingCost(this.customerAddress);
-    }
-
-    private BigDecimal calculateShippingCost(String address) {
-        if (address == null || address.trim().isEmpty()) {
-            return BigDecimal.valueOf(20000); // Default shipping cost
-        }
-
-        String addressLower = address.toLowerCase();
-
-        // Free shipping for Cần Thơ
-        if (addressLower.contains("cần thơ") || addressLower.contains("can tho")) {
-            return BigDecimal.ZERO;
-        }
-
-        // List of northern provinces
-        String[] northernProvinces = {
-            "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
-            "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
-            "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
-            "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
-            "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
-            "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
-            "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
-        };
-
-        // Check if province is in northern list
-        for (String province : northernProvinces) {
-            if (addressLower.contains(province)) {
-                return BigDecimal.valueOf(40000); // Northern provinces
-            }
-        }
-
-        return BigDecimal.valueOf(20000); // Other provinces
-    }
 }

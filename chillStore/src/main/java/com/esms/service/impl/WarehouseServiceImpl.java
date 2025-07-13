@@ -107,34 +107,4 @@ public class WarehouseServiceImpl implements WarehouseService {
         productRepository.save(product);
         return warehouseRepository.save(warehouse);
     }
-
-    @Override
-    @Transactional
-    public Warehouse exportProduct(Integer productId, Integer quantity, String notes) {
-        // Kiểm tra sản phẩm tồn tại
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        // Kiểm tra số lượng tồn kho
-        if (product.getStockQty() < quantity) {
-            throw new RuntimeException("Insufficient stock. Available: " + product.getStockQty() + ", Requested: " + quantity);
-        }
-
-        // Tạo giao dịch warehouse mới
-        Warehouse warehouse = new Warehouse();
-        warehouse.setProduct(product);
-        warehouse.setQuantityChange(-quantity); // Số âm để thể hiện xuất kho
-        warehouse.setType("EXPORT");
-        warehouse.setTransDate(LocalDateTime.now());
-        warehouse.setNotes(notes);
-
-        // Cập nhật số lượng tồn kho
-        int newStock = product.getStockQty() - quantity;
-        product.setStockQty(newStock);
-        warehouse.setStockAfter(newStock);
-
-        // Lưu giao dịch và cập nhật sản phẩm
-        productRepository.save(product);
-        return warehouseRepository.save(warehouse);
-    }
 } 

@@ -16,11 +16,10 @@ public interface CartRepository extends CrudRepository<Cart, Integer> {
     Optional<Cart> findByCustomerAndProduct(@Param("customerId") int customerId,
                                             @Param("productId") int productId);
 
-    @Query("SELECT new com.esms.model.dto.CartItemDTO(c.id, p.productId, p.name, " +
+    @Query("SELECT new com.esms.model.dto.CartItemDTO(c.id, p.name, " +
             "CAST(p.price AS double), 0.0, c.quantity, " +
             "CAST(p.price * c.quantity AS double)) " +
             "FROM Cart c JOIN c.product p WHERE c.customer.customerId = :customerId")
     List<CartItemDTO> findCartItemsByCustomerId(@Param("customerId") int customerId);
 
-    void deleteByCustomerCustomerId(int customerId);
 }

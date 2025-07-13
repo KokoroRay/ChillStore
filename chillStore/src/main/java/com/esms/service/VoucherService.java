@@ -13,5 +13,7 @@ public interface VoucherService {
     Voucher createVoucher(VoucherDTO voucherDto, String createdByEmail);
     Voucher updateVoucher(Integer id, VoucherDTO voucherDto);
     void deleteVoucher(Integer id);
+    Voucher getVoucherByCode(String code);
+    Voucher updateVoucher(Voucher voucher);
 
 }

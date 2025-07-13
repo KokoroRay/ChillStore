@@ -6,6 +6,7 @@ public interface CheckoutService {
      * @param customerId ID của khách hàng
      * @param customerName Tên khách hàng
      * @param customerPhone Số điện thoại
+     * @param customerEmail Email khách hàng
      * @param deliveryAddress Địa chỉ giao hàng
      * @param paymentMethod Phương thức thanh toán
      * @param orderNotes Ghi chú đơn hàng
@@ -15,6 +16,7 @@ public interface CheckoutService {
     Integer createOrder(Integer customerId, 
                        String customerName, 
                        String customerPhone, 
+                       String customerEmail,
                        String deliveryAddress, 
                        String paymentMethod, 
                        String orderNotes, 

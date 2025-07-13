@@ -114,6 +114,7 @@ public class CheckoutController {
     @PostMapping("/submit")
     public String submitOrder(@RequestParam String customerName,
                              @RequestParam String customerPhone,
+                             @RequestParam(required = false) String customerEmail,
                              @RequestParam String deliveryAddress,
                              @RequestParam String paymentMethod,
                              @RequestParam(required = false) String orderNotes,
@@ -126,9 +127,16 @@ public class CheckoutController {
         }
 
         try {
+            // Lấy thông tin customer để có email mặc định
+            var customer = customerService.getCustomerById(customerId);
+            String finalEmail = customerEmail != null && !customerEmail.trim().isEmpty() 
+                ? customerEmail.trim() 
+                : customer.getEmail();
+
             System.out.println("Creating order for customer: " + customerId);
             System.out.println("Customer name: " + customerName);
             System.out.println("Customer phone: " + customerPhone);
+            System.out.println("Customer email: " + finalEmail);
             System.out.println("Delivery address: " + deliveryAddress);
             System.out.println("Payment method: " + paymentMethod);
             System.out.println("Voucher code: " + voucherCode);
@@ -138,6 +146,7 @@ public class CheckoutController {
                     customerId,
                     customerName,
                     customerPhone,
+                    finalEmail,
                     deliveryAddress,
                     paymentMethod,
                     orderNotes,
@@ -181,6 +190,72 @@ public class CheckoutController {
             redirectUrl += "&tempAddress=" + tempAddress;
         }
         return redirectUrl;
+    }
+
+    @PostMapping("/apply-voucher-ajax")
+    @ResponseBody
+    public ResponseEntity<?> applyVoucherAjax(@RequestParam String voucherCode,
+                                             @RequestParam(value = "tempAddress", required = false) String tempAddress,
+                                             HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+        if (customerId == null) {
+            return ResponseEntity.badRequest().body("Not logged in");
+        }
+
+        try {
+            List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
+            if (cartItems.isEmpty()) {
+                return ResponseEntity.badRequest().body("Cart is empty");
+            }
+
+            // Tính subtotal
+            double subtotal = cartItems.stream()
+                    .mapToDouble(CartItemDTO::getTotalPrice)
+                    .sum();
+
+            // Lấy voucher
+            Voucher voucher = null;
+            if (voucherCode != null && !voucherCode.trim().isEmpty()) {
+                voucher = voucherService.getVoucherByCode(voucherCode.trim());
+                if (voucher == null || !voucher.isActive() || 
+                    subtotal < (voucher.getMin_order_amount() != null ? voucher.getMin_order_amount().doubleValue() : 0.0)) {
+                    return ResponseEntity.badRequest().body("Invalid or expired voucher");
+                }
+            }
+
+            // Tính discount
+            double discountAmount = 0.0;
+            if (voucher != null) {
+                if (voucher.getDiscount_pct() != null) {
+                    discountAmount = subtotal * voucher.getDiscount_pct().doubleValue() / 100;
+                } else if (voucher.getDiscount_amount() != null) {
+                    discountAmount = voucher.getDiscount_amount().doubleValue();
+                }
+            }
+
+            // Tính shipping cost
+            var customer = customerService.getCustomerById(customerId);
+            double shippingCost = calculateShippingCost(customer.getAddress(), tempAddress);
+
+            // Tính total
+            double total = subtotal - discountAmount + shippingCost;
+
+            return ResponseEntity.ok(Map.of(
+                "subtotal", subtotal,
+                "discountAmount", discountAmount,
+                "shippingCost", shippingCost,
+                "total", total,
+                "voucherCode", voucherCode,
+                "voucherDescription", voucher != null ? voucher.getDescription() : "",
+                "formattedSubtotal", String.format("%,.0f VND", subtotal),
+                "formattedDiscount", String.format("%,.0f VND", discountAmount),
+                "formattedShipping", String.format("%,.0f VND", shippingCost),
+                "formattedTotal", String.format("%,.0f VND", total)
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error applying voucher: " + e.getMessage());
+        }
     }
 
     @PostMapping("/update-address")

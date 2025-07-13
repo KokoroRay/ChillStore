@@ -181,4 +181,23 @@ public class CustomerOrderController {
             return "customer/order/order-confirmation";
         }
     }
+
+    @GetMapping("/order/{orderId}/detail")
+    @ResponseBody
+    public ResponseEntity<?> getOrderDetail(@PathVariable Integer orderId, Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            Integer customerId = customerService.getCustomerByEmail(email).getCustomerId();
+            
+            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, orderId);
+            
+            if (orderDetail == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            return ResponseEntity.ok(orderDetail);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Unable to load order details");
+        }
+    }
 }

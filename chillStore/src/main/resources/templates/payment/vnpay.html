@@ -10,6 +10,49 @@
     <link rel="stylesheet" th:href="@{/css/navigationBar.css}" />
     <link rel="stylesheet" th:href="@{/css/checkout.css}" />
     <link rel="stylesheet" th:href="@{/css/payment.css}" />
+    <style>
+        .payment-steps {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .vnpay-logo {
+            max-height: 80px;
+            margin: 20px 0;
+        }
+
+        .payment-info-card {
+            border-left: 4px solid #007bff;
+            background: #f8f9fa;
+        }
+
+        .amount-highlight {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #dc3545;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,60 +60,102 @@
 
     <div class="container mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="card payment-card">
-                    <div class="card-header">
+                    <div class="card-header bg-primary text-white">
                         <h5><i class="fas fa-credit-card"></i> VNPay Payment Gateway</h5>
                     </div>
                     <div class="card-body">
                         <!-- Error Message -->
                         <div th:if="${error}" class="alert alert-danger">
                             <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Payment Error:</strong>
                             <span th:text="${error}"></span>
+                        </div>
+
+                        <!-- Payment Steps -->
+                        <div class="payment-steps">
+                            <h6><i class="fas fa-list-ol"></i> Payment Process</h6>
+                            <div class="step-item">
+                                <div class="step-number">1</div>
+                                <div>Click "Proceed to VNPay Payment" button below</div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">2</div>
+                                <div>You will be redirected to VNPay's secure payment page</div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">3</div>
+                                <div>Complete payment using your preferred method (QR code, card, etc.)</div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">4</div>
+                                <div>You will be redirected back to our site with payment result</div>
+                            </div>
                         </div>
 
                         <!-- Order Information -->
                         <div th:if="${orderDetail}" class="row mb-4">
                             <div class="col-md-6">
-                                <h6><i class="fas fa-info-circle"></i> Order Information</h6>
-                                <table class="table table-borderless">
-                                    <tr>
-                                        <td><strong>Order ID:</strong></td>
-                                        <td th:text="${orderDetail.orderId}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Order Date:</strong></td>
-                                        <td th:text="${#dates.format(orderDetail.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Total Amount:</strong></td>
-                                        <td class="text-primary fw-bold"
-                                            th:text="|$${#numbers.formatDecimal(orderDetail.totalAmount, 2, 'POINT', 3, 'COMMA')}|">
-                                        </td>
-                                    </tr>
-                                </table>
+                                <div class="card payment-info-card">
+                                    <div class="card-header">
+                                        <h6><i class="fas fa-info-circle"></i> Order Information</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td><strong>Order ID:</strong></td>
+                                                <td><span class="badge bg-secondary"
+                                                        th:text="${orderDetail.orderId}"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Order Date:</strong></td>
+                                                <td
+                                                    th:text="${#dates.format(orderDetail.orderDate, 'dd/MM/yyyy HH:mm')}">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Status:</strong></td>
+                                                <td><span class="badge bg-warning"
+                                                        th:text="${orderDetail.status}"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Total Amount:</strong></td>
+                                                <td class="amount-highlight"
+                                                    th:text="|$${#numbers.formatDecimal(orderDetail.totalAmount, 2, 'POINT', 3, 'COMMA')}|">
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <h6><i class="fas fa-user"></i> Customer Information</h6>
-                                <table class="table table-borderless">
-                                    <tr>
-                                        <td><strong>Name:</strong></td>
-                                        <td th:text="${orderDetail.customerName}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Email:</strong></td>
-                                        <td th:text="${orderDetail.customerEmail}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Phone:</strong></td>
-                                        <td th:text="${orderDetail.customerPhone}"></td>
-                                    </tr>
-                                </table>
+                                <div class="card payment-info-card">
+                                    <div class="card-header">
+                                        <h6><i class="fas fa-user"></i> Customer Information</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td><strong>Name:</strong></td>
+                                                <td th:text="${orderDetail.customerName}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Email:</strong></td>
+                                                <td th:text="${orderDetail.customerEmail}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Phone:</strong></td>
+                                                <td th:text="${orderDetail.customerPhone}"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Payment Options -->
-                        <div class="text-center">
+                        <!-- VNPay Information -->
+                        <div class="text-center mb-4">
                             <div class="alert alert-info">
                                 <i class="fas fa-info-circle"></i>
                                 <strong>Secure Payment Gateway</strong><br>
@@ -80,7 +165,7 @@
                             <!-- VNPay Logo and Info -->
                             <div class="mb-4">
                                 <img src="https://vnpay.vn/wp-content/uploads/2020/07/logo-vnpay.png" alt="VNPay"
-                                    style="max-height: 60px; margin-bottom: 20px;">
+                                    class="vnpay-logo">
                                 <p class="text-muted">
                                     <i class="fas fa-shield-alt"></i>
                                     Your payment information is encrypted and secure
@@ -88,28 +173,24 @@
                             </div>
 
                             <!-- Payment Button -->
-                            <div th:if="${paymentUrl}">
+                            <div th:if="${paymentUrl}" class="mb-4">
                                 <a th:href="${paymentUrl}" class="btn btn-primary btn-lg">
                                     <i class="fas fa-credit-card"></i>
                                     Proceed to VNPay Payment
                                 </a>
+                                <p class="text-muted mt-2">
+                                    <small>
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        You will be redirected to VNPay's secure payment page
+                                    </small>
+                                </p>
                             </div>
 
-                            <!-- Demo Button (for testing) -->
-                            <div th:unless="${paymentUrl}" class="mt-3">
-                                <form th:action="@{/payment/vnpay/{orderId}/process(orderId=${orderId})}" method="post">
-                                    <button type="submit" class="btn btn-warning btn-lg">
-                                        <i class="fas fa-play"></i> Demo Payment (Test Mode)
-                                    </button>
-                                </form>
-                            </div>
-
-                            <!-- Back to Order -->
-                            <div class="mt-4">
-                                <a th:href="@{/customer/order/{orderId}(orderId=${orderId})}"
-                                    class="btn btn-outline-secondary">
-                                    <i class="fas fa-arrow-left"></i> Back to Order Details
-                                </a>
+                            <!-- Error if no payment URL -->
+                            <div th:unless="${paymentUrl}" class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Payment URL not available</strong><br>
+                                Please contact support if this issue persists.
                             </div>
                         </div>
 
@@ -132,6 +213,17 @@
                                     <small class="text-muted">Instant processing</small>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="text-center mt-4">
+                            <a th:href="@{/customer/order/{orderId}(orderId=${orderId})}"
+                                class="btn btn-outline-secondary me-2">
+                                <i class="fas fa-arrow-left"></i> Back to Order Details
+                            </a>
+                            <a th:href="@{/customer/order-history}" class="btn btn-outline-info">
+                                <i class="fas fa-list"></i> View All Orders
+                            </a>
                         </div>
                     </div>
                 </div>

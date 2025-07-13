@@ -5,7 +5,9 @@ import com.esms.dto.VNPayResponseDTO;
 import com.esms.model.dto.CustomerOrderDetailDTO;
 import com.esms.service.IOrderService;
 import com.esms.service.VNPayService;
+import com.esms.service.CustomerService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,14 +24,30 @@ public class PaymentController {
 
     @Autowired
     private IOrderService orderService;
+    
+    @Autowired
+    private CustomerService customerService;
 
     @GetMapping("/vnpay/{orderId}")
-    public String vnpayPayment(@PathVariable Integer orderId, Model model, HttpServletRequest request) {
+    public String vnpayPayment(@PathVariable Integer orderId, Model model, 
+                              HttpServletRequest request, HttpSession session) {
         try {
-            // Lấy thông tin đơn hàng
-            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(null, orderId);
+            // Kiểm tra authentication
+            Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+            if (customerId == null) {
+                return "redirect:/auth/login";
+            }
+
+            // Lấy thông tin đơn hàng với customerId để kiểm tra quyền sở hữu
+            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, orderId);
             if (orderDetail == null) {
-                model.addAttribute("error", "Order not found");
+                model.addAttribute("error", "Order not found or access denied");
+                return "payment/vnpay";
+            }
+
+            // Kiểm tra trạng thái đơn hàng
+            if (!"Pending".equals(orderDetail.getStatus())) {
+                model.addAttribute("error", "Order is not in pending status for payment");
                 return "payment/vnpay";
             }
 
@@ -95,7 +113,13 @@ public class PaymentController {
     }
 
     @PostMapping("/vnpay/{orderId}/process")
-    public String processVnpayPayment(@PathVariable Integer orderId) {
+    public String processVnpayPayment(@PathVariable Integer orderId, HttpSession session) {
+        // Kiểm tra authentication
+        Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+        if (customerId == null) {
+            return "redirect:/auth/login";
+        }
+        
         // Redirect to VNPay payment
         return "redirect:/payment/vnpay/" + orderId;
     }
@@ -133,9 +157,20 @@ public class PaymentController {
     }
 
     @GetMapping("/success/{orderId}")
-    public String paymentSuccess(@PathVariable Integer orderId, Model model) {
+    public String paymentSuccess(@PathVariable Integer orderId, Model model, HttpSession session) {
         try {
-            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(null, orderId);
+            // Kiểm tra authentication
+            Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+            if (customerId == null) {
+                return "redirect:/auth/login";
+            }
+            
+            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, orderId);
+            if (orderDetail == null) {
+                model.addAttribute("error", "Order not found or access denied");
+                return "payment/payment-success";
+            }
+            
             model.addAttribute("orderDetail", orderDetail);
             return "payment/payment-success";
         } catch (Exception e) {
@@ -145,9 +180,20 @@ public class PaymentController {
     }
 
     @GetMapping("/failed/{orderId}")
-    public String paymentFailed(@PathVariable Integer orderId, Model model) {
+    public String paymentFailed(@PathVariable Integer orderId, Model model, HttpSession session) {
         try {
-            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(null, orderId);
+            // Kiểm tra authentication
+            Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+            if (customerId == null) {
+                return "redirect:/auth/login";
+            }
+            
+            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, orderId);
+            if (orderDetail == null) {
+                model.addAttribute("error", "Order not found or access denied");
+                return "payment/payment-failed";
+            }
+            
             model.addAttribute("orderDetail", orderDetail);
             return "payment/payment-failed";
         } catch (Exception e) {

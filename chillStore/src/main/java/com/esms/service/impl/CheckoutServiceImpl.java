@@ -6,6 +6,8 @@ import com.esms.repository.*;
 import com.esms.service.CartService;
 import com.esms.service.CheckoutService;
 import com.esms.service.VoucherService;
+import com.esms.service.WarehouseService;
+import com.esms.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,11 +41,18 @@ public class CheckoutServiceImpl implements CheckoutService {
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private WarehouseService warehouseService;
+
+    @Autowired
+    private EmailService emailService;
+
     @Override
     @Transactional
     public Integer createOrder(Integer customerId, 
                              String customerName, 
                              String customerPhone, 
+                             String customerEmail,
                              String deliveryAddress, 
                              String paymentMethod, 
                              String orderNotes, 
@@ -52,6 +61,12 @@ public class CheckoutServiceImpl implements CheckoutService {
         // Lấy thông tin customer
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        // Cập nhật email nếu khác với email hiện tại
+        if (!customer.getEmail().equals(customerEmail)) {
+            customer.setEmail(customerEmail);
+            customerRepository.save(customer);
+        }
 
         // Lấy items từ giỏ hàng
         List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
@@ -149,6 +164,10 @@ public class CheckoutServiceImpl implements CheckoutService {
             product.setStockQty(product.getStockQty() - cartItem.getQuantity());
             productRepository.save(product);
 
+            // Tạo warehouse transaction (export)
+            warehouseService.exportProduct(product.getProductId(), cartItem.getQuantity(), 
+                "Order export - Order ID: " + savedOrder.getOrderId());
+
             // Tạo order item với embedded ID
             OrderItem orderItem = new OrderItem();
             OrderItemId orderItemId = new OrderItemId(savedOrder.getOrderId(), product.getProductId());
@@ -175,6 +194,9 @@ public class CheckoutServiceImpl implements CheckoutService {
             voucher.setQuantity_available(voucher.getQuantity_available() - 1);
             voucherService.updateVoucher(voucher);
         }
+
+        // Gửi email xác nhận đơn hàng
+        sendOrderConfirmationEmail(customer, savedOrder, cartItems, totalAmount);
 
         return savedOrder.getOrderId();
     }
@@ -212,5 +234,39 @@ public class CheckoutServiceImpl implements CheckoutService {
         }
 
         return 20000; // Other provinces
+    }
+
+    private void sendOrderConfirmationEmail(Customer customer, Order order, List<CartItemDTO> cartItems, BigDecimal totalAmount) {
+        try {
+            String subject = "Order Confirmation - ChillStore";
+            StringBuilder emailContent = new StringBuilder();
+            
+            emailContent.append("Dear ").append(customer.getName()).append(",\n\n");
+            emailContent.append("Thank you for your order! Your order has been successfully placed.\n\n");
+            emailContent.append("Order Details:\n");
+            emailContent.append("Order ID: ").append(order.getOrderId()).append("\n");
+            emailContent.append("Order Date: ").append(order.getOrderDate()).append("\n");
+            emailContent.append("Payment Method: ").append(order.getPaymentMethod()).append("\n\n");
+            
+            emailContent.append("Items Ordered:\n");
+            for (CartItemDTO item : cartItems) {
+                emailContent.append("- ").append(item.getProductName())
+                           .append(" x").append(item.getQuantity())
+                           .append(" - $").append(String.format("%.2f", item.getTotalPrice())).append("\n");
+            }
+            
+            emailContent.append("\nTotal Amount: $").append(String.format("%.2f", totalAmount)).append("\n");
+            emailContent.append("Status: ").append(order.getStatus()).append("\n\n");
+            
+            emailContent.append("We will process your order and ship it to you as soon as possible.\n");
+            emailContent.append("You will receive another email with tracking information once your order ships.\n\n");
+            emailContent.append("Thank you for choosing ChillStore!\n");
+            emailContent.append("Best regards,\nChillStore Team");
+            
+            emailService.sendEmail(customer.getEmail(), subject, emailContent.toString());
+        } catch (Exception e) {
+            System.err.println("Failed to send order confirmation email: " + e.getMessage());
+            // Không throw exception để không ảnh hưởng đến việc tạo order
+        }
     }
 } 

@@ -30,9 +30,9 @@ public class CartController {
                            HttpSession session) {
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
 
-        //if (customerId == null) {
-      //      return "redirect:/login"; // hoặc hiển thị trang thông báo chưa đăng nhập
-      //  }
+        if (customerId == null) {
+          return "redirect:/login";
+        }
 
         List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
 

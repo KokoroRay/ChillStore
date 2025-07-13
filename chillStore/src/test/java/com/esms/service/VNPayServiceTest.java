@@ -1,8 +1,8 @@
 package com.esms.service;
 
 import com.esms.config.VNPayConfig;
-import com.esms.dto.VNPayRequestDTO;
-import com.esms.dto.VNPayResponseDTO;
+import com.esms.model.dto.VNPayRequestDTO;
+import com.esms.model.dto.VNPayResponseDTO;
 import com.esms.service.impl.VNPayServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

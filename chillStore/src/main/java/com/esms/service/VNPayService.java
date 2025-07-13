@@ -1,7 +1,7 @@
 package com.esms.service;
 
-import com.esms.dto.VNPayRequestDTO;
-import com.esms.dto.VNPayResponseDTO;
+import com.esms.model.dto.VNPayRequestDTO;
+import com.esms.model.dto.VNPayResponseDTO;
 
 public interface VNPayService {
     

@@ -2,6 +2,7 @@ package com.esms.model.dto;
 
 public class CartItemDTO {
     private int cartItemId;
+    private int productId;
     private String productName;
     private double price;
     private double discount;
@@ -9,8 +10,9 @@ public class CartItemDTO {
     private double totalPrice;
 
 
-    public CartItemDTO(int cartItemId, String productName, double price, double discount, int quantity, double totalPrice) {
+    public CartItemDTO(int cartItemId, int productId, String productName, double price, double discount, int quantity, double totalPrice) {
         this.cartItemId = cartItemId;
+        this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.discount = discount;
@@ -64,5 +66,13 @@ public class CartItemDTO {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 }

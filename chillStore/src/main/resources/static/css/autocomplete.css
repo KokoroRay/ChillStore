@@ -1,4 +1,5 @@
-/* Autocomplete Styles */
+/* autocomplete.css - Chỉ dành cho autocomplete box */
+
 .autocomplete-suggestions {
     position: absolute;
     top: 100%;

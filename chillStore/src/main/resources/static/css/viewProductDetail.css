@@ -252,6 +252,62 @@
     border-bottom: none;
 }
 
+.spec-desc-content {
+    position: relative;
+    min-height: 300px;
+    overflow: hidden;
+}
+
+.spec-desc-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    visibility: hidden;
+    z-index: 1;
+}
+
+.spec-desc-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    z-index: 2;
+    position: relative;
+}
+
+.spec-desc-tabs {
+    display: flex;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 25px;
+}
+
+.spec-desc-tab {
+    padding: 12px 25px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.spec-desc-tab.active {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.spec-desc-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #0d6efd;
+    border-radius: 3px 3px 0 0;
+}
 .description-section {
     margin-top: 30px;
     padding: 30px; /* Đã điều chỉnh: Giảm padding bên trong */

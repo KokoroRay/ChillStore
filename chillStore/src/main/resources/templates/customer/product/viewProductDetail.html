@@ -349,7 +349,8 @@
                         <!-- Specifications Section -->
                         <div class="spec-desc-container">
                             <div class="spec-desc-tabs">
-                                <div class="spec-desc-tab active" data-tab="specifications">Technical Specifications</div>
+                                <div class="spec-desc-tab active" data-tab="specifications">Technical Specifications
+                                </div>
                                 <div class="spec-desc-tab" data-tab="description">Product Description</div>
                             </div>
 
@@ -370,7 +371,7 @@
                                 <div class="description-panel spec-desc-panel" id="description">
                                     <h3 class="section-title">Product Description</h3>
                                     <div class="description-content"
-                                         th:utext="${product.description != null ? product.description : 'No description available for this product.'}">
+                                        th:utext="${product.description != null ? product.description : 'No description available for this product.'}">
                                     </div>
                                 </div>
                             </div>
@@ -758,35 +759,32 @@
 
         // Wishlist functionality
         function toggleWishlist() {
-            const wishlistBtn = document.getElementById('wishlistBtn');
-            const heartIcon = wishlistBtn.querySelector('i');
+            const product = productDetails; // Sử dụng biến đã định nghĩa
 
-            if (wishlistBtn.classList.contains('active')) {
-                // Remove from wishlist
-                wishlistBtn.classList.remove('active');
-                heartIcon.classList.remove('fas', 'fa-heart');
-                heartIcon.classList.add('far', 'fa-heart');
-                showFloatingMessage('Removed from wishlist');
-            } else {
-                // Add to wishlist
-                wishlistBtn.classList.add('active');
-                heartIcon.classList.remove('far', 'fa-heart');
-                heartIcon.classList.add('fas', 'fa-heart');
+            let wishlist = getWishlist();
+            const idx = wishlist.findIndex(p => p.productId === product.productId);
+
+            if (idx === -1) {
+                wishlist.push(product);
                 showFloatingMessage('Added to wishlist');
+            } else {
+                wishlist.splice(idx, 1);
+                showFloatingMessage('Removed from wishlist');
             }
+
+            saveWishlist(wishlist);
+            updateWishlistIcon(product.productId);
+            window.dispatchEvent(new Event('wishlist-updated'));
         }
+
 
         // Show floating message
         function showFloatingMessage(message) {
             const floatingMessage = document.getElementById('floatingMessage');
             const messageText = document.getElementById('messageText');
-
             messageText.textContent = message;
             floatingMessage.classList.add('show');
-
-            setTimeout(() => {
-                floatingMessage.classList.remove('show');
-            }, 3000);
+            setTimeout(() => floatingMessage.classList.remove('show'), 3000);
         }
 
         // Animation for adding to cart
@@ -813,13 +811,13 @@
             }, 1000);
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const tabs = document.querySelectorAll('.spec-desc-tab');
             const panels = document.querySelectorAll('.spec-desc-panel');
             const content = document.querySelector('.spec-desc-content');
 
             tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
+                tab.addEventListener('click', function () {
                     const tabType = this.getAttribute('data-tab');
 
                     // Cập nhật active tab
@@ -842,7 +840,7 @@
             // Xử lý cho nút "See all"
             const seeAllLink = document.querySelector('a[href="#specifications"]');
             if (seeAllLink) {
-                seeAllLink.addEventListener('click', function(e) {
+                seeAllLink.addEventListener('click', function (e) {
                     e.preventDefault();
 
                     // Kích hoạt tab Specifications
@@ -857,6 +855,54 @@
                     });
                 });
             }
+        });
+        function getWishlist() {
+            try {
+                return JSON.parse(localStorage.getItem('wishlist')) || [];
+            } catch (e) {
+                console.error('Error reading wishlist:', e);
+                return [];
+            }
+        }
+        function saveWishlist(wishlist) {
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        }
+        function isInWishlist(productId) {
+            const wishlist = getWishlist();
+            return wishlist.some(p => p.productId === productId);
+        }
+
+        function updateWishlistIcon(productId) {
+            const wishlistBtn = document.getElementById('wishlistBtn');
+            if (!wishlistBtn) return;
+
+            const heartIcon = wishlistBtn.querySelector('i');
+            if (isInWishlist(productId)) {
+                wishlistBtn.classList.add('active');
+                heartIcon.classList.remove('far');
+                heartIcon.classList.add('fas');
+            } else {
+                wishlistBtn.classList.remove('active');
+                heartIcon.classList.remove('fas');
+                heartIcon.classList.add('far');
+            }
+        }
+
+        function toggleWishlist() {
+            const product = productDetails;
+            let wishlist = getWishlist();
+
+            const idx = wishlist.findIndex(p => p.productId === product.productId);
+            if (idx === -1) {
+                wishlist.push(product);
+                showFloatingMessage('Added to wishlist');
+            } else {
+                wishlist.splice(idx, 1);
+                showFloatingMessage('Removed from wishlist');
+            }
+
+            saveWishlist(wishlist);
+            updateWishlistIcon(product.productId);
         });
     </script>
 </body>

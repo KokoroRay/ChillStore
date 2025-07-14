@@ -1,8 +1,8 @@
 package com.esms.service.impl;
 
 import com.esms.config.VNPayConfig;
-import com.esms.dto.VNPayRequestDTO;
-import com.esms.dto.VNPayResponseDTO;
+import com.esms.model.dto.VNPayRequestDTO;
+import com.esms.model.dto.VNPayResponseDTO;
 import com.esms.service.VNPayService;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;

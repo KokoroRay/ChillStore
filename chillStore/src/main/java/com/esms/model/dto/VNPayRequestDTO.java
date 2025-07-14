@@ -1,4 +1,4 @@
-package com.esms.dto;
+package com.esms.model.dto;
 
 import java.math.BigDecimal;
 

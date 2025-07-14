@@ -1,7 +1,7 @@
 package com.esms.controller;
 
-import com.esms.dto.VNPayRequestDTO;
-import com.esms.dto.VNPayResponseDTO;
+import com.esms.model.dto.VNPayRequestDTO;
+import com.esms.model.dto.VNPayResponseDTO;
 import com.esms.model.dto.CustomerOrderDetailDTO;
 import com.esms.service.IOrderService;
 import com.esms.service.VNPayService;

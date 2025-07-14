@@ -160,4 +160,44 @@ public class CustomerOrderController {
             return "redirect:/customer/order-history?error=Unable to cancel order";
         }
     }
+
+    @GetMapping("/order-confirmation/{orderId}")
+    public String orderConfirmation(@PathVariable Integer orderId, Model model, Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            Integer customerId = customerService.getCustomerByEmail(email).getCustomerId();
+            
+            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, orderId);
+            
+            if (orderDetail == null) {
+                model.addAttribute("error", "Order not found or access denied");
+                return "customer/order/order-confirmation";
+            }
+            
+            model.addAttribute("order", orderDetail);
+            return "customer/order/order-confirmation";
+        } catch (Exception e) {
+            model.addAttribute("error", "Unable to load order details");
+            return "customer/order/order-confirmation";
+        }
+    }
+
+    @GetMapping("/order/{orderId}/detail")
+    @ResponseBody
+    public ResponseEntity<?> getOrderDetail(@PathVariable Integer orderId, Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            Integer customerId = customerService.getCustomerByEmail(email).getCustomerId();
+            
+            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, orderId);
+            
+            if (orderDetail == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            return ResponseEntity.ok(orderDetail);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Unable to load order details");
+        }
+    }
 }

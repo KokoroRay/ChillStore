@@ -223,6 +223,43 @@
                 </div>
             </div>
         </div>
+        <!-- Pagination: Numbered + Truncated, luôn hiện trang liền kề -->
+        <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
+            <ul class="pagination">
+                <!-- Previous -->
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/DiscountProducts(page=${currentPage - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">Previous</a>
+                </li>
+                <!-- Always show first page -->
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'active'">
+                    <a class="page-link" th:href="@{/DiscountProducts(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">1</a>
+                </li>
+                <!-- Ellipsis if needed before currentPage-1 -->
+                <li class="page-item disabled" th:if="${currentPage > 2}"><span class="page-link">...</span></li>
+                <!-- Show currentPage-1 if > 1 and < totalPages-1 -->
+                <li class="page-item" th:if="${currentPage > 1}" th:classappend="${currentPage == currentPage-1} ? 'active'">
+                    <a class="page-link" th:href="@{/DiscountProducts(page=${currentPage-1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${currentPage}"></a>
+                </li>
+                <!-- Show currentPage if not first/last -->
+                <li class="page-item" th:if="${currentPage > 0 && currentPage < totalPages-1}" th:classappend="active">
+                    <a class="page-link" th:href="@{/DiscountProducts(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${currentPage+1}"></a>
+                </li>
+                <!-- Show currentPage+1 if < totalPages-1 -->
+                <li class="page-item" th:if="${currentPage < totalPages-2}" th:classappend="${currentPage+1 == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/DiscountProducts(page=${currentPage+1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${currentPage+2}"></a>
+                </li>
+                <!-- Ellipsis if needed after currentPage+1 -->
+                <li class="page-item disabled" th:if="${currentPage < totalPages-3}"><span class="page-link">...</span></li>
+                <!-- Always show last page if more than 1 page -->
+                <li class="page-item" th:if="${totalPages > 1}" th:classappend="${currentPage == totalPages-1} ? 'active'">
+                    <a class="page-link" th:href="@{/DiscountProducts(page=${totalPages-1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${totalPages}"></a>
+                </li>
+                <!-- Next -->
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/DiscountProducts(page=${currentPage + 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">Next</a>
+                </li>
+            </ul>
+        </div>
     </div>
     
     <!-- Footer -->

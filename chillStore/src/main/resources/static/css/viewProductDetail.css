@@ -7,6 +7,8 @@
     --border-color: #dee2e6;
 }
 
+
+
 .main-content {
     margin-top: 0;
     padding-bottom: 100px;
@@ -21,27 +23,33 @@
 
 .product-header {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 15px 0; /* Đã điều chỉnh: Giảm padding trên dưới để làm gọn header */
+    padding: 15px 0;
+    /* Đã điều chỉnh: Giảm padding trên dưới để làm gọn header */
     border-bottom: 1px solid var(--border-color);
 }
 
 .product-title {
-    font-size: 2.2rem; /* Đã điều chỉnh: Giảm kích thước chữ tiêu đề sản phẩm một chút */
+    font-size: 2.2rem;
+    /* Đã điều chỉnh: Giảm kích thước chữ tiêu đề sản phẩm một chút */
     font-weight: 700;
-    margin-bottom: 8px; /* Đã điều chỉnh: Giảm khoảng cách dưới tiêu đề */
+    margin-bottom: 8px;
+    /* Đã điều chỉnh: Giảm khoảng cách dưới tiêu đề */
     color: #212529;
 }
 
 .product-subtitle {
-    font-size: 1rem; /* Đã điều chỉnh: Giảm kích thước chữ phụ đề */
+    font-size: 1rem;
+    /* Đã điều chỉnh: Giảm kích thước chữ phụ đề */
     color: var(--secondary-color);
-    margin-bottom: 15px; /* Đã điều chỉnh: Giảm khoảng cách dưới phụ đề */
+    margin-bottom: 15px;
+    /* Đã điều chỉnh: Giảm khoảng cách dưới phụ đề */
 }
 
 .product-image-container {
     background-color: white;
     border-radius: 12px;
-    padding: 10px; /* Đã điều chỉnh: Giảm padding để gọn hơn */
+    padding: 10px;
+    /* Đã điều chỉnh: Giảm padding để gọn hơn */
     text-align: center;
     /* height: 100%; Đã bỏ hoặc comment - để container điều chỉnh theo nội dung */
     display: flex;
@@ -51,7 +59,8 @@
 
 .product-main-image {
     max-width: 100%;
-    max-height: 380px; /* Đã điều chỉnh: Chiều cao tối đa của ảnh chính */
+    max-height: 380px;
+    /* Đã điều chỉnh: Chiều cao tối đa của ảnh chính */
     object-fit: contain;
     border-radius: 8px;
     margin-bottom: 15px;
@@ -59,14 +68,17 @@
 
 .thumbnail-container {
     display: flex;
-    gap: 8px; /* Đã điều chỉnh: Giảm khoảng cách giữa các thumbnail */
+    gap: 8px;
+    /* Đã điều chỉnh: Giảm khoảng cách giữa các thumbnail */
     justify-content: center;
     flex-wrap: wrap;
 }
 
 .product-thumbnail {
-    width: 70px; /* Đã điều chỉnh: Giảm kích thước thumbnail */
-    height: 70px; /* Đã điều chỉnh: Giảm kích thước thumbnail */
+    width: 70px;
+    /* Đã điều chỉnh: Giảm kích thước thumbnail */
+    height: 70px;
+    /* Đã điều chỉnh: Giảm kích thước thumbnail */
     object-fit: cover;
     border: 2px solid transparent;
     border-radius: 6px;
@@ -84,25 +96,31 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px; /* Đã điều chỉnh: Giảm khoảng cách giữa các phần tử giá */
-    margin-bottom: 15px; /* Đã điều chỉnh: Giảm khoảng cách dưới phần giá */
+    gap: 12px;
+    /* Đã điều chỉnh: Giảm khoảng cách giữa các phần tử giá */
+    margin-bottom: 15px;
+    /* Đã điều chỉnh: Giảm khoảng cách dưới phần giá */
 }
 
 .current-price {
-    font-size: 2.2rem; /* Đã điều chỉnh: Cân đối kích thước giá */
+    font-size: 2.2rem;
+    /* Đã điều chỉnh: Cân đối kích thước giá */
     font-weight: 700;
     color: var(--danger-color);
 }
 
 .original-price {
-    font-size: 1.2rem; /* Đã điều chỉnh: Cân đối kích thước giá gốc */
+    font-size: 1.2rem;
+    /* Đã điều chỉnh: Cân đối kích thước giá gốc */
     text-decoration: line-through;
     color: var(--secondary-color);
 }
 
 .discount-badge {
-    font-size: 1rem; /* Đã điều chỉnh: Cân đối kích thước badge giảm giá */
-    padding: 5px 12px; /* Đã điều chỉnh: Giảm padding badge */
+    font-size: 1rem;
+    /* Đã điều chỉnh: Cân đối kích thước badge giảm giá */
+    padding: 5px 12px;
+    /* Đã điều chỉnh: Giảm padding badge */
     border-radius: 30px;
     background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
     color: white;
@@ -112,30 +130,36 @@
 .saving-badge {
     background-color: #e9f7ef;
     color: var(--success-color);
-    padding: 4px 10px; /* Đã điều chỉnh: Giảm padding badge tiết kiệm */
+    padding: 4px 10px;
+    /* Đã điều chỉnh: Giảm padding badge tiết kiệm */
     border-radius: 4px;
     font-weight: 500;
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    margin-bottom: 20px; /* Đã thêm: Khoảng cách dưới saving-badge */
+    margin-bottom: 20px;
+    /* Đã thêm: Khoảng cách dưới saving-badge */
 }
 
 .product-meta {
     background-color: var(--light-bg);
     border-radius: 8px;
-    padding: 20px; /* Đã điều chỉnh: Giảm padding cho phần meta */
-    margin-bottom: 20px; /* Đã điều chỉnh: Giảm khoảng cách dưới meta */
+    padding: 20px;
+    /* Đã điều chỉnh: Giảm padding cho phần meta */
+    margin-bottom: 20px;
+    /* Đã điều chỉnh: Giảm khoảng cách dưới meta */
 }
 
 .meta-item {
     display: flex;
-    margin-bottom: 8px; /* Đã điều chỉnh: Giảm khoảng cách giữa các meta item */
+    margin-bottom: 8px;
+    /* Đã điều chỉnh: Giảm khoảng cách giữa các meta item */
 }
 
 .meta-label {
     font-weight: 600;
-    min-width: 100px; /* Đã điều chỉnh: Giảm min-width nếu cần */
+    min-width: 100px;
+    /* Đã điều chỉnh: Giảm min-width nếu cần */
     color: var(--secondary-color);
 }
 
@@ -151,37 +175,46 @@
 
 /* Delivery Address Section */
 .delivery-section {
-    margin-bottom: 20px; /* Đã điều chỉnh: Giảm khoảng cách dưới phần delivery */
+    margin-bottom: 20px;
+    /* Đã điều chỉnh: Giảm khoảng cách dưới phần delivery */
 }
 
 .delivery-section .card-body {
-    padding: 20px; /* Đã điều chỉnh: Giảm padding trong card delivery */
+    padding: 20px;
+    /* Đã điều chỉnh: Giảm padding trong card delivery */
     position: relative;
 }
 
 /* Quantity Selector */
 .quantity-selector {
-    width: 120px; /* Đã điều chỉnh: Thu nhỏ chiều rộng của bộ chọn số lượng */
+    width: 120px;
+    /* Đã điều chỉnh: Thu nhỏ chiều rộng của bộ chọn số lượng */
 }
 
 .quantity-selector .form-control {
-    flex-grow: 1; /* Đảm bảo input chiếm hết không gian còn lại */
-    text-align: center; /* Giữ nguyên căn giữa text */
+    flex-grow: 1;
+    /* Đảm bảo input chiếm hết không gian còn lại */
+    text-align: center;
+    /* Giữ nguyên căn giữa text */
     /* Có thể thử điều chỉnh padding nếu cần */
     /* padding-left: 0; */
     /* padding-right: 0; */
 }
+
 .action-buttons {
     display: flex;
-    gap: 10px; /* Đã điều chỉnh: Giảm khoảng cách giữa các nút */
+    gap: 10px;
+    /* Đã điều chỉnh: Giảm khoảng cách giữa các nút */
     flex-wrap: wrap;
-    margin-top: 25px; /* Đã điều chỉnh: Giảm khoảng cách trên nút */
+    margin-top: 25px;
+    /* Đã điều chỉnh: Giảm khoảng cách trên nút */
 }
 
 .btn-action {
     flex: 1;
     min-width: 150px;
-    padding: 12px 20px; /* Đã điều chỉnh: Giảm padding nút */
+    padding: 12px 20px;
+    /* Đã điều chỉnh: Giảm padding nút */
     font-weight: 600;
     border-radius: 8px;
     transition: all 0.3s ease;
@@ -210,18 +243,23 @@
 }
 
 .specs-section {
-    margin-top: 30px; /* Đã điều chỉnh: Giảm khoảng cách trên các phần này */
+    margin-top: 30px;
+    /* Đã điều chỉnh: Giảm khoảng cách trên các phần này */
     background-color: white;
     border-radius: 12px;
-    padding: 30px; /* Đã điều chỉnh: Giảm padding bên trong */
+    padding: 30px;
+    /* Đã điều chỉnh: Giảm padding bên trong */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .section-title {
-    font-size: 1.6rem; /* Đã điều chỉnh: Giảm kích thước tiêu đề phần */
+    font-size: 1.6rem;
+    /* Đã điều chỉnh: Giảm kích thước tiêu đề phần */
     font-weight: 700;
-    margin-bottom: 20px; /* Đã điều chỉnh: Giảm khoảng cách dưới tiêu đề */
-    padding-bottom: 10px; /* Đã điều chỉnh: Giảm padding dưới tiêu đề */
+    margin-bottom: 20px;
+    /* Đã điều chỉnh: Giảm khoảng cách dưới tiêu đề */
+    padding-bottom: 10px;
+    /* Đã điều chỉnh: Giảm padding dưới tiêu đề */
     border-bottom: 2px solid var(--primary-color);
     display: inline-block;
 }
@@ -235,14 +273,16 @@
 .specs-table th {
     background-color: var(--light-bg);
     font-weight: 600;
-    padding: 10px 15px; /* Đã điều chỉnh: Giảm padding trong bảng thông số */
+    padding: 10px 15px;
+    /* Đã điều chỉnh: Giảm padding trong bảng thông số */
     text-align: left;
     width: 30%;
     border-bottom: 1px solid var(--border-color);
 }
 
 .specs-table td {
-    padding: 10px 15px; /* Đã điều chỉnh: Giảm padding trong bảng thông số */
+    padding: 10px 15px;
+    /* Đã điều chỉnh: Giảm padding trong bảng thông số */
     border-bottom: 1px solid var(--border-color);
     background-color: white;
 }
@@ -252,18 +292,78 @@
     border-bottom: none;
 }
 
+.spec-desc-content {
+    position: relative;
+    min-height: 300px;
+    overflow: hidden;
+}
+
+.spec-desc-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    visibility: hidden;
+    z-index: 1;
+}
+
+.spec-desc-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    z-index: 2;
+    position: relative;
+}
+
+.spec-desc-tabs {
+    display: flex;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 25px;
+}
+
+.spec-desc-tab {
+    padding: 12px 25px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.spec-desc-tab.active {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.spec-desc-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #0d6efd;
+    border-radius: 3px 3px 0 0;
+}
+
 .description-section {
     margin-top: 30px;
-    padding: 30px; /* Đã điều chỉnh: Giảm padding bên trong */
+    padding: 30px;
+    /* Đã điều chỉnh: Giảm padding bên trong */
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    line-height: 1.6; /* Đã điều chỉnh: Điều chỉnh line-height để dễ đọc */
+    line-height: 1.6;
+    /* Đã điều chỉnh: Điều chỉnh line-height để dễ đọc */
 }
 
 .description-content {
     white-space: pre-line;
-    font-size: 1rem; /* Đã điều chỉnh: Giảm kích thước chữ mô tả nếu muốn gọn hơn */
+    font-size: 1rem;
+    /* Đã điều chỉnh: Giảm kích thước chữ mô tả nếu muốn gọn hơn */
 }
 
 /* Modal for address selection - Giữ nguyên như bạn đã cung cấp, không có thay đổi bố cục lớn */
@@ -274,7 +374,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.7);
+    background-color: rgba(0, 0, 0, 0.7);
     z-index: 1050;
     overflow-y: auto;
 }
@@ -286,7 +386,7 @@
     border-radius: 12px;
     width: 90%;
     max-width: 700px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 .modal-header {
@@ -362,16 +462,21 @@
 
 /* Thêm style mới cho wishlist-container */
 .wishlist-container {
+    position: relative;
+    z-index: 10;
     margin: 20px 0;
     text-align: center;
 }
 
 .wishlist-btn {
+    z-index: 20;
+    position: relative;
+    pointer-events: auto;
+    background: white;
     display: inline-flex;
     align-items: center;
     gap: 10px;
     padding: 10px 20px;
-    background-color: white;
     border: 1px solid #dee2e6;
     border-radius: 30px;
     color: #212529;
@@ -398,12 +503,27 @@
     color: #dc3545;
     animation: heartBeat 0.8s ease-in-out;
 }
+
 @keyframes heartBeat {
-    0% { transform: scale(1); }
-    25% { transform: scale(1.3); }
-    50% { transform: scale(0.9); }
-    75% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    25% {
+        transform: scale(1.3);
+    }
+
+    50% {
+        transform: scale(0.9);
+    }
+
+    75% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 /* Product commitment */
@@ -432,7 +552,7 @@
     padding: 8px 12px;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     font-size: 0.9rem;
 }
 
@@ -454,9 +574,11 @@
         transform: scale(1) translate(0, 0);
         opacity: 1;
     }
+
     50% {
         opacity: 0.8;
     }
+
     100% {
         transform: scale(0.1) translate(calc(100vw - 100px), -100px);
         opacity: 0;
@@ -473,7 +595,7 @@
     background: #198754;
     color: white;
     z-index: 1050;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateX(120%);
     transition: transform 0.4s ease;
 }
@@ -490,31 +612,42 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 992px) { /* Laptops, larger tablets */
+@media (max-width: 992px) {
+
+    /* Laptops, larger tablets */
     .product-title {
-        font-size: 2.0rem; /* Đã điều chỉnh */
+        font-size: 2.0rem;
+        /* Đã điều chỉnh */
     }
 
     .current-price {
-        font-size: 2.0rem; /* Đã điều chỉnh */
+        font-size: 2.0rem;
+        /* Đã điều chỉnh */
     }
 
     .original-price {
-        font-size: 1.3rem; /* Đã điều chỉnh */
+        font-size: 1.3rem;
+        /* Đã điều chỉnh */
     }
 
     .product-main-image {
-        max-height: 350px; /* Đã điều chỉnh lại cho phù hợp */
+        max-height: 350px;
+        /* Đã điều chỉnh lại cho phù hợp */
     }
+
     .specs-section,
     .description-section {
-        padding: 25px; /* Đã điều chỉnh: Giảm padding */
+        padding: 25px;
+        /* Đã điều chỉnh: Giảm padding */
     }
 }
 
-@media (max-width: 768px) { /* Tablets, smaller laptops */
+@media (max-width: 768px) {
+
+    /* Tablets, smaller laptops */
     .product-main-image {
-        max-height: 300px; /* Đã điều chỉnh: Giảm thêm cho tablet */
+        max-height: 300px;
+        /* Đã điều chỉnh: Giảm thêm cho tablet */
     }
 
     .action-buttons {
@@ -524,35 +657,45 @@
     .btn-action {
         width: 100%;
     }
+
     .product-meta,
     .delivery-section,
     .specs-section,
     .description-section {
-        padding: 20px; /* Đã điều chỉnh: Giảm padding chung cho các phần */
+        padding: 20px;
+        /* Đã điều chỉnh: Giảm padding chung cho các phần */
     }
 }
 
-@media (max-width: 576px) { /* Mobile devices */
+@media (max-width: 576px) {
+
+    /* Mobile devices */
     .product-title {
-        font-size: 1.6rem; /* Đã điều chỉnh: Giảm nữa cho mobile */
+        font-size: 1.6rem;
+        /* Đã điều chỉnh: Giảm nữa cho mobile */
     }
 
     .current-price {
-        font-size: 1.8rem; /* Đã điều chỉnh */
+        font-size: 1.8rem;
+        /* Đã điều chỉnh */
     }
 
     .product-main-image {
-        max-height: 250px; /* Đã điều chỉnh: Rất quan trọng để ảnh không quá lớn trên mobile */
+        max-height: 250px;
+        /* Đã điều chỉnh: Rất quan trọng để ảnh không quá lớn trên mobile */
     }
 
     .meta-item {
-        flex-direction: column; /* Đã điều chỉnh: Cho các meta item xuống dòng */
-        gap: 2px; /* Đã điều chỉnh: Giảm khoảng cách */
+        flex-direction: column;
+        /* Đã điều chỉnh: Cho các meta item xuống dòng */
+        gap: 2px;
+        /* Đã điều chỉnh: Giảm khoảng cách */
     }
 
     .meta-label {
         min-width: auto;
-        margin-bottom: 5px; /* Đã thêm: Khoảng cách nhỏ giữa label và value */
+        margin-bottom: 5px;
+        /* Đã thêm: Khoảng cách nhỏ giữa label và value */
     }
 
     .modal-content {
@@ -562,18 +705,22 @@
     }
 
     .product-card {
-        border-radius: 8px; /* Đã điều chỉnh: Giảm border-radius cho thiết bị nhỏ */
+        border-radius: 8px;
+        /* Đã điều chỉnh: Giảm border-radius cho thiết bị nhỏ */
     }
 
     .card-body {
-        padding: 15px; /* Đã điều chỉnh: Giảm padding của card-body */
+        padding: 15px;
+        /* Đã điều chỉnh: Giảm padding của card-body */
     }
 
     .product-header {
-        padding: 10px 0; /* Đã điều chỉnh: Giảm padding header */
+        padding: 10px 0;
+        /* Đã điều chỉnh: Giảm padding header */
     }
 
     .product-subtitle {
-        margin-bottom: 10px; /* Đã điều chỉnh: Giảm margin-bottom */
+        margin-bottom: 10px;
+        /* Đã điều chỉnh: Giảm margin-bottom */
     }
 }

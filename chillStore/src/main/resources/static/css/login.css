@@ -1,0 +1,552 @@
+/* Variables */
+:root {
+    --deep-blue: #113F67;
+    --medium-blue: #226597;
+    --light-blue: #87C0CD;
+    --light-bg: #F3F9FB;
+    --white: #ffffff;
+    --text-dark: #2D3748;
+    --text-light: #718096;
+    --error-red: #E53E3E;
+    --success-green: #38A169;
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--light-bg) 0%, var(--light-blue) 100%);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* Main container */
+.login-container {
+    display: flex;
+    max-width: 1000px;
+    width: 100%;
+    height: 600px;
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    animation: fadeIn 1s ease-out;
+    position: relative;
+}
+
+/* Login Section */
+.login-section {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--white);
+    position: relative;
+    z-index: 2;
+}
+
+/* Logo container - fixed position */
+.logo-container {
+    text-align: center;
+    margin-bottom: 30px;
+    animation: slideInDown 0.8s ease-out;
+    position: relative;
+    padding-top: 60px;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+    animation: pulse 4s infinite;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.logo-container h1 {
+    font-size: 1.8rem;
+    color: var(--deep-blue);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.alert-container {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.alert i {
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
+.alert.error {
+    background-color: #FFF5F5;
+    color: var(--error-red);
+    border: 1px solid #FED7D7;
+}
+
+.alert.success {
+    background-color: #F0FFF4;
+    color: var(--success-green);
+    border: 1px solid #C6F6D5;
+}
+
+.form-header {
+    margin-bottom: 10px;
+    text-align: center;
+    animation: fadeIn 0.8s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.form-header h2 {
+    font-size: 1.8rem;
+    color: var(--deep-blue);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.form-header p {
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+/* Form elements */
+.form-group {
+    margin-bottom: 20px;
+    animation: fadeIn 0.8s ease-out 0.4s forwards;
+    opacity: 0;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--medium-blue);
+    font-size: 1rem;
+}
+
+.input-with-icon input {
+    width: 100%;
+    padding: 14px 20px 14px 50px;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.input-with-icon input:focus {
+    border-color: var(--medium-blue);
+    box-shadow: 0 0 0 3px rgba(34, 101, 151, 0.2);
+    outline: none;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: var(--transition);
+    z-index: 3;
+}
+
+.password-toggle:hover {
+    color: var(--deep-blue);
+}
+
+.forgot-password {
+    display: block;
+    text-align: right;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--medium-blue);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    animation: fadeIn 0.8s ease-out 0.5s forwards;
+    opacity: 0;
+}
+
+.remember-me input {
+    margin-right: 8px;
+}
+
+.remember-me label {
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.btn-login {
+    background: linear-gradient(135deg, var(--deep-blue), var(--medium-blue));
+    color: var(--white);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(17, 63, 103, 0.3);
+    animation: fadeIn 0.8s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+.btn-login:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(17, 63, 103, 0.4);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    animation: fadeIn 0.8s ease-out 0.7s forwards;
+    opacity: 0;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.divider span {
+    padding: 0 15px;
+}
+
+/* Fixed Google button alignment */
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    padding: 14px;
+    font-weight: 600;
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-dark);
+    text-decoration: none;
+    gap: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 0.8s ease-out 0.8s forwards;
+    opacity: 0;
+}
+
+.btn-google:hover {
+    border-color: #cbd5e0;
+    background: #f7fafc;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-google img {
+    width: 20px;
+    height: 20px;
+}
+
+.register-link {
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--text-light);
+    animation: fadeIn 0.8s ease-out 0.9s forwards;
+    opacity: 0;
+    margin-top: 5px;
+}
+
+.register-link a {
+    color: var(--medium-blue);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+/* Sign Up Section */
+.signup-section {
+    flex: 1;
+    background: linear-gradient(135deg, var(--deep-blue) 0%, var(--medium-blue) 100%);
+    color: var(--white);
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.signup-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.signup-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    animation: fadeInUp 0.8s ease-out 0.2s forwards;
+    opacity: 0;
+}
+
+.signup-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.8s ease-out 0.4s forwards;
+    opacity: 0;
+}
+
+.appliance-animation {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 30px 0;
+    height: 100px;
+}
+
+.appliance-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    opacity: 0.5;
+}
+
+#fridge {
+    animation-delay: 0s;
+}
+
+#ac {
+    animation-delay: 0.5s;
+}
+
+#tv {
+    animation-delay: 1s;
+}
+
+.appliance-icon i {
+    font-size: 2.2rem;
+    color: var(--white);
+}
+
+.benefits {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    animation: fadeIn 0.8s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+.benefit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.benefit i {
+    font-size: 1.5rem;
+    color: var(--light-blue);
+}
+
+.benefit span {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    animation: fadeIn 0.8s ease-out 0.8s forwards;
+    opacity: 0;
+}
+
+.btn-signup {
+    background: var(--white);
+    color: var(--deep-blue);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-signup:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.btn-back {
+    background: transparent;
+    color: var(--white);
+    border: 2px solid var(--white);
+    border-radius: var(--border-radius);
+    padding: 13px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+        height: auto;
+        max-width: 500px;
+    }
+
+    .login-section, .signup-section {
+        padding: 30px 20px;
+    }
+
+    .signup-title {
+        font-size: 1.8rem;
+    }
+
+    .signup-subtitle {
+        font-size: 1rem;
+    }
+
+    .appliance-animation {
+        margin: 20px 0;
+    }
+
+    .appliance-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .appliance-icon i {
+        font-size: 1.8rem;
+    }
+
+    .benefits {
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .logo-container h1 {
+        font-size: 1.6rem;
+    }
+}

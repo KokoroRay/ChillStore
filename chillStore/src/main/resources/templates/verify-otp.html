@@ -1,34 +1,102 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <title>Xác thực OTP</title>
-    <link rel="stylesheet" th:href="@{/static/style.css}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác thực OTP | Hệ thống</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/verify-opt.css">
 </head>
 <body>
-<h2>Xác thực mã OTP</h2>
-<p th:if="${error}" th:text="${error}" style="color:red"></p>
-<p th:if="${message}" th:text="${message}" style="color:green; margin: 10px 0;"></p>
+<div class="logo">
+    <i class="fas fa-lock"></i> SecureAuth
+</div>
 
-<form th:action="@{/auth/verify-otp}" th:object="${otpDto}" method="post">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<div class="container">
+    <div class="graphic-section">
+        <div class="icon-container">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h1>Bảo mật hai lớp</h1>
+        <p>Mã OTP đã được gửi đến email của bạn. Vui lòng kiểm tra và nhập mã 6 số để xác thực.</p>
+        <div class="otp-email" th:text="${otpDto.email}">user@example.com</div>
+    </div>
 
-    <input type="hidden" th:field="*{email}" />
+    <div class="form-section">
+        <h2>Xác thực mã OTP</h2>
+        <p class="subtitle">Nhập mã OTP được gửi đến email của bạn</p>
 
-    <label>OTP (6 chữ số):</label>
-    <input type="text" th:field="*{otp}" placeholder="Nhập mã OTP" /><br/>
-    <p th:if="${#fields.hasErrors('otp')}" th:errors="*{otp}" style="color:red"></p>
+        <!-- Hiển thị thông báo lỗi -->
+        <div th:if="${error}" class="message error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${error}"></span>
+        </div>
 
-    <button type="submit">Xác nhận OTP</button>
-</form>
+        <!-- Hiển thị thông báo thành công -->
+        <div th:if="${message}" class="message success-message">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${message}"></span>
+        </div>
 
-<form th:action="@{/auth/resend-otp}" method="post">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-    <input type="hidden" name="email" th:value="${otpDto.email}" />
-    <button type="submit" style="background:none; border:none; color:blue; cursor:pointer;">
-        Gửi lại mã OTP
-    </button>
-</form>
+        <form th:action="@{/auth/verify-otp}" th:object="${otpDto}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="hidden" th:field="*{email}" />
 
+            <div class="form-group">
+                <label for="otp">Mã OTP (6 chữ số):</label>
+                <div class="input-container">
+                    <i class="fas fa-key"></i>
+                    <input type="text" id="otp" th:field="*{otp}" placeholder="Nhập mã OTP" maxlength="6" />
+                </div>
+                <p th:if="${#fields.hasErrors('otp')}" class="field-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span th:errors="*{otp}"></span>
+                </p>
+            </div>
+
+            <button type="submit">
+                <i class="fas fa-check-circle"></i> Xác nhận OTP
+            </button>
+        </form>
+
+        <div class="otp-timer">
+            Mã OTP sẽ hết hạn sau: <span id="countdown">05:00</span>
+        </div>
+
+        <form th:action="@{/auth/resend-otp}" method="post" class="resend-otp">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="hidden" name="email" th:value="${otpDto.email}" />
+            <button type="submit">
+                <i class="fas fa-redo-alt"></i> Gửi lại mã OTP
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="footer">
+    &copy; 2023 SecureAuth System. Bảo mật thông tin của bạn.
+</div>
+
+<script>
+    // Timer countdown
+    let timeLeft = 5 * 60; // 5 minutes in seconds
+    const timerElement = document.getElementById('countdown');
+
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        if (timeLeft > 0) {
+            timeLeft--;
+            setTimeout(updateTimer, 1000);
+        } else {
+            timerElement.textContent = "00:00";
+            timerElement.style.color = "var(--error)";
+        }
+    }
+
+    updateTimer();
+</script>
 </body>
 </html>

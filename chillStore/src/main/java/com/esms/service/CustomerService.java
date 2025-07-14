@@ -46,4 +46,6 @@ public interface CustomerService {
     Customer getCustomerByEmail(String email);
 
     void changePassword(String email, ChangePasswordDTO dto);
+
+    Customer getCustomerByUsername(String username);
 }

@@ -1,126 +1,190 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <title>Đăng nhập</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Electronics Store</title>
   <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
-  <link rel="stylesheet" th:href="@{/css/globals.css}" />
-  <link rel="stylesheet" th:href="@{/css/style.css}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
-<div class="container">
-  <div class="card">
-
-    <div class="white-panel">
-      <h2 style="font-weight: 900">LOGIN</h2>
-      <form th:action="@{/auth/login}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-        <div class="input-group">
-          <input
-                  type="text"
-                  name="username"
-                  placeholder="Email Address"
-                  required
-          />
-        </div>
-
-        <div class="input-group">
-          <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  required
-          />
-        </div>
-
-        <div class="forgot">
-          <a th:href="@{/auth/forgot-password}">Forgot Password?</a>
-        </div>
-
-        <div class="btn-group">
-          <button type="submit" class="btn login-btn">
-            LOGIN
-          </button>
-        </div>
-
-        <div class="google-btn">
-          <a th:href="@{/oauth2/authorization/google}" class="btn google-login-btn">
-            <img th:src="@{/img/google-icon.png}" alt="Google Icon" />
-            Sign in with Google
-          </a>
-        </div>
-      </form>
-
-      <p th:if="${param.error}" style="color: red; margin-top: 15px;">
-        Email hoặc mật khẩu không chính xác.
-      </p>
-      <p th:if="${param.logout}" style="color: green; margin-top: 15px;">
-        Bạn đã đăng xuất thành công.
-      </p>
-      <p th:if="${param.register}" style="color: green; margin-top: 15px;">
-        Đăng ký thành công! Vui lòng đăng nhập.
-      </p>
-      <p th:if="${param.resetSuccess}" style="color: green; margin-top: 15px;">
-        Đặt lại mật khẩu thành công! Vui lòng đăng nhập.
-      </p>
-
-
-      <p style="margin-top: 20px; font-size: 14px;">
-        Chưa có tài khoản?
-        <a th:href="@{/auth/register}">Đăng ký</a>.
-      </p>
+<div class="login-container">
+  <!-- Login Section -->
+  <div class="login-section">
+    <div class="logo-container">
+      <img th:src="@{/images/logo.png}" alt="ESMS Logo" class="logo">
+        <h1>Electronics Store</h1>
     </div>
 
-    <div class="blue-panel">
-      <h2 style="font-weight: 900">SIGN UP</h2>
-      <div class="btn-group">
-        <button
-                type="button"
-                class="btn btn-signup"
-                th:onclick="|window.location='@{/auth/register}'|"
-        >
-          SIGN UP
-        </button>
-        <button
-                type="button"
-                class="btn btn-back"
-                th:onclick="|window.location='@{/' }|"
-        >
-          BACK
-        </button>
+    <div class="alert-container">
+      <div th:if="${param.error}" class="alert error">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>Invalid email or password</span>
+      </div>
+      <div th:if="${param.logout}" class="alert success">
+        <i class="fas fa-check-circle"></i>
+        <span>Logged out successfully</span>
+      </div>
+      <div th:if="${param.register}" class="alert success">
+        <i class="fas fa-check-circle"></i>
+        <span>Registration successful</span>
+      </div>
+      <div th:if="${param.resetSuccess}" class="alert success">
+        <i class="fas fa-check-circle"></i>
+        <span>Password reset successful</span>
       </div>
     </div>
 
-  </div> </div> <style>
-  .google-login-btn { /* Đổi tên class để phù hợp với thẻ <a> */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 10px;
-    background-color: #ffffff; /* Hoặc màu nền khác */
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    text-decoration: none; /* Bỏ gạch chân của thẻ <a> */
-    color: #333; /* Màu chữ */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: background-color 0.3s ease;
-    margin-top: 15px; /* Khoảng cách với nút Login */
-  }
+    <div class="form-header">
+      <h2>Welcome Back</h2>
+      <p>Sign in to continue</p>
+    </div>
 
-  .google-login-btn:hover {
-    background-color: #f0f0f0;
-  }
+    <form th:action="@{/auth/login}" method="post">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-  .google-login-btn img {
-    margin-right: 10px;
-    width: 20px;
-    height: 20px;
-  }
-</style>
+      <div class="form-group">
+        <div class="input-with-icon">
+          <i class="fas fa-envelope"></i>
+          <input type="email" name="username" placeholder="Email Address" required>
+        </div>
+      </div>
 
+      <div class="form-group">
+        <div class="input-with-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" name="password" id="password" placeholder="Password" required>
+          <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+        </div>
+        <a th:href="@{/auth/forgot-password}" class="forgot-password">Forgot password?</a>
+      </div>
+
+      <div class="remember-me">
+        <input type="checkbox" id="remember">
+        <label for="remember">Remember me</label>
+      </div>
+
+      <button type="submit" class="btn-login">
+        <i class="fas fa-sign-in-alt"></i> LOGIN
+      </button>
+    </form>
+
+    <div class="divider">
+      <span>or</span>
+    </div>
+
+    <a th:href="@{/oauth2/authorization/google}" class="btn-google">
+      <img src="/images/google.png" alt="Google Icon">
+      Sign in with Google
+    </a>
+
+    <div class="register-link">
+      New here? <a th:href="@{/auth/register}">Create account</a>
+    </div>
+  </div>
+
+  <!-- Sign Up Section -->
+  <div class="signup-section">
+    <div class="signup-content">
+      <h2 class="signup-title">Join Us</h2>
+      <p class="signup-subtitle">Experience premium electronics</p>
+
+      <div class="appliance-animation">
+        <div class="appliance-icon" id="fridge">
+          <i class="fas fa-snowflake"></i>
+        </div>
+        <div class="appliance-icon" id="ac">
+          <i class="fas fa-wind"></i>
+        </div>
+        <div class="appliance-icon" id="tv">
+          <i class="fas fa-tv"></i>
+        </div>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit">
+          <i class="fas fa-percentage"></i>
+          <span>Exclusive Offers</span>
+        </div>
+        <div class="benefit">
+          <i class="fas fa-shipping-fast"></i>
+          <span>Fast Delivery</span>
+        </div>
+        <div class="benefit">
+          <i class="fas fa-headset"></i>
+          <span>24/7 Support</span>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn-signup" th:onclick="|window.location='@{/auth/register}'|">
+          SIGN UP
+        </button>
+        <button class="btn-back" th:onclick="|window.location='@{/}'|">
+          BACK TO HOME
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    if (togglePassword && passwordInput) {
+      togglePassword.addEventListener('click', function() {
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          togglePassword.classList.remove('fa-eye');
+          togglePassword.classList.add('fa-eye-slash');
+        } else {
+          passwordInput.type = 'password';
+          togglePassword.classList.remove('fa-eye-slash');
+          togglePassword.classList.add('fa-eye');
+        }
+      });
+    }
+
+    // Appliance animation
+    const appliances = ['fridge', 'ac', 'tv'];
+    let current = 0;
+
+    function animateAppliances() {
+      appliances.forEach((appliance, index) => {
+        const el = document.getElementById(appliance);
+        if (el) {
+          if (index === current) {
+            el.style.transform = 'translateY(-15px)';
+            el.style.opacity = '1';
+          } else {
+            el.style.transform = 'translateY(0)';
+            el.style.opacity = '0.5';
+          }
+        }
+      });
+
+      current = (current + 1) % appliances.length;
+      setTimeout(animateAppliances, 2000);
+    }
+
+    animateAppliances();
+
+    // Hover effects
+    const buttons = document.querySelectorAll('.btn-login, .btn-google, .btn-signup, .btn-back');
+    buttons.forEach(button => {
+      button.addEventListener('mouseenter', () => {
+        button.style.transform = 'translateY(-3px)';
+      });
+
+      button.addEventListener('mouseleave', () => {
+        button.style.transform = 'translateY(0)';
+      });
+    });
+  });
+</script>
 </body>
 </html>

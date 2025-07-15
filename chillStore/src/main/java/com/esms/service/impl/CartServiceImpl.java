@@ -8,6 +8,8 @@ import com.esms.repository.CartRepository;
 import com.esms.repository.CustomerRepository;
 import com.esms.repository.ProductRepository;
 import com.esms.service.CartService;
+import com.esms.service.ProductService;
+import com.esms.model.entity.Discount;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private ProductService productService;
 
     @Override
     public void addToCart(int customerId, int productId, int quantity) {
@@ -67,7 +72,25 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItemDTO> getCartItems(int customerId) {
-        return cartRepository.findCartItemsByCustomerId(customerId);
+        List<CartItemDTO> items = cartRepository.findCartItemsByCustomerId(customerId);
+        for (CartItemDTO item : items) {
+            Product product = productRepository.findById(item.getProductId()).orElse(null);
+            if (product != null) {
+                Discount discount = productService.getActiveDiscountForProduct(product);
+                if (discount != null && discount.getDiscountPct() != null) {
+                    double discountPct = discount.getDiscountPct().doubleValue() / 100.0;
+                    double discountedPrice = product.getPrice().doubleValue() * (1 - discountPct);
+                    item.setDiscount(discountPct);
+                    item.setPrice(discountedPrice);
+                    item.setTotalPrice(discountedPrice * item.getQuantity());
+                } else {
+                    item.setDiscount(0.0);
+                    item.setPrice(product.getPrice().doubleValue());
+                    item.setTotalPrice(product.getPrice().doubleValue() * item.getQuantity());
+                }
+            }
+        }
+        return items;
     }
 
     @Override

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/css/navigationBar.css}"/>
+<link rel="stylesheet" th:href="@{/css/navigationBar.css}" />
 
 <head>
     <meta charset="UTF-8">
@@ -10,258 +10,258 @@
 </head>
 
 <body>
-<div th:insert="~{fragments/navigationBar :: navBar}"></div>
-<div class="container mt-4">
-    <h1 class="text-center mb-4">Your Shopping Cart</h1>
+    <div th:insert="~{fragments/navigationBar :: navBar}"></div>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Your Shopping Cart</h1>
 
-    <!-- Table of Cart Items -->
-    <table class="table table-bordered shopping-cart">
-        <thead class="table-light">
-        <tr>
-            <th>Name</th>
-            <th>Unit Price</th>
-            <th>Discount</th>
-            <th>Quantity</th>
-            <th>Total</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${cartItems}">
-            <td th:text="${item.productName}"></td>
-            <td th:text="${#numbers.formatDecimal(item.price, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td>
-            <td th:text="${item.discount * 100} + '%'"></td>
-            <td>
-                <div class="d-flex">
-                    <input type="number" th:value="${item.quantity}" class="form-control form-control-sm me-2"
-                           style="width: 70px;" min="1"
-                           th:onchange="'updateQuantity(' + ${item.cartItemId} + ', this.value)'">
-                    <button type="button" class="btn btn-sm btn-outline-secondary"
-                            th:onclick="'updateQuantity(' + ${item.cartItemId} + ', this.previousElementSibling.value)'">
-                        Update
-                    </button>
-                </div>
-            </td>
-            <td th:text="${#numbers.formatDecimal(item.totalPrice, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td>
-            <td>
-                <button type="button" class="btn btn-sm btn-danger"
-                        th:onclick="'deleteItem(' + ${item.cartItemId} + ')'">
-                    Remove
-                </button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <!-- Voucher Application -->
-    <form th:action="@{/cart/apply-voucher}" method="post" class="row g-3 mb-3">
-        <input type="hidden" name="customerId" th:value="${customerId}"/>
-        <div class="col-md-6">
-            <label for="voucher" class="form-label">Select from available vouchers:</label>
-            <select name="voucherCode" id="voucher" class="form-select">
-                <option value="">-- Select a voucher --</option>
-                <option th:each="v : ${vouchers}" th:value="${v.code}"
-                        th:text="${v.code + ' - ' + (v.discount_pct != null ? (v.discount_pct * 100) + '%' : v.discount_amount + ' đ')}"
-                        th:selected="${selectedVoucher != null and v.code == selectedVoucher.code}">
-                </option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label for="manualVoucher" class="form-label">Or enter voucher code:</label>
-            <input type="text" name="manualVoucherCode" id="manualVoucher" class="form-control"
-                   placeholder="Enter voucher code">
-        </div>
-        <div class="col-md-2 align-self-end">
-            <button type="submit" class="btn btn-primary">Apply</button>
-        </div>
-    </form>
-
-    <!-- Total Summary -->
-    <div class="row justify-content-end">
-        <div class="col-md-6">
-            <table class="table">
+        <!-- Table of Cart Items -->
+        <table class="table table-bordered shopping-cart">
+            <thead class="table-light">
                 <tr>
-                    <th>Subtotal:</th>
-                    <td th:text="${#numbers.formatDecimal(subtotal, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td>
+                    <th>Name</th>
+                    <th>Unit Price</th>
+                    <th>Discount</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Actions</th>
                 </tr>
-                <tr th:if="${selectedVoucher != null}">
-                    <th>Voucher Discount:</th>
-                    <td
-                            th:text="${selectedVoucher.discount_pct != null ? (selectedVoucher.discount_pct * 100) + '%' : selectedVoucher.discount_amount + ' đ'}">
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartItems}">
+                    <td th:text="${item.productName}"></td>
+                    <td th:text="${#numbers.formatDecimal(item.price, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td>
+                    <td th:text="${item.discount * 100} + '%'"></td>
+                    <td>
+                        <div class="d-flex">
+                            <input type="number" th:value="${item.quantity}" class="form-control form-control-sm me-2"
+                                style="width: 70px;" min="1"
+                                th:onchange="'updateQuantity(' + ${item.cartItemId} + ', this.value)'">
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                th:onclick="'updateQuantity(' + ${item.cartItemId} + ', this.previousElementSibling.value)'">
+                                Update
+                            </button>
+                        </div>
+                    </td>
+                    <td th:text="${#numbers.formatDecimal(item.totalPrice, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger"
+                            th:onclick="'deleteItem(' + ${item.cartItemId} + ')'">
+                            Remove
+                        </button>
                     </td>
                 </tr>
-                <tr class="fw-bold">
-                    <th>Total:</th>
-                    <td th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td>
-                </tr>
-            </table>
+            </tbody>
+        </table>
+
+        <!-- Voucher Application -->
+        <form th:action="@{/cart/apply-voucher}" method="post" class="row g-3 mb-3">
+            <input type="hidden" name="customerId" th:value="${customerId}" />
+            <div class="col-md-6">
+                <label for="voucher" class="form-label">Select from available vouchers:</label>
+                <select name="voucherCode" id="voucher" class="form-select">
+                    <option value="">-- Select a voucher --</option>
+                    <option th:each="v : ${vouchers}" th:value="${v.code}"
+                        th:text="${v.code + ' - ' + (v.discount_pct != null ? (v.discount_pct * 100) + '%' : v.discount_amount + ' đ')}"
+                        th:selected="${selectedVoucher != null and v.code == selectedVoucher.code}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="manualVoucher" class="form-label">Or enter voucher code:</label>
+                <input type="text" name="manualVoucherCode" id="manualVoucher" class="form-control"
+                    placeholder="Enter voucher code">
+            </div>
+            <div class="col-md-2 align-self-end">
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </div>
+        </form>
+
+        <!-- Total Summary -->
+        <div class="row justify-content-end">
+            <div class="col-md-6">
+                <table class="table">
+                    <tr>
+                        <th>Subtotal:</th>
+                        <td th:text="${#numbers.formatDecimal(subtotal, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td>
+                    </tr>
+                    <tr th:if="${selectedVoucher != null}">
+                        <th>Voucher Discount:</th>
+                        <td
+                            th:text="${selectedVoucher.discount_pct != null ? (selectedVoucher.discount_pct * 100) + '%' : selectedVoucher.discount_amount + ' đ'}">
+                        </td>
+                    </tr>
+                    <tr class="fw-bold">
+                        <th>Total:</th>
+                        <td th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')} + ' đ'"></td>
+                    </tr>
+                </table>
+            </div>
         </div>
+
+        <!-- Checkout Button -->
+        <div class="text-end">
+            <a th:href="@{/checkout(voucher=${selectedVoucher != null ? selectedVoucher.code : ''})}"
+                class="btn btn-success btn-lg">
+                <i class="fas fa-shopping-cart"></i> Proceed to Checkout
+            </a>
+        </div>
+
     </div>
 
-    <!-- Checkout Button -->
-    <div class="text-end">
-        <a th:href="@{/checkout(voucher=${selectedVoucher != null ? selectedVoucher.code : ''})}"
-           class="btn btn-success btn-lg">
-            <i class="fas fa-shopping-cart"></i> Proceed to Checkout
-        </a>
-    </div>
+    <script>
+        // Update quantity without page reload
+        function updateQuantity(cartId, quantity) {
+            const formData = new FormData();
+            formData.append('cartId', cartId);
+            formData.append('quantity', quantity);
 
-</div>
-
-<script>
-    // Update quantity without page reload
-    function updateQuantity(cartId, quantity) {
-        const formData = new FormData();
-        formData.append('cartId', cartId);
-        formData.append('quantity', quantity);
-
-        fetch('/cart/update-ajax', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update the total price for this item
-                    const row = document.querySelector(`tr[data-cart-id="${cartId}"]`);
-                    if (row) {
-                        const totalCell = row.querySelector('.item-total');
-                        if (totalCell) {
-                            totalCell.textContent = data.formattedTotal;
+            fetch('/cart/update-ajax', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the total price for this item
+                        const row = document.querySelector(`tr[data-cart-id="${cartId}"]`);
+                        if (row) {
+                            const totalCell = row.querySelector('.item-total');
+                            if (totalCell) {
+                                totalCell.textContent = data.formattedTotal;
+                            }
                         }
+
+                        // Update summary
+                        updateSummary(data.subtotal, data.total);
+
+                        // Update cart count in navigation
+                        if (window.updateCartCount) {
+                            window.updateCartCount();
+                        }
+
+                        showMessage('Quantity updated successfully!', 'success');
+                    } else {
+                        showMessage('Failed to update quantity: ' + data.error, 'error');
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Error updating quantity', 'error');
+                });
+        }
 
-                    // Update summary
-                    updateSummary(data.subtotal, data.total);
+        // Delete item without page reload
+        function deleteItem(cartId) {
+            if (!confirm('Are you sure you want to remove this item?')) {
+                return;
+            }
 
-                    // Update cart count in navigation
-                    if (window.updateCartCount) {
-                        window.updateCartCount();
-                    }
+            const formData = new FormData();
+            formData.append('cartId', cartId);
 
-                    showMessage('Quantity updated successfully!', 'success');
-                } else {
-                    showMessage('Failed to update quantity: ' + data.error, 'error');
-                }
+            fetch('/cart/delete-ajax', {
+                method: 'POST',
+                body: formData
             })
-            .catch(error => {
-                console.error('Error:', error);
-                showMessage('Error updating quantity', 'error');
-            });
-    }
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the row from table
+                        const row = document.querySelector(`tr[data-cart-id="${cartId}"]`);
+                        if (row) {
+                            row.remove();
+                        }
 
-    // Delete item without page reload
-    function deleteItem(cartId) {
-        if (!confirm('Are you sure you want to remove this item?')) {
-            return;
+                        // Update summary
+                        updateSummary(data.subtotal, data.total);
+
+                        // Update cart count in navigation
+                        if (window.updateCartCount) {
+                            window.updateCartCount();
+                        }
+
+                        showMessage('Item removed successfully!', 'success');
+
+                        // Check if cart is empty
+                        if (data.cartEmpty) {
+                            location.reload(); // Reload to show empty cart message
+                        }
+                    } else {
+                        showMessage('Failed to remove item: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Error removing item', 'error');
+                });
         }
 
-        const formData = new FormData();
-        formData.append('cartId', cartId);
+        function updateSummary(subtotal, total) {
+            const subtotalElement = document.querySelector('.subtotal-value');
+            const totalElement = document.querySelector('.total-value');
 
-        fetch('/cart/delete-ajax', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Remove the row from table
-                    const row = document.querySelector(`tr[data-cart-id="${cartId}"]`);
-                    if (row) {
-                        row.remove();
-                    }
-
-                    // Update summary
-                    updateSummary(data.subtotal, data.total);
-
-                    // Update cart count in navigation
-                    if (window.updateCartCount) {
-                        window.updateCartCount();
-                    }
-
-                    showMessage('Item removed successfully!', 'success');
-
-                    // Check if cart is empty
-                    if (data.cartEmpty) {
-                        location.reload(); // Reload to show empty cart message
-                    }
-                } else {
-                    showMessage('Failed to remove item: ' + data.error, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showMessage('Error removing item', 'error');
-            });
-    }
-
-    function updateSummary(subtotal, total) {
-        const subtotalElement = document.querySelector('.subtotal-value');
-        const totalElement = document.querySelector('.total-value');
-
-        if (subtotalElement) {
-            subtotalElement.textContent = subtotal;
+            if (subtotalElement) {
+                subtotalElement.textContent = subtotal;
+            }
+            if (totalElement) {
+                totalElement.textContent = total;
+            }
         }
-        if (totalElement) {
-            totalElement.textContent = total;
-        }
-    }
 
-    function showMessage(message, type) {
-        // Remove existing alerts
-        const existingAlerts = document.querySelectorAll('.alert');
-        existingAlerts.forEach(alert => alert.remove());
+        function showMessage(message, type) {
+            // Remove existing alerts
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
 
-        // Create new alert
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type === 'error' ? 'danger' : 'success'} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
+            // Create new alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type === 'error' ? 'danger' : 'success'} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
                 <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i> 
                 <span>${message}</span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
 
-        // Insert at the top of the container
-        const container = document.querySelector('.container');
-        container.insertBefore(alertDiv, container.firstChild);
+            // Insert at the top of the container
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
 
-        // Auto dismiss after 3 seconds
-        setTimeout(() => {
-            if (alertDiv.parentNode) {
-                alertDiv.remove();
-            }
-        }, 3000);
-    }
+            // Auto dismiss after 3 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 3000);
+        }
 
-    // Add event listeners when page loads
-    document.addEventListener('DOMContentLoaded', function () {
-        // Add data attributes to rows
-        document.querySelectorAll('tbody tr').forEach(row => {
-            const cartId = row.querySelector('input[name="cartId"]').value;
-            row.setAttribute('data-cart-id', cartId);
+        // Add event listeners when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add data attributes to rows
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const cartId = row.querySelector('input[name="cartId"]').value;
+                row.setAttribute('data-cart-id', cartId);
 
-            // Add class to total cell for easy selection
-            const totalCell = row.querySelector('td:nth-child(5)');
-            if (totalCell) {
-                totalCell.classList.add('item-total');
+                // Add class to total cell for easy selection
+                const totalCell = row.querySelector('td:nth-child(5)');
+                if (totalCell) {
+                    totalCell.classList.add('item-total');
+                }
+            });
+
+            // Add class to summary cells
+            const summaryTable = document.querySelector('.table');
+            if (summaryTable) {
+                const subtotalRow = summaryTable.querySelector('tr:first-child td:last-child');
+                if (subtotalRow) {
+                    subtotalRow.classList.add('subtotal-value');
+                }
+                const totalRow = summaryTable.querySelector('tr:last-child td:last-child');
+                if (totalRow) {
+                    totalRow.classList.add('total-value');
+                }
             }
         });
-
-        // Add class to summary cells
-        const summaryTable = document.querySelector('.table');
-        if (summaryTable) {
-            const subtotalRow = summaryTable.querySelector('tr:first-child td:last-child');
-            if (subtotalRow) {
-                subtotalRow.classList.add('subtotal-value');
-            }
-            const totalRow = summaryTable.querySelector('tr:last-child td:last-child');
-            if (totalRow) {
-                totalRow.classList.add('total-value');
-            }
-        }
-    });
-</script>
+    </script>
 </body>
 
 </html>

@@ -32,9 +32,9 @@ public class CartController {
                            HttpSession session) {
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
 
-        if (customerId == null) {
-            return "redirect:/login";
-        }
+        //if (customerId == null) {
+      //      return "redirect:/login"; // hoặc hiển thị trang thông báo chưa đăng nhập
+      //  }
 
         List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
 
@@ -133,8 +133,8 @@ public class CartController {
 
         // Ưu tiên voucher được chọn từ dropdown, nếu không có thì dùng voucher nhập thủ công
         String finalVoucherCode = voucherCode;
-        if ((finalVoucherCode == null || finalVoucherCode.trim().isEmpty()) &&
-                manualVoucherCode != null && !manualVoucherCode.trim().isEmpty()) {
+        if ((finalVoucherCode == null || finalVoucherCode.trim().isEmpty()) && 
+            manualVoucherCode != null && !manualVoucherCode.trim().isEmpty()) {
             finalVoucherCode = manualVoucherCode.trim();
         }
 
@@ -143,7 +143,7 @@ public class CartController {
 
     @PostMapping("/checkout")
     public String proceedToCheckout(@RequestParam(value = "voucher", required = false) String voucherCode,
-                                    HttpSession session) {
+                                   HttpSession session) {
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
         if (customerId == null) {
             return "redirect:/auth/login";
@@ -161,7 +161,7 @@ public class CartController {
     public Map<String, Object> getCartCount(HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
-
+        
         if (customerId != null) {
             try {
                 List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
@@ -178,18 +178,18 @@ public class CartController {
             response.put("success", false);
             response.put("error", "Not logged in");
         }
-
+        
         return response;
     }
 
     @PostMapping("/update-ajax")
     @ResponseBody
     public Map<String, Object> updateCartAjax(@RequestParam int cartId,
-                                              @RequestParam int quantity,
-                                              HttpSession session) {
+                                             @RequestParam int quantity,
+                                             HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
-
+        
         if (customerId == null) {
             response.put("success", false);
             response.put("error", "Not logged in");
@@ -198,41 +198,41 @@ public class CartController {
 
         try {
             cartService.updateQuantity(cartId, quantity);
-
+            
             // Recalculate totals
             List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
             double subtotal = cartItems.stream()
                     .mapToDouble(CartItemDTO::getTotalPrice)
                     .sum();
-
+            
             // Find the updated item to get its new total
             CartItemDTO updatedItem = cartItems.stream()
                     .filter(item -> item.getCartItemId() == cartId)
                     .findFirst()
                     .orElse(null);
-
+            
             response.put("success", true);
             response.put("subtotal", String.format("%,.0f đ", subtotal));
             response.put("total", String.format("%,.0f đ", subtotal));
             if (updatedItem != null) {
                 response.put("formattedTotal", String.format("%,.0f đ", updatedItem.getTotalPrice()));
             }
-
+            
         } catch (Exception e) {
             response.put("success", false);
             response.put("error", e.getMessage());
         }
-
+        
         return response;
     }
 
     @PostMapping("/delete-ajax")
     @ResponseBody
     public Map<String, Object> deleteCartAjax(@RequestParam int cartId,
-                                              HttpSession session) {
+                                             HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
-
+        
         if (customerId == null) {
             response.put("success", false);
             response.put("error", "Not logged in");
@@ -241,23 +241,23 @@ public class CartController {
 
         try {
             cartService.deleteCartItem(cartId);
-
+            
             // Recalculate totals
             List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
             double subtotal = cartItems.stream()
                     .mapToDouble(CartItemDTO::getTotalPrice)
                     .sum();
-
+            
             response.put("success", true);
             response.put("subtotal", String.format("%,.0f đ", subtotal));
             response.put("total", String.format("%,.0f đ", subtotal));
             response.put("cartEmpty", cartItems.isEmpty());
-
+            
         } catch (Exception e) {
             response.put("success", false);
             response.put("error", e.getMessage());
         }
-
+        
         return response;
     }
 }

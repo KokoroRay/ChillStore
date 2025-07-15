@@ -1,11 +1,27 @@
 package com.esms.exception;
 
+import com.esms.service.CartService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+class GlobalControllerAdvice {
+
+  @Autowired
+  private CartService cartService;
+
+  @ModelAttribute("cartCount")
+  public Integer populateCartCount(HttpSession session) {
+    Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+    if (customerId != null) {
+      return cartService.getCartItems(customerId).stream().mapToInt(item -> item.getQuantity()).sum();
+    }
+    return 0;
+  }
 
     @ExceptionHandler(UserNotFoundException.class)
     public String handleUserNotFound(UserNotFoundException ex, Model model) {

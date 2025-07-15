@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <title>Đăng ký tài khoản</title>
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
-    <link rel="stylesheet" th:href="@{/static/style.css}"/>
+    <link rel="stylesheet" th:href="@{/static/style.css}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -20,28 +20,28 @@
 <form th:action="@{/auth/register}" th:object="${registerDto}" method="post">
     <div>
         <label>Tên:</label>
-        <input type="text" th:field="*{name}" placeholder="Nhập tên..."/>
+        <input type="text" th:field="*{name}" placeholder="Nhập tên..." />
         <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red"></p>
     </div>
     <div>
         <label>Email:</label>
-        <input type="email" th:field="*{email}" placeholder="Nhập email..."/>
+        <input type="email" th:field="*{email}" placeholder="Nhập email..." />
         <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:red"></p>
     </div>
     <div>
         <label>Mật khẩu:</label>
-        <input type="password" th:field="*{password}" placeholder="Nhập mật khẩu..."/>
+        <input type="password" th:field="*{password}" placeholder="Nhập mật khẩu..." />
         <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color:red"></p>
     </div>
     <div>
         <label>Số điện thoại:</label>
-        <input type="text" th:field="*{phone}" placeholder="Nhập số điện thoại..."/>
+        <input type="text" th:field="*{phone}" placeholder="Nhập số điện thoại..." />
         <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" style="color:red"></p>
     </div>
     <div>
         <label>Địa chỉ:</label>
         <div id="address-selector-container"></div>
-        <input type="hidden" th:field="*{address}" id="address-hidden"/>
+        <input type="hidden" th:field="*{address}" id="address-hidden" />
         <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" style="color:red"></p>
     </div>
     <div>
@@ -54,9 +54,9 @@
 
 <script th:src="@{/js/address-selector.js}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        new AddressSelector('address-selector-container', 'address-hidden');
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    new AddressSelector('address-selector-container', 'address-hidden');
+});
 </script>
 </body>
 </html>

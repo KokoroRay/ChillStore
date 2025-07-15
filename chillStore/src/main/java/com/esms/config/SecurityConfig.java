@@ -36,7 +36,7 @@ public class SecurityConfig {
 
     @Autowired
     private CustomerOAuth2UserService customerOAuth2UserService;
-
+    
     @Autowired
     private CustomOidcUserService customOidcUserService;
 
@@ -47,7 +47,6 @@ public class SecurityConfig {
                         .requestMatchers("/", "/home",
                                 "/Product", "/Product/**", "/DiscountProducts",
                                 "/product/view/**", "/customer/product/view/**",
-                                "/search", "/Product/api/products/suggest",
                                 "/css/**", "/js/**", "/videos/**", "/img/**", "/images/**",
                                 "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
                                 "/auth/login", "/auth/register", "/auth/resend-otp"
@@ -57,7 +56,7 @@ public class SecurityConfig {
                         // giai cấp bị bóc lộ
                         .requestMatchers("/staff/**").hasAnyRole("STAFF", "ADMIN") //có thể qua lại giữ 2 giai cấp
                         //nguồn tiền duy trì hệ thống
-                        .requestMatchers("/customer/**", "/profile", "/cart", "/order", "/order-history", "/checkout")
+                        .requestMatchers("/customer/**", "/profile", "/cart","/order","/order-history", "/checkout")
                         .hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -104,7 +103,7 @@ public class SecurityConfig {
                 // Lấy danh sách quyền của user
                 Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
                 String redirectUrl = "/";
-
+                
                 // Chuyển hướng dựa trên role
                 if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
                     redirectUrl = "/admin/category";   // Admin dashboard
@@ -113,8 +112,8 @@ public class SecurityConfig {
                 } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER"))) {
                     redirectUrl = "/home";             // Customer home page
                 }
-
-
+                
+                response.sendRedirect(redirectUrl);
                 // Lưu thông tin người dùng vào session
                 Object principal = authentication.getPrincipal();
                 if (principal instanceof org.springframework.security.core.userdetails.User userDetails) {
@@ -129,20 +128,10 @@ public class SecurityConfig {
                         request.getSession().setAttribute("loggedInUserEmail", customer.getEmail());
                         request.getSession().setAttribute("loggedInUserName", customer.getName());
                     }
-                } else if (principal instanceof org.springframework.security.oauth2.core.user.OAuth2User oauthUser) {
-                    // Đăng nhập Google
-                    String email = oauthUser.getAttribute("email");
-
-                    com.esms.model.entity.Customer customer = userDetailsService.getCustomerByEmail(email);
-                    if (customer != null) {
-                        request.getSession().setAttribute("loggedInCustomerId", customer.getCustomerId());
-                        request.getSession().setAttribute("loggedInUserEmail", customer.getEmail());
-                        request.getSession().setAttribute("loggedInUserName", customer.getName());
-                    }
                 }
 
-                response.sendRedirect(redirectUrl);
             }
+
         };
     }
 

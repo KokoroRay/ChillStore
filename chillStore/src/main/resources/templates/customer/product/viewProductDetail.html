@@ -460,6 +460,14 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Define productDetails from server data
+        const productDetails = {
+            productId: /*[[${product.productId}]]*/ 0,
+            name: /*[[${product.name}]]*/ '',
+            price: /*[[${product.price}]]*/ 0,
+            imageUrl: /*[[${primaryImage}]]*/ ''
+        };
+
         // Function to change main product image
         function changeMainImage(event) {
             const mainImage = document.getElementById('mainProductImage');
@@ -525,69 +533,89 @@
             document.querySelector('.total-price').textContent = formattedTotal + ' VND';
         }
 
-        // Initialize quantity change event listener
-        document.addEventListener('DOMContentLoaded', function () {
-            const quantityInput = document.getElementById('quantity');
+        // Wishlist functions
+        function getWishlist() {
+            try {
+                return JSON.parse(localStorage.getItem('wishlist')) || [];
+            } catch (e) {
+                console.error('Error reading wishlist:', e);
+                return [];
+            }
+        }
 
-            // Calculate initial total price
-            updateTotalPrice(1);
+        function saveWishlist(wishlist) {
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        }
 
-            quantityInput.addEventListener('change', function () {
-                let value = parseInt(this.value);
-                if (isNaN(value) || value < 1) value = 1;
-                if (value > 99) value = 99;
-                this.value = value;
-                updateFormQuantities(value);
-                updateTotalPrice(value);
-            });
+        function isInWishlist(productId) {
+            const wishlist = getWishlist();
+            return wishlist.some(p => p.productId === productId);
+        }
 
-            // Smooth scroll to specifications when clicking the "See all" link
-            const specLink = document.querySelector('a[href="#specifications"]');
-            if (specLink) {
-                specLink.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    document.getElementById('specifications').scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
+        function updateWishlistIcon(productId) {
+            const wishlistBtn = document.getElementById('wishlistBtn');
+            if (!wishlistBtn) return;
+
+            const heartIcon = wishlistBtn.querySelector('i');
+            if (isInWishlist(productId)) {
+                wishlistBtn.classList.add('active');
+                heartIcon.classList.remove('far');
+                heartIcon.classList.add('fas');
+            } else {
+                wishlistBtn.classList.remove('active');
+                heartIcon.classList.remove('fas');
+                heartIcon.classList.add('far');
+            }
+        }
+
+        function toggleWishlist() {
+            let wishlist = getWishlist();
+            const idx = wishlist.findIndex(p => p.productId === productDetails.productId);
+
+            if (idx === -1) {
+                wishlist.push(productDetails);
+                showFloatingMessage('Added to wishlist');
+            } else {
+                wishlist.splice(idx, 1);
+                showFloatingMessage('Removed from wishlist');
             }
 
-            // Add province selector for guest users or when customer address is empty
-            initializeAddressSelector();
+            saveWishlist(wishlist);
+            updateWishlistIcon(productDetails.productId);
+            window.dispatchEvent(new Event('wishlist-updated'));
+        }
 
-            // Add event listener for cart button
-            document.getElementById('addToCartForm').addEventListener('submit', function (e) {
-                e.preventDefault();
-                animateToCart();
+        // Show floating message
+        function showFloatingMessage(message) {
+            const floatingMessage = document.getElementById('floatingMessage');
+            const messageText = document.getElementById('messageText');
+            messageText.textContent = message;
+            floatingMessage.classList.add('show');
+            setTimeout(() => floatingMessage.classList.remove('show'), 3000);
+        }
 
-                // Submit form via AJAX
-                const formData = new FormData(this);
-                fetch('/cart/add', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            // Update cart count in navigation
-                            if (window.updateCartCount) {
-                                window.updateCartCount();
-                            }
-                            // Trigger custom event
-                            document.dispatchEvent(new Event('cartUpdated'));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error adding to cart:', error);
-                    });
-            });
-        });
+        // Animation for adding to cart
+        function animateToCart() {
+            const productImage = document.getElementById('mainProductImage');
+            const cartBtn = document.getElementById('cartBtn');
 
-        function initializeAddressSelector() {
-            // If there's a custom address selection form, initialize province API
-            const addressForm = document.getElementById('address-selection-form');
-            if (addressForm) {
-                loadProvinces();
-            }
+            // Create a clone of the product image
+            const clone = productImage.cloneNode(true);
+            clone.classList.add('animate-to-cart');
+            clone.style.position = 'fixed';
+            clone.style.top = productImage.getBoundingClientRect().top + 'px';
+            clone.style.left = productImage.getBoundingClientRect().left + 'px';
+            clone.style.width = productImage.offsetWidth + 'px';
+            clone.style.height = productImage.offsetHeight + 'px';
+            clone.style.zIndex = '1000';
+
+            document.body.appendChild(clone);
+
+            // Remove the clone after animation completes
+            setTimeout(() => {
+                clone.remove();
+                showFloatingMessage('Added to cart!');
+            }, 1000);
         }
 
         // Address Modal Functions
@@ -757,64 +785,70 @@
             }
         }
 
-        // Wishlist functionality
-        function toggleWishlist() {
-            const product = productDetails; // Sử dụng biến đã định nghĩa
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize wishlist icon
+            updateWishlistIcon(productDetails.productId);
 
-            let wishlist = getWishlist();
-            const idx = wishlist.findIndex(p => p.productId === product.productId);
+            // Initialize quantity functionality
+            const quantityInput = document.getElementById('quantity');
+            if (quantityInput) {
+                // Calculate initial total price
+                updateTotalPrice(1);
 
-            if (idx === -1) {
-                wishlist.push(product);
-                showFloatingMessage('Added to wishlist');
-            } else {
-                wishlist.splice(idx, 1);
-                showFloatingMessage('Removed from wishlist');
+                quantityInput.addEventListener('change', function () {
+                    let value = parseInt(this.value);
+                    if (isNaN(value) || value < 1) value = 1;
+                    if (value > 99) value = 99;
+                    this.value = value;
+                    updateFormQuantities(value);
+                    updateTotalPrice(value);
+                });
             }
 
-            saveWishlist(wishlist);
-            updateWishlistIcon(product.productId);
-            window.dispatchEvent(new Event('wishlist-updated'));
-        }
+            // Smooth scroll to specifications when clicking the "See all" link
+            const specLink = document.querySelector('a[href="#specifications"]');
+            if (specLink) {
+                specLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.getElementById('specifications').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            }
 
+            // Add event listener for cart button
+            const addToCartForm = document.getElementById('addToCartForm');
+            if (addToCartForm) {
+                addToCartForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    animateToCart();
 
-        // Show floating message
-        function showFloatingMessage(message) {
-            const floatingMessage = document.getElementById('floatingMessage');
-            const messageText = document.getElementById('messageText');
-            messageText.textContent = message;
-            floatingMessage.classList.add('show');
-            setTimeout(() => floatingMessage.classList.remove('show'), 3000);
-        }
+                    // Submit form via AJAX
+                    const formData = new FormData(this);
+                    fetch('/cart/add', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // Update cart count in navigation
+                                if (window.updateCartCount) {
+                                    window.updateCartCount();
+                                }
+                                // Trigger custom event
+                                document.dispatchEvent(new Event('cartUpdated'));
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error adding to cart:', error);
+                        });
+                });
+            }
 
-        // Animation for adding to cart
-        function animateToCart() {
-            const productImage = document.getElementById('mainProductImage');
-            const cartBtn = document.getElementById('cartBtn');
-
-            // Create a clone of the product image
-            const clone = productImage.cloneNode(true);
-            clone.classList.add('animate-to-cart');
-            clone.style.position = 'fixed';
-            clone.style.top = productImage.getBoundingClientRect().top + 'px';
-            clone.style.left = productImage.getBoundingClientRect().left + 'px';
-            clone.style.width = productImage.offsetWidth + 'px';
-            clone.style.height = productImage.offsetHeight + 'px';
-            clone.style.zIndex = '1000';
-
-            document.body.appendChild(clone);
-
-            // Remove the clone after animation completes
-            setTimeout(() => {
-                clone.remove();
-                showFloatingMessage('Added to cart!');
-            }, 1000);
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize tabs functionality
             const tabs = document.querySelectorAll('.spec-desc-tab');
             const panels = document.querySelectorAll('.spec-desc-panel');
-            const content = document.querySelector('.spec-desc-content');
 
             tabs.forEach(tab => {
                 tab.addEventListener('click', function () {
@@ -855,54 +889,6 @@
                     });
                 });
             }
-        });
-        function getWishlist() {
-            try {
-                return JSON.parse(localStorage.getItem('wishlist')) || [];
-            } catch (e) {
-                console.error('Error reading wishlist:', e);
-                return [];
-            }
-        }
-        function saveWishlist(wishlist) {
-            localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        }
-        function isInWishlist(productId) {
-            const wishlist = getWishlist();
-            return wishlist.some(p => p.productId === productId);
-        }
-
-        function updateWishlistIcon(productId) {
-            const wishlistBtn = document.getElementById('wishlistBtn');
-            if (!wishlistBtn) return;
-
-            const heartIcon = wishlistBtn.querySelector('i');
-            if (isInWishlist(productId)) {
-                wishlistBtn.classList.add('active');
-                heartIcon.classList.remove('far');
-                heartIcon.classList.add('fas');
-            } else {
-                wishlistBtn.classList.remove('active');
-                heartIcon.classList.remove('fas');
-                heartIcon.classList.add('far');
-            }
-        }
-
-        function toggleWishlist() {
-            const product = productDetails;
-            let wishlist = getWishlist();
-
-            const idx = wishlist.findIndex(p => p.productId === product.productId);
-            if (idx === -1) {
-                wishlist.push(product);
-                showFloatingMessage('Added to wishlist');
-            } else {
-                wishlist.splice(idx, 1);
-                showFloatingMessage('Removed from wishlist');
-            }
-
-            saveWishlist(wishlist);
-            updateWishlistIcon(product.productId);
         });
     </script>
 </body>

@@ -15,11 +15,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.text.Normalizer;
+
 import com.esms.repository.DiscountProductRepository;
 import com.esms.repository.DiscountRepository;
 import com.esms.model.entity.Discount;
+
 import java.time.LocalDate;
+
 import com.esms.model.entity.DiscountProduct;
+
+import java.util.Map;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -28,6 +33,7 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findAll() {
         return productRepository.findAll();
     }
+
     @Autowired
     private ProductRepository productRepository;
 
@@ -195,6 +201,7 @@ public class ProductServiceImpl implements ProductService {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
+
     @Override
     public List<ProductDTO> getAllProductDTOs() {
         List<Product> products = productRepository.findAll();
@@ -207,6 +214,7 @@ public class ProductServiceImpl implements ProductService {
                 ))
                 .collect(Collectors.toList());
     }
+
     @Override
     public Page<ProductDTO> getProductDTOsPaginated(Pageable pageable) {
         return productRepository.findAll(pageable)
@@ -283,9 +291,9 @@ public class ProductServiceImpl implements ProductService {
         for (DiscountProduct dp : discountProducts) {
             Discount discount = dp.getDiscount();
             if (discount.getActive() != null && discount.getActive()
-                && discount.getStartDate() != null && discount.getEndDate() != null
-                && !discount.getStartDate().isAfter(LocalDate.now())
-                && !discount.getEndDate().isBefore(LocalDate.now())) {
+                    && discount.getStartDate() != null && discount.getEndDate() != null
+                    && !discount.getStartDate().isAfter(LocalDate.now())
+                    && !discount.getEndDate().isBefore(LocalDate.now())) {
                 return discount;
             }
         }
@@ -302,14 +310,14 @@ public class ProductServiceImpl implements ProductService {
             String sortBy,
             String sortDir,
             Pageable pageable) {
-        
+
         // Lấy tất cả sản phẩm có discount trước
         List<Discount> activeDiscounts = discountRepository.findActiveDiscountsByDate(LocalDate.now());
         List<Integer> promoIds = activeDiscounts.stream()
                 .filter(d -> "product".equalsIgnoreCase(d.getApplyType()))
                 .map(Discount::getPromoId)
                 .toList();
-        
+
         List<Product> products = discountProductRepository.findAll().stream()
                 .filter(dp -> promoIds.contains(dp.getDiscount().getPromoId()))
                 .map(dp -> dp.getProduct())
@@ -400,10 +408,10 @@ public class ProductServiceImpl implements ProductService {
                             // Tính giá sau discount cho cả hai sản phẩm
                             Discount discount1 = getActiveDiscountForProduct(p1);
                             Discount discount2 = getActiveDiscountForProduct(p2);
-                            
+
                             double price1 = p1.getPrice().doubleValue();
                             double price2 = p2.getPrice().doubleValue();
-                            
+
                             if (discount1 != null && discount1.getDiscountPct() != null) {
                                 double discountPct1 = discount1.getDiscountPct().doubleValue();
                                 price1 = p1.getPrice().doubleValue() * (100.0 - discountPct1) / 100.0;
@@ -412,13 +420,13 @@ public class ProductServiceImpl implements ProductService {
                                 double discountPct2 = discount2.getDiscountPct().doubleValue();
                                 price2 = p2.getPrice().doubleValue() * (100.0 - discountPct2) / 100.0;
                             }
-                            
+
                             return isAsc ? Double.compare(price1, price2) : Double.compare(price2, price1);
                         } catch (Exception e) {
                             // Nếu có lỗi, sort theo giá gốc
-                            return isAsc ? 
-                                p1.getPrice().compareTo(p2.getPrice()) : 
-                                p2.getPrice().compareTo(p1.getPrice());
+                            return isAsc ?
+                                    p1.getPrice().compareTo(p2.getPrice()) :
+                                    p2.getPrice().compareTo(p1.getPrice());
                         }
                     });
                     break;
@@ -440,6 +448,59 @@ public class ProductServiceImpl implements ProductService {
                 pageable,
                 products.size()
         );
+    }
+
+    @Override
+    public Page<Product> searchProductsByKeyword(String keyword, Pageable pageable) {
+        List<Product> products = productRepository.findAll();
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            String finalKeyword = removeDiacritics(keyword.trim().toLowerCase());
+            products = products.stream()
+                    .filter(p -> {
+                        String productName = removeDiacritics(p.getName() != null ? p.getName().toLowerCase() : "");
+                        String productDesc = removeDiacritics(p.getDescription() != null ? p.getDescription().toLowerCase() : "");
+                        String categoryName = removeDiacritics(p.getCategory() != null && p.getCategory().getName() != null ? p.getCategory().getName().toLowerCase() : "");
+                        return productName.contains(finalKeyword)
+                                || productDesc.contains(finalKeyword)
+                                || categoryName.contains(finalKeyword);
+                    })
+                    .collect(Collectors.toList());
+        }
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), products.size());
+        if (start > products.size()) {
+            return new PageImpl<>(List.of(), pageable, products.size());
+        }
+        return new PageImpl<>(
+                products.subList(start, end),
+                pageable,
+                products.size()
+        );
+    }
+
+    @Override
+    public List<Map<String, Object>> getProductSuggestions(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return List.of();
+        }
+        String normalizedQuery = removeDiacritics(query.trim().toLowerCase());
+        List<Product> allProducts = productRepository.findAll();
+        return allProducts.stream()
+                .filter(product -> {
+                    String productName = removeDiacritics(product.getName() != null ? product.getName().toLowerCase() : "");
+                    return productName.contains(normalizedQuery);
+                })
+                .map(product -> {
+                    Map<String, Object> map = new java.util.HashMap<>();
+                    map.put("name", product.getName());
+                    map.put("imageUrl", product.getImageUrl());
+                    map.put("price", product.getPrice());
+                    map.put("id", product.getProductId());
+                    return map;
+                })
+                .distinct()
+                .limit(10)
+                .collect(Collectors.toList());
     }
 
 }

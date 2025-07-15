@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface StaffRepository extends JpaRepository<Staff, Integer> {
     boolean existsByNationalId(String nationalId);
+
     boolean existsByEmail(String email);
 
     @Query("SELECT s FROM Staff s WHERE " +

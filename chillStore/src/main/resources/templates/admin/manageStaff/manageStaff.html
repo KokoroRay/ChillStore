@@ -1,113 +1,113 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
-  <meta charset="UTF-8">
-  <title>Staff List</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/header.css">
-  <link rel="stylesheet" href="/css/sidebar.css">
-  <link rel="stylesheet" href="/css/manageStaff.css">
+    <meta charset="UTF-8">
+    <title>Staff List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/manageStaff.css">
 </head>
 <body>
 <div th:insert="~{fragments/header :: headerContent}"></div>
 
 <div class="container mt-4 main-container">
-  <div th:insert="~{fragments/sidebar :: sidebar}"></div>
-  <div class="content">
-    <h2 class="mb-4">Staff List</h2>
+    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+    <div class="content">
+        <h2 class="mb-4">Staff List</h2>
 
-    <!-- ✅ Sửa lại form tìm kiếm đúng đường dẫn -->
-    <form class="row g-3 mb-3" th:action="@{/admin/ManageStaff}" method="get">
-      <div class="col-md-4">
-        <input type="text" name="keyword" class="form-control" placeholder="Search by name or email"
-               th:value="${keyword}">
-      </div>
-      <div class="col-md-4">
-        <select name="gender" class="form-select">
-          <option value="">All Genders</option>
-          <option value="MALE" th:selected="${gender == 'MALE'}">Male</option>
-          <option value="FEMALE" th:selected="${gender == 'FEMALE'}">Female</option>
-          <option value="OTHER" th:selected="${gender == 'OTHER'}">Other</option>
-        </select>
-      </div>
-      <div class="col-md-3 tt-end">
-        <button type="submit" class="btn w-100">
-          <img th:src="@{/images/search.png}" alt="Search" width="20" height="20">
-        </button>
-      </div>
-    </form>
+        <!-- ✅ Sửa lại form tìm kiếm đúng đường dẫn -->
+        <form class="row g-3 mb-3" th:action="@{/admin/ManageStaff}" method="get">
+            <div class="col-md-4">
+                <input type="text" name="keyword" class="form-control" placeholder="Search by name or email"
+                       th:value="${keyword}">
+            </div>
+            <div class="col-md-4">
+                <select name="gender" class="form-select">
+                    <option value="">All Genders</option>
+                    <option value="MALE" th:selected="${gender == 'MALE'}">Male</option>
+                    <option value="FEMALE" th:selected="${gender == 'FEMALE'}">Female</option>
+                    <option value="OTHER" th:selected="${gender == 'OTHER'}">Other</option>
+                </select>
+            </div>
+            <div class="col-md-3 tt-end">
+                <button type="submit" class="btn w-100">
+                    <img th:src="@{/images/search.png}" alt="Search" width="20" height="20">
+                </button>
+            </div>
+        </form>
 
-    <!-- ✅ Đường dẫn thêm mới -->
-    <a href="/admin/add-form" class="btn btn-add mb-3">Add</a>
+        <!-- ✅ Đường dẫn thêm mới -->
+        <a href="/admin/add-form" class="btn btn-add mb-3">Add</a>
 
-    <table class="table table-bordered table-hover">
-      <thead class="table-primary">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Gender</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Address</th>
-        <th>National ID</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="staff : ${staffList}">
-        <td th:text="${staff.id}"></td>
-        <td th:text="${staff.name}"></td>
-        <td th:text="${staff.gender}"></td>
-        <td th:text="${staff.email}"></td>
-        <td th:text="${staff.phone}"></td>
-        <td th:text="${staff.address}"></td>
-        <td th:text="${staff.nationalId}"></td>
-        <td>
-          <div class="staff-buttons">
-            <!-- ✅ Sửa lại đường dẫn cập nhật -->
-            <a th:href="@{'/admin/update-form?id=' + ${staff.id}}">
-              <img th:src="@{/images/update.png}" alt="Update" width="30" height="30">
-            </a>
-            <!-- ✅ Sửa lại đường dẫn xoá -->
-            <a th:href="@{'/admin/deleteStaff/' + ${staff.id}}"
-               onclick="return confirm('Are you sure to delete this staff?')"
-               class="btn btn-sm">
-              <img th:src="@{/images/delete.png}" alt="Delete" width="30" height="30">
-            </a>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+        <table class="table table-bordered table-hover">
+            <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>National ID</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="staff : ${staffList}">
+                <td th:text="${staff.id}"></td>
+                <td th:text="${staff.name}"></td>
+                <td th:text="${staff.gender}"></td>
+                <td th:text="${staff.email}"></td>
+                <td th:text="${staff.phone}"></td>
+                <td th:text="${staff.address}"></td>
+                <td th:text="${staff.nationalId}"></td>
+                <td>
+                    <div class="staff-buttons">
+                        <!-- ✅ Sửa lại đường dẫn cập nhật -->
+                        <a th:href="@{'/admin/update-form?id=' + ${staff.id}}">
+                            <img th:src="@{/images/update.png}" alt="Update" width="30" height="30">
+                        </a>
+                        <!-- ✅ Sửa lại đường dẫn xoá -->
+                        <a th:href="@{'/admin/deleteStaff/' + ${staff.id}}"
+                           onclick="return confirm('Are you sure to delete this staff?')"
+                           class="btn btn-sm">
+                            <img th:src="@{/images/delete.png}" alt="Delete" width="30" height="30">
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-    <!-- ✅ Phân trang -->
-    <div class="d-flex justify-content-center mt-4">
-      <nav>
-        <ul class="pagination">
-          <!-- Previous -->
-          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-            <a class="page-link"
-               th:href="@{/admin/ManageStaff(page=${currentPage - 1}, size=10, keyword=${keyword}, gender=${gender})}">Previous</a>
-          </li>
+        <!-- ✅ Phân trang -->
+        <div class="d-flex justify-content-center mt-4">
+            <nav>
+                <ul class="pagination">
+                    <!-- Previous -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/ManageStaff(page=${currentPage - 1}, size=10, keyword=${keyword}, gender=${gender})}">Previous</a>
+                    </li>
 
-          <!-- Page Numbers -->
-          <li class="page-item"
-              th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-              th:classappend="${i == currentPage} ? 'active'">
-            <a class="page-link"
-               th:href="@{/admin/ManageStaff(page=${i}, size=10, keyword=${keyword}, gender=${gender})}"
-               th:text="${i + 1}">1</a>
-          </li>
+                    <!-- Page Numbers -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/admin/ManageStaff(page=${i}, size=10, keyword=${keyword}, gender=${gender})}"
+                           th:text="${i + 1}">1</a>
+                    </li>
 
-          <!-- Next -->
-          <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
-            <a class="page-link"
-               th:href="@{/admin/ManageStaff(page=${currentPage + 1}, size=10, keyword=${keyword}, gender=${gender})}">Next</a>
-          </li>
-        </ul>
-      </nav>
+                    <!-- Next -->
+                    <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/ManageStaff(page=${currentPage + 1}, size=10, keyword=${keyword}, gender=${gender})}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
-  </div>
 </div>
 </body>
 </html>

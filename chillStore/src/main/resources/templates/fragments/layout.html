@@ -1,69 +1,70 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8"/>
-  <title th:text="${pageTitle}">Title</title>
-  <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <meta charset="UTF-8"/>
+    <title th:text="${pageTitle}">Title</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
 
-  <!-- CSS -->
-  <link rel="stylesheet" th:href="@{/css/custom.css}"/>
-  <link rel="stylesheet" th:href="@{/css/header.css}"/>
-  <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/custom.css}"/>
+    <link rel="stylesheet" th:href="@{/css/header.css}"/>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
 
-  <style>
-    body, html {
-      margin: 0;
-      height: 100%;
-    }
+    <style>
+        body, html {
+            margin: 0;
+            height: 100%;
+        }
 
-    .header {
-      height: 80px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background-color: white;
-      z-index: 999;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+        .header {
+            height: 80px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            z-index: 999;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    .main-container {
-      display: flex;
-      height: calc(100vh - 80px);
-      padding-top: 100px;
-      box-sizing: border-box;
-    }
+        .main-container {
+            display: flex;
+            height: calc(100vh - 80px);
+            padding-top: 100px;
+            box-sizing: border-box;
+        }
 
-    .sidebar {
-      width: 220px;
-      background-color: #00688B;
-      padding: 20px 10px;
-      overflow-y: auto;
-      height: calc(100vh - 80px);
-    }
+        .sidebar {
+            width: 220px;
+            background-color: #00688B;
+            padding: 20px 10px;
+            overflow-y: auto;
+            height: calc(100vh - 80px);
+        }
 
-    .content {
-      flex: 1;
-      padding: 30px;
-      overflow-y: auto;
-      background-color: #f8f9fa;
-      height: calc(100vh - 80px);
-    }
-  </style>
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            height: calc(100vh - 80px);
+        }
+    </style>
 </head>
 <body>
 
 <!-- Dùng layout fragment -->
 <div th:fragment="layout(pageTitle, activeMenu, currentSection, keyword, bodyFragment)">
 
-  <!-- Fixed header -->
-  <div class="header" th:insert="fragments/header :: header(currentSection=${currentSection}, keyword=${keyword})"></div>
+    <!-- Fixed header -->
+    <div class="header"
+         th:insert="fragments/header :: header(currentSection=${currentSection}, keyword=${keyword})"></div>
 
-  <!-- Body bên dưới header -->
-  <div class="main-container">
-    <div class="sidebar" th:insert="fragments/sidebar :: sidebar(activeMenu=${activeMenu})"></div>
-    <div class="content" th:insert="${bodyFragment}"></div>
-  </div>
+    <!-- Body bên dưới header -->
+    <div class="main-container">
+        <div class="sidebar" th:insert="fragments/sidebar :: sidebar(activeMenu=${activeMenu})"></div>
+        <div class="content" th:insert="${bodyFragment}"></div>
+    </div>
 </div>
 
 </body>

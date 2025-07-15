@@ -18,7 +18,7 @@
     <div class="row">
         <!-- Sidebar -->
         <div th:insert="~{fragments/sidebar :: sidebar}"></div>
-        
+
         <!-- Main Content -->
         <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
             <!-- Topbar -->
@@ -39,19 +39,22 @@
                     <div class="col-md-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Search products...">
+                            <input type="text" class="form-control" name="keyword" th:value="${keyword}"
+                                   placeholder="Search products...">
                         </div>
                     </div>
                     <div class="col-md-2">
                         <select class="form-select" name="categoryId">
                             <option value="">All Categories</option>
-                            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${categoryId == category.id}"></option>
+                            <option th:each="category : ${categories}" th:value="${category.id}"
+                                    th:text="${category.name}" th:selected="${categoryId == category.id}"></option>
                         </select>
                     </div>
                     <div class="col-md-2">
                         <select class="form-select" name="brandId">
                             <option value="">All Brands</option>
-                            <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brandId == brand.id}"></option>
+                            <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"
+                                    th:selected="${brandId == brand.id}"></option>
                         </select>
                     </div>
                     <div class="col-md-2">
@@ -79,25 +82,34 @@
                                     <div class="col-md-3">
                                         <label class="form-label">Price From</label>
                                         <div class="input-group">
-                                            <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" name="minPrice" th:value="${minPrice != null ? #numbers.formatInteger(minPrice, 0) : ''}" placeholder="From 1,000 VND">
+                                            <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control"
+                                                   name="minPrice"
+                                                   th:value="${minPrice != null ? #numbers.formatInteger(minPrice, 0) : ''}"
+                                                   placeholder="From 1,000 VND">
                                             <span class="input-group-text">₫</span>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">To</label>
                                         <div class="input-group">
-                                            <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" name="maxPrice" th:value="${maxPrice != null ? #numbers.formatInteger(maxPrice, 0) : ''}" placeholder="To 1,000,000,000 VND">
+                                            <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control"
+                                                   name="maxPrice"
+                                                   th:value="${maxPrice != null ? #numbers.formatInteger(maxPrice, 0) : ''}"
+                                                   placeholder="To 1,000,000,000 VND">
                                             <span class="input-group-text">₫</span>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Minimum Stock</label>
-                                        <input type="number" class="form-control" name="minStock" th:value="${minStock}" min="0" placeholder="Enter quantity">
+                                        <input type="number" class="form-control" name="minStock" th:value="${minStock}"
+                                               min="0" placeholder="Enter quantity">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Sort By</label>
                                         <select class="form-select" name="sortOption">
-                                            <option th:each="option : ${sortOptions}" th:value="${option.value}" th:text="${option.label}" th:selected="${sortOption == option.value}"></option>
+                                            <option th:each="option : ${sortOptions}" th:value="${option.value}"
+                                                    th:text="${option.label}"
+                                                    th:selected="${sortOption == option.value}"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -121,7 +133,7 @@
                     <h5 class="text-muted">No products found</h5>
                     <p class="text-muted">Try changing filters or search terms</p>
                 </div>
-                
+
                 <div th:each="product : ${products}" class="product-card">
                     <div class="product-image-container">
                         <img th:if="${product.imageUrl}"
@@ -137,7 +149,8 @@
                         <div class="product-details">
                             <span class="detail-item">
                                 <i class="fas fa-tag"></i> 
-                                <strong>Price:</strong> <span th:text="${#numbers.formatCurrency(product.price)}"></span>
+                                <strong>Price:</strong> <span
+                                    th:text="${#numbers.formatCurrency(product.price)}"></span>
                             </span>
                             <span class="detail-item">
                                 <i class="fas fa-box"></i> 
@@ -152,15 +165,15 @@
                         </div>
                     </div>
                     <div class="product-controls">
-                        <a th:href="@{/admin/products/{id}(id=${product.productId}, page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" 
+                        <a th:href="@{/admin/products/{id}(id=${product.productId}, page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}"
                            class="btn btn-info btn-sm">
                             <i class="fas fa-eye"></i> Details
                         </a>
-                        <a th:href="@{/admin/products/{id}/edit(id=${product.productId}, page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" 
+                        <a th:href="@{/admin/products/{id}/edit(id=${product.productId}, page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}"
                            class="btn btn-warning btn-sm">
                             <i class="fas fa-edit"></i> Edit
                         </a>
-                        <button type="button" class="btn btn-danger btn-sm" 
+                        <button type="button" class="btn btn-danger btn-sm"
                                 th:onclick="'confirmDelete(' + ${product.productId} + ', ' + ${currentPage} + ')'">
                             <i class="fas fa-trash"></i> Delete
                         </button>
@@ -172,11 +185,13 @@
             <div th:if="${totalPages > 0}" class="pagination-section">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="pagination-info">
-                        Showing <span th:text="${products.numberOfElements}"></span> / <span th:text="${totalItems}"></span> products
+                        Showing <span th:text="${products.numberOfElements}"></span> / <span
+                            th:text="${totalItems}"></span> products
                     </div>
                     <div class="page-size-selector">
                         <label class="me-2">Show:</label>
-                        <select class="form-select form-select-sm" style="width: auto;" onchange="changePageSize(this.value)">
+                        <select class="form-select form-select-sm" style="width: auto;"
+                                onchange="changePageSize(this.value)">
                             <option value="5" th:selected="${size == 5}">5</option>
                             <option value="10" th:selected="${size == 10}">10</option>
                             <option value="20" th:selected="${size == 20}">20</option>
@@ -184,29 +199,36 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <nav th:if="${totalPages > 1}" aria-label="Page navigation">
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/products(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}">
+                            <a class="page-link"
+                               th:href="@{/admin/products(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}">
                                 <i class="fas fa-angle-double-left"></i>
                             </a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/products(page=${currentPage - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}">
+                            <a class="page-link"
+                               th:href="@{/admin/products(page=${currentPage - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}">
                                 <i class="fas fa-angle-left"></i>
                             </a>
                         </li>
-                        <li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}" th:classappend="${currentPage == i} ? 'active'">
-                            <a class="page-link" th:href="@{/admin/products(page=${i}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" th:text="${i + 1}"></a>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                            th:classappend="${currentPage == i} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/admin/products(page=${i}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}"
+                               th:text="${i + 1}"></a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/products(page=${currentPage + 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}">
+                            <a class="page-link"
+                               th:href="@{/admin/products(page=${currentPage + 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}">
                                 <i class="fas fa-angle-right"></i>
                             </a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/products(page=${totalPages - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}">
+                            <a class="page-link"
+                               th:href="@{/admin/products(page=${totalPages - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}">
                                 <i class="fas fa-angle-double-right"></i>
                             </a>
                         </li>
@@ -231,7 +253,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form id="deleteForm" method="post" style="display: inline;">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button>
                 </form>
             </div>
@@ -250,11 +272,11 @@
         deleteForm.action = `/admin/products/${productId}/delete?page=${currentPage}`;
         modal.show();
     }
-    
+
     function resetFilters() {
         window.location.href = '/admin/products';
     }
-    
+
     function changePageSize(size) {
         const url = new URL(window.location);
         url.searchParams.set('size', size);

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "vnpay")
 public class VNPayConfig {
-    
+
     private String tmnCode;
     private String hashSecret;
     private String url;
@@ -16,7 +16,7 @@ public class VNPayConfig {
     private String currCode;
     private String locale;
     private String version;
-    
+
     public VNPayConfig() {
         // Default values
         this.command = "pay";

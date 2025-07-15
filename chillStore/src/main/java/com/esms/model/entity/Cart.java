@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name ="carts")
+@Table(name = "carts")
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,8 @@ public class Cart {
     private LocalDateTime createdAt;
 
     // Constructors
-    public Cart() {}
+    public Cart() {
+    }
 
     public Cart(Customer customer, Product product, int quantity) {
         this.customer = customer;

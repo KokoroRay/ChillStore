@@ -11,7 +11,6 @@ body {
 }
 
 
-
 .logo {
     text-align: center;
     margin-bottom: 30px;
@@ -44,7 +43,6 @@ body {
 }
 
 
-
 .nav-link.active {
     background-color: #3498db;
 }
@@ -53,7 +51,7 @@ body {
     background-color: white;
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .warehouse-section h2 {
@@ -196,12 +194,13 @@ th, td {
 }
 
 th {
-    background-color: #1f1f1f;   /* Màu đen đậm */
-    color: #fff;                 /* Chữ trắng */
+    background-color: #1f1f1f; /* Màu đen đậm */
+    color: #fff; /* Chữ trắng */
     font-weight: bold;
     padding: 12px;
     text-align: left;
 }
+
 tr:hover {
     background-color: #f8f9fa;
 }
@@ -268,7 +267,7 @@ tr:hover {
     background-color: white;
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 800px;
     margin: 0 auto;
 }

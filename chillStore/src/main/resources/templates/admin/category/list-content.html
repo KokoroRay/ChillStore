@@ -1,64 +1,65 @@
 <div th:fragment="content(categories, keyword, error)">
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <form th:action="@{/admin/category}" method="get" class="d-flex w-75">
-      <input type="text"
-             name="keyword"
-             class="form-control"
-             placeholder="Search Category"
-             th:value="${keyword}">
-      <button type="submit" class="btn ms-2">
-        <img th:src="@{/images/search.png}" alt="Search" width="20" height="20">
-      </button>
-    </form>
-    <a th:href="@{/admin/category/add}" class="btn btn-primary">
-      <i class="fas fa-plus"></i> Add Category
-    </a>
-  </div>
-
-  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-
-  <div th:if="${#lists.isEmpty(categories)}" class="text-center text-muted py-5">
-    <h4><i class="fas fa-inbox"></i> No categories found</h4>
-    <p>Try changing your search or add a new category</p>
-  </div>
-
-  <div th:if="${!#lists.isEmpty(categories)}" class="row">
-    <div class="col-12">
-      <div class="">
-        <h5 class="mb-0">Category List</h5>
-      </div><br><br>
-      <div class="card shadow-sm">
-
-        <div class="card-body p-0">
-          <table class="table table-hover mb-0">
-            <thead class="table-primary">
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th class="text-end">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="cat : ${categories}">
-              <td th:text="${cat.id}">1</td>
-              <td th:text="${cat.name}">Category Name</td>
-              <td class="text-end">
-                <a th:href="@{/admin/category/edit/{id}(id=${cat.id})}"
-                   class="btn btn-sm me-2">
-                  <img th:src="@{/images/update.png}" alt="Update" width="30" height="30">
-                </a>
-                <a th:href="@{/admin/category/delete/{id}(id=${cat.id})}"
-                   onclick="return confirm('Are you sure you want to delete this category?');"
-                   class="btn btn-sm">
-                  <img th:src="@{/images/delete.png}" alt="Delete" width="30" height="30">
-                </a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <form th:action="@{/admin/category}" method="get" class="d-flex w-75">
+            <input type="text"
+                   name="keyword"
+                   class="form-control"
+                   placeholder="Search Category"
+                   th:value="${keyword}">
+            <button type="submit" class="btn ms-2">
+                <img th:src="@{/images/search.png}" alt="Search" width="20" height="20">
+            </button>
+        </form>
+        <a th:href="@{/admin/category/add}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Category
+        </a>
     </div>
-  </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div th:if="${#lists.isEmpty(categories)}" class="text-center text-muted py-5">
+        <h4><i class="fas fa-inbox"></i> No categories found</h4>
+        <p>Try changing your search or add a new category</p>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(categories)}" class="row">
+        <div class="col-12">
+            <div class="">
+                <h5 class="mb-0">Category List</h5>
+            </div>
+            <br><br>
+            <div class="card shadow-sm">
+
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-primary">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="cat : ${categories}">
+                            <td th:text="${cat.id}">1</td>
+                            <td th:text="${cat.name}">Category Name</td>
+                            <td class="text-end">
+                                <a th:href="@{/admin/category/edit/{id}(id=${cat.id})}"
+                                   class="btn btn-sm me-2">
+                                    <img th:src="@{/images/update.png}" alt="Update" width="30" height="30">
+                                </a>
+                                <a th:href="@{/admin/category/delete/{id}(id=${cat.id})}"
+                                   onclick="return confirm('Are you sure you want to delete this category?');"
+                                   class="btn btn-sm">
+                                    <img th:src="@{/images/delete.png}" alt="Delete" width="30" height="30">
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

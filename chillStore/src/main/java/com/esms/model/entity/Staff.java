@@ -12,7 +12,7 @@ public class Staff {
     private Integer id;
     @Column(name = "name")
     private String name;
-    @Column(name = "email" )
+    @Column(name = "email")
     private String email;
     @Column(name = "password")
     private String password;

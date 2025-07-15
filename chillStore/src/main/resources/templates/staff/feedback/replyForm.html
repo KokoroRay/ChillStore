@@ -13,23 +13,23 @@
     <div th:insert="~{fragments/sidebarStaff :: sidebarStaff}"></div>
     <div class="content">
         <div class="container mt-5">
-    <h2 class="text-center mb-4">Reply to Feedback</h2>
+            <h2 class="text-center mb-4">Reply to Feedback</h2>
 
-    <form th:action="@{/staff/manageFeedback/reply}" th:object="${reply}" method="post">
-        <!-- Ẩn ID feedback -->
-        <input type="hidden" th:field="*{feedbackId}" />
+            <form th:action="@{/staff/manageFeedback/reply}" th:object="${reply}" method="post">
+                <!-- Ẩn ID feedback -->
+                <input type="hidden" th:field="*{feedbackId}"/>
 
-        <div class="mb-3">
-            <label for="content" class="form-label">Your Reply</label>
-            <textarea th:field="*{content}" class="form-control" id="content" rows="5" required></textarea>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Your Reply</label>
+                    <textarea th:field="*{content}" class="form-control" id="content" rows="5" required></textarea>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Submit Reply</button>
+                    <a th:href="@{/staff/manageFeedback}" class="btn btn-secondary ms-2">Back</a>
+                </div>
+            </form>
         </div>
-
-        <div class="text-center">
-            <button type="submit" class="btn btn-success">Submit Reply</button>
-            <a th:href="@{/staff/manageFeedback}" class="btn btn-secondary ms-2">Back</a>
-        </div>
-    </form>
-</div>
     </div>
 </div>
 </body>

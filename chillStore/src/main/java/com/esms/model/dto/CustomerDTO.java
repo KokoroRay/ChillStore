@@ -2,6 +2,7 @@ package com.esms.model.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class CustomerDTO {
@@ -31,7 +32,8 @@ public class CustomerDTO {
 
     private String gender;
 
-    public CustomerDTO() {}
+    public CustomerDTO() {
+    }
 
     public CustomerDTO(Integer customerId, String name, String displayName, String email, String password,
                        String phone, String address, LocalDate birthDate, LocalDateTime createdAt,
@@ -51,6 +53,7 @@ public class CustomerDTO {
     public Integer getCustomerId() {
         return customerId;
     }
+
     public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
@@ -58,6 +61,7 @@ public class CustomerDTO {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -65,6 +69,7 @@ public class CustomerDTO {
     public String getDisplayName() {
         return displayName;
     }
+
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
@@ -72,6 +77,7 @@ public class CustomerDTO {
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -79,6 +85,7 @@ public class CustomerDTO {
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -86,6 +93,7 @@ public class CustomerDTO {
     public String getPhone() {
         return phone;
     }
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
@@ -93,6 +101,7 @@ public class CustomerDTO {
     public String getAddress() {
         return address;
     }
+
     public void setAddress(String address) {
         this.address = address;
     }
@@ -100,6 +109,7 @@ public class CustomerDTO {
     public LocalDate getBirthDate() {
         return birthDate;
     }
+
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
@@ -107,6 +117,7 @@ public class CustomerDTO {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -114,6 +125,7 @@ public class CustomerDTO {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
+
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
@@ -121,6 +133,7 @@ public class CustomerDTO {
     public boolean isLocked() {
         return isLocked;
     }
+
     public void setLocked(boolean locked) {
         isLocked = locked;
     }
@@ -128,6 +141,7 @@ public class CustomerDTO {
     public String getAvatarUrl() {
         return avatarUrl;
     }
+
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
@@ -135,6 +149,7 @@ public class CustomerDTO {
     public String getGender() {
         return gender;
     }
+
     public void setGender(String gender) {
         this.gender = gender;
     }

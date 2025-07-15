@@ -13,27 +13,27 @@ import java.time.LocalDateTime;
 public class MaintenanceDto {
     // Getters and Setters
     private Integer requestId;
-    
+
     private Integer orderId;
-    
+
     private Integer productId;
-    
+
     private Integer customerId;
-    
+
     private Integer staffId;
-    
+
     private String staffName;
-    
+
     @NotBlank(message = "Request type is required")
     private String requestType;
-    
+
     @NotNull(message = "Maintenance date is required")
     @FutureOrPresent(message = "Maintenance date must be today or in the future")
     private LocalDateTime requestDate;
-    
+
     @NotBlank(message = "Reason is required")
     private String reason;
-    
+
     private String status;
 
     // Additional fields for display
@@ -42,7 +42,8 @@ public class MaintenanceDto {
     private String customerInfo;
 
     // Constructors
-    public MaintenanceDto() {}
+    public MaintenanceDto() {
+    }
 
     public MaintenanceDto(Integer requestId, Integer orderId, Integer productId, Integer customerId, Integer staffId, String requestType, LocalDateTime requestDate, String reason, String status) {
         this.requestId = requestId;
@@ -72,9 +73,20 @@ public class MaintenanceDto {
         this.staffName = staffName;
     }
 
-    public Integer getStaffId() { return staffId; }
-    public void setStaffId(Integer staffId) { this.staffId = staffId; }
-    public String getStaffName() { return staffName; }
-    public void setStaffName(String staffName) { this.staffName = staffName; }
+    public Integer getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(Integer staffId) {
+        this.staffId = staffId;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
+    }
 
 }

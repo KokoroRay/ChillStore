@@ -52,10 +52,12 @@
                             <tr>
                                 <td class="fw-bold">Status:</td>
                                 <td>
-                                    <span th:if="${maintenance.status == 'Pending'}" class="badge bg-warning">Pending</span>
+                                    <span th:if="${maintenance.status == 'Pending'}"
+                                          class="badge bg-warning">Pending</span>
                                     <span th:if="${maintenance.status == 'In Progress'}" class="badge bg-primary">In Progress</span>
                                     <span th:if="${maintenance.status == 'Completed'}" class="badge bg-success">Completed</span>
-                                    <span th:if="${maintenance.status == 'Cancelled'}" class="badge bg-danger">Cancelled</span>
+                                    <span th:if="${maintenance.status == 'Cancelled'}"
+                                          class="badge bg-danger">Cancelled</span>
                                 </td>
                             </tr>
                             <tr>
@@ -67,7 +69,8 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a th:href="@{/admin/maintenance/edit/{id}(id=${maintenance.requestId})}" class="btn btn-warning">Edit</a>
+                <a th:href="@{/admin/maintenance/edit/{id}(id=${maintenance.requestId})}"
+                   class="btn btn-warning">Edit</a>
                 <a th:href="@{/admin/maintenance}" class="btn btn-secondary">Back to List</a>
             </div>
         </div>

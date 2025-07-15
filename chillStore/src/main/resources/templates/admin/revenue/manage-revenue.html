@@ -21,429 +21,459 @@
     <div class="row">
         <!-- Sidebar -->
         <div th:insert="~{fragments/sidebar :: sidebar}"></div>
-        
+
         <!-- Main Content -->
         <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content" style="margin-top: 100px;">
-                <!-- Filters -->
-                <form th:action="@{/admin/revenue}" method="get" class="revenue-filter-section">
-                    <div class="row g-3">
-                        <div class="col-lg-2 col-md-4">
-                            <label class="form-label">Period</label>
-                            <select name="period" id="periodSelect" class="form-select">
-                                <option value="daily" th:selected="${period == 'daily'}">Today</option>
-                                <option value="weekly" th:selected="${period == 'weekly'}">This Week</option>
-                                <option value="monthly" th:selected="${period == 'monthly'}">This Month</option>
-                                <option value="quarterly" th:selected="${period == 'quarterly'}">This Quarter</option>
-                                <option value="yearly" th:selected="${period == 'yearly'}">This Year</option>
-                                <option value="custom" th:selected="${period == 'custom'}">Custom</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-md-4">
-                            <label class="form-label">From Date</label>
-                            <input type="date" name="startDate" id="startDateInput" class="form-control"
-                                   th:value="${#dates.format(startDate, 'yyyy-MM-dd')}">
-                        </div>
-                        <div class="col-lg-2 col-md-4">
-                            <label class="form-label">To Date</label>
-                            <input type="date" name="endDate" id="endDateInput" class="form-control"
-                                   th:value="${#dates.format(endDate, 'yyyy-MM-dd')}">
-                        </div>
-                        <div class="col-lg-2 col-md-4">
-                            <label class="form-label">Category</label>
-                            <select name="category" class="form-select">
-                                <option value="" th:selected="${category == null}">All</option>
-                                <option th:each="cat : ${categories}"
-                                        th:value="${cat.id}"
-                                        th:text="${cat.name}"
-                                        th:selected="${category == cat.id}"></option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-md-4">
-                            <label class="form-label">Region</label>
-                            <select name="region" class="form-select">
-                                <option value="" th:selected="${region == null}">All</option>
-                                <option th:each="reg : ${regions}"
-                                        th:value="${reg}"
-                                        th:text="${reg}"
-                                        th:selected="${region == reg}"></option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-md-4">
-                            <label class="form-label">Status</label>
-                            <select name="status" class="form-select">
-                                <option value="" th:selected="${status == null}">All</option>
-                                <option value="Paid" th:selected="${status == 'Paid'}">Paid</option>
-                                <option value="Shipped" th:selected="${status == 'Shipped'}">Shipped</option>
-                                <option value="Delivered" th:selected="${status == 'Delivered'}">Delivered</option>
-                                <option value="Cancelled" th:selected="${status == 'Cancelled'}">Cancelled</option>
-                            </select>
-                        </div>
+            <!-- Filters -->
+            <form th:action="@{/admin/revenue}" method="get" class="revenue-filter-section">
+                <div class="row g-3">
+                    <div class="col-lg-2 col-md-4">
+                        <label class="form-label">Period</label>
+                        <select name="period" id="periodSelect" class="form-select">
+                            <option value="daily" th:selected="${period == 'daily'}">Today</option>
+                            <option value="weekly" th:selected="${period == 'weekly'}">This Week</option>
+                            <option value="monthly" th:selected="${period == 'monthly'}">This Month</option>
+                            <option value="quarterly" th:selected="${period == 'quarterly'}">This Quarter</option>
+                            <option value="yearly" th:selected="${period == 'yearly'}">This Year</option>
+                            <option value="custom" th:selected="${period == 'custom'}">Custom</option>
+                        </select>
                     </div>
-
-                    <!-- Comparison options -->
-                    <div class="comparison-options mt-3">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="comparePeriod" name="comparePeriod"
-                                   th:checked="${comparePeriod}">
-                            <label class="form-check-label" for="comparePeriod">Compare with Previous Period</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="compareYoY" name="compareYoY"
-                                   th:checked="${compareYoY}">
-                            <label class="form-check-label" for="compareYoY">Compare Year-over-Year (YoY)</label>
-                        </div>
+                    <div class="col-lg-2 col-md-4">
+                        <label class="form-label">From Date</label>
+                        <input type="date" name="startDate" id="startDateInput" class="form-control"
+                               th:value="${#dates.format(startDate, 'yyyy-MM-dd')}">
                     </div>
+                    <div class="col-lg-2 col-md-4">
+                        <label class="form-label">To Date</label>
+                        <input type="date" name="endDate" id="endDateInput" class="form-control"
+                               th:value="${#dates.format(endDate, 'yyyy-MM-dd')}">
+                    </div>
+                    <div class="col-lg-2 col-md-4">
+                        <label class="form-label">Category</label>
+                        <select name="category" class="form-select">
+                            <option value="" th:selected="${category == null}">All</option>
+                            <option th:each="cat : ${categories}"
+                                    th:value="${cat.id}"
+                                    th:text="${cat.name}"
+                                    th:selected="${category == cat.id}"></option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-4">
+                        <label class="form-label">Region</label>
+                        <select name="region" class="form-select">
+                            <option value="" th:selected="${region == null}">All</option>
+                            <option th:each="reg : ${regions}"
+                                    th:value="${reg}"
+                                    th:text="${reg}"
+                                    th:selected="${region == reg}"></option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-4">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select">
+                            <option value="" th:selected="${status == null}">All</option>
+                            <option value="Paid" th:selected="${status == 'Paid'}">Paid</option>
+                            <option value="Shipped" th:selected="${status == 'Shipped'}">Shipped</option>
+                            <option value="Delivered" th:selected="${status == 'Delivered'}">Delivered</option>
+                            <option value="Cancelled" th:selected="${status == 'Cancelled'}">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Apply</button>
-                </form>
+                <!-- Comparison options -->
+                <div class="comparison-options mt-3">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="comparePeriod" name="comparePeriod"
+                               th:checked="${comparePeriod}">
+                        <label class="form-check-label" for="comparePeriod">Compare with Previous Period</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="compareYoY" name="compareYoY"
+                               th:checked="${compareYoY}">
+                        <label class="form-check-label" for="compareYoY">Compare Year-over-Year (YoY)</label>
+                    </div>
+                </div>
 
-                <!-- KPIs -->
-                <div class="row mb-4">
-                    <!-- Gross Revenue - Change bg-primary to customize color -->
-                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-                        <div class="card text-white kpi-card kpi-gross-revenue" onclick="showKpiDetails('gross', 'Gross Revenue')" style="cursor: pointer;">
-                            <div class="card-body">
-                                <i class="fas fa-sack-dollar kpi-icon"></i>
-                                <h5 class="card-title">Gross Revenue</h5>
-                                <h3 class="stat-value" th:text="${grossRevenue != null ? #numbers.formatDecimal(grossRevenue/1000000000, 1, 3, 'COMMA') + 'B' : '0B'}">0B</h3>
+                <button type="submit" class="btn btn-primary mt-3">Apply</button>
+            </form>
 
-                                <!-- Previous period comparison badge -->
-                                <div th:if="${comparePeriod}" class="comparison-badge">
+            <!-- KPIs -->
+            <div class="row mb-4">
+                <!-- Gross Revenue - Change bg-primary to customize color -->
+                <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                    <div class="card text-white kpi-card kpi-gross-revenue"
+                         onclick="showKpiDetails('gross', 'Gross Revenue')" style="cursor: pointer;">
+                        <div class="card-body">
+                            <i class="fas fa-sack-dollar kpi-icon"></i>
+                            <h5 class="card-title">Gross Revenue</h5>
+                            <h3 class="stat-value"
+                                th:text="${grossRevenue != null ? #numbers.formatDecimal(grossRevenue/1000000000, 1, 3, 'COMMA') + 'B' : '0B'}">
+                                0B</h3>
+
+                            <!-- Previous period comparison badge -->
+                            <div th:if="${comparePeriod}" class="comparison-badge">
                                     <span th:classappend="${grossRevenueChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${grossRevenueChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(grossRevenueChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
-                                </div>
+                                <small>Kỳ trước</small>
+                            </div>
 
-                                <!-- YoY comparison badge -->
-                                <div th:if="${compareYoY}" class="comparison-badge">
+                            <!-- YoY comparison badge -->
+                            <div th:if="${compareYoY}" class="comparison-badge">
                                     <span th:classappend="${yoyGrossRevenueChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${yoyGrossRevenueChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(yoyGrossRevenueChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>YoY</small>
-                                </div>
-
-                                <button class="drilldown-btn" data-type="gross">
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
+                                <small>YoY</small>
                             </div>
+
+                            <button class="drilldown-btn" data-type="gross">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Net Revenue - Change bg-success to customize color -->
-                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-                        <div class="card text-white kpi-card kpi-net-revenue" onclick="showKpiDetails('net', 'Net Revenue')" style="cursor: pointer;">
-                            <div class="card-body">
-                                <i class="fas fa-wallet kpi-icon"></i>
-                                <h5 class="card-title">Net Revenue</h5>
-                                <h3 class="stat-value" th:text="${netRevenue != null ? #numbers.formatDecimal(netRevenue/1000000000, 1, 3, 'COMMA') + 'B' : '0B'}">0B</h3>
+                <!-- Net Revenue - Change bg-success to customize color -->
+                <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                    <div class="card text-white kpi-card kpi-net-revenue" onclick="showKpiDetails('net', 'Net Revenue')"
+                         style="cursor: pointer;">
+                        <div class="card-body">
+                            <i class="fas fa-wallet kpi-icon"></i>
+                            <h5 class="card-title">Net Revenue</h5>
+                            <h3 class="stat-value"
+                                th:text="${netRevenue != null ? #numbers.formatDecimal(netRevenue/1000000000, 1, 3, 'COMMA') + 'B' : '0B'}">
+                                0B</h3>
 
-                                <div th:if="${comparePeriod}" class="comparison-badge">
+                            <div th:if="${comparePeriod}" class="comparison-badge">
                                     <span th:classappend="${netRevenueChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${netRevenueChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(netRevenueChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
-                                </div>
+                                <small>Kỳ trước</small>
+                            </div>
 
-                                <div th:if="${compareYoY}" class="comparison-badge">
+                            <div th:if="${compareYoY}" class="comparison-badge">
                                     <span th:classappend="${yoyNetRevenueChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${yoyNetRevenueChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(yoyNetRevenueChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>YoY</small>
-                                </div>
-
-                                <button class="drilldown-btn" data-type="net">
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
+                                <small>YoY</small>
                             </div>
+
+                            <button class="drilldown-btn" data-type="net">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Order Count - Change bg-info to customize color -->
-                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-                        <div class="card text-white kpi-card kpi-order-count" onclick="showKpiDetails('orders', 'Order Count')" style="cursor: pointer;">
-                            <div class="card-body">
-                                <i class="fas fa-shopping-cart kpi-icon"></i>
-                                <h5 class="card-title">Order Count</h5>
-                                <h3 class="stat-value" th:text="${orderCount != null ? #numbers.formatInteger(orderCount, 0, 'COMMA') : '0'}">0</h3>
+                <!-- Order Count - Change bg-info to customize color -->
+                <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                    <div class="card text-white kpi-card kpi-order-count"
+                         onclick="showKpiDetails('orders', 'Order Count')" style="cursor: pointer;">
+                        <div class="card-body">
+                            <i class="fas fa-shopping-cart kpi-icon"></i>
+                            <h5 class="card-title">Order Count</h5>
+                            <h3 class="stat-value"
+                                th:text="${orderCount != null ? #numbers.formatInteger(orderCount, 0, 'COMMA') : '0'}">
+                                0</h3>
 
-                                <div th:if="${comparePeriod}" class="comparison-badge">
+                            <div th:if="${comparePeriod}" class="comparison-badge">
                                     <span th:classappend="${orderCountChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${orderCountChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(orderCountChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
-                                </div>
+                                <small>Kỳ trước</small>
+                            </div>
 
-                                <div th:if="${compareYoY}" class="comparison-badge">
+                            <div th:if="${compareYoY}" class="comparison-badge">
                                     <span th:classappend="${yoyOrderCountChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${yoyOrderCountChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(yoyOrderCountChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>YoY</small>
-                                </div>
-
-                                <button class="drilldown-btn" data-type="orders">
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
+                                <small>YoY</small>
                             </div>
+
+                            <button class="drilldown-btn" data-type="orders">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Average Order Value - Change bg-warning to customize color -->
-                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-                        <div class="card kpi-card kpi-aov" onclick="showKpiDetails('aov', 'Average Order Value')" style="cursor: pointer;">
-                            <div class="card-body">
-                                <i class="fas fa-tag kpi-icon"></i>
-                                <h5 class="card-title">Average Order Value</h5>
-                                <h3 class="stat-value" th:text="${aov != null ? #numbers.formatDecimal(aov/1000, 1, 0, 'COMMA') + 'K' : '0K'}">0K</h3>
+                <!-- Average Order Value - Change bg-warning to customize color -->
+                <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                    <div class="card kpi-card kpi-aov" onclick="showKpiDetails('aov', 'Average Order Value')"
+                         style="cursor: pointer;">
+                        <div class="card-body">
+                            <i class="fas fa-tag kpi-icon"></i>
+                            <h5 class="card-title">Average Order Value</h5>
+                            <h3 class="stat-value"
+                                th:text="${aov != null ? #numbers.formatDecimal(aov/1000, 1, 0, 'COMMA') + 'K' : '0K'}">
+                                0K</h3>
 
-                                <div th:if="${comparePeriod}" class="comparison-badge">
+                            <div th:if="${comparePeriod}" class="comparison-badge">
                                     <span th:classappend="${aovChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${aovChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(aovChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
-                                </div>
+                                <small>Kỳ trước</small>
+                            </div>
 
-                                <div th:if="${compareYoY}" class="comparison-badge">
+                            <div th:if="${compareYoY}" class="comparison-badge">
                                     <span th:classappend="${yoyAovChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${yoyAovChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(yoyAovChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>YoY</small>
-                                </div>
-
-                                <button class="drilldown-btn" data-type="aov">
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
+                                <small>YoY</small>
                             </div>
+
+                            <button class="drilldown-btn" data-type="aov">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Cancellation Rate - Change bg-danger to customize color -->
-                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-                        <div class="card text-white kpi-card kpi-cancellation" onclick="showKpiDetails('cancellation', 'Cancellation Rate')" style="cursor: pointer;">
-                            <div class="card-body">
-                                <i class="fas fa-ban kpi-icon"></i>
-                                <h5 class="card-title">Cancellation Rate</h5>
-                                <h3 class="stat-value" th:text="${cancellationRate != null ? #numbers.formatPercent(cancellationRate, 1, 1) : '0%'}">0%</h3>
+                <!-- Cancellation Rate - Change bg-danger to customize color -->
+                <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                    <div class="card text-white kpi-card kpi-cancellation"
+                         onclick="showKpiDetails('cancellation', 'Cancellation Rate')" style="cursor: pointer;">
+                        <div class="card-body">
+                            <i class="fas fa-ban kpi-icon"></i>
+                            <h5 class="card-title">Cancellation Rate</h5>
+                            <h3 class="stat-value"
+                                th:text="${cancellationRate != null ? #numbers.formatPercent(cancellationRate, 1, 1) : '0%'}">
+                                0%</h3>
 
-                                <div th:if="${comparePeriod}" class="comparison-badge">
+                            <div th:if="${comparePeriod}" class="comparison-badge">
                                     <span th:classappend="${cancellationRateChange > 0} ? 'trend-down' : 'trend-up'">
                                         <i th:classappend="${cancellationRateChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(cancellationRateChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
-                                </div>
+                                <small>Kỳ trước</small>
+                            </div>
 
-                                <div th:if="${compareYoY}" class="comparison-badge">
+                            <div th:if="${compareYoY}" class="comparison-badge">
                                     <span th:classappend="${yoyCancellationRateChange > 0} ? 'trend-down' : 'trend-up'">
                                         <i th:classappend="${yoyCancellationRateChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(yoyCancellationRateChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>YoY</small>
-                                </div>
-
-                                <div class="alert-badge">!</div>
-                                <button class="drilldown-btn" data-type="cancellation">
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
+                                <small>YoY</small>
                             </div>
+
+                            <div class="alert-badge">!</div>
+                            <button class="drilldown-btn" data-type="cancellation">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Gross Margin - Change bg-secondary to customize color -->
-                    <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
-                        <div class="card text-white kpi-card kpi-margin" onclick="showKpiDetails('margin', 'Gross Margin')" style="cursor: pointer;">
-                            <div class="card-body">
-                                <i class="fas fa-percent kpi-icon"></i>
-                                <h5 class="card-title">Gross Margin</h5>
-                                <h3 class="stat-value" th:text="${grossMargin != null ? #numbers.formatPercent(grossMargin, 1, 1) : '0%'}">0%</h3>
+                <!-- Gross Margin - Change bg-secondary to customize color -->
+                <div class="col-xl-2 col-md-4 col-sm-6 mb-4">
+                    <div class="card text-white kpi-card kpi-margin" onclick="showKpiDetails('margin', 'Gross Margin')"
+                         style="cursor: pointer;">
+                        <div class="card-body">
+                            <i class="fas fa-percent kpi-icon"></i>
+                            <h5 class="card-title">Gross Margin</h5>
+                            <h3 class="stat-value"
+                                th:text="${grossMargin != null ? #numbers.formatPercent(grossMargin, 1, 1) : '0%'}">
+                                0%</h3>
 
-                                <div th:if="${comparePeriod}" class="comparison-badge">
+                            <div th:if="${comparePeriod}" class="comparison-badge">
                                     <span th:classappend="${grossMarginChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${grossMarginChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(grossMarginChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
-                                </div>
+                                <small>Kỳ trước</small>
+                            </div>
 
-                                <div th:if="${compareYoY}" class="comparison-badge">
+                            <div th:if="${compareYoY}" class="comparison-badge">
                                     <span th:classappend="${yoyGrossMarginChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${yoyGrossMarginChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(yoyGrossMarginChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>YoY</small>
-                                </div>
-
-                                <button class="drilldown-btn" data-type="margin">
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
+                                <small>YoY</small>
                             </div>
+
+                            <button class="drilldown-btn" data-type="margin">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Comparison Section -->
-                <div th:if="${comparePeriod or compareYoY}" class="comparison-section">
-                    <div class="row">
-                        <!-- Period Comparison -->
-                        <div th:if="${comparePeriod}" class="col-lg-6 mb-4">
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <i class="fas fa-calendar-day me-2"></i>
-                                    So sánh với kỳ trước
-                                    <span class="comparison-period">
+            <!-- Comparison Section -->
+            <div th:if="${comparePeriod or compareYoY}" class="comparison-section">
+                <div class="row">
+                    <!-- Period Comparison -->
+                    <div th:if="${comparePeriod}" class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <i class="fas fa-calendar-day me-2"></i>
+                                So sánh với kỳ trước
+                                <span class="comparison-period">
                                         (<span th:text="${#dates.format(prevStartDate, 'dd/MM/yyyy')}"></span> -
                                         <span th:text="${#dates.format(prevEndDate, 'dd/MM/yyyy')}"></span>)
                                     </span>
-                                </div>
-                                <div class="card-body">
-                                    <div class="comparison-grid">
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Tổng Doanh Thu</div>
-                                            <div class="comparison-value" th:text="${prevGrossRevenue != null ? #numbers.formatDecimal(prevGrossRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
-                                        </div>
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Doanh Thu Thuần</div>
-                                            <div class="comparison-value" th:text="${prevNetRevenue != null ? #numbers.formatDecimal(prevNetRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
-                                        </div>
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Số Đơn Hàng</div>
-                                            <div class="comparison-value" th:text="${prevOrderCount != null ? #numbers.formatInteger(prevOrderCount, 0, 'COMMA') : 'N/A'}"></div>
-                                        </div>
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Giá Trị Đơn TB</div>
-                                            <div class="comparison-value" th:text="${prevAov != null ? #numbers.formatDecimal(prevAov/1000, 1, 0, 'COMMA') + 'k' : 'N/A'}"></div>
-                                        </div>
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Tỷ Lệ Hủy Đơn</div>
-                                            <div class="comparison-value" th:text="${prevCancellationRate != null ? #numbers.formatPercent(prevCancellationRate, 1, 1) : 'N/A'}"></div>
-                                        </div>
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Biên Lợi Nhuận</div>
-                                            <div class="comparison-value" th:text="${prevGrossMargin != null ? #numbers.formatPercent(prevGrossMargin, 1, 1) : 'N/A'}"></div>
-                                        </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="comparison-grid">
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Tổng Doanh Thu</div>
+                                        <div class="comparison-value"
+                                             th:text="${prevGrossRevenue != null ? #numbers.formatDecimal(prevGrossRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Doanh Thu Thuần</div>
+                                        <div class="comparison-value"
+                                             th:text="${prevNetRevenue != null ? #numbers.formatDecimal(prevNetRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Số Đơn Hàng</div>
+                                        <div class="comparison-value"
+                                             th:text="${prevOrderCount != null ? #numbers.formatInteger(prevOrderCount, 0, 'COMMA') : 'N/A'}"></div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Giá Trị Đơn TB</div>
+                                        <div class="comparison-value"
+                                             th:text="${prevAov != null ? #numbers.formatDecimal(prevAov/1000, 1, 0, 'COMMA') + 'k' : 'N/A'}"></div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Tỷ Lệ Hủy Đơn</div>
+                                        <div class="comparison-value"
+                                             th:text="${prevCancellationRate != null ? #numbers.formatPercent(prevCancellationRate, 1, 1) : 'N/A'}"></div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Biên Lợi Nhuận</div>
+                                        <div class="comparison-value"
+                                             th:text="${prevGrossMargin != null ? #numbers.formatPercent(prevGrossMargin, 1, 1) : 'N/A'}"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- YoY Comparison -->
-                        <div th:if="${compareYoY}" class="col-lg-6 mb-4">
-                            <div class="card">
-                                <div class="card-header bg-warning text-dark">
-                                    <i class="fas fa-calendar-star me-2"></i>
-                                    So sánh cùng kỳ năm trước (YoY)
-                                    <span class="comparison-period">
+                    <!-- YoY Comparison -->
+                    <div th:if="${compareYoY}" class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header bg-warning text-dark">
+                                <i class="fas fa-calendar-star me-2"></i>
+                                So sánh cùng kỳ năm trước (YoY)
+                                <span class="comparison-period">
                                         (<span th:text="${#dates.format(yoyStartDate, 'dd/MM/yyyy')}"></span> -
                                         <span th:text="${#dates.format(yoyEndDate, 'dd/MM/yyyy')}"></span>)
                                     </span>
-                                </div>
-                                <div class="card-body">
-                                    <div class="comparison-grid">
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Tổng Doanh Thu</div>
-                                            <div class="comparison-value" th:text="${yoyGrossRevenue != null ? #numbers.formatDecimal(yoyGrossRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
-                                        </div>
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Doanh Thu Thuần</div>
-                                            <div class="comparison-value" th:text="${yoyNetRevenue != null ? #numbers.formatDecimal(yoyNetRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
-                                        </div>
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Số Đơn Hàng</div>
-                                            <div class="comparison-value" th:text="${yoyOrderCount != null ? #numbers.formatInteger(yoyOrderCount, 0, 'COMMA') : 'N/A'}"></div>
-                                        </div>
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Giá Trị Đơn TB</div>
-                                            <div class="comparison-value" th:text="${yoyAov != null ? #numbers.formatDecimal(yoyAov/1000, 1, 0, 'COMMA') + 'k' : 'N/A'}"></div>
-                                        </div>
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Tỷ Lệ Hủy Đơn</div>
-                                            <div class="comparison-value" th:text="${yoyCancellationRate != null ? #numbers.formatPercent(yoyCancellationRate, 1, 1) : 'N/A'}"></div>
-                                        </div>
-                                        <div class="comparison-item">
-                                            <div class="comparison-label">Biên Lợi Nhuận</div>
-                                            <div class="comparison-value" th:text="${yoyGrossMargin != null ? #numbers.formatPercent(yoyGrossMargin, 1, 1) : 'N/A'}"></div>
-                                        </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="comparison-grid">
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Tổng Doanh Thu</div>
+                                        <div class="comparison-value"
+                                             th:text="${yoyGrossRevenue != null ? #numbers.formatDecimal(yoyGrossRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Doanh Thu Thuần</div>
+                                        <div class="comparison-value"
+                                             th:text="${yoyNetRevenue != null ? #numbers.formatDecimal(yoyNetRevenue/1000000000, 1, 3, 'COMMA') + ' tỷ' : 'N/A'}"></div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Số Đơn Hàng</div>
+                                        <div class="comparison-value"
+                                             th:text="${yoyOrderCount != null ? #numbers.formatInteger(yoyOrderCount, 0, 'COMMA') : 'N/A'}"></div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Giá Trị Đơn TB</div>
+                                        <div class="comparison-value"
+                                             th:text="${yoyAov != null ? #numbers.formatDecimal(yoyAov/1000, 1, 0, 'COMMA') + 'k' : 'N/A'}"></div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Tỷ Lệ Hủy Đơn</div>
+                                        <div class="comparison-value"
+                                             th:text="${yoyCancellationRate != null ? #numbers.formatPercent(yoyCancellationRate, 1, 1) : 'N/A'}"></div>
+                                    </div>
+                                    <div class="comparison-item">
+                                        <div class="comparison-label">Biên Lợi Nhuận</div>
+                                        <div class="comparison-value"
+                                             th:text="${yoyGrossMargin != null ? #numbers.formatPercent(yoyGrossMargin, 1, 1) : 'N/A'}"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
 
-                <!-- Charts and Visualization -->
-                <div class="row">
-                    <!-- Revenue Trend -->
-                    <div class="col-lg-8">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="section-title">
-                                    <i class="fas fa-chart-line"></i>
-                                    <span>Revenue Trend Over Time</span>
-                                </div>
-                                <div class="chart-container" onclick="openChartModal('trend')" style="cursor: pointer;">
-                                    <canvas id="trendChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Revenue by Region -->
-                    <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="section-title">
-                                    <i class="fas fa-map-marked-alt"></i>
-                                    <span>Revenue by Region</span>
-                                </div>
-                                <div class="chart-container" onclick="openChartModal('region')" style="cursor: pointer;">
-                                    <canvas id="regionChart"></canvas>
-                                </div>
+            </div>
+
+            <!-- Charts and Visualization -->
+            <div class="row">
+                <!-- Revenue Trend -->
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="section-title">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Revenue Trend Over Time</span>
+                            </div>
+                            <div class="chart-container" onclick="openChartModal('trend')" style="cursor: pointer;">
+                                <canvas id="trendChart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row mt-4">
-                    <!-- Revenue by Category -->
-                    <div class="col-lg-5">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="section-title">
-                                    <i class="fas fa-chart-pie"></i>
-                                    <span>Revenue by Category</span>
-                                </div>
-                                <div class="chart-container" onclick="openChartModal('category')" style="cursor: pointer;">
-                                    <canvas id="categoryChart"></canvas>
-                                </div>
+                <!-- Revenue by Region -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="section-title">
+                                <i class="fas fa-map-marked-alt"></i>
+                                <span>Revenue by Region</span>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Pareto Analysis -->
-                    <div class="col-lg-7">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="section-title">
-                                    <i class="fas fa-star"></i>
-                                    <span>Pareto Analysis (80/20)</span>
-                                </div>
-                                <div class="chart-container" onclick="openChartModal('pareto')" style="cursor: pointer;">
-                                    <canvas id="paretoChart"></canvas>
-                                </div>
+                            <div class="chart-container" onclick="openChartModal('region')" style="cursor: pointer;">
+                                <canvas id="regionChart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="row mt-4">
+                <!-- Revenue by Category -->
+                <div class="col-lg-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="section-title">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Revenue by Category</span>
+                            </div>
+                            <div class="chart-container" onclick="openChartModal('category')" style="cursor: pointer;">
+                                <canvas id="categoryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pareto Analysis -->
+                <div class="col-lg-7">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="section-title">
+                                <i class="fas fa-star"></i>
+                                <span>Pareto Analysis (80/20)</span>
+                            </div>
+                            <div class="chart-container" onclick="openChartModal('pareto')" style="cursor: pointer;">
+                                <canvas id="paretoChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -455,7 +485,9 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="chartModalTitle">Chi tiết biểu đồ</h5>
                 <div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary me-2" onclick="resetZoom()">Reset Zoom</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary me-2" onclick="resetZoom()">Reset
+                        Zoom
+                    </button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
             </div>
@@ -499,10 +531,10 @@
 
     // Tạo biểu đồ xu hướng
     const trendCtx = document.getElementById('trendChart').getContext('2d');
-    
+
     if (revenueTrendData && revenueTrendData.length > 0) {
         console.log('Revenue data:', revenueTrendData);
-        
+
         const datasets = [{
             label: 'Doanh thu hiện tại',
             data: revenueTrendData.map(item => Number(item[1]) / 1000000),
@@ -514,7 +546,7 @@
             fill: false,
             tension: 0.3
         }];
-        
+
         if (comparePeriod && prevRevenueTrend && prevRevenueTrend.length > 0) {
             datasets.push({
                 label: 'Kỳ trước',
@@ -527,7 +559,7 @@
                 tension: 0.3
             });
         }
-        
+
         if (compareYoY && yoyRevenueTrend && yoyRevenueTrend.length > 0) {
             datasets.push({
                 label: 'Cùng kỳ năm trước',
@@ -540,7 +572,7 @@
                 tension: 0.3
             });
         }
-        
+
         new Chart(trendCtx, {
             type: 'line',
             data: {
@@ -571,7 +603,7 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            callback: function(value) {
+                            callback: function (value) {
                                 return value + ' triệu';
                             }
                         }
@@ -582,7 +614,6 @@
     } else {
         console.log('No revenue trend data');
     }
-
 
 
     // Biểu đồ doanh thu theo khu vực
@@ -603,7 +634,7 @@
                 plugins: {
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
+                            label: function (context) {
                                 return context.label + ': ' + context.parsed.toLocaleString('vi-VN') + ' triệu';
                             }
                         }
@@ -630,7 +661,7 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } }
+                plugins: {legend: {display: false}}
             }
         });
     }
@@ -668,7 +699,7 @@
                 plugins: {
                     tooltip: {
                         callbacks: {
-                            title: function(context) {
+                            title: function (context) {
                                 const index = context[0].dataIndex;
                                 return paretoData[index][0];
                             }
@@ -686,7 +717,7 @@
                         type: 'linear',
                         display: true,
                         position: 'left',
-                        title: { display: true, text: 'Doanh thu (triệu)' }
+                        title: {display: true, text: 'Doanh thu (triệu)'}
                     },
                     y1: {
                         type: 'linear',
@@ -694,8 +725,8 @@
                         position: 'right',
                         min: 0,
                         max: 100,
-                        title: { display: true, text: 'Tỷ lệ tích lũy (%)' },
-                        grid: { drawOnChartArea: false }
+                        title: {display: true, text: 'Tỷ lệ tích lũy (%)'},
+                        grid: {drawOnChartArea: false}
                     }
                 }
             }
@@ -704,18 +735,18 @@
 
     // Drilldown functionality
     document.querySelectorAll('.drilldown-btn').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const type = this.getAttribute('data-type');
             alert(`Đang mở báo cáo chi tiết cho: ${this.parentElement.querySelector('.card-title').textContent}`);
         });
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const periodSelect = document.getElementById('periodSelect');
         const startDateInput = document.getElementById('startDateInput');
         const endDateInput = document.getElementById('endDateInput');
 
-        periodSelect.addEventListener('change', function() {
+        periodSelect.addEventListener('change', function () {
             if (this.value !== 'custom') {
                 startDateInput.disabled = true;
                 endDateInput.disabled = true;
@@ -751,18 +782,18 @@
             }
         }
     });
-    
+
     // Phóng to biểu đồ
     function openChartModal(type) {
         const modal = new bootstrap.Modal(document.getElementById('chartModal'));
         const modalTitle = document.getElementById('chartModalTitle');
         const modalCtx = document.getElementById('modalChart').getContext('2d');
-        
+
         if (window.modalChartInstance) {
             window.modalChartInstance.destroy();
         }
-        
-        switch(type) {
+
+        switch (type) {
             case 'trend':
                 modalTitle.textContent = 'Xu hướng doanh thu theo thời gian';
                 if (revenueTrendData && revenueTrendData.length > 0) {
@@ -776,7 +807,7 @@
                         fill: false,
                         tension: 0.3
                     }];
-                    
+
                     if (comparePeriod && prevRevenueTrend && prevRevenueTrend.length > 0) {
                         modalDatasets.push({
                             label: 'Kỳ trước',
@@ -789,7 +820,7 @@
                             tension: 0.3
                         });
                     }
-                    
+
                     if (compareYoY && yoyRevenueTrend && yoyRevenueTrend.length > 0) {
                         modalDatasets.push({
                             label: 'Cùng kỳ năm trước',
@@ -802,7 +833,7 @@
                             tension: 0.3
                         });
                     }
-                    
+
                     window.modalChartInstance = new Chart(modalCtx, {
                         type: 'line',
                         data: {
@@ -839,7 +870,7 @@
                                 y: {
                                     beginAtZero: true,
                                     ticks: {
-                                        callback: function(value) {
+                                        callback: function (value) {
                                             return value + ' triệu';
                                         }
                                     }
@@ -923,7 +954,7 @@
                                     position: 'right',
                                     min: 0,
                                     max: 100,
-                                    grid: { drawOnChartArea: false }
+                                    grid: {drawOnChartArea: false}
                                 }
                             }
                         }
@@ -931,25 +962,24 @@
                 }
                 break;
         }
-        
+
         modal.show();
     }
-    
+
     function resetZoom() {
         if (window.modalChartInstance) {
             window.modalChartInstance.resetZoom();
         }
     }
-    
 
-    
+
     function showKpiDetails(type, title) {
         const modal = new bootstrap.Modal(document.getElementById('kpiModal'));
         const modalTitle = document.getElementById('kpiModalTitle');
         const modalBody = document.getElementById('kpiModalBody');
-        
+
         modalTitle.textContent = title + ' Details';
-        
+
         let content = '';
         const grossRevenue = /*[[${grossRevenue}]]*/ 0;
         const netRevenue = /*[[${netRevenue}]]*/ 0;
@@ -957,29 +987,29 @@
         const aov = /*[[${aov}]]*/ 0;
         const cancellationRate = /*[[${cancellationRate}]]*/ 0;
         const grossMargin = /*[[${grossMargin}]]*/ 0;
-        
+
         const discountAmount = grossRevenue - netRevenue;
         const cogs = netRevenue * 0.6;
         const profit = netRevenue - cogs;
-        
-        switch(type) {
+
+        switch (type) {
             case 'gross':
                 content = `
                     <h6>Gross Revenue Breakdown:</h6>
-                    <p><strong>Total Amount:</strong> $${(netRevenue/1000000000).toFixed(2)}B</p>
-                    <p><strong>+ Discount Amount:</strong> $${(discountAmount/1000000000).toFixed(2)}B</p>
+                    <p><strong>Total Amount:</strong> $${(netRevenue / 1000000000).toFixed(2)}B</p>
+                    <p><strong>+ Discount Amount:</strong> $${(discountAmount / 1000000000).toFixed(2)}B</p>
                     <hr>
-                    <p><strong>= Gross Revenue:</strong> $${(grossRevenue/1000000000).toFixed(2)}B</p>
+                    <p><strong>= Gross Revenue:</strong> $${(grossRevenue / 1000000000).toFixed(2)}B</p>
                     <p><small>Includes all revenue from orders with status: Paid, Shipped, Delivered</small></p>
                 `;
                 break;
             case 'net':
                 content = `
                     <h6>Net Revenue Breakdown:</h6>
-                    <p><strong>Gross Revenue:</strong> $${(grossRevenue/1000000000).toFixed(2)}B</p>
-                    <p><strong>- Discounts:</strong> $${(discountAmount/1000000000).toFixed(2)}B</p>
+                    <p><strong>Gross Revenue:</strong> $${(grossRevenue / 1000000000).toFixed(2)}B</p>
+                    <p><strong>- Discounts:</strong> $${(discountAmount / 1000000000).toFixed(2)}B</p>
                     <hr>
-                    <p><strong>= Net Revenue:</strong> $${(netRevenue/1000000000).toFixed(2)}B</p>
+                    <p><strong>= Net Revenue:</strong> $${(netRevenue / 1000000000).toFixed(2)}B</p>
                     <p><small>Revenue after deducting all discounts and promotions</small></p>
                 `;
                 break;
@@ -1000,10 +1030,10 @@
             case 'aov':
                 content = `
                     <h6>Average Order Value Calculation:</h6>
-                    <p><strong>Net Revenue:</strong> $${(netRevenue/1000000000).toFixed(2)}B</p>
+                    <p><strong>Net Revenue:</strong> $${(netRevenue / 1000000000).toFixed(2)}B</p>
                     <p><strong>÷ Total Orders:</strong> ${orderCount.toLocaleString()}</p>
                     <hr>
-                    <p><strong>= AOV:</strong> $${(aov/1000).toFixed(1)}K</p>
+                    <p><strong>= AOV:</strong> $${(aov / 1000).toFixed(1)}K</p>
                     <p><small>Average value per successful order</small></p>
                 `;
                 break;
@@ -1015,23 +1045,23 @@
                     <p><strong>Cancelled Orders:</strong> ${cancelledOrders.toLocaleString()}</p>
                     <p><strong>Total Orders (All):</strong> ${totalOrders.toLocaleString()}</p>
                     <hr>
-                    <p><strong>Cancellation Rate:</strong> ${(cancellationRate*100).toFixed(1)}%</p>
+                    <p><strong>Cancellation Rate:</strong> ${(cancellationRate * 100).toFixed(1)}%</p>
                     <p><small>Percentage of orders that were cancelled before completion</small></p>
                 `;
                 break;
             case 'margin':
                 content = `
                     <h6>Gross Margin Calculation:</h6>
-                    <p><strong>Net Revenue:</strong> $${(netRevenue/1000000000).toFixed(2)}B</p>
-                    <p><strong>- COGS (60%):</strong> $${(cogs/1000000000).toFixed(2)}B</p>
+                    <p><strong>Net Revenue:</strong> $${(netRevenue / 1000000000).toFixed(2)}B</p>
+                    <p><strong>- COGS (60%):</strong> $${(cogs / 1000000000).toFixed(2)}B</p>
                     <hr>
-                    <p><strong>Gross Profit:</strong> $${(profit/1000000000).toFixed(2)}B</p>
-                    <p><strong>Gross Margin:</strong> ${(grossMargin*100).toFixed(1)}%</p>
+                    <p><strong>Gross Profit:</strong> $${(profit / 1000000000).toFixed(2)}B</p>
+                    <p><strong>Gross Margin:</strong> ${(grossMargin * 100).toFixed(1)}%</p>
                     <p><small>COGS estimated at 60% of net revenue</small></p>
                 `;
                 break;
         }
-        
+
         modalBody.innerHTML = content;
         modal.show();
     }

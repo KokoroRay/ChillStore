@@ -1,15 +1,15 @@
 // Location Modal JavaScript
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('Location modal script loaded');
-    
+
     const locationBtn = document.querySelector('.location-btn');
     const closeBtn = document.querySelector('.location-close');
     const modal = document.getElementById('locationModal');
-    
+
     console.log('Location button found:', locationBtn);
     console.log('Close button found:', closeBtn);
     console.log('Modal found:', modal);
-    
+
     function openLocationModal() {
         console.log('Opening location modal');
         if (modal) {
@@ -28,15 +28,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add event listeners
     if (locationBtn) {
-        locationBtn.addEventListener('click', function(e) {
+        locationBtn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             openLocationModal();
         });
     }
-    
+
     if (closeBtn) {
-        closeBtn.addEventListener('click', function(e) {
+        closeBtn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             closeLocationModal();
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close modal when clicking outside
     if (modal) {
-        modal.addEventListener('click', function(event) {
+        modal.addEventListener('click', function (event) {
             if (event.target === modal) {
                 closeLocationModal();
             }
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Close modal with Escape key
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape' && modal && modal.style.display === 'flex') {
             closeLocationModal();
         }

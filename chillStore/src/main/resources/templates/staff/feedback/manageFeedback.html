@@ -12,37 +12,40 @@
 
 <div class="container mt-4 main-container">
     <div th:insert="~{fragments/sidebarStaff :: sidebarStaff}"></div>
-<div class="content">
-    <h2 class="text-center mb-4">Feedback List</h2>
-    <table class="table table-bordered table-striped">
-        <thead class="table-info">
-        <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Product</th>
-            <th>Rating</th>
-            <th>Comment</th>
-            <th>Status</th>
-            <th>Time</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="fb : ${feedbacks}">
-            <td th:text="${fb.id}"></td>
-            <td th:text="${fb.customer}"></td>
-            <td th:text="${fb.product}"></td>
-            <td th:text="${fb.rating}"></td>
-            <td th:text="${fb.comment}"></td>
-            <td th:text="${fb.status}"></td>
-            <td th:text="${fb.createdAt != null ? #temporals.format(fb.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}">22/06/2025</td>
-            <td>
-                <a th:href="@{'/staff/manageFeedback/' + ${fb.id} + '/reply'}" class="btn btn-sm btn-success">Reply</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <div class="content">
+        <h2 class="text-center mb-4">Feedback List</h2>
+        <table class="table table-bordered table-striped">
+            <thead class="table-info">
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="fb : ${feedbacks}">
+                <td th:text="${fb.id}"></td>
+                <td th:text="${fb.customer}"></td>
+                <td th:text="${fb.product}"></td>
+                <td th:text="${fb.rating}"></td>
+                <td th:text="${fb.comment}"></td>
+                <td th:text="${fb.status}"></td>
+                <td th:text="${fb.createdAt != null ? #temporals.format(fb.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}">
+                    22/06/2025
+                </td>
+                <td>
+                    <a th:href="@{'/staff/manageFeedback/' + ${fb.id} + '/reply'}"
+                       class="btn btn-sm btn-success">Reply</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>

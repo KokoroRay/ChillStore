@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -20,6 +21,7 @@ public class HomeController {
     // ----Product----
     @Autowired
     private ProductService productService;
+
     @GetMapping({"/", "/home"}) // Cả / và /home đều dẫn đến trang chủ
 
     public String home(Model model,
@@ -65,4 +67,5 @@ public class HomeController {
     public String aboutUs() {
         return "about-us";
     }
+
 }

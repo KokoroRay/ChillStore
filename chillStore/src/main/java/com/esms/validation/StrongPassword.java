@@ -20,6 +20,8 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {}) // Không cần validator riêng vì nó là meta-annotation
 public @interface StrongPassword {
     String message() default "Mật khẩu không đáp ứng yêu cầu độ mạnh.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>View Feedbacks</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/header.css">
-  <link rel="stylesheet" href="/css/sidebar.css">
+    <meta charset="UTF-8">
+    <title>View Feedbacks</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
 </head>
 <body>
 <div th:insert="~{fragments/header :: headerContent}"></div>
 
 <div class="container mt-4 main-container">
-  <div th:insert="~{fragments/sidebar :: sidebarStaff}"></div>
+    <div th:insert="~{fragments/sidebar :: sidebarStaff}"></div>
 
-  <div class="content">
-    <h2 class="mb-4">View Feedbacks</h2>
+    <div class="content">
+        <h2 class="mb-4">View Feedbacks</h2>
 
-    <form class="row g-3 mb-3" th:action="@{/manageStaff/listStaff}" method="get">
-      <div class="col-md-4">
-        <input type="text" name="keyword" class="form-control" placeholder="Search by name or Rating"
-               th:value="${keyword}">
-      </div>
-      <div class="col-md-2">
-        <button type="submit" class="btn btn-success w-100">Search</button>
-      </div>
-    </form>
+        <form class="row g-3 mb-3" th:action="@{/manageStaff/listStaff}" method="get">
+            <div class="col-md-4">
+                <input type="text" name="keyword" class="form-control" placeholder="Search by name or Rating"
+                       th:value="${keyword}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">Search</button>
+            </div>
+        </form>
 
-    <table class="table table-bordered table-hover">
-      <thead class="table-dark">
-      <tr>
-        <th>Feedback ID</th>
-        <th>Customer ID</th>
-        <th>Product ID</th>
-        <th>Email</th>
-        <th>Rating</th>
-        <th>Comment</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="staff : ${staffList}">
-        <td th:text="${staff.id}"></td>
-        <td th:text="${staff.name}"></td>
-        <td th:text="${staff.gender}"></td>
-        <td th:text="${staff.email}"></td>
-        <td th:text="${staff.password}"></td>
-        <td th:text="${staff.phone}"></td>
-        <td th:text="${staff.national_id}"></td>
-        <td>
-          <div class="staff-buttons d-flex gap-1">
-            <a th:href="@{'/manageStaff/update-form?id=' + ${staff.id}}"
-               class="btn btn-sm btn-primary">Reply</a>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Feedback ID</th>
+                <th>Customer ID</th>
+                <th>Product ID</th>
+                <th>Email</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="staff : ${staffList}">
+                <td th:text="${staff.id}"></td>
+                <td th:text="${staff.name}"></td>
+                <td th:text="${staff.gender}"></td>
+                <td th:text="${staff.email}"></td>
+                <td th:text="${staff.password}"></td>
+                <td th:text="${staff.phone}"></td>
+                <td th:text="${staff.national_id}"></td>
+                <td>
+                    <div class="staff-buttons d-flex gap-1">
+                        <a th:href="@{'/manageStaff/update-form?id=' + ${staff.id}}"
+                           class="btn btn-sm btn-primary">Reply</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>

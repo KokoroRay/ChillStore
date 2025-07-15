@@ -16,8 +16,11 @@ public interface CategoryService {
     Page<Category> searchCategory(String keyword, Pageable pa);
 
     Optional<Category> getCategoryById(Integer id);
+
     Category createCategory(CategoryDTO categoryDto);
+
     Category updateCategory(Integer id, CategoryDTO categoryDto);
+
     void deleteCategory(Integer id);
 
     List<Category> getAllParentOptions();

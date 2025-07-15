@@ -49,12 +49,12 @@ public class CartServiceImpl implements CartService {
             // Nếu sản phẩm đã có trong giỏ
             cartItem = optionalCart.get();
             int newQuantity = cartItem.getQuantity() + quantity;
-            
+
             // Kiểm tra lại tổng số lượng sau khi cộng thêm
             if (product.getStockQty() < newQuantity) {
                 throw new RuntimeException("Insufficient stock. Available: " + product.getStockQty() + ", Total requested: " + newQuantity);
             }
-            
+
             cartItem.setQuantity(newQuantity);
         } else {
             // Nếu chưa có
@@ -79,7 +79,7 @@ public class CartServiceImpl implements CartService {
             if (product.getStockQty() < quantity) {
                 throw new RuntimeException("Insufficient stock. Available: " + product.getStockQty() + ", Requested: " + quantity);
             }
-            
+
             cart.setQuantity(quantity);
             cartRepository.save(cart);
         }

@@ -55,7 +55,7 @@ public class Voucher {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "voucher_categories",
-            joinColumns = @JoinColumn(name ="voucher_id"),
+            joinColumns = @JoinColumn(name = "voucher_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<Category> categories = new HashSet<Category>();
@@ -63,7 +63,7 @@ public class Voucher {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "voucher_brands",
-            joinColumns = @JoinColumn(name ="voucher_id"),
+            joinColumns = @JoinColumn(name = "voucher_id"),
             inverseJoinColumns = @JoinColumn(name = "brand_id")
     )
     private Set<Brand> brands = new HashSet<Brand>();

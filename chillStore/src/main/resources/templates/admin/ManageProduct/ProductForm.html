@@ -18,7 +18,7 @@
     <div class="row">
         <!-- Sidebar -->
         <div th:insert="~{fragments/sidebar :: sidebar}"></div>
-        
+
         <!-- Main Content -->
         <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
             <!-- Topbar -->
@@ -26,7 +26,8 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h4 class="mb-0" th:text="${product.productId == null ? 'Add New Product' : 'Edit Product'}"></h4>
                     <div class="d-flex align-items-center">
-                        <a th:href="@{/admin/products(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" class="btn btn-secondary me-3">
+                        <a th:href="@{/admin/products(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}"
+                           class="btn btn-secondary me-3">
                             <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
@@ -49,35 +50,42 @@
                               enctype="multipart/form-data">
 
                             <!-- Hidden Fields for maintaining filter state -->
-                            <input type="hidden" name="page" th:value="${currentPage}" />
-                            <input type="hidden" name="size" th:value="${size}" />
-                            <input type="hidden" name="keyword" th:value="${keyword}" />
-                            <input type="hidden" name="categoryId" th:value="${categoryId}" />
-                            <input type="hidden" name="brandId" th:value="${brandId}" />
-                            <input type="hidden" name="filterStatus" th:value="${filterStatus}" />
-                            <input type="hidden" name="minPrice" th:value="${minPrice}" />
-                            <input type="hidden" name="maxPrice" th:value="${maxPrice}" />
-                            <input type="hidden" name="minStock" th:value="${minStock}" />
-                            <input type="hidden" name="sortOption" th:value="${sortOption}" />
+                            <input type="hidden" name="page" th:value="${currentPage}"/>
+                            <input type="hidden" name="size" th:value="${size}"/>
+                            <input type="hidden" name="keyword" th:value="${keyword}"/>
+                            <input type="hidden" name="categoryId" th:value="${categoryId}"/>
+                            <input type="hidden" name="brandId" th:value="${brandId}"/>
+                            <input type="hidden" name="filterStatus" th:value="${filterStatus}"/>
+                            <input type="hidden" name="minPrice" th:value="${minPrice}"/>
+                            <input type="hidden" name="maxPrice" th:value="${maxPrice}"/>
+                            <input type="hidden" name="minStock" th:value="${minStock}"/>
+                            <input type="hidden" name="sortOption" th:value="${sortOption}"/>
 
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-group mb-3">
-                                        <label for="name" class="form-label">Product Name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="name" name="name" th:value="${product.name}" required>
+                                        <label for="name" class="form-label">Product Name <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="name" name="name"
+                                               th:value="${product.name}" required>
                                     </div>
-                                    
+
                                     <div class="form-group mb-3">
-                                        <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" id="description" name="description" rows="4" th:text="${product.description}" required></textarea>
+                                        <label for="description" class="form-label">Description <span
+                                                class="text-danger">*</span></label>
+                                        <textarea class="form-control" id="description" name="description" rows="4"
+                                                  th:text="${product.description}" required></textarea>
                                     </div>
-                                    
+
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="price" class="form-label">Price <span class="text-danger">*</span></label>
+                                                <label for="price" class="form-label">Price <span
+                                                        class="text-danger">*</span></label>
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" id="price" name="price" th:value="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}" required oninput="formatCurrencyInput(this)">
+                                                    <input type="text" class="form-control" id="price" name="price"
+                                                           th:value="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"
+                                                           required oninput="formatCurrencyInput(this)">
                                                     <span class="input-group-text">₫</span>
                                                 </div>
                                             </div>
@@ -85,19 +93,24 @@
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
                                                 <label for="stockQty" class="form-label">Stock Quantity</label>
-                                                <input type="number" class="form-control" id="stockQty" name="stockQty" th:value="${product.stockQty}" min="0" readonly style="background-color: #f8f9fa;">
-                                                <small class="form-text text-muted">Stock quantity will be managed through warehouse</small>
+                                                <input type="number" class="form-control" id="stockQty" name="stockQty"
+                                                       th:value="${product.stockQty}" min="0" readonly
+                                                       style="background-color: #f8f9fa;">
+                                                <small class="form-text text-muted">Stock quantity will be managed
+                                                    through warehouse</small>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
                                                 <label for="categoryId" class="form-label">Category</label>
                                                 <select class="form-select" id="categoryId" name="categoryId">
                                                     <option value="">Select Category</option>
-                                                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${product.category != null and product.category.id == category.id}"></option>
+                                                    <option th:each="category : ${categories}" th:value="${category.id}"
+                                                            th:text="${category.name}"
+                                                            th:selected="${product.category != null and product.category.id == category.id}"></option>
                                                 </select>
                                             </div>
                                         </div>
@@ -106,7 +119,9 @@
                                                 <label for="brandId" class="form-label">Brand</label>
                                                 <select class="form-select" id="brandId" name="brandId">
                                                     <option value="">Select Brand</option>
-                                                    <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${product.brand != null and product.brand.id == brand.id}"></option>
+                                                    <option th:each="brand : ${brands}" th:value="${brand.id}"
+                                                            th:text="${brand.name}"
+                                                            th:selected="${product.brand != null and product.brand.id == brand.id}"></option>
                                                 </select>
                                             </div>
                                         </div>
@@ -117,12 +132,14 @@
                                     <div class="form-group mb-3">
                                         <label class="form-label">Product Image</label>
                                         <div class="image-upload-container">
-                                            <input type="file" id="image" name="image" accept="image/*" th:required="${product.productId == null}">
+                                            <input type="file" id="image" name="image" accept="image/*"
+                                                   th:required="${product.productId == null}">
                                             <label for="image" class="image-upload-label">
                                                 <i class="fas fa-cloud-upload-alt"></i> Choose Image
                                             </label>
                                             <div th:if="${product.imageUrl}" class="preview-container mt-3">
-                                                <img th:src="${product.imageUrl}" class="preview-image" alt="Product Image">
+                                                <img th:src="${product.imageUrl}" class="preview-image"
+                                                     alt="Product Image">
                                             </div>
                                         </div>
                                     </div>
@@ -131,7 +148,8 @@
                                         <label class="form-label">Product Status</label>
                                         <div class="status-container">
                                             <label class="status-toggle">
-                                                <input type="checkbox" id="status" name="status" th:checked="${product.status}" value="true">
+                                                <input type="checkbox" id="status" name="status"
+                                                       th:checked="${product.status}" value="true">
                                                 <span class="status-slider"></span>
                                             </label>
                                             <span class="status-label">Active</span>
@@ -141,7 +159,8 @@
                             </div>
 
                             <div class="form-actions">
-                                <a th:href="@{/admin/products(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}" class="btn btn-secondary">
+                                <a th:href="@{/admin/products(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, filterStatus=${filterStatus}, minPrice=${minPrice}, maxPrice=${maxPrice}, minStock=${minStock}, sortOption=${sortOption})}"
+                                   class="btn btn-secondary">
                                     <i class="fas fa-times"></i> Cancel
                                 </a>
                                 <button type="submit" class="btn btn-primary">
@@ -159,11 +178,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Preview image before upload
-    document.getElementById('image').addEventListener('change', function(e) {
+    document.getElementById('image').addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 const previewContainer = document.querySelector('.preview-container');
                 if (previewContainer) {
                     const preview = previewContainer.querySelector('.preview-image');
@@ -199,7 +218,7 @@
     }
 
     // Remove commas before form submission
-    document.querySelector('form').addEventListener('submit', function(e) {
+    document.querySelector('form').addEventListener('submit', function (e) {
         const priceInput = document.getElementById('price');
         if (priceInput.value) {
             // Remove all non-digit characters

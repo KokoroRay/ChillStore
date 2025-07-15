@@ -10,12 +10,13 @@ public class RegisterDTO {
     private Integer customerId;
 
     @NotBlank(message = "tên đăng nhập không chứa khoản trắng nhá")
-    @NotEmpty @Size(min = 6, max = 12)
+    @NotEmpty
+    @Size(min = 6, max = 12)
     @Pattern(regexp = "(?=.*[a-zA-Z])[a-zA-Z0-9]+$",
             message = "Chỉ được chứa chữ cái và số, không có khoảng trắng hoặc ký tự đặc biệt, chuỗi phải có chữ không được chỉ số")
     private String name;
 
-//    @NotBlank(message = "tên không được có khoảng trắng")
+    //    @NotBlank(message = "tên không được có khoảng trắng")
 //    @Size(min = 6, max = 12)
     private String display_name;
 

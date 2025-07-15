@@ -5,11 +5,11 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name ="replies")
+@Table(name = "replies")
 public class Reply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="reply_id")
+    @Column(name = "reply_id")
     private int id;
 
     @ManyToOne

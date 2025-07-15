@@ -40,13 +40,15 @@
             padding: 15px 25px;
             background-color: white;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
+
         .topbar h4 {
             margin: 0;
             color: #333;
             font-weight: 600;
         }
+
         .container {
             max-width: 1200px;
             margin: 2rem auto;
@@ -55,21 +57,25 @@
 
         .card {
             border: none;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
+
         .card-header {
             background-color: #fff;
             border-bottom: 2px solid #f0f0f0;
             padding: 1.5rem;
         }
+
         .card-title {
             margin: 0;
             color: #333;
             font-weight: 600;
         }
+
         .card-body {
             padding: 2rem;
         }
+
         .product-image {
             width: 100%;
             max-height: 400px;
@@ -77,8 +83,9 @@
             border-radius: 8px;
             background-color: #fff;
             padding: 1rem;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         }
+
         .no-image {
             width: 100%;
             height: 300px;
@@ -90,17 +97,21 @@
             border-radius: 8px;
             color: #6c757d;
         }
+
         .table {
             margin-bottom: 0;
         }
+
         .table th {
             width: 150px;
             background-color: #f8f9fa;
             font-weight: 600;
         }
+
         .table td {
             vertical-align: middle;
         }
+
         .product-description {
             max-height: 150px;
             overflow-y: auto;
@@ -108,19 +119,23 @@
             background-color: #f8f9fa;
             border-radius: 4px;
         }
+
         .card-footer {
             background-color: #fff;
             border-top: 2px solid #f0f0f0;
             padding: 1.5rem;
         }
+
         .btn {
             padding: 0.5rem 1.5rem;
             font-weight: 500;
         }
+
         .badge {
             padding: 0.5rem 1rem;
             font-size: 0.9rem;
         }
+
         .sidebarStaff {
             border-radius: 0 20px 20px 0;
             width: 220px;
@@ -260,16 +275,16 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="card-title">Product Details</h3>
                 <form th:action="@{/staff/products}" method="get">
-                    <input type="hidden" name="page" th:value="${currentPage}" />
-                    <input type="hidden" name="size" th:value="${size}" />
-                    <input type="hidden" name="keyword" th:value="${keyword}" />
-                    <input type="hidden" name="categoryId" th:value="${categoryId}" />
-                    <input type="hidden" name="brandId" th:value="${brandId}" />
-                    <input type="hidden" name="filterStatus" th:value="${filterStatus}" />
-                    <input type="hidden" name="minPrice" th:value="${minPrice}" />
-                    <input type="hidden" name="maxPrice" th:value="${maxPrice}" />
-                    <input type="hidden" name="minStock" th:value="${minStock}" />
-                    <input type="hidden" name="sortOption" th:value="${sortOption}" />
+                    <input type="hidden" name="page" th:value="${currentPage}"/>
+                    <input type="hidden" name="size" th:value="${size}"/>
+                    <input type="hidden" name="keyword" th:value="${keyword}"/>
+                    <input type="hidden" name="categoryId" th:value="${categoryId}"/>
+                    <input type="hidden" name="brandId" th:value="${brandId}"/>
+                    <input type="hidden" name="filterStatus" th:value="${filterStatus}"/>
+                    <input type="hidden" name="minPrice" th:value="${minPrice}"/>
+                    <input type="hidden" name="maxPrice" th:value="${maxPrice}"/>
+                    <input type="hidden" name="minStock" th:value="${minStock}"/>
+                    <input type="hidden" name="sortOption" th:value="${sortOption}"/>
                     <button type="submit" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Back
                     </button>

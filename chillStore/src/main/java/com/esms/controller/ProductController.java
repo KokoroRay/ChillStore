@@ -88,10 +88,20 @@ public class ProductController {
             sortBy = "name";
             sortDir = "asc";
             switch (sortOption) {
-                case "name_desc": sortBy = "name"; sortDir = "desc"; break;
-                case "price_asc": sortBy = "price"; sortDir = "asc"; break;
-                case "price_desc": sortBy = "price"; sortDir = "desc"; break;
-                default: break;
+                case "name_desc":
+                    sortBy = "name";
+                    sortDir = "desc";
+                    break;
+                case "price_asc":
+                    sortBy = "price";
+                    sortDir = "asc";
+                    break;
+                case "price_desc":
+                    sortBy = "price";
+                    sortDir = "desc";
+                    break;
+                default:
+                    break;
             }
         }
         Pageable pageable;
@@ -128,7 +138,7 @@ public class ProductController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("priceError", priceError);
         String requestURI = request.getRequestURI();
-        if(requestURI.startsWith("/staff")){
+        if (requestURI.startsWith("/staff")) {
             return "staff/ManageProduct/Product";
         } else {
             return "admin/ManageProduct/Product";
@@ -163,7 +173,7 @@ public class ProductController {
         model.addAttribute("minStock", minStock);
         model.addAttribute("sortOption", sortOption);
         String requestURI = request.getRequestURI();
-        if(requestURI.startsWith("/staff")){
+        if (requestURI.startsWith("/staff")) {
             return "staff/ManageProduct/ProductDetail";
         } else {
             return "admin/ManageProduct/ProductDetail";
@@ -221,7 +231,7 @@ public class ProductController {
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption,
             Model model) {
-        
+
         // Validation logic for product price
         String priceError = null;
         if (product.getPrice() != null) {
@@ -262,7 +272,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
+
         // Handle image upload
         if (image != null && !image.isEmpty()) {
             try {
@@ -270,17 +280,17 @@ public class ProductController {
                 String originalFilename = image.getOriginalFilename();
                 String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String filename = "product_" + System.currentTimeMillis() + fileExtension;
-                
+
                 // Save file to static/images directory
                 String uploadDir = "src/main/resources/static/images/";
                 java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
                 if (!java.nio.file.Files.exists(uploadPath)) {
                     java.nio.file.Files.createDirectories(uploadPath);
                 }
-                
+
                 java.nio.file.Path filePath = uploadPath.resolve(filename);
                 java.nio.file.Files.copy(image.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                
+
                 // Set image URL for product
                 product.setImageUrl("/images/" + filename);
             } catch (Exception e) {
@@ -302,7 +312,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
+
         productService.updateProduct(id, product);
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
                 page, size,
@@ -387,7 +397,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
+
         // Handle image upload
         if (image != null && !image.isEmpty()) {
             try {
@@ -395,17 +405,17 @@ public class ProductController {
                 String originalFilename = image.getOriginalFilename();
                 String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String filename = "product_" + System.currentTimeMillis() + fileExtension;
-                
+
                 // Save file to static/images directory
                 String uploadDir = "src/main/resources/static/images/";
                 java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
                 if (!java.nio.file.Files.exists(uploadPath)) {
                     java.nio.file.Files.createDirectories(uploadPath);
                 }
-                
+
                 java.nio.file.Path filePath = uploadPath.resolve(filename);
                 java.nio.file.Files.copy(image.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                
+
                 // Set image URL for product
                 product.setImageUrl("/images/" + filename);
             } catch (Exception e) {
@@ -416,7 +426,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
+
         productService.saveProduct(product);
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
                 page, size,

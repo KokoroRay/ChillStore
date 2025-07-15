@@ -29,6 +29,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, OrderItemI
             "GROUP BY p.name, oi.price_each " +
             "ORDER BY SUM(oi.quantity) DESC", nativeQuery = true)
     List<Object[]> getProductSalesStatistics(@Param("startDate") Date startDate,
-                                              @Param("endDate") Date endDate);
+                                             @Param("endDate") Date endDate);
 
 } 

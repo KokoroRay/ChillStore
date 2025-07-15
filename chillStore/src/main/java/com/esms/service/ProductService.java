@@ -7,12 +7,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+
 @Service
 public interface ProductService {
     List<Product> findAll();
+
     Page<Product> getAllProducts(Pageable pageable);
+
     Product getProductById(Integer productId);
+
     List<Product> searchProducts(String keyword);
+
     Page<Product> searchProductsWithFilters(
             String keyword,
             Integer categoryId,
@@ -25,9 +31,13 @@ public interface ProductService {
             Pageable pageable,
             Boolean status
     );
+
     List<Product> filterByStatus(boolean status);
+
     Product updateProduct(Integer productId, Product product);
+
     void deleteProduct(Integer productId);
+
     Product saveProduct(Product product);
 
     // Lấy discount còn hiệu lực cho 1 sản phẩm (nếu có)
@@ -59,5 +69,15 @@ public interface ProductService {
     );
 
     Product getProductWithDetails(Integer productId);
+
+    /**
+     * Tìm kiếm sản phẩm theo từ khóa với phân trang
+     */
+    Page<Product> searchProductsByKeyword(String keyword, Pageable pageable);
+
+    /**
+     * Lấy danh sách gợi ý sản phẩm cho autocomplete (name, image, price)
+     */
+    List<Map<String, Object>> getProductSuggestions(String query);
 }
 

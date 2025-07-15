@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Product Log</title>
     <link rel="stylesheet" href="/css/styleWarehouse.css">
     <link rel="stylesheet" href="/css/header.css">
@@ -25,12 +25,14 @@
                             <i class="fas fa-arrow-left"></i> Back to Warehouse
                         </a>
                         <form th:action="@{/admin/warehouse/log}" method="get" class="d-flex w-75">
-                            <input type="text" name="keyword" class="form-control" placeholder="Search by product name" th:value="${keyword}">
+                            <input type="text" name="keyword" class="form-control" placeholder="Search by product name"
+                                   th:value="${keyword}">
                             <button type="submit" class="btn ms-2">
                                 <img th:src="@{/images/search.png}" alt="Search" width="20" height="20">
                             </button>
                         </form>
-                        <form th:action="@{/admin/warehouse/log/export-excel}" method="get" class="d-flex align-items-center ms-2">
+                        <form th:action="@{/admin/warehouse/log/export-excel}" method="get"
+                              class="d-flex align-items-center ms-2">
                             <select name="range" class="form-select d-inline w-auto me-2">
                                 <option value="week">1 Tuần</option>
                                 <option value="month">1 Tháng</option>

@@ -1,83 +1,84 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Manage Warehouse</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styleWarehouse.css">
-  <link rel="stylesheet" href="/css/header.css">
-  <link rel="stylesheet" href="/css/sidebar.css">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Manage Warehouse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styleWarehouse.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
 </head>
 <body>
 <div class="container mt-4 main-container">
-  <div th:insert="~{fragments/header :: headerContent}"></div>
-  <div th:insert="~{fragments/sidebar :: sidebar}"></div>
-  <main class="content">
-    <section class="warehouse-section">
-      <h2>Manage Warehouse</h2>
+    <div th:insert="~{fragments/header :: headerContent}"></div>
+    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+    <main class="content">
+        <section class="warehouse-section">
+            <h2>Manage Warehouse</h2>
 
-      <!-- Alerts -->
-      <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-      <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+            <!-- Alerts -->
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
 
-      <!-- Search -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <form th:action="@{/admin/warehouse/search}" method="get" class="d-flex w-75">
-          <input type="text" id="search" name="keyword" class="form-control" th:value="${keyword}" placeholder="Search by product name">
-          <button type="submit" class="btn ms-2">
-            <img th:src="@{/images/search.png}" alt="Search" width="20" height="20">
-          </button>
-        </form>
-        <a th:href="@{/admin/warehouse/import}" class="btn btn-primary">
-          <i class="fas fa-plus"></i> Import
-        </a>
-        <a th:href="@{/admin/warehouse/log}" class="btn btn-secondary ms-2">Log</a>
-      </div>
+            <!-- Search -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <form th:action="@{/admin/warehouse/search}" method="get" class="d-flex w-75">
+                    <input type="text" id="search" name="keyword" class="form-control" th:value="${keyword}"
+                           placeholder="Search by product name">
+                    <button type="submit" class="btn ms-2">
+                        <img th:src="@{/images/search.png}" alt="Search" width="20" height="20">
+                    </button>
+                </form>
+                <a th:href="@{/admin/warehouse/import}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Import
+                </a>
+                <a th:href="@{/admin/warehouse/log}" class="btn btn-secondary ms-2">Log</a>
+            </div>
 
-      <!-- Table -->
-      <div th:if="${#lists.isEmpty(transactions)}" class="text-center text-muted py-5">
-        <h4><i class="fas fa-inbox"></i> No warehouse transactions found</h4>
-        <p>Try changing your search or import new transactions</p>
-      </div>
-      <div th:if="${!#lists.isEmpty(transactions)}" class="card shadow-sm">
-        <div class="card-body p-0">
-          <table class="table table-hover mb-0">
-            <thead class="table-primary">
-            <tr>
-              <th>ID</th>
-              <th>Product Name</th>
-              <th>Quantity Change</th>
-              <th>Stock After</th>
-              <th>Type</th>
-              <th>Transaction Date</th>
-              <th>Handled By</th>
-              <th>Note</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="transaction : ${transactions}">
-              <td th:text="${transaction.transId}"></td>
-              <td th:text="${transaction.productName}"></td>
-              <td th:text="${transaction.quantityChange}"></td>
-              <td th:text="${transaction.stockAfter}"></td>
-              <td th:text="${transaction.type}"></td>
-              <td th:text="${#temporals.format(transaction.transDate, 'yyyy-MM-dd HH:mm')}"></td>
-              <td th:text="${transaction.adminName}"></td>
-              <td th:text="${transaction.notes}"></td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+            <!-- Table -->
+            <div th:if="${#lists.isEmpty(transactions)}" class="text-center text-muted py-5">
+                <h4><i class="fas fa-inbox"></i> No warehouse transactions found</h4>
+                <p>Try changing your search or import new transactions</p>
+            </div>
+            <div th:if="${!#lists.isEmpty(transactions)}" class="card shadow-sm">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-primary">
+                        <tr>
+                            <th>ID</th>
+                            <th>Product Name</th>
+                            <th>Quantity Change</th>
+                            <th>Stock After</th>
+                            <th>Type</th>
+                            <th>Transaction Date</th>
+                            <th>Handled By</th>
+                            <th>Note</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="transaction : ${transactions}">
+                            <td th:text="${transaction.transId}"></td>
+                            <td th:text="${transaction.productName}"></td>
+                            <td th:text="${transaction.quantityChange}"></td>
+                            <td th:text="${transaction.stockAfter}"></td>
+                            <td th:text="${transaction.type}"></td>
+                            <td th:text="${#temporals.format(transaction.transDate, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td th:text="${transaction.adminName}"></td>
+                            <td th:text="${transaction.notes}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-      <!-- Pagination -->
-      <div class="pagination" th:if="${totalPages > 1}">
-        <a th:if="${currentPage > 0}"
-           th:href="@{/admin/warehouse(page=${currentPage - 1}, size=10)}"
-           class="btn btn-page">&laquo; Previous</a>
+            <!-- Pagination -->
+            <div class="pagination" th:if="${totalPages > 1}">
+                <a th:if="${currentPage > 0}"
+                   th:href="@{/admin/warehouse(page=${currentPage - 1}, size=10)}"
+                   class="btn btn-page">&laquo; Previous</a>
 
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
           <a th:if="${i != currentPage}"
              th:href="@{/admin/warehouse(page=${i}, size=10)}"
              class="btn btn-page"
@@ -87,12 +88,12 @@
                 th:text="${i + 1}"></span>
         </span>
 
-        <a th:if="${currentPage < totalPages - 1}"
-           th:href="@{/admin/warehouse(page=${currentPage + 1}, size=10)}"
-           class="btn btn-page">Next &raquo;</a>
-      </div>
-    </section>
-  </main>
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{/admin/warehouse(page=${currentPage + 1}, size=10)}"
+                   class="btn btn-page">Next &raquo;</a>
+            </div>
+        </section>
+    </main>
 </div>
 </body>
 </html>

@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class ChillStoreApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ChillStoreApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ChillStoreApplication.class, args);
+    }
 }

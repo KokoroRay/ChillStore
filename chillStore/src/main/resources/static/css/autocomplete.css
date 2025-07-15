@@ -1,0 +1,182 @@
+/* autocomplete.css */
+.autocomplete-items {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.autocomplete-items div {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 1rem;
+}
+
+.autocomplete-items div:hover, .autocomplete-active {
+    background: #f1f1f1;
+}
+
+.autocomplete-items .no-result {
+    color: #888;
+    font-style: italic;
+    padding: 10px 16px;
+}
+
+.recent-searches-title {
+    font-weight: bold;
+    font-size: 0.98em;
+    color: #333;
+    padding: 8px 16px 4px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fafbfc;
+    margin-bottom: 2px;
+    user-select: none;
+}
+.recent-search-item {
+    padding: 10px 16px 10px 36px;
+    cursor: pointer;
+    font-size: 1rem;
+    position: relative;
+    transition: background 0.2s;
+}
+.recent-search-item:hover, .recent-search-item.autocomplete-active {
+    background: #f1f1f1;
+}
+.recent-search-item::before {
+    content: '\f1da'; /* fa-history icon */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1em;
+    color: #aaa;
+}
+.clear-recent {
+    color: #007bff;
+    cursor: pointer;
+    font-size: 0.95em;
+    float: right;
+    margin-left: 8px;
+    user-select: none;
+}
+.suggest-group-title {
+    font-weight: bold;
+    font-size: 1em;
+    color: #555;
+    padding: 8px 16px 4px 16px;
+    background: #f6f7fa;
+    border-bottom: 1px solid #f0f0f0;
+    margin-top: 6px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    pointer-events: none !important;
+    cursor: default !important;
+    user-select: none;
+}
+.suggest-group-title i {
+    margin-right: 6px;
+    color: #888;
+    font-size: 1.1em;
+}
+.suggest-group-title:hover {
+    background: #f6f7fa !important;
+}
+.suggest-keyword-item {
+    padding: 10px 16px 10px 36px;
+    cursor: pointer;
+    font-size: 1rem;
+    position: relative;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.suggest-keyword-item:hover, .suggest-keyword-item.autocomplete-active {
+    background: #f1f1f1;
+}
+.suggest-keyword-item i {
+    color: #f7b731;
+    font-size: 1.1em;
+    margin-right: 4px;
+}
+.suggest-product-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background 0.2s;
+}
+.suggest-product-item:hover, .suggest-product-item.autocomplete-active {
+    background: #f1f1f1;
+}
+.suggest-product-img {
+    width: 38px;
+    height: 38px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f8f8f8;
+    border: 1px solid #eee;
+}
+.suggest-product-name {
+    font-weight: 500;
+    color: #222;
+    flex: 1;
+    font-size: 1rem;
+}
+.suggest-product-price {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 1em;
+    margin-left: 8px;
+}
+.highlight {
+    background: #ffe082;
+    color: #d35400;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+.suggest-group-title,
+.suggest-group-title:hover,
+.suggest-group-title.autocomplete-active,
+.recent-searches-title,
+.recent-searches-title:hover,
+.recent-searches-title.autocomplete-active {
+    background: #f6f7fa !important;
+    pointer-events: none !important;
+    cursor: default !important;
+    user-select: none !important;
+    color: #555 !important;
+    font-weight: bold !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+}
+
+/* Đảm bảo tiêu đề nhóm autocomplete không bị hover/active highlight */
+.autocomplete-items .suggest-group-title:hover,
+.autocomplete-items .suggest-group-title.autocomplete-active,
+.autocomplete-items .recent-searches-title:hover,
+.autocomplete-items .recent-searches-title.autocomplete-active {
+    background: #f6f7fa !important;
+    color: #555 !important;
+    pointer-events: none !important;
+    cursor: default !important;
+    user-select: none !important;
+    font-weight: bold !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+}

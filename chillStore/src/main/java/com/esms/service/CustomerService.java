@@ -14,13 +14,20 @@ public interface CustomerService {
     void register(RegisterDTO dto);
 
     void sendResetOtp(ForgotPasswordDTO dto);
+
     boolean verifyOtp(OtpDTO dto);
+
     void resetPassword(ResetPasswordDTO dto);
+
     // Quản lý người dùng
     Page<Customer> getAllCustomers(Pageable pageable);
+
     Page<Customer> searchCustomers(String search, Pageable pageable);
+
     Customer getCustomerById(Integer id);
+
     void updateCustomer(Integer id, CustomerDTO customerDto);
+
     void deleteCustomer(Integer id);
 
     @Transactional
@@ -35,13 +42,16 @@ public interface CustomerService {
     List<String> suggestCustomerByType(String keyword, String type, int limit);
 
     Page<Customer> searchCustomersByName(String name, Pageable pageable);
+
     Page<Customer> searchCustomersByEmail(String email, Pageable pageable);
 
 
     //xử lý liên quan đến đăng kí tài khoản bằng gg
     Optional<Customer> findCustomerByEmail(String email);
+
     Optional<Customer> findCustomerByProviderAndProviderId(String provider, String providerId);
-    Customer processOAuth2User (OAuth2User oAuth2User, String provider);
+
+    Customer processOAuth2User(OAuth2User oAuth2User, String provider);
 
     Customer getCustomerByEmail(String email);
 

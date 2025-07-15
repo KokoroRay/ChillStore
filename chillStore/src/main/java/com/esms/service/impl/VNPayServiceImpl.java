@@ -47,10 +47,10 @@ public class VNPayServiceImpl implements VNPayService {
             String vnp_TxnDesc = request.getOrderInfo() != null ? request.getOrderInfo() : "Thanh toan don hang";
             String vnp_OrderInfo = request.getOrderInfo() != null ? request.getOrderInfo() : "Thanh toan don hang";
             String vnp_OrderType = "other";
-            
+
             // VNPay yêu cầu amount dạng số nguyên (x100) và không có dấu phẩy
             String vnp_Amount = String.valueOf(request.getAmount().multiply(new java.math.BigDecimal("100")).longValue());
-            
+
             String vnp_Locale = request.getLocale() != null ? request.getLocale() : vnPayConfig.getLocale();
             String vnp_CurrCode = request.getCurrency() != null ? request.getCurrency() : vnPayConfig.getCurrCode();
             String vnp_CreateDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
@@ -81,7 +81,7 @@ public class VNPayServiceImpl implements VNPayService {
             vnp_Params.put("vnp_IpnUrl", vnp_IpnUrl);
             vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
             vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
-            
+
             // Thêm các tham số tùy chọn nếu có
             if (request.getCustomerEmail() != null && !request.getCustomerEmail().trim().isEmpty()) {
                 vnp_Params.put("vnp_CustomerEmail", request.getCustomerEmail());
@@ -99,10 +99,10 @@ public class VNPayServiceImpl implements VNPayService {
             // Sắp xếp các tham số theo thứ tự alphabet
             List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
             Collections.sort(fieldNames);
-            
+
             StringBuilder hashData = new StringBuilder();
             StringBuilder query = new StringBuilder();
-            
+
             Iterator<String> itr = fieldNames.iterator();
             while (itr.hasNext()) {
                 String fieldName = itr.next();
@@ -112,25 +112,25 @@ public class VNPayServiceImpl implements VNPayService {
                     hashData.append(fieldName);
                     hashData.append('=');
                     hashData.append(fieldValue);
-                    
+
                     // Build query (có encode)
                     query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
                     query.append('=');
                     query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                    
+
                     if (itr.hasNext()) {
                         query.append('&');
                         hashData.append('&');
                     }
                 }
             }
-            
+
             String queryUrl = query.toString();
             String vnp_SecureHash = createSecureHash(hashData.toString());
             queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-            
+
             String finalUrl = vnp_Url + "?" + queryUrl;
-            
+
             // Log for debugging (remove in production)
             System.out.println("=== VNPay Payment URL Debug ===");
             System.out.println("Order ID: " + vnp_TxnRef);
@@ -141,7 +141,7 @@ public class VNPayServiceImpl implements VNPayService {
             System.out.println("Secure Hash: " + vnp_SecureHash);
             System.out.println("Final URL: " + finalUrl);
             System.out.println("================================");
-            
+
             return finalUrl;
         } catch (Exception e) {
             System.err.println("Error creating VNPay payment URL: " + e.getMessage());
@@ -151,10 +151,10 @@ public class VNPayServiceImpl implements VNPayService {
     }
 
     @Override
-    public VNPayResponseDTO processPaymentCallback(String responseCode, String orderId, 
-                                                 String amount, String secureHash, 
-                                                 String bankTranNo, String transactionNo, 
-                                                 String responseMessage) {
+    public VNPayResponseDTO processPaymentCallback(String responseCode, String orderId,
+                                                   String amount, String secureHash,
+                                                   String bankTranNo, String transactionNo,
+                                                   String responseMessage) {
         VNPayResponseDTO response = new VNPayResponseDTO();
         response.setOrderId(orderId);
         response.setResponseCode(responseCode);
@@ -162,7 +162,7 @@ public class VNPayServiceImpl implements VNPayService {
         response.setBankTranNo(bankTranNo);
         response.setTransactionNo(transactionNo);
         response.setSecureHash(secureHash);
-        
+
         if (amount != null) {
             try {
                 response.setAmount(new java.math.BigDecimal(amount).divide(new java.math.BigDecimal("100")));
@@ -173,23 +173,23 @@ public class VNPayServiceImpl implements VNPayService {
         }
 
         // Kiểm tra tính hợp lệ
-        boolean isValid = validateCallback(responseCode, orderId, amount, secureHash, 
-                                         bankTranNo, transactionNo, responseMessage);
+        boolean isValid = validateCallback(responseCode, orderId, amount, secureHash,
+                bankTranNo, transactionNo, responseMessage);
         response.setSuccess(isValid && "00".equals(responseCode));
 
         // Log for debugging
-        System.out.println("VNPay Callback processed - Order: " + orderId + 
-                          ", Response: " + responseCode + 
-                          ", Success: " + response.isSuccess());
+        System.out.println("VNPay Callback processed - Order: " + orderId +
+                ", Response: " + responseCode +
+                ", Success: " + response.isSuccess());
 
         return response;
     }
 
     @Override
-    public boolean validateCallback(String responseCode, String orderId, 
-                                  String amount, String secureHash, 
-                                  String bankTranNo, String transactionNo, 
-                                  String responseMessage) {
+    public boolean validateCallback(String responseCode, String orderId,
+                                    String amount, String secureHash,
+                                    String bankTranNo, String transactionNo,
+                                    String responseMessage) {
         try {
             if (secureHash == null || secureHash.trim().isEmpty()) {
                 System.err.println("Secure hash is null or empty");
@@ -211,13 +211,13 @@ public class VNPayServiceImpl implements VNPayService {
             hashData.append("&vnp_TxnRef=").append(orderId != null ? orderId : "");
 
             boolean isValid = validateSecureHash(hashData.toString(), secureHash);
-            
+
             if (!isValid) {
                 System.err.println("VNPay hash validation failed");
                 System.err.println("Expected hash data: " + hashData.toString());
                 System.err.println("Received hash: " + secureHash);
             }
-            
+
             return isValid;
         } catch (Exception e) {
             System.err.println("Error validating VNPay callback: " + e.getMessage());
@@ -247,13 +247,13 @@ public class VNPayServiceImpl implements VNPayService {
             }
             String expectedHash = createSecureHash(params);
             boolean isValid = expectedHash.equals(secureHash);
-            
+
             if (!isValid) {
                 System.err.println("Hash validation failed");
                 System.err.println("Expected: " + expectedHash);
                 System.err.println("Received: " + secureHash);
             }
-            
+
             return isValid;
         } catch (Exception e) {
             System.err.println("Error validating secure hash: " + e.getMessage());

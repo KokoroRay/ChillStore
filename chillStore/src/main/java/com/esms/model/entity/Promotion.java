@@ -1,6 +1,7 @@
 package com.esms.model.entity;
 
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -37,7 +38,8 @@ public class Promotion {
     @Column(name = "apply_type")
     private String applyType;
 
-    public Promotion() {}
+    public Promotion() {
+    }
 
     public Integer getPromoId() {
         return promoId;

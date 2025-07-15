@@ -11,6 +11,7 @@
         body {
             background: #f8f9fa;
         }
+
         .header {
             height: 80px;
             position: fixed;
@@ -21,14 +22,16 @@
             z-index: 999;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .main-content {
             margin-top: 0px;
         }
+
         .product-card {
             border: 1px solid #e0e0e0;
             border-radius: 12px;
             background: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             padding: 12px 12px 16px 12px;
             margin-bottom: 24px;
             transition: box-shadow 0.2s;
@@ -37,9 +40,11 @@
             flex-direction: column;
             justify-content: space-between;
         }
+
         .product-card:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
         }
+
         .product-img {
             width: 100%;
             height: 140px;
@@ -48,6 +53,7 @@
             background: #f5f5f5;
             border-radius: 8px;
         }
+
         .product-title {
             font-size: 1rem;
             font-weight: 500;
@@ -56,12 +62,14 @@
             margin-bottom: 8px;
             min-height: 40px;
         }
+
         .product-actions {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
         }
+
         .wishlist-btn {
             background: none;
             border: none;
@@ -70,9 +78,11 @@
             vertical-align: middle;
             margin-left: 0;
         }
+
         .wishlist-btn.active {
             color: #e0245e;
         }
+
         .btn-buy {
             background: #e3f0ff;
             color: #007bff;
@@ -83,137 +93,168 @@
             font-size: 1rem;
             transition: background 0.2s;
         }
+
         .btn-buy:hover {
             background: #cce3ff;
             color: #0056b3;
         }
+
         @media (max-width: 768px) {
-            .main-content { margin-top: 0px; }
-            .product-card { height: 270px; padding: 8px; }
-            .product-img { height: 90px; }
+            .main-content {
+                margin-top: 0px;
+            }
+
+            .product-card {
+                height: 270px;
+                padding: 8px;
+            }
+
+            .product-img {
+                height: 90px;
+            }
         }
     </style>
 </head>
 <body>
-    <div th:replace="fragments/navigationBar :: navBar"></div>
-    <div id="overlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.2);z-index:998;"></div>
-    <h2 class="text-center" style="margin-top:24px;margin-bottom:10px;font-size:2.7rem;font-weight:700;letter-spacing:1px;">Product List</h2>
-    <div class="container main-content">
-        <!-- Filter Section -->
-        <div class="filter-section mb-4">
-            <form th:action="@{/Product}" method="get" class="row g-3 align-items-end">
-                <div class="col-md-3">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
-                        <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Search products...">
-                    </div>
+<div th:replace="fragments/navigationBar :: navBar"></div>
+<div id="overlay"
+     style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.2);z-index:998;"></div>
+<h2 class="text-center" style="margin-top:24px;margin-bottom:10px;font-size:2.7rem;font-weight:700;letter-spacing:1px;">
+    Product List</h2>
+<div class="container main-content">
+    <!-- Filter Section -->
+    <div class="filter-section mb-4">
+        <form th:action="@{/Product}" method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" name="keyword" th:value="${keyword}"
+                           placeholder="Search products...">
                 </div>
-                <div class="col-md-2">
-                    <select class="form-select" name="categoryId">
-                        <option value="">All Categories</option>
-                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${categoryId == category.id}"></option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <select class="form-select" name="brandId">
-                        <option value="">All Brands</option>
-                        <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brandId == brand.id}"></option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" name="minPrice" th:value="${minPrice != null ? #numbers.formatInteger(minPrice, 0) : ''}" placeholder="Price from (VND)">
-                </div>
-                <div class="col-md-2">
-                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" name="maxPrice" th:value="${maxPrice != null ? #numbers.formatInteger(maxPrice, 0) : ''}" placeholder="To (VND)">
-                </div>
-                <div class="col-md-2">
-                    <select class="form-select" name="sortOption">
-                        <option value="default" th:selected="${sortOption == null || sortOption == 'default'}">Default</option>
-                        <option value="name_asc" th:selected="${sortOption == 'name_asc'}">Name (A-Z)</option>
-                        <option value="name_desc" th:selected="${sortOption == 'name_desc'}">Name (Z-A)</option>
-                        <option value="price_asc" th:selected="${sortOption == 'price_asc'}">Price (Low to High)</option>
-                        <option value="price_desc" th:selected="${sortOption == 'price_desc'}">Price (High to Low)</option>
-                    </select>
-                </div>
-                <div class="col-md-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-filter me-2"></i> Filter
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="resetFilters()">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
-        <div th:if="${priceError != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <span th:text="${priceError}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        <script>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" name="categoryId">
+                    <option value="">All Categories</option>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
+                            th:selected="${categoryId == category.id}"></option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" name="brandId">
+                    <option value="">All Brands</option>
+                    <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"
+                            th:selected="${brandId == brand.id}"></option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" name="minPrice"
+                       th:value="${minPrice != null ? #numbers.formatInteger(minPrice, 0) : ''}"
+                       placeholder="Price from (VND)">
+            </div>
+            <div class="col-md-2">
+                <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" name="maxPrice"
+                       th:value="${maxPrice != null ? #numbers.formatInteger(maxPrice, 0) : ''}" placeholder="To (VND)">
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" name="sortOption">
+                    <option value="default" th:selected="${sortOption == null || sortOption == 'default'}">Default
+                    </option>
+                    <option value="name_asc" th:selected="${sortOption == 'name_asc'}">Name (A-Z)</option>
+                    <option value="name_desc" th:selected="${sortOption == 'name_desc'}">Name (Z-A)</option>
+                    <option value="price_asc" th:selected="${sortOption == 'price_asc'}">Price (Low to High)</option>
+                    <option value="price_desc" th:selected="${sortOption == 'price_desc'}">Price (High to Low)</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-filter me-2"></i> Filter
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetFilters()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div th:if="${priceError != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span th:text="${priceError}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <script>
         function resetFilters() {
             window.location.href = '';
         }
-        </script>
-        <div class="row">
-            <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
-                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No products found</h5>
-            </div>
-            <div th:each="product : ${products}" class="col-6 col-sm-4 col-md-3 mb-3 d-flex">
-                <div class="product-card w-100 position-relative">
-                    <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration:none; color:inherit; display:block;">
-                        <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}" class="product-img">
-                        <h5 class="product-title" th:text="${product.name}" style="color:#2196f3; font-size:1.1rem; font-weight:400; margin-bottom:4px;">Tên sản phẩm</h5>
-                        <div>
-                            <!-- Hiển thị giá: Nếu có discount thì hiện giá gốc gạch ngang + giá sau giảm -->
-                            <span th:if="${productDiscountMap[product.productId] != null and product.price != null}"
-                                  class="text-decoration-line-through text-muted me-2"
-                                  th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
-                            <span style="color:#e53935; font-size:1.1rem; font-weight:700;"
-                                  th:text="${productDiscountMap[product.productId] != null and product.price != null and productDiscountMap[product.productId].discountPct != null ?
+    </script>
+    <div class="row">
+        <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
+            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No products found</h5>
+        </div>
+        <div th:each="product : ${products}" class="col-6 col-sm-4 col-md-3 mb-3 d-flex">
+            <div class="product-card w-100 position-relative">
+                <a th:href="@{'/Product/' + ${product.productId}}"
+                   style="text-decoration:none; color:inherit; display:block;">
+                    <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}"
+                         class="product-img">
+                    <h5 class="product-title" th:text="${product.name}"
+                        style="color:#2196f3; font-size:1.1rem; font-weight:400; margin-bottom:4px;">Tên sản phẩm</h5>
+                    <div>
+                        <!-- Hiển thị giá: Nếu có discount thì hiện giá gốc gạch ngang + giá sau giảm -->
+                        <span th:if="${productDiscountMap[product.productId] != null and product.price != null}"
+                              class="text-decoration-line-through text-muted me-2"
+                              th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
+                        <span style="color:#e53935; font-size:1.1rem; font-weight:700;"
+                              th:text="${productDiscountMap[product.productId] != null and product.price != null and productDiscountMap[product.productId].discountPct != null ?
                                             #numbers.formatDecimal(product.price * (100 - productDiscountMap[product.productId].discountPct) / 100, 0, 'POINT', 0, 'COMMA') :
                                             #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
-                            <span style="color:#e53935; font-size:0.85rem; font-weight:700; vertical-align:super;">VND</span>
-                        </div>
-                    </a>
-                    <!-- Đã xóa nút wishlist ở đây -->
-                </div>
+                        <span style="color:#e53935; font-size:0.85rem; font-weight:700; vertical-align:super;">VND</span>
+                    </div>
+                </a>
+                <!-- Đã xóa nút wishlist ở đây -->
             </div>
         </div>
-        <!-- Pagination -->
-        <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
-            <ul class="pagination">
-                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/Product(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&laquo;</a>
-                </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${currentPage == i} ? 'active'">
-                    <a class="page-link" th:href="@{/Product(page=${i}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${i+1}"></a>
-                </li>
-                <li class="page-item" th:classappend="${currentPage == (totalPages - 1)} ? 'disabled'">
-                    <a class="page-link" th:href="@{/Product(page=${totalPages - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&raquo;</a>
-                </li>
-            </ul>
-        </div>
     </div>
-    
-    <!-- Footer -->
-    <div th:replace="fragments/footer :: footer"></div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <!-- Pagination -->
+    <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/Product(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&laquo;</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+                th:classappend="${currentPage == i} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/Product(page=${i}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}"
+                   th:text="${i+1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == (totalPages - 1)} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/Product(page=${totalPages - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
     // Lấy danh sách wishlist từ localStorage
     function getWishlist() {
         return JSON.parse(localStorage.getItem('wishlist') || '[]');
     }
+
     function saveWishlist(wishlist) {
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
     }
+
     // Kiểm tra sản phẩm đã có trong wishlist chưa
     function isInWishlist(productId) {
         const wishlist = getWishlist();
         return wishlist.some(p => p.productId === productId);
     }
+
     // Thêm/xóa sản phẩm khỏi wishlist
     function toggleWishlist(product) {
         let wishlist = getWishlist();
@@ -225,6 +266,7 @@
         }
         saveWishlist(wishlist);
     }
+
     // Gán sự kiện cho nút tim
     function setupWishlistButtons() {
         document.querySelectorAll('.wishlist-btn').forEach(btn => {
@@ -240,14 +282,15 @@
             } else {
                 icon.style.color = '#aaa';
             }
-            btn.onclick = function() {
+            btn.onclick = function () {
                 toggleWishlist(product);
                 icon.style.color = isInWishlist(product.productId) ? '#e0245e' : '#aaa';
             };
         });
     }
+
     document.addEventListener('DOMContentLoaded', setupWishlistButtons);
     window.addEventListener('wishlist-updated', setupWishlistButtons);
-    </script>
+</script>
 </body>
 </html> 

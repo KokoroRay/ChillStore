@@ -12,7 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping({"/admin/manageFeedback","/staff/manageFeedback"})
+@RequestMapping({"/admin/manageFeedback", "/staff/manageFeedback"})
 public class FeedbackController {
 
     @Autowired

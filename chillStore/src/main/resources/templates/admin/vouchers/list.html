@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/sidebar.css">
     <!-- Select2 CSS nếu cần -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css"
+          rel="stylesheet"/>
     <style>
         /* Giữ nguyên style voucher-card, stats-card,... */
         .voucher-card {
@@ -23,10 +24,12 @@
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
         }
+
         .voucher-card:hover {
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
             transform: translateY(-3px);
         }
+
         .voucher-header {
             display: flex;
             justify-content: space-between;
@@ -35,11 +38,13 @@
             padding-bottom: 10px;
             border-bottom: 1px dashed #e0e0e0;
         }
+
         .voucher-title {
             font-size: 1.3rem;
             font-weight: bold;
             color: #4361ee;
         }
+
         .badge-active {
             background-color: #4ade80;
             color: white;
@@ -47,6 +52,7 @@
             border-radius: 20px;
             font-size: 0.9rem;
         }
+
         .badge-inactive {
             background-color: #f87171;
             color: white;
@@ -54,28 +60,33 @@
             border-radius: 20px;
             font-size: 0.9rem;
         }
+
         .detail-item {
             display: flex;
             justify-content: space-between;
             margin-bottom: 8px;
         }
+
         .detail-label {
             font-weight: 500;
             color: #6c757d;
             flex: 1;
         }
+
         .detail-value {
             color: #212529;
             flex: 1;
             text-align: right;
             font-weight: 500;
         }
+
         .voucher-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin-top: 10px;
         }
+
         .tag {
             background-color: #e0f7fa;
             color: #007bff;
@@ -85,12 +96,14 @@
             display: inline-flex;
             align-items: center;
         }
+
         .voucher-actions {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
             margin-top: 15px;
         }
+
         .btn-action {
             padding: 6px 15px;
             border-radius: 6px;
@@ -98,38 +111,46 @@
             display: flex;
             align-items: center;
         }
+
         .search-box {
             position: relative;
             margin-bottom: 1.5rem;
         }
+
         .search-box input {
             padding-left: 40px;
             border-radius: 30px;
         }
+
         .search-box i {
             position: absolute;
             left: 15px;
             top: 12px;
             color: #6c757d;
         }
+
         .stats-card {
             text-align: center;
             padding: 20px;
         }
+
         .stats-number {
             font-size: 2rem;
             font-weight: 700;
             color: #4361ee;
             margin: 10px 0;
         }
+
         .stats-label {
             font-size: 0.9rem;
             color: #6c757d;
         }
+
         /* Nếu cần, style cho sidebar để full height */
         html, body {
             height: 100%;
         }
+
         .d-flex-fullheight {
             min-height: 100vh;
         }
@@ -188,7 +209,10 @@
                     <div class="col-md-3 mb-4">
                         <div class="card stats-card">
                             <i class="fas fa-clock fa-2x text-warning"></i>
-                            <div class="stats-number" th:text="${#lists.size(vouchers.?[start_date.isAfter(T(java.time.LocalDate).now())])}">0</div>
+                            <div class="stats-number"
+                                 th:text="${#lists.size(vouchers.?[start_date.isAfter(T(java.time.LocalDate).now())])}">
+                                0
+                            </div>
                             <div class="stats-label">Upcoming Vouchers</div>
                         </div>
                     </div>
@@ -237,7 +261,8 @@
                                 <div class="detail-item">
                                     <div class="detail-label">Discount:</div>
                                     <div class="detail-value">
-                                        <span th:if="${v.discount_pct != null}" class="text-primary fw-bold" th:text="${v.discount_pct} + '%'">10%</span>
+                                        <span th:if="${v.discount_pct != null}" class="text-primary fw-bold"
+                                              th:text="${v.discount_pct} + '%'">10%</span>
                                         <span th:if="${v.discount_amount != null}" class="text-primary fw-bold"
                                               th:text="${#numbers.formatDecimal(v.discount_amount, 0, 'COMMA', 0, 'POINT')} + 'đ'">50,000đ</span>
                                     </div>
@@ -260,18 +285,21 @@
                                 <div class="tag" th:if="${v.categories == null or v.categories.isEmpty()}">
                                     <i class="fas fa-tag me-1"></i> All Categories
                                 </div>
-                                <div class="tag" th:each="cat : ${v.categories}" th:if="${v.categories != null and !v.categories.isEmpty()}">
+                                <div class="tag" th:each="cat : ${v.categories}"
+                                     th:if="${v.categories != null and !v.categories.isEmpty()}">
                                     <i class="fas fa-tag me-1"></i> <span th:text="${cat.name}">Category</span>
                                 </div>
                                 <div class="tag" th:if="${v.brands == null or v.brands.isEmpty()}">
                                     <i class="fas fa-copyright me-1"></i> All Brands
                                 </div>
-                                <div class="tag" th:each="br : ${v.brands}" th:if="${v.brands != null and !v.brands.isEmpty()}">
+                                <div class="tag" th:each="br : ${v.brands}"
+                                     th:if="${v.brands != null and !v.brands.isEmpty()}">
                                     <i class="fas fa-copyright me-1"></i> <span th:text="${br.name}">Brand</span>
                                 </div>
                             </div>
                             <div class="voucher-actions">
-                                <a th:href="@{/admin/vouchers/edit/{id}(id=${v.voucher_id})}" class="btn btn-warning btn-action">
+                                <a th:href="@{/admin/vouchers/edit/{id}(id=${v.voucher_id})}"
+                                   class="btn btn-warning btn-action">
                                     <i class="fas fa-edit me-1"></i> Edit
                                 </a>
                                 <a th:href="@{/admin/vouchers/delete/{id}(id=${v.voucher_id})}"

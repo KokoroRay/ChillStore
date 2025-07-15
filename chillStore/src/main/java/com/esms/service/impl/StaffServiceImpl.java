@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class StaffServiceImpl implements StaffService {
     @Autowired
@@ -34,7 +35,8 @@ public class StaffServiceImpl implements StaffService {
                 staff1.setEmail(staff.getEmail());
                 if (staff.getPassword() != null && !staff.getPassword().isBlank()) {
                     existingStaff.setPassword(staff.getPassword());
-                }                staff1.setPhone(staff.getPhone());
+                }
+                staff1.setPhone(staff.getPhone());
                 staff1.setAddress(staff.getAddress());
                 staff1.setGender(staff.getGender());
                 staff1.setNationalId(staff.getNationalId());
@@ -46,9 +48,9 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public boolean deleteStaff(int id) {
-        if(id >= 1) {
+        if (id >= 1) {
             Staff staff = staffRepository.getById(id);
-            if(staff != null) {
+            if (staff != null) {
                 staffRepository.delete(staff);
                 return true;
             }
@@ -75,27 +77,26 @@ public class StaffServiceImpl implements StaffService {
         }
         return staffRepository.findByKeywordAndGender(keyword, gender);
     }
+
     @Override
     public Page<Staff> getAllStaff(Pageable pageable) {
         return staffRepository.findAll(pageable);
     }
+
     @Override
     public Page<Staff> searchStaff(String keyword, Staff.Gender gender, Pageable pageable) {
         return staffRepository.searchStaff(keyword, gender, pageable);
     }
+
     @Override
     public boolean isNationalIdExists(String nationalId) {
         return staffRepository.existsByNationalId(nationalId);
     }
+
     @Override
     public boolean isEmailExists(String email) {
         return staffRepository.existsByEmail(email);
     }
-
-
-
-
-
 
 
 }

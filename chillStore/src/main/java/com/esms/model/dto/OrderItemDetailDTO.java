@@ -12,12 +12,36 @@ public class OrderItemDetailDTO {
         this.priceEach = priceEach;
         this.categoryName = categoryName;
     }
-    public String getProductName() { return productName; }
-    public void setProductName(String productName) { this.productName = productName; }
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-    public double getPriceEach() { return priceEach; }
-    public void setPriceEach(double priceEach) { this.priceEach = priceEach; }
-    public String getCategoryName() { return categoryName; }
-    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public double getPriceEach() {
+        return priceEach;
+    }
+
+    public void setPriceEach(double priceEach) {
+        this.priceEach = priceEach;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 } 

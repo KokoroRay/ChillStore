@@ -10,6 +10,7 @@ public class CategoryDTO {
         this.name = name;
         this.parentId = parentId;
     }
+
     public CategoryDTO() {
     }
 

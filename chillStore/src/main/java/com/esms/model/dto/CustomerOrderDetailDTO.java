@@ -13,7 +13,7 @@ public class CustomerOrderDetailDTO {
     private BigDecimal discountAmount;
     private String refundStatus;
     private List<OrderItemDetailDTO> items;
-    
+
     // Customer information
     private String customerName;
     private String customerEmail;
@@ -134,13 +134,13 @@ public class CustomerOrderDetailDTO {
 
         // List of northern provinces
         String[] northernProvinces = {
-            "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
-            "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
-            "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
-            "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
-            "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
-            "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
-            "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
+                "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
+                "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
+                "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
+                "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
+                "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
+                "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
+                "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
         };
 
         // Check if province is in northern list

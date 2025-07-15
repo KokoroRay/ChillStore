@@ -14,6 +14,7 @@ public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch
         this.confirmPasswordField = constraintAnnotation.confirmPasswordField();
         this.message = constraintAnnotation.message();
     }
+
     @Override
     public boolean isValid(Object value, jakarta.validation.ConstraintValidatorContext context) {
         try {

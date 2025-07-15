@@ -22,7 +22,7 @@ import java.util.*;
 public class VoucherServiceImpl implements VoucherService {
 
     @Autowired
-    private VoucherRepository  voucherRepository;
+    private VoucherRepository voucherRepository;
 
     @Autowired
     private AdminRepository adminRepository;
@@ -43,7 +43,7 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public List<Voucher> searchVouchers(String keyword) {
-        if(keyword == null || keyword.isEmpty()) {
+        if (keyword == null || keyword.isEmpty()) {
             return voucherRepository.findAll();
         }
         String kw = keyword.trim();
@@ -112,7 +112,7 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setActive(voucherDto.isActive());
         voucher.getCategories().clear();
         if (voucherDto.getCategoryIds() != null && !voucherDto.getCategoryIds().isEmpty()) {
-            List<Category> categories  = categoryRepository.findAllById(voucherDto.getCategoryIds());
+            List<Category> categories = categoryRepository.findAllById(voucherDto.getCategoryIds());
             voucher.setCategories(new HashSet<>(categories));
         }
         voucher.getBrands().clear();
@@ -125,8 +125,8 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public void deleteVoucher(Integer id) {
-        Optional <Voucher> voucherOptional = voucherRepository.findById(id);
-        if (voucherOptional.isPresent()){
+        Optional<Voucher> voucherOptional = voucherRepository.findById(id);
+        if (voucherOptional.isPresent()) {
             voucherRepository.delete(voucherOptional.get());
             Integer maxId = voucherRepository.findMaxId();
             reseedIdentityTo(maxId);

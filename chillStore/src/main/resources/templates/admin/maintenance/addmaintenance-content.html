@@ -11,48 +11,56 @@
                                 <label class="form-label" for="orderId">Order</label>
                                 <select class="form-select" id="orderId" th:field="*{orderId}" required>
                                     <option value="">Select an order</option>
-                                    <option th:each="order : ${orders}" 
-                                            th:value="${order.orderId}" 
+                                    <option th:each="order : ${orders}"
+                                            th:value="${order.orderId}"
                                             th:text="'Order #' + ${order.orderId} + ' - ' + ${order.customer.name} + ' (' + ${#dates.format(order.orderDate, 'dd/MM/yyyy')} + ' - ' + ${order.status} + ')'">
                                     </option>
                                 </select>
-                                <div class="text-danger small mt-1" th:errors="*{orderId}" th:if="${#fields.hasErrors('orderId')}"></div>
+                                <div class="text-danger small mt-1" th:errors="*{orderId}"
+                                     th:if="${#fields.hasErrors('orderId')}"></div>
                                 <small class="text-muted">Select an existing order from the list</small>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="requestDate">Maintenance Date</label>
-                                <input class="form-control" id="requestDate" th:field="*{requestDate}" type="datetime-local" required>
-                                <div class="text-danger small mt-1" th:errors="*{requestDate}" th:if="${#fields.hasErrors('requestDate')}"></div>
-                                <small class="text-muted">Maintenance date and time must be today or in the future</small>
+                                <input class="form-control" id="requestDate" th:field="*{requestDate}"
+                                       type="datetime-local" required>
+                                <div class="text-danger small mt-1" th:errors="*{requestDate}"
+                                     th:if="${#fields.hasErrors('requestDate')}"></div>
+                                <small class="text-muted">Maintenance date and time must be today or in the
+                                    future</small>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="productId">Product</label>
                                 <select class="form-select" id="productId" th:field="*{productId}" required>
                                     <option value="">Select a product</option>
-                                    <option th:each="product : ${products}" 
-                                            th:value="${product.productId}" 
+                                    <option th:each="product : ${products}"
+                                            th:value="${product.productId}"
                                             th:text="${product.name} + ' - ' + ${product.category.name} + ' (' + ${product.brand.name} + ')'">
                                     </option>
                                 </select>
-                                <div class="text-danger small mt-1" th:errors="*{productId}" th:if="${#fields.hasErrors('productId')}"></div>
+                                <div class="text-danger small mt-1" th:errors="*{productId}"
+                                     th:if="${#fields.hasErrors('productId')}"></div>
                                 <small class="text-muted">Select an existing product from the list</small>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="customerId">Customer</label>
                                 <select class="form-select" id="customerId" th:field="*{customerId}" required>
                                     <option value="">Select a customer</option>
-                                    <option th:each="customer : ${customers}" 
-                                            th:value="${customer.customerId}" 
+                                    <option th:each="customer : ${customers}"
+                                            th:value="${customer.customerId}"
                                             th:text="${customer.name} + ' (' + ${customer.phone} + ')'">
                                     </option>
                                 </select>
-                                <div class="text-danger small mt-1" th:errors="*{customerId}" th:if="${#fields.hasErrors('customerId')}"></div>
+                                <div class="text-danger small mt-1" th:errors="*{customerId}"
+                                     th:if="${#fields.hasErrors('customerId')}"></div>
                                 <small class="text-muted">Select an existing customer from the list</small>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="reason">Maintenance Reason</label>
-                                <textarea class="form-control" id="reason" th:field="*{reason}" rows="2" required></textarea>
-                                <div class="text-danger small mt-1" th:errors="*{reason}" th:if="${#fields.hasErrors('reason')}"></div>
+                                <textarea class="form-control" id="reason" th:field="*{reason}" rows="2"
+                                          required></textarea>
+                                <div class="text-danger small mt-1" th:errors="*{reason}"
+                                     th:if="${#fields.hasErrors('reason')}"></div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="requestType">Request Type</label>
@@ -61,7 +69,8 @@
                                     <option value="maintenance">Maintenance</option>
                                     <option value="warranty">Warranty</option>
                                 </select>
-                                <div class="text-danger small mt-1" th:errors="*{requestType}" th:if="${#fields.hasErrors('requestType')}"></div>
+                                <div class="text-danger small mt-1" th:errors="*{requestType}"
+                                     th:if="${#fields.hasErrors('requestType')}"></div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="staffId">Staff</label>
@@ -72,7 +81,8 @@
                                             th:text="${staff.name} + ' (' + staff.email + ')'">
                                     </option>
                                 </select>
-                                <div class="text-danger small mt-1" th:errors="*{staffId}" th:if="${#fields.hasErrors('staffId')}"></div>
+                                <div class="text-danger small mt-1" th:errors="*{staffId}"
+                                     th:if="${#fields.hasErrors('staffId')}"></div>
                                 <small class="text-muted">Select a staff to assign this maintenance</small>
                             </div>
                         </div>

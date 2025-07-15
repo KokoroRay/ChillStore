@@ -1,6 +1,6 @@
 /* Profile Page Styles */
 :root {
-    --primary-color: #0c16fb;
+    --primary-color: #4f46e5;
     --primary-hover: #4338ca;
     --secondary-color: #6b7280;
     --success-color: #10b981;
@@ -682,16 +682,4 @@ select.form-input {
 
 .profile-content::-webkit-scrollbar-thumb:hover {
     background: var(--secondary-color);
-}
-
-.main-content {
-    min-height: 100vh;
-    background: #f8f9fa;
-    padding: 20px;
-}
-
-@media (max-width: 768px) {
-    .main-content {
-        padding: 10px;
-    }
-}
+} 

@@ -31,4 +31,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, OrderItemI
     List<Object[]> getProductSalesStatistics(@Param("startDate") Date startDate,
                                               @Param("endDate") Date endDate);
 
+    @Query(value = "SELECT COALESCE(SUM(oi.quantity), 0) FROM order_items oi JOIN orders o ON oi.order_id = o.order_id WHERE oi.product_id = :productId AND o.status IN ('Paid','Shipped','Delivered')", nativeQuery = true)
+    Integer countTotalSoldByProductId(@Param("productId") Integer productId);
+
 } 

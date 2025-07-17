@@ -30,12 +30,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Page<Category> searchCategory(String keyword, Pageable pa) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return categoryRepository.findAll(pa);
-        }
-        return categoryRepository.findByNameContainingIgnoreCase(keyword.trim(), pa);
+    public List<Category> getCategories() {
+        return categoryRepository.findAll();
     }
+
 
     @Override
     public Optional<Category> getCategoryById(Integer id) {

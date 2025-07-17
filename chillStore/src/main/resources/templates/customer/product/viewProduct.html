@@ -63,12 +63,28 @@
             gap: 8px;
         }
         .wishlist-btn {
-            background: none;
-            border: none;
+            background: white;
+            border: 1px solid #ddd;
             color: #dc3545;
-            font-size: 1.3rem;
+            font-size: 1rem;
             vertical-align: middle;
             margin-left: 0;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+            cursor: pointer;
+        }
+        .wishlist-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         .wishlist-btn.active {
             color: #e0245e;
@@ -91,6 +107,25 @@
             .main-content { margin-top: 0px; }
             .product-card { height: 270px; padding: 8px; }
             .product-img { height: 90px; }
+        }
+        
+        /* Floating message */
+        .floating-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: #198754;
+            color: white;
+            z-index: 1050;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+        }
+        
+        .floating-message.show {
+            transform: translateX(0);
         }
     </style>
 </head>
@@ -177,7 +212,7 @@
                             <span style="color:#e53935; font-size:0.85rem; font-weight:700; vertical-align:super;">VND</span>
                         </div>
                     </a>
-                    <!-- Đã xóa nút wishlist ở đây -->
+                    <!-- Wishlist button removed - only show in product detail page -->
                 </div>
             </div>
         </div>
@@ -243,10 +278,33 @@
         const idx = wishlist.findIndex(p => p.productId === product.productId);
         if (idx === -1) {
             wishlist.push(product);
+            showFloatingMessage('Added to wishlist');
         } else {
             wishlist.splice(idx, 1);
+            showFloatingMessage('Removed from wishlist');
         }
         saveWishlist(wishlist);
+    }
+    
+    // Show floating message
+    function showFloatingMessage(message) {
+        // Create floating message element if it doesn't exist
+        let floatingMessage = document.getElementById('floatingMessage');
+        if (!floatingMessage) {
+            floatingMessage = document.createElement('div');
+            floatingMessage.id = 'floatingMessage';
+            floatingMessage.className = 'floating-message';
+            floatingMessage.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>
+                <span id="messageText"></span>
+            `;
+            document.body.appendChild(floatingMessage);
+        }
+        
+        const messageText = document.getElementById('messageText');
+        messageText.textContent = message;
+        floatingMessage.classList.add('show');
+        setTimeout(() => floatingMessage.classList.remove('show'), 3000);
     }
     // Gán sự kiện cho nút tim
     function setupWishlistButtons() {
@@ -258,14 +316,33 @@
                 price: btn.getAttribute('data-product-price') ? parseInt(btn.getAttribute('data-product-price')) : null
             };
             const icon = btn.querySelector('i');
+            
+            // Update icon state
             if (isInWishlist(product.productId)) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
                 icon.style.color = '#e0245e';
             } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
                 icon.style.color = '#aaa';
             }
-            btn.onclick = function() {
+            
+            btn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 toggleWishlist(product);
-                icon.style.color = isInWishlist(product.productId) ? '#e0245e' : '#aaa';
+                
+                // Update icon after toggle
+                if (isInWishlist(product.productId)) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#e0245e';
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = '#aaa';
+                }
             };
         });
     }

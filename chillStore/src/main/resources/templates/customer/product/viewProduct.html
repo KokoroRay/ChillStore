@@ -63,12 +63,28 @@
             gap: 8px;
         }
         .wishlist-btn {
-            background: none;
-            border: none;
+            background: white;
+            border: 1px solid #ddd;
             color: #dc3545;
-            font-size: 1.3rem;
+            font-size: 1rem;
             vertical-align: middle;
             margin-left: 0;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+            cursor: pointer;
+        }
+        .wishlist-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         .wishlist-btn.active {
             color: #e0245e;
@@ -91,6 +107,25 @@
             .main-content { margin-top: 0px; }
             .product-card { height: 270px; padding: 8px; }
             .product-img { height: 90px; }
+        }
+        
+        /* Floating message */
+        .floating-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background: #198754;
+            color: white;
+            z-index: 1050;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+        }
+        
+        .floating-message.show {
+            transform: translateX(0);
         }
     </style>
 </head>
@@ -177,29 +212,52 @@
                             <span style="color:#e53935; font-size:0.85rem; font-weight:700; vertical-align:super;">VND</span>
                         </div>
                     </a>
-                    <!-- Đã xóa nút wishlist ở đây -->
+                    <!-- Wishlist button removed - only show in product detail page -->
                 </div>
             </div>
         </div>
-        <!-- Pagination -->
+        <!-- Pagination: Numbered + Truncated, luôn hiện trang liền kề -->
         <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
             <ul class="pagination">
+                <!-- Previous -->
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/Product(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&laquo;</a>
+                    <a class="page-link" th:href="@{/Product(page=${currentPage - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">Previous</a>
                 </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}" th:classappend="${currentPage == i} ? 'active'">
-                    <a class="page-link" th:href="@{/Product(page=${i}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${i+1}"></a>
+                <!-- Always show first page -->
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'active'">
+                    <a class="page-link" th:href="@{/Product(page=0, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">1</a>
                 </li>
-                <li class="page-item" th:classappend="${currentPage == (totalPages - 1)} ? 'disabled'">
-                    <a class="page-link" th:href="@{/Product(page=${totalPages - 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">&raquo;</a>
+                <!-- Ellipsis if needed before currentPage-1 -->
+                <li class="page-item disabled" th:if="${currentPage > 2}"><span class="page-link">...</span></li>
+                <!-- Show currentPage-1 if > 1 and < totalPages-1 -->
+                <li class="page-item" th:if="${currentPage > 1}" th:classappend="${currentPage == currentPage-1} ? 'active'">
+                    <a class="page-link" th:href="@{/Product(page=${currentPage-1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${currentPage}"></a>
+                </li>
+                <!-- Show currentPage if not first/last -->
+                <li class="page-item" th:if="${currentPage > 0 && currentPage < totalPages-1}" th:classappend="active">
+                    <a class="page-link" th:href="@{/Product(page=${currentPage}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${currentPage+1}"></a>
+                </li>
+                <!-- Show currentPage+1 if < totalPages-1 -->
+                <li class="page-item" th:if="${currentPage < totalPages-2}" th:classappend="${currentPage+1 == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/Product(page=${currentPage+1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${currentPage+2}"></a>
+                </li>
+                <!-- Ellipsis if needed after currentPage+1 -->
+                <li class="page-item disabled" th:if="${currentPage < totalPages-3}"><span class="page-link">...</span></li>
+                <!-- Always show last page if more than 1 page -->
+                <li class="page-item" th:if="${totalPages > 1}" th:classappend="${currentPage == totalPages-1} ? 'active'">
+                    <a class="page-link" th:href="@{/Product(page=${totalPages-1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}" th:text="${totalPages}"></a>
+                </li>
+                <!-- Next -->
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/Product(page=${currentPage + 1}, size=${size}, keyword=${keyword}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption})}">Next</a>
                 </li>
             </ul>
         </div>
     </div>
-    
+
     <!-- Footer -->
     <div th:replace="fragments/footer :: footer"></div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     // Lấy danh sách wishlist từ localStorage
@@ -220,10 +278,33 @@
         const idx = wishlist.findIndex(p => p.productId === product.productId);
         if (idx === -1) {
             wishlist.push(product);
+            showFloatingMessage('Added to wishlist');
         } else {
             wishlist.splice(idx, 1);
+            showFloatingMessage('Removed from wishlist');
         }
         saveWishlist(wishlist);
+    }
+    
+    // Show floating message
+    function showFloatingMessage(message) {
+        // Create floating message element if it doesn't exist
+        let floatingMessage = document.getElementById('floatingMessage');
+        if (!floatingMessage) {
+            floatingMessage = document.createElement('div');
+            floatingMessage.id = 'floatingMessage';
+            floatingMessage.className = 'floating-message';
+            floatingMessage.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>
+                <span id="messageText"></span>
+            `;
+            document.body.appendChild(floatingMessage);
+        }
+        
+        const messageText = document.getElementById('messageText');
+        messageText.textContent = message;
+        floatingMessage.classList.add('show');
+        setTimeout(() => floatingMessage.classList.remove('show'), 3000);
     }
     // Gán sự kiện cho nút tim
     function setupWishlistButtons() {
@@ -235,14 +316,33 @@
                 price: btn.getAttribute('data-product-price') ? parseInt(btn.getAttribute('data-product-price')) : null
             };
             const icon = btn.querySelector('i');
+            
+            // Update icon state
             if (isInWishlist(product.productId)) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
                 icon.style.color = '#e0245e';
             } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
                 icon.style.color = '#aaa';
             }
-            btn.onclick = function() {
+            
+            btn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 toggleWishlist(product);
-                icon.style.color = isInWishlist(product.productId) ? '#e0245e' : '#aaa';
+                
+                // Update icon after toggle
+                if (isInWishlist(product.productId)) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#e0245e';
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = '#aaa';
+                }
             };
         });
     }
@@ -250,4 +350,4 @@
     window.addEventListener('wishlist-updated', setupWishlistButtons);
     </script>
 </body>
-</html> 
+</html>

@@ -1,127 +1,143 @@
-/* Customer Management Styles */
-html, body {
-    height: 100%;
+/* Layout Improvements */
+.main-content {
+    background-color: var(--background);
+    min-height: calc(100vh - 56px);
+    padding-bottom: 2rem;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+.category-management {
+    padding: 0 1.5rem;
 }
 
-.content-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+/* Card Styling */
+.card {
+    border-radius: 12px;
     overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.content-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0; /* Quan trọng: cho phép nội dung co giãn */
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.card-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-
-.card-scrollable {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-}
-
-.table-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-
-.table-container {
-    flex: 1;
-    overflow: auto;
-}
-
+/* Table Styling */
 .table {
-    width: 100%;
     margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
-.address-cell {
-    max-width: 300px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.table thead th {
+    background-color: var(--primary);
+    color: #000000;
+    font-weight: 700;
+    padding: 1rem 1.25rem;
+    border: none;
 }
 
-/* Responsive cho mobile */
-@media (max-width: 768px) {
-    .table-container {
-        min-width: 600px;
-    }
+.table tbody td {
+    padding: 1rem 1.25rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
 }
 
-/* Customer Buttons */
-.customer-buttons {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    justify-content: flex-start;
+.table tbody tr:last-child td {
+    border-bottom: none;
 }
 
-.btn-update,
-.btn-lock,
-.btn-unlock {
+.table-hover tbody tr:hover {
+    background-color: rgba(135, 192, 205, 0.1);
+}
+
+/* Buttons & Actions */
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: #0d3253;
+    border-color: #0d3253;
+}
+
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 35px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    text-decoration: none;
-    border: none;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-    transition: 0.2s;
-    vertical-align: middle;
     padding: 0;
-    line-height: 1;
 }
 
-.btn-update {
-    background-color: #33c1f1;
+.text-end img {
+    width: 2rem;
+    height: 2rem;
+}
+
+.btn-delete {
+    background-color: #dc3545;
     color: white;
 }
 
-.btn-update:hover {
-    background-color: #29aee0;
+.btn-delete:hover {
+    background-color: #bb2d3b;
     color: white;
 }
 
-.btn-lock {
-    background-color: #ffc107;
-    color: #000;
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .category-management {
+        padding: 0 1rem;
+    }
+
+    .table-responsive {
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    }
 }
 
-.btn-lock:hover {
-    background-color: #e0a800;
-    color: #000;
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+
+    .table tbody tr {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 2px solid #dee2e6;
+        padding: 1rem;
+    }
+
+    .table tbody td {
+        display: flex;
+        border-bottom: 1px solid #f1f1f1;
+        padding: 0.75rem 0.5rem;
+    }
+
+    .table tbody td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        width: 120px;
+        min-width: 120px;
+        color: var(--primary);
+    }
+
+    .table tbody td .btn-action {
+        margin: 0 2px;
+    }
+
+    /* Add data labels for responsive table */
+    td[data-label]:before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: inline-block;
+        margin-right: 0.5rem;
+        color: var(--primary);
+    }
 }
 
-.btn-unlock {
-    background-color: #28a745;
-    color: white;
-}
-
-.btn-unlock:hover {
-    background-color: #218838;
-    color: white;
+/* Empty State Styling */
+.text-center.text-muted i {
+    opacity: 0.6;
 }

@@ -20,6 +20,7 @@ import com.esms.repository.DiscountRepository;
 import com.esms.model.entity.Discount;
 import java.time.LocalDate;
 import com.esms.model.entity.DiscountProduct;
+import com.esms.repository.OrderItemRepository;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -440,6 +441,15 @@ public class ProductServiceImpl implements ProductService {
                 pageable,
                 products.size()
         );
+    }
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
+    @Override
+    public int getTotalSoldQuantity(Integer productId) {
+        Integer count = orderItemRepository.countTotalSoldByProductId(productId);
+        return count != null ? count : 0;
     }
 
 }

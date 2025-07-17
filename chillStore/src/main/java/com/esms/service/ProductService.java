@@ -59,5 +59,7 @@ public interface ProductService {
     );
 
     Product getProductWithDetails(Integer productId);
+
+    int getTotalSoldQuantity(Integer productId);
 }
 

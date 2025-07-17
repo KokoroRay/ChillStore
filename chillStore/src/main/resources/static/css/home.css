@@ -327,6 +327,48 @@ body {
     font-weight: bold;
     cursor: default;
 }
+/* === Why ===*/
+.title {
+    text-align: center;
+    font-size: 64px;
+    color: #0d6efd;
+    margin-top: 20px;
+    margin-bottom: 16px;
+}
+
+ .container {
+     display: flex;
+     flex-wrap: nowrap;
+     gap: 16px;
+     overflow-x: auto;
+     padding: 20px;
+ }
+
+.why {
+    width: 200px;
+    flex-shrink: 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    padding: 12px;
+    box-sizing: border-box;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.why p:first-child {
+    font-weight: bold;
+    color: #0d6efd;
+    margin-bottom: 6px;
+}
+
+.why p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {

@@ -463,13 +463,13 @@
 /* Thêm style mới cho wishlist-container */
 .wishlist-container {
     position: relative;
-    z-index: 10;
+    z-index: 100;
     margin: 20px 0;
     text-align: center;
 }
 
 .wishlist-btn {
-    z-index: 20;
+    z-index: 101;
     position: relative;
     pointer-events: auto;
     background: white;
@@ -482,16 +482,19 @@
     color: #212529;
     font-weight: 500;
     transition: all 0.3s;
+    cursor: pointer;
 }
 
 .wishlist-btn:hover {
     background-color: #f8f9fa;
     border-color: #dc3545;
+    transform: scale(1.05);
 }
 
 .wishlist-btn i {
     color: #dc3545;
     transition: all 0.3s;
+    font-size: 1.2rem;
 }
 
 .wishlist-btn.active {

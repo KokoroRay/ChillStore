@@ -86,7 +86,7 @@
             // Format price
             let priceHtml = 'N/A';
             if (product.price !== undefined && product.price !== null && !isNaN(product.price)) {
-                priceHtml = `<span style='color:#e53935;font-size:1.1rem;font-weight:700;'>${Number(product.price).toLocaleString('en-US')}</span> <span style='color:#e53935;font-size:0.85rem;font-weight:700;vertical-align:super;'>VND</span>`;
+                priceHtml = `Giá: ${Number(product.price).toLocaleString('vi-VN')} VND`;
             }
             col.innerHTML = `
                 <div class="product-card w-100 position-relative" style="cursor:pointer;">
@@ -98,9 +98,6 @@
                     <div class="mb-2 text-center">${priceHtml}</div>
                     <div class="product-actions mt-auto gap-2">
                         <button class="btn btn-buy flex-grow-1" onclick="buyNow(${product.productId})">Buy now</button>
-                        <button class="wishlist-btn" style="color:#e0245e" title="Wishlisted" onclick="removeFromWishlist(${product.productId})">
-                            <i class="fa fa-heart"></i>
-                        </button>
                     </div>
                 </div>
             `;

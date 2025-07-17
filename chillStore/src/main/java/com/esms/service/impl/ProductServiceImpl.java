@@ -477,6 +477,7 @@ public class ProductServiceImpl implements ProductService {
         return all.stream().map(this::convertToDTO).toList();
     }
 
+    @Override
     public List<ProductDTO> getRandomProductsPaged(int page, int size) {
         List<Product> all = productRepository.findAll();
         Collections.shuffle(all);
@@ -485,6 +486,7 @@ public class ProductServiceImpl implements ProductService {
         if (fromIndex >= all.size()) return List.of();
         return all.subList(fromIndex, toIndex).stream().map(this::convertToDTO).toList();
     }
+    @Override
     public int getRandomProductsTotalPages(int size) {
         int total = productRepository.findAll().size();
         return (int) Math.ceil((double) total / size);

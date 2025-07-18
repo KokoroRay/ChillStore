@@ -7,8 +7,9 @@
 
 /* Buttons & Actions */
 .btn-primary {
-    background-color: var(--primary);
-    border-color: var(--primary);
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
     padding: 0.5rem 1.25rem;
     border-radius: 8px;
     font-weight: 500;
@@ -19,10 +20,11 @@
 }
 
 .btn-primary:hover {
-    background-color: #0d3253;
-    border-color: #0d3253;
+    background-color: #1a5075;
+    border-color: #143b58;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
 }
 
 .btn-primary i {
@@ -31,14 +33,17 @@
 
 /* Maintenance Management Container */
 .maintenance-management {
-    height: 100vh;
+    flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    overflow: hidden;
 }
+
 .d-flex.justify-content-between {
+    flex-shrink: 0;
     position: relative;
-    z-index: 100; /* Đặt giá trị cao hơn các phần tử xung quanh */
+    z-index: 100;
 }
 
 .card {
@@ -48,7 +53,8 @@
     display: flex;
     flex-direction: column;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    height: 100%; /* Đảm bảo card chiếm toàn bộ chiều cao */
+    flex: 1;
+    min-height: 0;
 }
 
 .card:hover {
@@ -121,12 +127,12 @@
 
 .btn-view {
     background-color: var(--accent);
-    color: var(--primary);
+    color: white;
 }
 
 .btn-view:hover {
     background-color: #76a9b5;
-    color: var(--primary);
+    color: white;
 }
 
 .btn-update {
@@ -153,7 +159,7 @@
 
 .bg-info {
     background-color: var(--accent) !important;
-    color: var(--primary);
+    color: white;
 }
 
 .bg-success {
@@ -182,10 +188,6 @@
 
 /* Responsive Adjustments */
 @media (max-width: 992px) {
-    .maintenance-management {
-        padding: 0 1rem;
-    }
-
     .table-responsive {
         border-radius: 12px;
         border: 1px solid #dee2e6;
@@ -215,7 +217,7 @@
         font-weight: 600;
         width: 120px;
         min-width: 120px;
-        color: var(--primary);
+        color: var(--secondary);
     }
 
     .reason-cell {
@@ -228,7 +230,7 @@
         font-weight: 600;
         display: inline-block;
         margin-right: 0.5rem;
-        color: var(--primary);
+        color: var(--secondary);
     }
 
     /* Specific labels for columns */
@@ -253,6 +255,21 @@
         right: 0;
         left: auto;
     }
+
+    /* Responsive header */
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .d-flex.justify-content-between > h2 {
+        margin-bottom: 15px;
+    }
+
+    .btn-primary {
+        align-self: flex-end;
+        margin-top: 10px;
+    }
 }
 
 .empty-state {
@@ -268,25 +285,10 @@
 }
 
 .empty-state h5 {
-    color: var(--primary);
+    color: var(--secondary);
     margin-bottom: 0.5rem;
 }
 
 .empty-state p {
     color: #6c757d;
-}
-@media (max-width: 768px) {
-    .d-flex.justify-content-between {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .d-flex.justify-content-between > h2 {
-        margin-bottom: 15px;
-    }
-
-    .btn-primary {
-        align-self: flex-end;
-        margin-top: 10px;
-    }
 }

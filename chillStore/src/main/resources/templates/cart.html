@@ -19,6 +19,9 @@
     <div class="container mt-4">
         <h1 class="text-center mb-4">Your Shopping Cart</h1>
 
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${cartError}" class="alert alert-danger" th:text="${cartError}"></div>
+
         <!-- Table of Cart Items -->
         <table class="table table-bordered shopping-cart">
             <thead class="table-light">
@@ -40,12 +43,17 @@
                     <td>
                         <div class="d-flex">
                             <input type="number" th:value="${item.quantity}" class="form-control form-control-sm me-2"
-                                style="width: 70px;" min="1"
+                                style="width: 70px;" min="1" th:attr="max=${item.stockQty}"
+                                th:disabled="${item.quantity} >= ${item.stockQty}"
                                 th:onchange="'updateQuantity(' + ${item.cartItemId} + ', this.value)'">
                             <button type="button" class="btn btn-sm btn-outline-secondary"
-                                th:onclick="'updateQuantity(' + ${item.cartItemId} + ', this.previousElementSibling.value)'">
+                                th:onclick="'updateQuantity(' + ${item.cartItemId} + ', this.previousElementSibling.value)'"
+                                th:disabled="${item.quantity} >= ${item.stockQty}">
                                 Update
                             </button>
+                        </div>
+                        <div th:if="${item.quantity} >= ${item.stockQty}" class="text-danger small mt-1">
+                            Thêm sản phẩm không thành công: đã đạt số lượng tối đa trong kho
                         </div>
                     </td>
                     <!-- THÊM CLASS item-total -->

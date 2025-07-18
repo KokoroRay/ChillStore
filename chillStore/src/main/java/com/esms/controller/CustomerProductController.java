@@ -112,6 +112,12 @@ public class CustomerProductController {
                 productDiscountMap.put(product.getProductId(), discount);
             }
         }
+        // Map productId -> total sold quantity for displaying "đã bán"
+        Map<Integer, Integer> productSoldMap = new HashMap<>();
+        for (Product product : products) {
+            int soldQty = productService.getTotalSoldQuantity(product.getProductId());
+            productSoldMap.put(product.getProductId(), soldQty);
+        }
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
@@ -128,6 +134,7 @@ public class CustomerProductController {
         model.addAttribute("priceError", priceError);
         // Bổ sung: truyền map discount ra view
         model.addAttribute("productDiscountMap", productDiscountMap);
+        model.addAttribute("productSoldMap", productSoldMap);
         return "customer/product/viewProduct";
     }
 
@@ -388,6 +395,12 @@ public class CustomerProductController {
                 productDiscountMap.put(product.getProductId(), discount);
             }
         }
+        // Map productId -> total sold quantity for displaying "đã bán"
+        Map<Integer, Integer> productSoldMap = new HashMap<>();
+        for (Product product : products) {
+            int soldQty = productService.getTotalSoldQuantity(product.getProductId());
+            productSoldMap.put(product.getProductId(), soldQty);
+        }
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
@@ -403,6 +416,7 @@ public class CustomerProductController {
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("priceError", priceError);
         model.addAttribute("productDiscountMap", productDiscountMap);
+        model.addAttribute("productSoldMap", productSoldMap);
         return "customer/product/discountProducts";
     }
 }

@@ -2,18 +2,17 @@ package com.esms.service;
 
 import com.esms.model.dto.CategoryDTO;
 import com.esms.model.entity.Category;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public interface CategoryService {
 
     List<Category> getAllCategory();
 
 
-    Page<Category> searchCategory(String keyword, Pageable pa);
+    List<Category> getCategories();
 
     Optional<Category> getCategoryById(Integer id);
 

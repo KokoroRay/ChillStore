@@ -27,15 +27,13 @@ public class CategoryController {
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String listCategory(
-            @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "error", required = false) String error, Model model,
             Pageable pa, HttpServletRequest request) {
         if (error != null) {
             model.addAttribute("error", error);
         }
-        Page<Category> categories = categoryService.searchCategory(keyword, pa);
+        List<Category> categories = categoryService.getCategories();
         model.addAttribute("categories", categories);
-        model.addAttribute("keyword", keyword);
         String requestUrl = request.getRequestURI();
         if (requestUrl.startsWith("/staff")) {
             return "staff/category/list";

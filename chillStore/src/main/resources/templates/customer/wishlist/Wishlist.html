@@ -144,13 +144,24 @@
         e.preventDefault();
         const cards = document.querySelectorAll('.product-card');
         let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        const selectedProductIds = [];
+        
         cards.forEach(card => {
             const checkbox = card.querySelector('.custom-checkbox');
             if (checkbox && checkbox.classList.contains('selected')) {
-                const name = card.querySelector('.product-title').textContent;
-                wishlist = wishlist.filter(p => p.name !== name);
+                const buyButton = card.querySelector('.btn-buy');
+                if (buyButton) {
+                    const onclick = buyButton.getAttribute('onclick');
+                    const productIdMatch = onclick.match(/buyNow\((\d+)\)/);
+                    if (productIdMatch) {
+                        selectedProductIds.push(parseInt(productIdMatch[1]));
+                    }
+                }
             }
         });
+        
+        // Remove selected products by productId
+        wishlist = wishlist.filter(p => !selectedProductIds.includes(p.productId));
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
         window.dispatchEvent(new Event('wishlist-updated'));
         renderWishlist();

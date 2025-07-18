@@ -12,6 +12,7 @@ public class FeedbackDTO {
     private String comment;
     private String status;
     private LocalDateTime createdAt;
+    private String replyContent;
 
     public FeedbackDTO() {
 
@@ -81,5 +82,12 @@ public class FeedbackDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getReplyContent() {
+        return replyContent;
+    }
+    public void setReplyContent(String replyContent) {
+        this.replyContent = replyContent;
     }
 }

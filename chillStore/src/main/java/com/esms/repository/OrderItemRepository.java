@@ -31,4 +31,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, OrderItemI
     List<Object[]> getProductSalesStatistics(@Param("startDate") Date startDate,
                                              @Param("endDate") Date endDate);
 
+    @Query("SELECT COUNT(oi) > 0 FROM OrderItem oi JOIN oi.order o WHERE o.customer.customerId = :customerId AND oi.product.productId = :productId AND o.status IN ('Paid', 'Shipped', 'Delivered')")
+    boolean existsByCustomerAndProduct(@Param("customerId") Integer customerId, @Param("productId") Integer productId);
 } 

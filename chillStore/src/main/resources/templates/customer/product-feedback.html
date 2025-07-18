@@ -1,0 +1,62 @@
+<!-- product-feedback.html: Khung giao diện đánh giá sản phẩm (feedback) -->
+<link rel="stylesheet" href="/css/feedback-customer.css">
+<a id="feedback-section"></a>
+<div th:fragment="product-feedback-fragment" id="feedback-section" style="max-width:900px;margin:40px auto 0 auto;">
+    <div class="fb-card" style="background:#fff;border-radius:18px;box-shadow:0 2px 16px #0001;padding:36px 32px 32px 32px;">
+        <div class="fb-summary">
+            <div class="fb-avg-box">
+                <div style="font-size:52px;color:#ffc107;line-height:1;">★</div>
+                <div id="avg-rating" style="font-size:2.6rem;font-weight:bold;">—</div>
+                <div style="color:#888;">trên 5</div>
+                <div style="color:#888;font-size:15px;" id="total-feedback">0 lượt đánh giá</div>
+            </div>
+            <div class="fb-progress-list" id="star-bar-list">
+                <!-- Progress bar từng mức sao sẽ render bằng JS -->
+            </div>
+        </div>
+        <form id="fb-form" style="margin:32px 0 24px 0;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+                <span style="font-weight:500;">Đánh giá của bạn:</span>
+                <span id="feedback-stars">
+                    <span class="fb-star" data-value="1">★</span>
+                    <span class="fb-star" data-value="2">★</span>
+                    <span class="fb-star" data-value="3">★</span>
+                    <span class="fb-star" data-value="4">★</span>
+                    <span class="fb-star" data-value="5">★</span>
+                </span>
+                <input type="hidden" id="feedback-rating" name="rating" required>
+            </div>
+            <textarea id="feedback-comment" name="comment" rows="2" maxlength="500" placeholder="Nhập nhận xét của bạn..." style="width:100%;margin:8px 0;"></textarea>
+            <button type="submit" class="fb-btn fb-btn-primary" style="width:160px;">Gửi đánh giá</button>
+        </form>
+        <div class="fb-list" id="feedback-list">
+            <!-- Danh sách feedback sẽ được JS render động ở đây -->
+        </div>
+        <!-- Toast message -->
+        <div id="fb-toast-message" style="display:none;position:fixed;top:20px;right:20px;z-index:9999;padding:12px 24px;background:#333;color:#fff;border-radius:6px;box-shadow:0 2px 8px #0002;"></div>
+        <!-- Modal sửa feedback -->
+        <div id="fb-edit-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0005;z-index:10000;align-items:center;justify-content:center;">
+            <div style="background:#fff;padding:24px;border-radius:8px;min-width:320px;max-width:90vw;">
+                <h5>Sửa đánh giá</h5>
+                <form id="edit-feedback-form">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span>Chọn sao:</span>
+                        <span id="edit-feedback-stars">
+                            <span class="fb-star" data-value="1">★</span>
+                            <span class="fb-star" data-value="2">★</span>
+                            <span class="fb-star" data-value="3">★</span>
+                            <span class="fb-star" data-value="4">★</span>
+                            <span class="fb-star" data-value="5">★</span>
+                        </span>
+                        <input type="hidden" id="edit-feedback-rating" name="rating" required>
+                    </div>
+                    <textarea id="edit-feedback-comment" name="comment" rows="2" maxlength="500" style="width:100%;margin:8px 0;"></textarea>
+                    <div style="text-align:right;">
+                        <button type="button" id="close-edit-modal" class="fb-btn">Hủy</button>
+                        <button type="submit" class="fb-btn fb-btn-primary">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 

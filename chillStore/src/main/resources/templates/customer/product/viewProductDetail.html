@@ -7,9 +7,10 @@
     <title>Product Details - ESMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/static/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
     <link rel="stylesheet" th:href="@{/css/navigationBar.css}" />
     <link rel="stylesheet" th:href="@{/css/viewProductDetail.css}" />
+    <link rel="stylesheet" th:href="@{/css/feedback-customer.css}" />
 
 </head>
 
@@ -48,6 +49,7 @@
                                     <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
                                         <i class="fas fa-arrow-left me-2"></i>Back to Products
                                     </button>
+                                    <a href="#feedback-section" class="btn btn-warning ms-2">Xem đánh giá</a>
                                 </div>
                             </div>
                         </div>
@@ -365,6 +367,8 @@
                                 th:utext="${product.description != null ? product.description : 'No description available for this product.'}">
                             </div>
                         </div>
+                        <!-- Feedback Section: include product-feedback.html -->
+                        <div th:replace="~{customer/product-feedback :: #product-feedback-fragment}"></div>
                     </div>
                 </div>
             </div>
@@ -445,362 +449,13 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Function to change main product image
-        function changeMainImage(event) {
-            const mainImage = document.getElementById('mainProductImage');
-            mainImage.src = event.target.src;
-            mainImage.alt = event.target.alt;
-
-            // Update active thumbnail
-            document.querySelectorAll('.product-thumbnail').forEach(img => {
-                img.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Smooth transition effect
-            mainImage.style.opacity = 0;
-            setTimeout(() => {
-                mainImage.style.opacity = 1;
-                mainImage.style.transition = 'opacity 0.3s ease';
-            }, 10);
-        }
-
-        // Quantity selector functionality
-        function decrementQuantity() {
-            const input = document.getElementById('quantity');
-            const currentValue = parseInt(input.value);
-            if (currentValue > 1) {
-                input.value = currentValue - 1;
-                updateFormQuantities(currentValue - 1);
-                updateTotalPrice(currentValue - 1);
-            }
-        }
-
-        function incrementQuantity() {
-            const input = document.getElementById('quantity');
-            const currentValue = parseInt(input.value);
-            if (currentValue < 99) {
-                input.value = currentValue + 1;
-                updateFormQuantities(currentValue + 1);
-                updateTotalPrice(currentValue + 1);
-            }
-        }
-
-        function updateFormQuantities(value) {
-            document.getElementById('cartQuantity').value = value;
-            document.getElementById('buyQuantity').value = value;
-        }
-
-        function updateTotalPrice(quantity) {
-            // Get product price
-            const priceElement = document.querySelector('.product-price-display span');
-            const productPrice = parseFloat(priceElement.getAttribute('data-price'));
-
-            // Get shipping cost
-            const shippingElement = document.getElementById('shipping-cost-display');
-            const shippingCost = parseFloat(shippingElement.getAttribute('data-shipping'));
-
-            // Calculate total
-            const total = (productPrice * quantity) + shippingCost;
-
-            // Format with comma for thousands
-            const formattedTotal = new Intl.NumberFormat('vi-VN').format(total);
-
-            // Update total price display
-            document.querySelector('.total-price').textContent = formattedTotal + ' VND';
-        }
-
-        // Initialize quantity change event listener
-        document.addEventListener('DOMContentLoaded', function () {
-            const quantityInput = document.getElementById('quantity');
-
-            // Calculate initial total price
-            updateTotalPrice(1);
-
-            quantityInput.addEventListener('change', function () {
-                let value = parseInt(this.value);
-                if (isNaN(value) || value < 1) value = 1;
-                if (value > 99) value = 99;
-                this.value = value;
-                updateFormQuantities(value);
-                updateTotalPrice(value);
-            });
-
-            // Smooth scroll to specifications when clicking the "See all" link
-            const specLink = document.querySelector('a[href="#specifications"]');
-            if (specLink) {
-                specLink.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    document.getElementById('specifications').scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
-            }
-
-            // Add province selector for guest users or when customer address is empty
-            initializeAddressSelector();
-
-            // Add event listener for cart button
-            document.getElementById('addToCartForm').addEventListener('submit', function (e) {
-                e.preventDefault();
-                animateToCart();
-
-                // Submit form via AJAX
-                const formData = new FormData(this);
-                fetch('/cart/add', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            // Update cart count in navigation
-                            if (window.updateCartCount) {
-                                window.updateCartCount();
-                            }
-                            // Trigger custom event
-                            document.dispatchEvent(new Event('cartUpdated'));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error adding to cart:', error);
-                    });
-            });
-        });
-
-        function initializeAddressSelector() {
-            // If there's a custom address selection form, initialize province API
-            const addressForm = document.getElementById('address-selection-form');
-            if (addressForm) {
-                loadProvinces();
-            }
-        }
-
-        // Address Modal Functions
-        function openAddressModal() {
-            document.getElementById('addressModal').style.display = 'block';
-        }
-
-        function closeAddressModal() {
-            document.getElementById('addressModal').style.display = 'none';
-        }
-
-        function selectAddress(element) {
-            // Remove selected class from all options
-            document.querySelectorAll('.address-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-
-            // Add selected class to clicked option
-            element.classList.add('selected');
-
-            // If "New Address" is selected, show the form
-            if (element.id === 'new-address') {
-                document.getElementById('address-form').style.display = 'block';
-                loadNewProvinces();
-            } else {
-                document.getElementById('address-form').style.display = 'none';
-            }
-        }
-
-        function cancelAddressChange() {
-            document.getElementById('address-form').style.display = 'none';
-            document.querySelectorAll('.address-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-        }
-
-        function saveTemporaryAddress() {
-            const province = document.getElementById('new-province');
-            const district = document.getElementById('new-district');
-            const street = document.getElementById('new-street');
-
-            if (!province.value || !district.value || !street.value) {
-                alert('Please fill in all address fields');
-                return;
-            }
-
-            const provinceText = province.options[province.selectedIndex].text;
-            const districtText = district.options[district.selectedIndex].text;
-            const fullAddress = `${street.value}, ${districtText}, ${provinceText}`;
-
-            // Update displayed address
-            document.getElementById('displayed-address').innerHTML =
-                `<span>${fullAddress}</span> <span class="temporary-badge">Temporary</span>`;
-
-            // Show temporary badge
-            document.getElementById('temporary-badge').style.display = 'inline';
-
-            // Calculate new shipping cost
-            const newShippingCost = calculateShippingCostByProvince(provinceText);
-
-            // Update shipping cost display
-            const formattedShipping = new Intl.NumberFormat('vi-VN').format(newShippingCost);
-            document.getElementById('shipping-fee').textContent = formattedShipping + ' VND';
-            document.getElementById('shipping-cost-display').textContent = formattedShipping + ' VND';
-            document.getElementById('shipping-cost-display').setAttribute('data-shipping', newShippingCost);
-
-            // Update shipping info display
-            if (newShippingCost === 0) {
-                document.getElementById('shipping-info').innerHTML = `
-                <i class="fas fa-check-circle text-success me-2"></i>
-                <span class="fw-medium text-success">Free shipping</span>
-            `;
-            } else {
-                document.getElementById('shipping-info').innerHTML = `
-                <i class="fas fa-truck text-primary me-2"></i>
-                <span class="fw-medium">Shipping fee: <span>${formattedShipping} VND</span></span>
-            `;
-            }
-
-            // Update total price
-            const quantity = parseInt(document.getElementById('quantity').value);
-            updateTotalPrice(quantity);
-
-            // Close modal
-            closeAddressModal();
-        }
-
-        function calculateShippingCostByProvince(province) {
-            // Simplified shipping cost calculation
-            const provinceLower = province.toLowerCase();
-
-            if (provinceLower.includes("cần thơ") || provinceLower.includes("can tho")) {
-                return 0;
-            }
-
-            // List of northern provinces
-            const northernProvinces = [
-                "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
-                "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
-                "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
-                "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
-                "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
-                "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
-                "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
-            ];
-
-            // Check if province is in northern list
-            const isNorthern = northernProvinces.some(p => provinceLower.includes(p));
-
-            return isNorthern ? 40000 : 20000;
-        }
-
-        async function loadNewProvinces() {
-            try {
-                const response = await fetch('https://provinces.open-api.vn/api/?depth=1');
-                const data = await response.json();
-                const provinceSelect = document.getElementById('new-province');
-
-                if (provinceSelect) {
-                    provinceSelect.innerHTML = '<option value="">Select Province</option>';
-                    data.forEach(province => {
-                        const option = document.createElement('option');
-                        option.value = province.code;
-                        option.textContent = province.name;
-                        provinceSelect.appendChild(option);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading provinces:', error);
-            }
-        }
-
-        async function handleNewProvinceChange() {
-            const provinceSelect = document.getElementById('new-province');
-            const districtSelect = document.getElementById('new-district');
-            const provinceCode = provinceSelect.value;
-
-            if (!provinceCode) {
-                districtSelect.disabled = true;
-                districtSelect.innerHTML = '<option value="">Select District</option>';
-                return;
-            }
-
-            try {
-                const response = await fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
-                const provinceData = await response.json();
-
-                districtSelect.innerHTML = '<option value="">Select District</option>';
-                provinceData.districts.forEach(district => {
-                    const option = document.createElement('option');
-                    option.value = district.code;
-                    option.textContent = district.name;
-                    districtSelect.appendChild(option);
-                });
-
-                districtSelect.disabled = false;
-            } catch (error) {
-                console.error('Error loading districts:', error);
-            }
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function (event) {
-            const modal = document.getElementById('addressModal');
-            if (event.target === modal) {
-                closeAddressModal();
-            }
-        }
-
-        // Wishlist functionality
-        function toggleWishlist() {
-            const wishlistBtn = document.getElementById('wishlistBtn');
-            const heartIcon = wishlistBtn.querySelector('i');
-
-            if (wishlistBtn.classList.contains('active')) {
-                // Remove from wishlist
-                wishlistBtn.classList.remove('active');
-                heartIcon.classList.remove('fas', 'fa-heart');
-                heartIcon.classList.add('far', 'fa-heart');
-                showFloatingMessage('Removed from wishlist');
-            } else {
-                // Add to wishlist
-                wishlistBtn.classList.add('active');
-                heartIcon.classList.remove('far', 'fa-heart');
-                heartIcon.classList.add('fas', 'fa-heart');
-                showFloatingMessage('Added to wishlist');
-            }
-        }
-
-        // Show floating message
-        function showFloatingMessage(message) {
-            const floatingMessage = document.getElementById('floatingMessage');
-            const messageText = document.getElementById('messageText');
-
-            messageText.textContent = message;
-            floatingMessage.classList.add('show');
-
-            setTimeout(() => {
-                floatingMessage.classList.remove('show');
-            }, 3000);
-        }
-
-        // Animation for adding to cart
-        function animateToCart() {
-            const productImage = document.getElementById('mainProductImage');
-            const cartBtn = document.getElementById('cartBtn');
-
-            // Create a clone of the product image
-            const clone = productImage.cloneNode(true);
-            clone.classList.add('animate-to-cart');
-            clone.style.position = 'fixed';
-            clone.style.top = productImage.getBoundingClientRect().top + 'px';
-            clone.style.left = productImage.getBoundingClientRect().left + 'px';
-            clone.style.width = productImage.offsetWidth + 'px';
-            clone.style.height = productImage.offsetHeight + 'px';
-            clone.style.zIndex = '1000';
-
-            document.body.appendChild(clone);
-
-            // Remove the clone after animation completes
-            setTimeout(() => {
-                clone.remove();
-                showFloatingMessage('Added to cart!');
-            }, 1000);
-        }
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.productId = [[${product.productId}]];
+        window.currentUserId = [[${customer != null ? customer.customerId : 'null'}]];
+        /*]]>*/
     </script>
+    <script th:src="@{/js/feedback.js}"></script>
 </body>
 
 </html>

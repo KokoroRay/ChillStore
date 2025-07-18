@@ -1,0 +1,224 @@
+/* feedback-customer.css - UI hiện đại cho feedback customer */
+:root {
+  --fb-bg: #F3F9FB;
+  --fb-card: #fff;
+  --fb-accent: #87C0CD;
+  --fb-primary: #226597;
+  --fb-dark: #113F67;
+  --fb-star: #FFC107;
+  --fb-border: #87C0CD;
+}
+
+.product-feedback-section {
+  background: var(--fb-bg);
+  border-radius: 18px;
+  box-shadow: 0 2px 12px #113F6720;
+  padding: 32px 24px;
+  margin: 32px auto;
+  max-width: 700px;
+}
+
+.fb-summary {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.fb-avg-box {
+  background: var(--fb-card);
+  border-radius: 12px;
+  box-shadow: 0 1px 6px #113F6710;
+  padding: 18px 32px;
+  text-align: center;
+  color: var(--fb-dark);
+  font-size: 2.6rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.fb-progress-list {
+  flex: 1;
+}
+.fb-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.fb-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--fb-accent);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 8px;
+}
+.fb-progress-bar-inner {
+  height: 100%;
+  background: var(--fb-primary);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+/* Form gửi feedback */
+#fb-form {
+  background: var(--fb-card);
+  border-radius: 12px;
+  box-shadow: 0 1px 6px #113F6710;
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#fb-form textarea {
+  border: 1.5px solid var(--fb-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 48px;
+}
+#fb-form .fb-star {
+  font-size: 2rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+#fb-form .fb-star.selected,
+#fb-form .fb-star:hover,
+#fb-form .fb-star.selected ~ .fb-star {
+  color: var(--fb-star);
+}
+#fb-form .fb-btn {
+  background: var(--fb-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#fb-form .fb-btn:hover {
+  background: var(--fb-dark);
+}
+
+/* Danh sách feedback */
+.fb-item {
+  background: var(--fb-card);
+  border-radius: 10px;
+  box-shadow: 0 1px 4px #113F6710;
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--fb-border);
+}
+.fb-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.fb-header .fb-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--fb-accent);
+}
+.fb-header .fb-username {
+  color: var(--fb-dark);
+  font-weight: 600;
+}
+.fb-header .fb-stars {
+  color: var(--fb-star);
+  font-size: 1.2rem;
+  margin-left: 8px;
+}
+.fb-header .fb-date {
+  color: #888;
+  font-size: 0.95rem;
+  margin-left: auto;
+}
+.fb-content {
+  color: #222;
+  font-size: 1.08rem;
+  margin-bottom: 4px;
+}
+.fb-reply {
+  background: var(--fb-accent);
+  color: var(--fb-dark);
+  border-radius: 7px;
+  padding: 8px 14px;
+  margin-top: 8px;
+  font-size: 0.98rem;
+}
+.fb-pagination {
+  margin-top: 12px;
+}
+.fb-pagination .fb-btn {
+  background: var(--fb-accent);
+  color: var(--fb-dark);
+  border: none;
+  border-radius: 6px;
+  margin: 0 2px;
+  padding: 4px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.fb-pagination .fb-btn.fb-btn-primary {
+  background: var(--fb-primary);
+  color: #fff;
+}
+.fb-pagination .fb-btn:hover {
+  background: var(--fb-dark);
+  color: #fff;
+}
+
+/* Toast message */
+#fb-toast-message {
+  background: var(--fb-primary);
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #113F6720;
+  font-size: 1.08rem;
+}
+
+/* Modal sửa feedback */
+#fb-edit-modal {
+  background: #0005;
+}
+#fb-edit-modal form {
+  background: var(--fb-card);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #113F6720;
+  padding: 18px 24px;
+}
+#fb-edit-modal .fb-star {
+  font-size: 2rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+#fb-edit-modal .fb-star.selected,
+#fb-edit-modal .fb-star:hover,
+#fb-edit-modal .fb-star.selected ~ .fb-star {
+  color: var(--fb-star);
+}
+#fb-edit-modal .fb-btn {
+  background: var(--fb-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#fb-edit-modal .fb-btn:hover {
+  background: var(--fb-dark);
+} 

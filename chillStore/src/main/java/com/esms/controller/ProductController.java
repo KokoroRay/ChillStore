@@ -39,6 +39,10 @@ public class ProductController {
     @Autowired
     private BrandService brandService;
 
+    // Nếu có CustomerService thì inject, nếu không thì comment lại
+    // @Autowired
+    // private CustomerService customerService;
+
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String listProducts(
@@ -438,5 +442,30 @@ public class ProductController {
                 maxPrice != null ? maxPrice : "",
                 minStock != null ? minStock : "",
                 sortOption != null ? sortOption : "");
+    }
+
+    // Route cho user xem chi tiết sản phẩm (hiển thị feedback)
+    @GetMapping("/Product/{id}")
+    public String customerProductDetail(@PathVariable("id") Integer id, Model model, jakarta.servlet.http.HttpSession session) {
+        Product product = productService.getProductById(id);
+        model.addAttribute("product", product);
+        // Lấy customer từ session nếu đã đăng nhập (nếu có CustomerService)
+        Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
+        Object customer = null;
+        // Nếu có CustomerService thì mở comment dưới
+        // if (customerId != null) {
+        //     customer = customerService.getCustomerById(customerId);
+        // }
+        model.addAttribute("customer", customer);
+        // Các biến dưới đây để null hoặc comment lại nếu chưa có method/service
+        // Object discount = null;
+        // Object imageGallery = null;
+        // Object specifications = null;
+        // Object shippingCost = null;
+        // model.addAttribute("discount", discount);
+        // model.addAttribute("imageGallery", imageGallery);
+        // model.addAttribute("specifications", specifications);
+        // model.addAttribute("shippingCost", shippingCost);
+        return "customer/product/viewProductDetail";
     }
 }

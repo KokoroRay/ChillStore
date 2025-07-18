@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReplyRepository extends JpaRepository<Reply, Integer> {
+    Reply findByFeedback_Id(int feedbackId);
 }

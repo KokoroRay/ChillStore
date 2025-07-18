@@ -29,25 +29,15 @@
                     <div class="product-header">
                         <div class="container">
                             <div class="row align-items-center">
-                                <div class="col-md-7">
+                                <div class="col-md-8">
                                     <h1 class="product-title" th:text="${product.name}"></h1>
-                                    <div class="product-subtitle" th:if="${product.category != null}">
-                                        <a th:href="@{'/products/category/' + ${product.category.id}}"
-                                            class="text-decoration-none">
-                                            <span th:text="${product.category.name}"></span>
-                                        </a>
-                                        <span th:if="${product.brand != null}"> •
-                                            <a th:href="@{'/products/brand/' + ${product.brand.id}}"
-                                                class="text-decoration-none">
-                                                <span th:text="${product.brand.name}"></span>
-                                            </a>
+                                    <div class="meta-item">
+                                        <span class="">Sold: </span>
+                                        <span class="meta-value" th:text="${soldQuantity}"></span>
+                                        <span class="meta-value">
+                                            <a href="#specifications" class="ms-2 small text-primary">Specifications</a>
                                         </span>
                                     </div>
-                                </div>
-                                <div class="col-md-5 text-md-end">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
-                                        <i class="fas fa-arrow-left me-2"></i>Back to Products
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -148,48 +138,9 @@
                                     </span>
                                 </div>
 
-                                <!-- Product Metadata -->
-                                <div class="product-meta mb-4">
-                                    <div class="meta-item">
-                                        <span class="meta-label">Status:</span>
-                                        <span class="meta-value">
-                                            <span th:if="${product.status}" class="badge bg-success status-badge">In
-                                                Stock</span>
-                                            <span th:unless="${product.status}" class="badge bg-danger status-badge">Out
-                                                of Stock</span>
-                                        </span>
-                                    </div>
-
-                                    <div th:if="${product.brand != null}" class="meta-item">
-                                        <span class="meta-label">Brand:</span>
-                                        <span class="meta-value" th:text="${product.brand.name}"></span>
-                                    </div>
-
-                                    <div th:if="${product.category != null}" class="meta-item">
-                                        <span class="meta-label">Category:</span>
-                                        <span class="meta-value" th:text="${product.category.name}"></span>
-                                    </div>
-
-                                    <div class="meta-item">
-                                        <span class="meta-label">Product ID:</span>
-                                        <span class="meta-value" th:text="${product.productId}"></span>
-                                    </div>
-
                                     <!-- Quick specifications preview -->
-                                    <div th:if="${not #lists.isEmpty(specifications) and #lists.size(specifications) > 0}"
-                                        class="meta-item">
-                                        <span class="meta-label">Key Specs:</span>
-                                        <span class="meta-value">
-                                            <span th:each="spec, iterStat : ${specifications}"
-                                                th:if="${iterStat.index < 2}">
-                                                <span th:text="${spec.specKey + ': ' + spec.specValue}"></span>
-                                                <span
-                                                    th:if="${iterStat.index < 1 and #lists.size(specifications) > 1}">&bull;</span>
-                                            </span>
-                                            <a href="#specifications" class="ms-2 small text-primary">See all</a>
-                                        </span>
-                                    </div>
-                                </div>
+
+
 
                                 <!-- Delivery Address Section -->
                                 <div class="delivery-section mb-4">
@@ -269,19 +220,17 @@
                                 </div>
 
                                 <!-- Quantity Selector and Total Price -->
+                                <div id="error-message" class="alert alert-danger d-none mb-4"></div>
                                 <div class="mb-5">
                                     <div class="row">
                                         <div class="col-md-5">
                                             <label for="quantity" class="form-label fw-medium">Quantity:</label>
                                             <div class="input-group quantity-selector" style="width: 135px;">
-                                                <button type="button" class="btn btn-outline-secondary"
-                                                    onclick="decrementQuantity()">
+                                                <button type="button" class="btn btn-outline-secondary" onclick="decrementQuantity()">
                                                     <i class="fas fa-minus"></i>
                                                 </button>
-                                                <input type="number" id="quantity" class="form-control text-center"
-                                                    value="1" min="1" max="99">
-                                                <button type="button" class="btn btn-outline-secondary"
-                                                    onclick="incrementQuantity()">
+                                                <input type="number" id="quantity" class="form-control text-center" value="1" min="1" max="99">
+                                                <button type="button" class="btn btn-outline-secondary" onclick="incrementQuantity()">
                                                     <i class="fas fa-plus"></i>
                                                 </button>
                                             </div>
@@ -325,7 +274,7 @@
                                 <!-- Action Buttons -->
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <form th:action="@{/cart/add}" method="post" class="w-100" id="addToCartForm">
+                                        <form th:action="@{/cart/add}" method="post" class="w-100" id="addToCartForm" onsubmit="return validateQuantity()">
                                             <input type="hidden" name="productId" th:value="${product.productId}" />
                                             <input type="hidden" name="quantity" id="cartQuantity" value="1" />
                                             <button type="submit" class="btn btn-action btn-cart w-100" id="cartBtn">
@@ -345,6 +294,7 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                         <!-- Specifications Section -->
                         <div class="spec-desc-container">
@@ -610,6 +560,86 @@
             updateWishlistIcon(productDetails.productId);
             window.dispatchEvent(new Event('wishlist-updated'));
         }
+
+        function validateQuantity() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const stock = parseInt(document.getElementById('stock-display').textContent);
+            const errorMessage = document.getElementById('error-message');
+
+            errorMessage.classList.add('d-none');
+
+            if (quantity > 99) {
+                errorMessage.textContent = "You cannot add more than 99 items";
+                errorMessage.classList.remove('d-none');
+                return false;
+            }
+
+            if (quantity > stock) {
+                errorMessage.textContent = "Not enough stock. Only " + stock + " items available";
+                errorMessage.classList.remove('d-none');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Sửa hàm incrementQuantity để kiểm tra stock
+        function incrementQuantity() {
+            const input = document.getElementById('quantity');
+            const currentValue = parseInt(input.value);
+            const stock = parseInt(document.getElementById('stock-display').textContent);
+
+            if (currentValue < 99 && currentValue < stock) {
+                input.value = currentValue + 1;
+                updateFormQuantities(currentValue + 1);
+                updateTotalPrice(currentValue + 1);
+            } else {
+                const errorMessage = document.getElementById('error-message');
+                if (currentValue >= 99) {
+                    errorMessage.textContent = "You cannot add more than 99 items";
+                } else {
+                    errorMessage.textContent = "Not enough stock. Only " + stock + " items available";
+                }
+                errorMessage.classList.remove('d-none');
+            }
+        }
+
+        // Sửa hàm decrementQuantity
+        function decrementQuantity() {
+            const input = document.getElementById('quantity');
+            const currentValue = parseInt(input.value);
+
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+                updateFormQuantities(currentValue - 1);
+                updateTotalPrice(currentValue - 1);
+            }
+
+            // Ẩn thông báo lỗi nếu có
+            document.getElementById('error-message').classList.add('d-none');
+        }
+
+        // Thêm kiểm tra khi thay đổi giá trị nhập
+        document.getElementById('quantity').addEventListener('change', function() {
+            const value = parseInt(this.value);
+            const stock = parseInt(document.getElementById('stock-display').textContent);
+            const errorMessage = document.getElementById('error-message');
+
+            if (value > 99 || value > stock) {
+                if (value > 99) {
+                    errorMessage.textContent = "You cannot add more than 99 items";
+                } else {
+                    errorMessage.textContent = "Not enough stock. Only " + stock + " items available";
+                }
+                errorMessage.classList.remove('d-none');
+                this.value = Math.min(99, stock);
+            } else {
+                errorMessage.classList.add('d-none');
+            }
+
+            updateFormQuantities(this.value);
+            updateTotalPrice(this.value);
+        });
 
         // Show floating message
         function showFloatingMessage(message) {

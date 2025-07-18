@@ -145,8 +145,10 @@ public class CustomerProductController {
             // Get current customer information if logged in
             Customer customer = getCurrentCustomer();
             Integer shippingCost = calculateShippingCost(customer);
+            int soldQuantity = productService.getTotalSoldQuantity(id);
 
             model.addAttribute("product", product);
+            model.addAttribute("soldQuantity", soldQuantity);
             model.addAttribute("discount", discount);
             model.addAttribute("primaryImage", primaryImage);
             model.addAttribute("specifications", product.getSpecifications());

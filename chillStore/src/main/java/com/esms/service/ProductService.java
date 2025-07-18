@@ -60,6 +60,12 @@ public interface ProductService {
 
     Product getProductWithDetails(Integer productId);
 
+    List<ProductDTO> getTopBestSellingProducts(int limit);
+    List<ProductDTO> getNewestProducts(int limit);
+    List<ProductDTO> getRandomProducts(int limit);
+    List<ProductDTO> getRandomProductsPaged(int page, int size);
+    int getRandomProductsTotalPages(int size);
     int getTotalSoldQuantity(Integer productId);
+
 }
 

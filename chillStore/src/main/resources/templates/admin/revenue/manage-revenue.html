@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}" />
     <title>ESMS - Revenue Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -105,7 +106,7 @@
                             <div class="card-body">
                                 <i class="fas fa-sack-dollar kpi-icon"></i>
                                 <h5 class="card-title">Gross Revenue</h5>
-                                <h3 class="stat-value" th:text="${grossRevenue != null ? #numbers.formatDecimal(grossRevenue/1000000000, 1, 3, 'COMMA') + 'B' : '0B'}">0B</h3>
+                                <h3 class="stat-value" th:text="${grossRevenue != null ? #numbers.formatDecimal(grossRevenue/1000000000, 1, 3, 'COMMA') + ' Tỉ' : '0B'}">0 Tỉ</h3>
 
                                 <!-- Previous period comparison badge -->
                                 <div th:if="${comparePeriod}" class="comparison-badge">
@@ -113,7 +114,7 @@
                                         <i th:classappend="${grossRevenueChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(grossRevenueChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
+                                    <small>Previous Period</small>
                                 </div>
 
                                 <!-- YoY comparison badge -->
@@ -138,14 +139,14 @@
                             <div class="card-body">
                                 <i class="fas fa-wallet kpi-icon"></i>
                                 <h5 class="card-title">Net Revenue</h5>
-                                <h3 class="stat-value" th:text="${netRevenue != null ? #numbers.formatDecimal(netRevenue/1000000000, 1, 3, 'COMMA') + 'B' : '0B'}">0B</h3>
+                                <h3 class="stat-value" th:text="${netRevenue != null ? #numbers.formatDecimal(netRevenue/1000000000, 1, 3, 'COMMA') + ' Tỉ' : '0B'}">0 Tỉ</h3>
 
                                 <div th:if="${comparePeriod}" class="comparison-badge">
                                     <span th:classappend="${netRevenueChange > 0} ? 'trend-up' : 'trend-down'">
                                         <i th:classappend="${netRevenueChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(netRevenueChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
+                                    <small>Previous Period</small>
                                 </div>
 
                                 <div th:if="${compareYoY}" class="comparison-badge">
@@ -176,7 +177,7 @@
                                         <i th:classappend="${orderCountChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(orderCountChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
+                                    <small>Previous Period</small>
                                 </div>
 
                                 <div th:if="${compareYoY}" class="comparison-badge">
@@ -207,7 +208,7 @@
                                         <i th:classappend="${aovChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(aovChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
+                                    <small>Previous Period</small>
                                 </div>
 
                                 <div th:if="${compareYoY}" class="comparison-badge">
@@ -238,7 +239,7 @@
                                         <i th:classappend="${cancellationRateChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(cancellationRateChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
+                                    <small>Previous Period</small>
                                 </div>
 
                                 <div th:if="${compareYoY}" class="comparison-badge">
@@ -270,7 +271,7 @@
                                         <i th:classappend="${grossMarginChange > 0} ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                                         <span th:text="${#numbers.formatDecimal(grossMarginChange, 1, 1) + '%'}"></span>
                                     </span>
-                                    <small>Kỳ trước</small>
+                                    <small>Previous Period</small>
                                 </div>
 
                                 <div th:if="${compareYoY}" class="comparison-badge">

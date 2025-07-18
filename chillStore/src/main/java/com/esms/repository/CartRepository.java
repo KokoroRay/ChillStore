@@ -18,7 +18,7 @@ public interface CartRepository extends CrudRepository<Cart, Integer> {
 
     @Query("SELECT new com.esms.model.dto.CartItemDTO(c.id, p.productId, p.name, " +
             "CAST(p.price AS double), 0.0, c.quantity, " +
-            "CAST(p.price * c.quantity AS double)) " +
+            "CAST(p.price * c.quantity AS double), p.stockQty) " +
             "FROM Cart c JOIN c.product p WHERE c.customer.customerId = :customerId")
     List<CartItemDTO> findCartItemsByCustomerId(@Param("customerId") int customerId);
 

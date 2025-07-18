@@ -107,7 +107,7 @@
   </div>
   </div>
   <br>
-<div class="product-container">
+<div class="product-container" id="product-list">
   <div class="product-grid">
     <div class="product-card" th:each="product : ${products}">
       <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration: none; color: inherit; display: block;">
@@ -135,7 +135,6 @@
 
     <a th:if="${currentPage + 1 < totalPages}" th:href="@{'/home?page=' + ${totalPages - 1}}">&raquo;</a> <!-- >> -->
   </div>
-
 
   <div th:replace="fragments/footer :: footer"></div>
 

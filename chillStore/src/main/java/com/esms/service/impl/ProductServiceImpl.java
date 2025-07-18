@@ -21,6 +21,9 @@ import com.esms.model.entity.Discount;
 import java.time.LocalDate;
 import com.esms.model.entity.DiscountProduct;
 import com.esms.repository.OrderItemRepository;
+import org.springframework.data.domain.PageRequest;
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -247,6 +250,8 @@ public class ProductServiceImpl implements ProductService {
     private DiscountProductRepository discountProductRepository;
     @Autowired
     private DiscountRepository discountRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @Override
     public Page<Product> getDiscountProducts(Pageable pageable) {
@@ -443,13 +448,47 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
-    @Autowired
-    private OrderItemRepository orderItemRepository;
-
     @Override
-    public int getTotalSoldQuantity(Integer productId) {
-        Integer count = orderItemRepository.countTotalSoldByProductId(productId);
-        return count != null ? count : 0;
+    public List<ProductDTO> getTopBestSellingProducts(int limit) {
+        List<Object[]> stats = orderItemRepository.getProductSalesStatistics(null, null);
+        List<String> productNames = stats.stream().map(row -> (String) row[0]).toList();
+        List<Product> products = productRepository.findAll().stream()
+            .filter(p -> productNames.contains(p.getName()))
+            .toList();
+        List<ProductDTO> result = new ArrayList<>();
+        for (Product p : products) {
+            result.add(convertToDTO(p));
+            if (result.size() >= limit) break;
+        }
+        return result;
     }
 
+    @Override
+    public List<ProductDTO> getNewestProducts(int limit) {
+        return productRepository.findAll(PageRequest.of(0, limit, org.springframework.data.domain.Sort.by("productId").descending()))
+            .map(this::convertToDTO).getContent();
+    }
+
+    @Override
+    public List<ProductDTO> getRandomProducts(int limit) {
+        List<Product> all = productRepository.findAll();
+        Collections.shuffle(all);
+        // Nếu limit lớn hơn số lượng sản phẩm, trả về toàn bộ
+        return all.stream().map(this::convertToDTO).toList();
+    }
+
+    @Override
+    public List<ProductDTO> getRandomProductsPaged(int page, int size) {
+        List<Product> all = productRepository.findAll();
+        Collections.shuffle(all);
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, all.size());
+        if (fromIndex >= all.size()) return List.of();
+        return all.subList(fromIndex, toIndex).stream().map(this::convertToDTO).toList();
+    }
+    @Override
+    public int getRandomProductsTotalPages(int size) {
+        int total = productRepository.findAll().size();
+        return (int) Math.ceil((double) total / size);
+    }
 }

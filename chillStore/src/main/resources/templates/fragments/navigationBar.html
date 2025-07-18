@@ -16,7 +16,7 @@
             <div class="nav-left">
                 <ul>
                     <li><a href="/"><img src="/images/logo.png" alt=""></a></li>
-                    <li><a th:href="@{/Product}">Product</a></li>
+                    <li><a href="/#product-list">Product</a></li>
                     <li><a th:href="@{/DiscountProducts}">Discount</a></li>
                     <li sec:authorize="hasRole('CUSTOMER')">
                         <a th:href="@{/customer/order}">Order</a>
@@ -156,7 +156,7 @@
         <div class="mobile-menu" id="mobileMenu">
             <ul>
                 <li><a href="/">Introduct</a></li>
-                <li><a th:href="@{/Product}">Product</a></li>
+                <li><a href="/#product-list">Product</a></li>
                 <li><a th:href="@{/DiscountProducts}">Discount</a></li>
                 <li sec:authorize="hasRole('CUSTOMER')">
                     <a th:href="@{/order}">Order</a>

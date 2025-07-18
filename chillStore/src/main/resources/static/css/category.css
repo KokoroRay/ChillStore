@@ -10,6 +10,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding-top: 2em;
 }
 
 /* Card Styling */
@@ -65,8 +66,8 @@
 
 /* Buttons & Actions */
 .btn-primary {
-    background-color: var(--primary);
-    border-color: var(--primary);
+    background-color: #87C0CD;
+    border-color: #87C0CD;
 }
 
 .btn-primary:hover {

@@ -100,10 +100,6 @@ public class CustomerProductController {
         }
         // Map productId -> total sold quantity for displaying "đã bán"
         Map<Integer, Integer> productSoldMap = new HashMap<>();
-        for (Product product : products) {
-            int soldQty = productService.getTotalSoldQuantity(product.getProductId());
-            productSoldMap.put(product.getProductId(), soldQty);
-        }
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
@@ -145,8 +141,9 @@ public class CustomerProductController {
             // Get current customer information if logged in
             Customer customer = getCurrentCustomer();
             Integer shippingCost = calculateShippingCost(customer);
-
+            int soldQuantity = productService.getTotalSoldQuantity(id);
             model.addAttribute("product", product);
+            model.addAttribute("soldQuantity", soldQuantity);
             model.addAttribute("discount", discount);
             model.addAttribute("primaryImage", primaryImage);
             model.addAttribute("specifications", product.getSpecifications());

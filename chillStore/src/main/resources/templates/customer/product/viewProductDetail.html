@@ -76,7 +76,7 @@
                                     </div>
 
                                     <div class="wishlist-container">
-                                        <button class="wishlist-btn" id="wishlistBtn" onclick="toggleWishlist()" type="button">
+                                        <button class="wishlist-btn" id="wishlistBtn" onclick="toggleWishlist()">
                                             <i class="far fa-heart"></i>
                                         </button>
                                     </div>
@@ -462,18 +462,11 @@
     <script>
         // Define productDetails from server data
         const productDetails = {
-            productId: [[${product.productId}]],
-            name: '[[${product.name}]]',
-            price: [[${product.price}]],
-            imageUrl: '[[${primaryImage}]]'
+            productId: /*[[${product.productId}]]*/ 0,
+            name: /*[[${product.name}]]*/ '',
+            price: /*[[${product.price}]]*/ 0,
+            imageUrl: /*[[${primaryImage}]]*/ ''
         };
-        
-        console.log('Product details loaded:', productDetails);
-        
-        // Ensure productDetails has valid data
-        if (!productDetails.productId || productDetails.productId === 0) {
-            alert('Lỗi: Không lấy được mã sản phẩm. Wishlist sẽ không hoạt động!');
-        }
 
         // Function to change main product image
         function changeMainImage(event) {
@@ -561,49 +554,30 @@
 
         function updateWishlistIcon(productId) {
             const wishlistBtn = document.getElementById('wishlistBtn');
-            if (!wishlistBtn) {
-                console.error('Wishlist button not found');
-                return;
-            }
+            if (!wishlistBtn) return;
 
             const heartIcon = wishlistBtn.querySelector('i');
-            if (!heartIcon) {
-                console.error('Heart icon not found');
-                return;
-            }
-            
             if (isInWishlist(productId)) {
                 wishlistBtn.classList.add('active');
                 heartIcon.classList.remove('far');
                 heartIcon.classList.add('fas');
-                console.log('Product is in wishlist, icon updated to filled heart');
             } else {
                 wishlistBtn.classList.remove('active');
                 heartIcon.classList.remove('fas');
                 heartIcon.classList.add('far');
-                console.log('Product is not in wishlist, icon updated to empty heart');
             }
         }
 
         function toggleWishlist() {
-            console.log('Toggle wishlist clicked for product:', productDetails);
-            
-            if (!productDetails || !productDetails.productId) {
-                console.error('Invalid product details');
-                return;
-            }
-            
             let wishlist = getWishlist();
             const idx = wishlist.findIndex(p => p.productId === productDetails.productId);
 
             if (idx === -1) {
                 wishlist.push(productDetails);
                 showFloatingMessage('Added to wishlist');
-                console.log('Product added to wishlist');
             } else {
                 wishlist.splice(idx, 1);
                 showFloatingMessage('Removed from wishlist');
-                console.log('Product removed from wishlist');
             }
 
             saveWishlist(wishlist);
@@ -813,7 +787,6 @@
 
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function () {
-            console.log('DOM loaded, initializing wishlist for product:', productDetails.productId);
             // Initialize wishlist icon
             updateWishlistIcon(productDetails.productId);
 

@@ -74,6 +74,11 @@
     width: 2rem;
     height: 2rem;
 }
+.btn-accent {
+    background-color: var(--accent);
+    color: #226597;
+    font-weight: 500;
+}
 
 .btn-delete {
     background-color: #dc3545;

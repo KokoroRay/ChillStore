@@ -629,6 +629,13 @@ input:checked + .status-slider:before {
     transform: translateY(-1px);
 }
 
+.collapse-icon {
+    transition: transform 0.3s ease;
+}
+.collapsed .collapse-icon {
+    transform: rotate(180deg);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .main-content {

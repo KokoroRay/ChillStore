@@ -1,85 +1,86 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Update Staff</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/update-staff.css}"/>
-    <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/sidebar.css">
+  <meta charset="UTF-8">
+  <title>Update Staff</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" th:href="@{/css/update-staff.css}" />
+  <link rel="icon" type="image/png" th:href="@{/images/logo.png}" />
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/sidebar.css">
 </head>
 <body>
 <div th:insert="~{fragments/header :: headerContent}"></div>
 <div class="container mt-4 main-container">
-    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
-    <div class="content">
-        <h2>Update Staff</h2>
+  <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+  <div class="content">
+    <h2>Update Staff</h2>
 
-        <!-- ✅ Đường dẫn action đã được cập nhật -->
-        <form method="post"
-              th:action="@{/admin/updateStaff(id=${staff.id})}"
-              th:object="${staff}"
-              class="w-100"
-              style="max-width: 960px; margin: auto;">
+    <!-- ✅ Đường dẫn action đã được cập nhật -->
+    <form method="post"
+          th:action="@{/admin/updateStaff(id=${staff.id})}"
+          th:object="${staff}"
+          class="w-100"
+          style="max-width: 960px; margin: auto;">
 
-            <!-- ID ẩn -->
-            <input type="hidden" th:field="*{id}"/>
+      <!-- ID ẩn -->
+      <input type="hidden" th:field="*{id}" />
 
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <label>Name:</label>
-                    <input type="text" th:field="*{name}" required pattern="^[A-Za-z\s]+$"
-                           title="Name must not contain numbers or special characters."><br><br>
-                </div>
-            </div>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label>Name:</label>
+          <input type="text" th:field="*{name}" required pattern="^[A-Za-z\s]+$"
+                 title="Name must not contain numbers or special characters."><br><br>
+        </div>
+      </div>
 
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <label>Email:</label>
-                    <input type="email" th:field="*{email}" required><br><br>
-                </div>
-            </div>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label>Email:</label>
+          <input type="email" th:field="*{email}" required><br><br>
+        </div>
+      </div>
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label>Password:</label>
-                    <input type="password" th:field="*{password}"><br><br>
-                </div>
-                <div class="col-md-6">
-                    <label>Phone:</label>
-                    <input type="text" th:field="*{phone}" required pattern="^[0-9]{10}$"
-                           title="Phone number must be exactly 10 digits."><br><br>
-                </div>
-            </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label>Password:</label>
+          <input type="password" th:field="*{password}"><br><br>
+        </div>
+        <div class="col-md-6">
+          <label>Phone:</label>
+          <input type="text" th:field="*{phone}" required pattern="^[0-9]{10}$"
+                 title="Phone number must be exactly 10 digits."><br><br>
+        </div>
+      </div>
 
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <label>Address:</label>
-                    <input type="text" th:field="*{address}" required><br><br>
-                </div>
-            </div>
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label>Address:</label>
+          <input type="text" th:field="*{address}" required><br><br>
+        </div>
+      </div>
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label>Gender:</label>
-                    <select th:field="*{gender}" required>
-                        <option value="FEMALE">Female</option>
-                        <option value="MALE">Male</option>
-                        <option value="OTHER">Other</option>
-                    </select><br><br>
-                </div>
-                <div class="col-md-6">
-                    <label>National ID:</label>
-                    <input type="text" th:field="*{nationalId}" required pattern="^[0-9]{12}$"
-                           title="National ID must be exactly 12 digits."><br><br>
-                </div>
-            </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label>Gender:</label>
+          <select th:field="*{gender}" required>
+            <option value="FEMALE">Female</option>
+            <option value="MALE">Male</option>
+            <option value="OTHER">Other</option>
+          </select><br><br>
+        </div>
+        <div class="col-md-6">
+          <label>National ID:</label>
+          <input type="text" th:field="*{nationalId}" required pattern="^[0-9]{12}$"
+                 title="National ID must be exactly 12 digits."><br><br>
+        </div>
+      </div>
 
-            <button type="submit">Save</button>
+      <button type="submit">Save</button>
 
-            <a th:href="@{/admin/ManageStaff}" class="btn-back">← Back to List</a>
-        </form>
-    </div>
+      <a th:href="@{/admin/ManageStaff}" class="btn-back">← Back to List</a>
+    </form>
+  </div>
 </div>
 </body>
 </html>

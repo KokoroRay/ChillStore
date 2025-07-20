@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.HashMap;
@@ -74,24 +73,11 @@ public class CustomerProductController {
         String sortDir = null;
         if (sortOption != null && !sortOption.equals("default")) {
             switch (sortOption) {
-                case "name_asc":
-                    sortBy = "name";
-                    sortDir = "asc";
-                    break;
-                case "name_desc":
-                    sortBy = "name";
-                    sortDir = "desc";
-                    break;
-                case "price_asc":
-                    sortBy = "price";
-                    sortDir = "asc";
-                    break;
-                case "price_desc":
-                    sortBy = "price";
-                    sortDir = "desc";
-                    break;
-                default:
-                    break;
+                case "name_asc": sortBy = "name"; sortDir = "asc"; break;
+                case "name_desc": sortBy = "name"; sortDir = "desc"; break;
+                case "price_asc": sortBy = "price"; sortDir = "asc"; break;
+                case "price_desc": sortBy = "price"; sortDir = "desc"; break;
+                default: break;
             }
         }
         Pageable pageable;
@@ -114,10 +100,6 @@ public class CustomerProductController {
         }
         // Map productId -> total sold quantity for displaying "đã bán"
         Map<Integer, Integer> productSoldMap = new HashMap<>();
-        for (Product product : products) {
-            int soldQty = productService.getTotalSoldQuantity(product.getProductId());
-            productSoldMap.put(product.getProductId(), soldQty);
-        }
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
@@ -136,53 +118,6 @@ public class CustomerProductController {
         model.addAttribute("productDiscountMap", productDiscountMap);
         model.addAttribute("productSoldMap", productSoldMap);
         return "customer/product/viewProduct";
-    }
-
-    @GetMapping("/search")
-    public String searchProducts(
-            @RequestParam("q") String query,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "12") int size,
-            Model model) {
-        
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Product> products = productService.searchProductsByKeyword(query, pageable);
-        
-        // Map productId -> discount (nếu có)
-        Map<Integer, Discount> productDiscountMap = new HashMap<>();
-        for (Product product : products) {
-            Discount discount = productService.getActiveDiscountForProduct(product);
-            if (discount != null) {
-                productDiscountMap.put(product.getProductId(), discount);
-            }
-        }
-        
-        model.addAttribute("products", products);
-        model.addAttribute("keyword", query);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", products.getTotalPages());
-        model.addAttribute("totalItems", products.getTotalElements());
-        model.addAttribute("productDiscountMap", productDiscountMap);
-        
-        return "search";
-    }
-
-    @GetMapping("/Product/api/products/suggest")
-    @ResponseBody
-    public List<Map<String, Object>> getProductSuggestions(@RequestParam("q") String query) {
-        return productService.getProductSuggestions(query);
-    }
-
-    @GetMapping("/Product/api/keywords/suggest")
-    @ResponseBody
-    public List<String> getSuggestedKeywords(@RequestParam(value = "q", required = false) String query) {
-        // Hardcoded for demo, can be replaced with DB or config later
-        List<String> keywords = List.of("Tủ lạnh", "Tủ đông", "Tủ mát", "Quạt", "Máy giặt", "Tivi");
-        if (query == null || query.isBlank()) return keywords;
-        String q = query.trim().toLowerCase();
-        return keywords.stream()
-                .filter(k -> k.toLowerCase().contains(q))
-                .toList();
     }
 
     @GetMapping("/Customer/Wishlist")
@@ -206,15 +141,16 @@ public class CustomerProductController {
         // Get current customer information if logged in
         Customer customer = getCurrentCustomer();
         Integer shippingCost = calculateShippingCost(customer);
-
+        int soldQuantity = productService.getTotalSoldQuantity(id);
         model.addAttribute("product", product);
+        model.addAttribute("soldQuantity", soldQuantity);
         model.addAttribute("discount", discount);
         model.addAttribute("primaryImage", primaryImage);
         model.addAttribute("specifications", product.getSpecifications());
         model.addAttribute("imageGallery", product.getImages());
         model.addAttribute("customer", customer);
         model.addAttribute("shippingCost", shippingCost);
-
+        model.addAttribute("stockQty", product.getStockQty());
         return "customer/product/viewProductDetail";
     }
 
@@ -254,13 +190,13 @@ public class CustomerProductController {
 
         // List of northern provinces (simplified)
         String[] northernProvinces = {
-                "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
-                "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
-                "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
-                "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
-                "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
-                "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
-                "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
+            "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
+            "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
+            "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
+            "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
+            "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
+            "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
+            "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
         };
 
         // Check if address contains any northern province
@@ -284,9 +220,9 @@ public class CustomerProductController {
     public String viewProductsByCategory(
             @PathVariable("categoryId") Integer categoryId,
             Model model) {
-        Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
-        Page<ProductDTO> productDTOsPage = productService.getProductsByCategory(categoryId.toString(), pageable);
-        List<ProductDTO> products = productDTOsPage.getContent();
+                Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
+                Page<ProductDTO> productDTOsPage = productService.getProductsByCategory(categoryId.toString(), pageable);
+                List<ProductDTO> products = productDTOsPage.getContent();
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
@@ -302,11 +238,11 @@ public class CustomerProductController {
     public String viewProductsByBrand(
             @PathVariable("brandId") Integer brandId,
             Model model) {
-        // Get products by brand using the searchProductsWithFilters method
-        Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
-        Page<Product> productsPage = productService.searchProductsWithFilters(
-                null, null, brandId, null, null, null, null, null, pageable, true);
-        List<Product> products = productsPage.getContent();
+                // Get products by brand using the searchProductsWithFilters method
+                Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
+                Page<Product> productsPage = productService.searchProductsWithFilters(
+                    null, null, brandId, null, null, null, null, null, pageable, true);
+                List<Product> products = productsPage.getContent();
 
         Brand brand = brandRepository.findById(brandId)
                 .orElseThrow(() -> new RuntimeException("Brand not found"));
@@ -349,24 +285,11 @@ public class CustomerProductController {
         String sortDir = null;
         if (sortOption != null && !sortOption.equals("default")) {
             switch (sortOption) {
-                case "name_asc":
-                    sortBy = "name";
-                    sortDir = "asc";
-                    break;
-                case "name_desc":
-                    sortBy = "name";
-                    sortDir = "desc";
-                    break;
-                case "price_asc":
-                    sortBy = "price";
-                    sortDir = "asc";
-                    break;
-                case "price_desc":
-                    sortBy = "price";
-                    sortDir = "desc";
-                    break;
-                default:
-                    break;
+                case "name_asc": sortBy = "name"; sortDir = "asc"; break;
+                case "name_desc": sortBy = "name"; sortDir = "desc"; break;
+                case "price_asc": sortBy = "price"; sortDir = "asc"; break;
+                case "price_desc": sortBy = "price"; sortDir = "desc"; break;
+                default: break;
             }
         }
         Pageable pageable;
@@ -382,7 +305,7 @@ public class CustomerProductController {
             int lastPage = products.getTotalPages() - 1;
             pageable = PageRequest.of(lastPage, size, pageable.getSort());
             products = productService.searchDiscountProductsWithFilters(
-                    keyword, categoryId, brandId, minPrice, maxPrice, sortBy, sortDir, pageable);
+                keyword, categoryId, brandId, minPrice, maxPrice, sortBy, sortDir, pageable);
             page = lastPage;
         }
         List<Category> categories = categoryService.getAllCategory();

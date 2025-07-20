@@ -1,66 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Add Staff</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/sidebar.css">
-    <link rel="stylesheet" href="/css/addStaff.css">
+  <meta charset="UTF-8">
+  <title>Add Staff</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="icon" type="image/png" th:href="@{/images/logo.png}" />
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/sidebar.css">
+  <link rel="stylesheet" href="/css/addStaff.css">
 </head>
 <body>
 <div th:insert="~{fragments/header :: headerContent}"></div>
 
 <div class="container mt-4 main-container">
-    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
-    <div class="content">
-        <h2 style="padding-top: 100px;">Add New Staff</h2>
+  <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+  <div class="content">
+    <h2 style="padding-top: 100px;">Add New Staff</h2>
 
-        <form method="post" th:action="@{/admin/addStaff}" th:object="${staff}">
-            <label>Name: </label>
-            <input type="text" th:field="*{name}" required pattern="^[A-Za-z\s]+$"
-                   title="Name must not contain numbers or special characters."><br>
+    <form method="post" th:action="@{/admin/addStaff}" th:object="${staff}">
+      <label>Name: </label>
+      <input type="text" th:field="*{name}" required pattern="^[A-Za-z\s]+$"
+             title="Name must not contain numbers or special characters."><br>
 
-            <label>Email: </label>
-            <input type="email" th:field="*{email}" required><br>
-            <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-
-
-            <label>Password: </label>
-            <input type="text" th:field="*{password}" required><br>
-            <label>Confirm Password: </label>
-            <input type="password" th:field="*{confirmPassword}" required><br>
-            <div class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}">
-                <p th:errors="*{confirmPassword}"></p>
-            </div>
-
-            <label>Phone: </label>
-            <input type="text" th:field="*{phone}" required pattern="^[0-9]{10}$"
-                   title="Phone number must be exactly 10 digits."><br><br>
-
-            <label>Address: </label>
-            <input type="text" th:field="*{address}" required><br>
-
-            <label>National Id: </label>
-            <input type="text" th:field="*{nationalId}" required pattern="^[0-9]{12}$"
-                   title="National ID must be exactly 12 digits."><br>
-            <div class="text-danger" th:if="${#fields.hasErrors('nationalId')}" th:errors="*{nationalId}"></div>
+      <label>Email: </label>
+      <input type="email" th:field="*{email}" required><br>
+      <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
 
 
-            <label>Gender: </label>
-            <select th:field="*{gender}" required>
-                <option th:value="FEMALE">Female</option>
-                <option th:value="MALE">Male</option>
-                <option th:value="OTHER">Other</option>
-            </select><br>
+      <label>Password: </label>
+      <input type="text" th:field="*{password}" required><br>
+      <label>Confirm Password: </label>
+      <input type="password" th:field="*{confirmPassword}" required><br>
+      <div class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}">
+        <p th:errors="*{confirmPassword}"></p>
+      </div>
 
-            <div class="form-buttons">
-                <button type="submit">Save</button>
+      <label>Phone: </label>
+      <input type="text" th:field="*{phone}" required pattern="^[0-9]{10}$"
+             title="Phone number must be exactly 10 digits."><br><br>
 
-                <a href="/admin/ManageStaff" class="btn btn-secondary ms-2 btn-back">Back</a>
-            </div>
-        </form>
-    </div>
+      <label>Address: </label>
+      <input type="text" th:field="*{address}" required><br>
+
+      <label>National Id: </label>
+      <input type="text" th:field="*{nationalId}" required pattern="^[0-9]{12}$"
+             title="National ID must be exactly 12 digits."><br>
+      <div class="text-danger" th:if="${#fields.hasErrors('nationalId')}" th:errors="*{nationalId}"></div>
+
+
+      <label>Gender: </label>
+      <select th:field="*{gender}" required>
+        <option th:value="FEMALE">Female</option>
+        <option th:value="MALE">Male</option>
+        <option th:value="OTHER">Other</option>
+      </select><br>
+
+      <div class="form-buttons">
+        <button type="submit">Save</button>
+
+        <a href="/admin/ManageStaff" class="btn btn-secondary ms-2 btn-back">Back</a>
+      </div>
+    </form>
+  </div>
 </div>
 </body>
 </html>

@@ -15,7 +15,8 @@
 }
 
 .discount-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     color: white;
     padding: 20px;
     border-radius: 10px 10px 0 0;
@@ -119,7 +120,8 @@
 
 /* Statistics cards */
 .stats-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     color: white;
     border-radius: 10px;
     padding: 15px;
@@ -157,7 +159,8 @@
 }
 
 .detail-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     color: white;
     padding: 30px;
     border-radius: 15px 15px 0 0;
@@ -357,6 +360,26 @@
         margin-bottom: 10px;
     }
 }
+.collapse-icon {
+    transition: transform 0.3s ease;
+}
+[aria-expanded="true"] .collapse-icon {
+    transform: rotate(180deg);
+}
+
+/* Điều chỉnh giao diện cho phần lọc */
+.search-filter-card .card-header {
+    cursor: pointer;
+    padding: 12px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+.search-filter-card .card-header h5 {
+    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 /* Animation effects */
 @keyframes fadeIn {
@@ -407,7 +430,8 @@
 
 /* Statistics Cards */
 .stats-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     color: white;
     padding: 1.5rem;
     border-radius: 15px;
@@ -450,7 +474,8 @@
 }
 
 .discount-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     color: white;
     padding: 1.5rem;
 }
@@ -853,7 +878,8 @@
 }
 
 .search-filter-actions .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     border: none;
 }
 

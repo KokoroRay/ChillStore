@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}"/>
     <title>Product Management - ESMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/sidebar.css">
-    <link rel="stylesheet" href="/css/styleproduct.css">
+    <link rel="stylesheet" href="/css/product.css">
 </head>
 <body>
 
@@ -76,41 +77,54 @@
                     <!-- Advanced Filters -->
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-title mb-3"><i class="fas fa-sliders-h me-2"></i>Advanced Filters</h6>
-                                <div class="row g-3">
-                                    <div class="col-md-3">
-                                        <label class="form-label">Price From</label>
-                                        <div class="input-group">
-                                            <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control"
-                                                   name="minPrice"
-                                                   th:value="${minPrice != null ? #numbers.formatInteger(minPrice, 0) : ''}"
-                                                   placeholder="From 1,000 VND">
-                                            <span class="input-group-text">₫</span>
+                            <div class="card-header bg-light" data-bs-toggle="collapse"
+                                 data-bs-target="#advancedFiltersCollapse"
+                                 th:classappend="${(minPrice != null) || (maxPrice != null) || (minStock != null) || (sortOption != null and sortOption != '')} ? '' : 'collapsed'"
+                                 style="cursor: pointer;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-sliders-h me-2"></i>Advanced Filters
+                                    </h6>
+                                    <i class="fas fa-chevron-down collapse-icon"></i>
+                                </div>
+                            </div>
+                            <div id="advancedFiltersCollapse" class="collapse"
+                                 th:classappend="${(minPrice != null) || (maxPrice != null) || (minStock != null) || (sortOption != null and sortOption != '')} ? 'show' : ''">
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Price From</label>
+                                            <div class="input-group">
+                                                <input type="text" inputmode="numeric" pattern="[0-9]*"
+                                                       class="form-control" name="minPrice"
+                                                       th:value="${minPrice != null ? #numbers.formatInteger(minPrice, 0) : ''}"
+                                                       placeholder="From 1,000 VND">
+                                                <span class="input-group-text">₫</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">To</label>
-                                        <div class="input-group">
-                                            <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control"
-                                                   name="maxPrice"
-                                                   th:value="${maxPrice != null ? #numbers.formatInteger(maxPrice, 0) : ''}"
-                                                   placeholder="To 1,000,000,000 VND">
-                                            <span class="input-group-text">₫</span>
+                                        <div class="col-md-3">
+                                            <label class="form-label">To</label>
+                                            <div class="input-group">
+                                                <input type="text" inputmode="numeric" pattern="[0-9]*"
+                                                       class="form-control" name="maxPrice"
+                                                       th:value="${maxPrice != null ? #numbers.formatInteger(maxPrice, 0) : ''}"
+                                                       placeholder="To 1,000,000,000 VND">
+                                                <span class="input-group-text">₫</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Minimum Stock</label>
-                                        <input type="number" class="form-control" name="minStock" th:value="${minStock}"
-                                               min="0" placeholder="Enter quantity">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Sort By</label>
-                                        <select class="form-select" name="sortOption">
-                                            <option th:each="option : ${sortOptions}" th:value="${option.value}"
-                                                    th:text="${option.label}"
-                                                    th:selected="${sortOption == option.value}"></option>
-                                        </select>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Minimum Stock</label>
+                                            <input type="number" class="form-control" name="minStock"
+                                                   th:value="${minStock}" min="0" placeholder="Enter quantity">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Sort By</label>
+                                            <select class="form-select" name="sortOption">
+                                                <option th:each="option : ${sortOptions}" th:value="${option.value}"
+                                                        th:text="${option.label}"
+                                                        th:selected="${sortOption == option.value}"></option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -6,7 +6,6 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
     min-height: 100vh;
     padding-top: 130px;
     padding-bottom: 50px;
@@ -223,6 +222,15 @@ body {
     color: #3498db;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+}
+
+.horizontal-sidebar {
+    transition: transform 0.3s ease;
+}
+
+/* Class ẩn thanh điều hướng */
+.horizontal-sidebar.hidden {
+    transform: translateY(-100%);
 }
 
 .logout-btn {

@@ -24,7 +24,7 @@ public class HomeController {
 
     public String home(Model model,
                        @RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "20") int size,
+                       @RequestParam(defaultValue = "15") int size,
                        @RequestParam(value = "category", required = false) String category) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -41,23 +41,14 @@ public class HomeController {
             // Bạn có thể thêm các thuộc tính khác cho view của khách
         }
 
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDTO> productPage = productService.getProductDTOsPaginated(pageable);
-
-        if (category != null && !category.equalsIgnoreCase("tất cả")) {
-            productPage = productService.getProductsByCategory(category, pageable);
-            model.addAttribute("currentCategory", category);
-        } else {
-            productPage = productService.getProductDTOsPaginated(pageable);
-            model.addAttribute("currentCategory", "Tất cả");
-        }
-        model.addAttribute("products", productPage.getContent());
+        // Random toàn bộ sản phẩm rồi chia trang
+        var products = productService.getRandomProductsPaged(page, size);
+        int totalPages = productService.getRandomProductsTotalPages(size);
+        model.addAttribute("products", products);
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", productPage.getTotalPages());
-        model.addAttribute("nextPage", page + 1);
-        model.addAttribute("prevPage", page - 1);
-
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("nextPage", Math.min(page + 1, totalPages - 1));
+        model.addAttribute("prevPage", Math.max(page - 1, 0));
         return "home";
     }
 

@@ -98,6 +98,8 @@ public class CustomerProductController {
                 productDiscountMap.put(product.getProductId(), discount);
             }
         }
+        // Map productId -> total sold quantity for displaying "đã bán"
+        Map<Integer, Integer> productSoldMap = new HashMap<>();
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
@@ -114,6 +116,7 @@ public class CustomerProductController {
         model.addAttribute("priceError", priceError);
         // Bổ sung: truyền map discount ra view
         model.addAttribute("productDiscountMap", productDiscountMap);
+        model.addAttribute("productSoldMap", productSoldMap);
         return "customer/product/viewProduct";
     }
 
@@ -135,120 +138,121 @@ public class CustomerProductController {
                 .filter(ProductImage::isPrimary)
                 .map(ProductImage::getImageUrl).findFirst().orElse(product.getImageUrl());
 
-            // Get current customer information if logged in
-            Customer customer = getCurrentCustomer();
-            Integer shippingCost = calculateShippingCost(customer);
-
-            model.addAttribute("product", product);
-            model.addAttribute("discount", discount);
-            model.addAttribute("primaryImage", primaryImage);
-            model.addAttribute("specifications", product.getSpecifications());
-            model.addAttribute("imageGallery", product.getImages());
-            model.addAttribute("customer", customer);
-            model.addAttribute("shippingCost", shippingCost);
-
-            return "customer/product/viewProductDetail";
-        }
-
-        /**
-         * Gets the currently logged-in customer
-         */
-        private Customer getCurrentCustomer() {
-            try {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (authentication != null && authentication.isAuthenticated()
-                        && !authentication.getPrincipal().equals("anonymousUser")) {
-                    String username = authentication.getName();
-                    return customerService.getCustomerByUsername(username);
-                }
-            } catch (Exception e) {
-                // Log error but don't disrupt the flow
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        /**
-         * Calculate shipping cost based on customer's address
-         * Free for Can Tho, 20,000 VND for other southern locations, 40,000 VND for northern locations
-         */
-        private Integer calculateShippingCost(Customer customer) {
-            if (customer == null || customer.getAddress() == null) {
-                return 20000; // Default shipping cost
-            }
-
-            String address = customer.getAddress().toLowerCase();
-
-            // Free shipping for Can Tho
-            if (address.contains("cần thơ") || address.contains("can tho")) {
-                return 0;
-            }
-
-            // List of northern provinces (simplified)
-            String[] northernProvinces = {
-                "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
-                "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
-                "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
-                "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
-                "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
-                "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
-                "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
-            };
-
-            // Check if address contains any northern province
-            for (String province : northernProvinces) {
-                if (address.contains(province)) {
-                    return 40000; // Northern provinces shipping cost
-                }
-            }
-
-            // Default for other southern provinces
-            return 20000;
+        // Get current customer information if logged in
+        Customer customer = getCurrentCustomer();
+        Integer shippingCost = calculateShippingCost(customer);
+        int soldQuantity = productService.getTotalSoldQuantity(id);
+        model.addAttribute("product", product);
+        model.addAttribute("soldQuantity", soldQuantity);
+        model.addAttribute("discount", discount);
+        model.addAttribute("primaryImage", primaryImage);
+        model.addAttribute("specifications", product.getSpecifications());
+        model.addAttribute("imageGallery", product.getImages());
+        model.addAttribute("customer", customer);
+        model.addAttribute("shippingCost", shippingCost);
+        model.addAttribute("stockQty", product.getStockQty());
+        return "customer/product/viewProductDetail";
     }
 
-        @Autowired
-        private CategoryRepository categoryRepository;
+    /**
+     * Gets the currently logged-in customer
+     */
+    private Customer getCurrentCustomer() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated()
+                    && !authentication.getPrincipal().equals("anonymousUser")) {
+                String username = authentication.getName();
+                return customerService.getCustomerByUsername(username);
+            }
+        } catch (Exception e) {
+            // Log error but don't disrupt the flow
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-        @Autowired
-        private BrandRepository brandRepository;
-
-        @GetMapping("/products/category/{categoryId}")
-        public String viewProductsByCategory(
-                @PathVariable("categoryId") Integer categoryId,
-                Model model) {
-                    Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
-                    Page<ProductDTO> productDTOsPage = productService.getProductsByCategory(categoryId.toString(), pageable);
-                    List<ProductDTO> products = productDTOsPage.getContent();
-
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
-
-            model.addAttribute("products", products);
-            model.addAttribute("category", category);
-            model.addAttribute("title", "Products in " + category.getName());
-
-            return "customer/product/viewProduct";
+    /**
+     * Calculate shipping cost based on customer's address
+     * Free for Can Tho, 20,000 VND for other southern locations, 40,000 VND for northern locations
+     */
+    private Integer calculateShippingCost(Customer customer) {
+        if (customer == null || customer.getAddress() == null) {
+            return 20000; // Default shipping cost
         }
 
-        @GetMapping("/products/brand/{brandId}")
-        public String viewProductsByBrand(
-                @PathVariable("brandId") Integer brandId,
-                Model model) {
-                    // Get products by brand using the searchProductsWithFilters method
-                    Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
-                    Page<Product> productsPage = productService.searchProductsWithFilters(
-                        null, null, brandId, null, null, null, null, null, pageable, true);
-                    List<Product> products = productsPage.getContent();
+        String address = customer.getAddress().toLowerCase();
 
-            Brand brand = brandRepository.findById(brandId)
-                    .orElseThrow(() -> new RuntimeException("Brand not found"));
-
-            model.addAttribute("products", products);
-            model.addAttribute("brand", brand);
-            model.addAttribute("title", "Products by " + brand.getName());
-
-            return "customer/product/viewProduct";
+        // Free shipping for Can Tho
+        if (address.contains("cần thơ") || address.contains("can tho")) {
+            return 0;
         }
+
+        // List of northern provinces (simplified)
+        String[] northernProvinces = {
+            "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
+            "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
+            "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
+            "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
+            "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
+            "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
+            "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
+        };
+
+        // Check if address contains any northern province
+        for (String province : northernProvinces) {
+            if (address.contains(province)) {
+                return 40000; // Northern provinces shipping cost
+            }
+        }
+
+        // Default for other southern provinces
+        return 20000;
+    }
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private BrandRepository brandRepository;
+
+    @GetMapping("/products/category/{categoryId}")
+    public String viewProductsByCategory(
+            @PathVariable("categoryId") Integer categoryId,
+            Model model) {
+                Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
+                Page<ProductDTO> productDTOsPage = productService.getProductsByCategory(categoryId.toString(), pageable);
+                List<ProductDTO> products = productDTOsPage.getContent();
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        model.addAttribute("products", products);
+        model.addAttribute("category", category);
+        model.addAttribute("title", "Products in " + category.getName());
+
+        return "customer/product/viewProduct";
+    }
+
+    @GetMapping("/products/brand/{brandId}")
+    public String viewProductsByBrand(
+            @PathVariable("brandId") Integer brandId,
+            Model model) {
+                // Get products by brand using the searchProductsWithFilters method
+                Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
+                Page<Product> productsPage = productService.searchProductsWithFilters(
+                    null, null, brandId, null, null, null, null, null, pageable, true);
+                List<Product> products = productsPage.getContent();
+
+        Brand brand = brandRepository.findById(brandId)
+                .orElseThrow(() -> new RuntimeException("Brand not found"));
+
+        model.addAttribute("products", products);
+        model.addAttribute("brand", brand);
+        model.addAttribute("title", "Products by " + brand.getName());
+
+        return "customer/product/viewProduct";
+    }
 
     @GetMapping("/DiscountProducts")
     public String viewDiscountProducts(
@@ -314,6 +318,12 @@ public class CustomerProductController {
                 productDiscountMap.put(product.getProductId(), discount);
             }
         }
+        // Map productId -> total sold quantity for displaying "đã bán"
+        Map<Integer, Integer> productSoldMap = new HashMap<>();
+        for (Product product : products) {
+            int soldQty = productService.getTotalSoldQuantity(product.getProductId());
+            productSoldMap.put(product.getProductId(), soldQty);
+        }
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
@@ -329,6 +339,7 @@ public class CustomerProductController {
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("priceError", priceError);
         model.addAttribute("productDiscountMap", productDiscountMap);
+        model.addAttribute("productSoldMap", productSoldMap);
         return "customer/product/discountProducts";
     }
 }

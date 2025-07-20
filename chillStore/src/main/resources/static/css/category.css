@@ -1,93 +1,53 @@
-:root {
-    --primary: #D2E0FB;
-    --secondary: #226597;
-    --accent: #87C0CD;
-    --background: #F3F9FB;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-}
-
-.container-fluid {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    overflow: hidden;
-}
-
-.content-row {
-    flex: 1;
-    display: flex;
-    min-height: 0;
-}
-
+/* Layout Improvements */
 .main-content {
     background-color: var(--background);
-    flex: 1;
+    min-height: calc(100vh - 56px);
     padding: 1.5rem;
     overflow-y: auto;
-    min-height: 0;
 }
 
-.staff-management {
+.category-management {
     height: 100%;
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    padding-top: 2em;
 }
 
+/* Card Styling */
 .card {
     border-radius: 12px;
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
-    /* Điều chỉnh quan trọng: bỏ flex-grow để card không chiếm quá nhiều không gian */
+    flex: 1;
     display: flex;
     flex-direction: column;
 }
 
 .card-body {
-    padding: 0;
-    /* Điều chỉnh quan trọng: thêm flex-shrink để card-body co lại đúng cách */
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.table-container {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0;
 }
 
 .table-responsive {
     flex: 1;
-    min-height: 0;
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .table {
     margin-bottom: 0;
     border-collapse: separate;
     border-spacing: 0;
-    width: 100%;
+    flex: 1;
 }
 
 .table thead th {
     background-color: var(--primary);
-    color: black;
+    color: #000000;
     font-weight: 700;
     padding: 1rem 1.25rem;
     border: none;
-    position: sticky;
-    top: 0;
-    z-index: 10;
 }
 
 .table tbody td {
@@ -104,33 +64,15 @@ body {
     background-color: rgba(135, 192, 205, 0.1);
 }
 
-.address-cell {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 /* Buttons & Actions */
 .btn-primary {
-    background-color: var(--primary);
-    border-color: var(--primary);
+    background-color: #87C0CD;
+    border-color: #87C0CD;
 }
 
 .btn-primary:hover {
     background-color: #0d3253;
     border-color: #0d3253;
-}
-
-.btn-accent {
-    background-color: var(--accent);
-    color: #226597;
-    font-weight: 500;
-}
-
-.btn-accent:hover {
-    background-color: #76a9b5;
-    color: #226597;
 }
 
 .btn-action {
@@ -142,35 +84,15 @@ body {
     justify-content: center;
     padding: 0;
 }
+
 .text-end img {
     width: 2rem;
     height: 2rem;
 }
 
-/* Pagination */
-.pagination .page-link {
-    color: var(--primary);
-    border-radius: 8px;
-    margin: 0 4px;
-    min-width: 36px;
-    text-align: center;
-    border: none;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: var(--secondary);
-    color: white;
-    border: none;
-}
-
-.pagination .page-link:hover {
-    background-color: rgba(135, 192, 205, 0.2);
-    color: var(--primary);
-}
-
 /* Responsive Adjustments */
 @media (max-width: 992px) {
-    .staff-management {
+    .category-management {
         padding: 0 1rem;
     }
 
@@ -210,10 +132,6 @@ body {
         margin: 0 2px;
     }
 
-    .address-cell {
-        max-width: 100%;
-    }
-
     /* Add data labels for responsive table */
     td[data-label]:before {
         content: attr(data-label);
@@ -226,10 +144,10 @@ body {
     /* Specific labels for columns */
     td:nth-child(1):before { content: "ID: "; }
     td:nth-child(2):before { content: "Name: "; }
-    td:nth-child(3):before { content: "Gender: "; }
-    td:nth-child(4):before { content: "Email: "; }
-    td:nth-child(5):before { content: "Phone: "; }
-    td:nth-child(6):before { content: "Address: "; }
-    td:nth-child(7):before { content: "National ID: "; }
-    td:nth-child(8):before { content: "Actions: "; }
+    td:nth-child(3):before { content: "Actions: "; }
+}
+
+/* Empty State Styling */
+.text-center.text-muted i {
+    opacity: 0.6;
 }

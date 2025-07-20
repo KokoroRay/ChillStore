@@ -107,7 +107,7 @@
   </div>
   </div>
   <br>
-<div class="product-container">
+<div class="product-container"  id="product-list">
   <div class="product-grid">
     <div class="product-card" th:each="product : ${products}">
       <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration: none; color: inherit; display: block;">
@@ -131,11 +131,53 @@
     <span th:if="${i == currentPage}" class="current-page" th:text="${i + 1}"></span>
   </span>
 
-    <a th:if="${currentPage + 1 < totalPages}" th:href="@{'/home?page=' + ${currentPage + 1}}">&gt;</a> <!-- > -->
+    <a th:if="${currentPage + 1 < totalPages}" th:href="@{'/home?page=' + ${currentPage + 1}}">&gt;</a>
 
-    <a th:if="${currentPage + 1 < totalPages}" th:href="@{'/home?page=' + ${totalPages - 1}}">&raquo;</a> <!-- >> -->
+    <a th:if="${currentPage + 1 < totalPages}" th:href="@{'/home?page=' + ${totalPages - 1}}">&raquo;</a>
+  </div><br>
+<div>
+  <h2 class="title">
+    Why Choose Our Store?
+  </h2>
+  <div class="container">
+  <div class="why"><p>
+    Genuine Products – Competitive Prices
+  </p>
+  <p>
+    We are committed to providing 100% authentic products from trusted brands such as Panasonic,
+    LG, Samsung, Daikin… with transparent and reasonable pricing, always updated with attractive promotions.
+  </p></div>
+  <div class="why"><p>
+    Wide Product Range – Easy to Choose
+  </p>
+    <p>
+      Whether you need air conditioners, refrigerators, washing machines, or industrial cooling equipment,
+      our website offers a full range of categories and powerful filters to help you find what you need in just a few clicks.
+    </p></div>
+  <div class="why"><p>
+    Fast Delivery – On-site Installation
+  </p>
+    <p>
+      We offer nationwide delivery and professional installation by experienced technicians,
+      so you can start using your products with confidence right away.
+    </p></div>
+  <div class="why"><p>
+    24/7 Customer Support
+  </p>
+    <p>
+      Got a question? Our support team is always ready to assist you via phone, live chat,
+      or email to ensure your shopping experience is smooth and satisfying.
+    </p></div>
+
+  <div class="why"><p>
+    Easy Ordering – Secure Payment – Real-time Tracking
+  </p>
+    <p>
+      With ESMS, you can place orders easily, choose flexible payment methods (COD, bank transfer, e-wallets),
+      and track your order status in real time, anytime, anywhere.
+    </p></div>
   </div>
-
+</div>
 
   <div th:replace="fragments/footer :: footer"></div>
 

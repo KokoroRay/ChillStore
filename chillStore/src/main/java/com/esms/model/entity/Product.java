@@ -59,6 +59,11 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductSpecification> specifications = new ArrayList<>();
 
+    @Transient
+    private String priceString;
+    public String getPriceString() { return priceString; }
+    public void setPriceString(String priceString) { this.priceString = priceString; }
+
 
     public Product() {
     }

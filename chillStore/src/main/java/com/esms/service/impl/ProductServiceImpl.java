@@ -491,4 +491,10 @@ public class ProductServiceImpl implements ProductService {
         int total = productRepository.findAll().size();
         return (int) Math.ceil((double) total / size);
     }
+
+    @Override
+    public int getTotalSoldQuantity(Integer productId) {
+        Integer count = orderItemRepository.countTotalSoldByProductId(productId);
+        return count != null ? count : 0;
+    }
 }

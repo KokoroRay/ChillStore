@@ -1,93 +1,106 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
 <div th:fragment="content">
-    <div class="content">
-        <h2 class="mb-4">Maintenance List</h2>
+    <!-- Alert Messages -->
+    <div class="mb-4">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
 
-        <!-- Alert Messages -->
-        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-
-        <a th:href="@{/admin/maintenance/add}" class="btn btn-primary mb-3">Add New Maintenance</a>
-
-        <!-- Maintenance Table -->
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <table class="table table-bordered table-hover mb-0">
-                    <thead class="table-primary">
+    <!-- Maintenance Table Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
                     <tr>
                         <th>Request ID</th>
                         <th>Order Info</th>
                         <th>Product Info</th>
                         <th>Customer Info</th>
-                        <th>Staff Info</th>
                         <th>Request Type</th>
                         <th>Request Date</th>
                         <th>Reason</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                        <th class="text-end">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="m : ${maintenances}">
+                        <td th:text="${m.requestId}"></td>
+                        <td th:text="${m.orderInfo}"></td>
+                        <td th:text="${m.productInfo}"></td>
+                        <td th:text="${m.customerInfo}"></td>
                         <td>
-                            <span class="badge bg-secondary" th:text="${m.requestId}"></span>
+                            <span th:class="${m.requestType == 'maintenance'} ? 'badge bg-warning' : 'badge bg-info'"
+                                  th:text="${m.requestType}" class="badge rounded-pill"></span>
+                        </td>
+                        <td th:text="${#temporals.format(m.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td class="reason-cell">
+                            <span th:text="${#strings.abbreviate(m.reason, 50)}"
+                                  th:title="${m.reason}"></span>
                         </td>
                         <td>
-                            <span th:text="${m.orderInfo}"></span>
+                            <span th:class="${m.status == 'Completed'} ? 'badge bg-success' : (${m.status == 'In Progress'} ? 'badge bg-warning' : 'badge bg-secondary')"
+                                  th:text="${m.status}" class="badge rounded-pill"></span>
                         </td>
-                        <td>
-                            <span th:text="${m.productInfo}"></span>
-                        </td>
-                        <td>
-                            <span th:text="${m.customerInfo}"></span>
-                        </td>
-                        <td>
-                            <span th:text="${m.staffName}"></span>
-                        </td>
-                        <td>
-                            <span th:if="${m.requestType == 'maintenance'}" class="badge bg-primary">Maintenance</span>
-                            <span th:if="${m.requestType == 'warranty'}" class="badge bg-info">Warranty</span>
-                        </td>
-                        <td>
-                            <small th:text="${#temporals.format(m.requestDate, 'dd/MM/yyyy')}"></small><br>
-                            <small class="text-muted" th:text="${#temporals.format(m.requestDate, 'HH:mm')}"></small>
-                        </td>
-                        <td>
-                            <div class="text-truncate" style="max-width: 200px;" th:text="${m.reason}"></div>
-                        </td>
-                        <td>
-                            <span th:if="${m.status == 'Pending'}" class="badge bg-warning">Pending</span>
-                            <span th:if="${m.status == 'In Progress'}" class="badge bg-primary">In Progress</span>
-                            <span th:if="${m.status == 'Completed'}" class="badge bg-success">Completed</span>
-                            <span th:if="${m.status == 'Cancelled'}" class="badge bg-danger">Cancelled</span>
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a th:href="@{/admin/maintenance/detail/{id}(id=${m.requestId})}"
-                                   class="btn btn-sm btn-info" title="View Details">
-                                   <i class="bi bi-eye"></i> View
+                        <td class="text-end">
+                            <div class="d-flex justify-content-end gap-2">
+                                <a th:href="@{/staff/maintenance/detail/{id}(id=${m.requestId})}"
+                                   class="btn btn-sm btn-action btn-view" title="View Details">
+                                    <i class="fas fa-eye"></i>
                                 </a>
-                                <a th:href="@{/admin/maintenance/edit/{id}(id=${m.requestId})}"
-                                   class="btn btn-sm btn-warning" title="Edit">
-                                   <i class="bi bi-pencil"></i> Edit
-                                </a>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-action btn-update dropdown-toggle"
+                                            type="button" data-bs-toggle="dropdown"
+                                            aria-expanded="false" title="Update Status">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}"
+                                                  method="post">
+                                                <input type="hidden" name="status" value="Pending">
+                                                <button type="submit" class="dropdown-item"
+                                                        th:disabled="${m.status == 'Pending'}">
+                                                    <i class="fas fa-clock me-2"></i> Set Pending
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}"
+                                                  method="post">
+                                                <input type="hidden" name="status" value="In Progress">
+                                                <button type="submit" class="dropdown-item"
+                                                        th:disabled="${m.status == 'In Progress'}">
+                                                    <i class="fas fa-tools me-2"></i> Set In Progress
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}"
+                                                  method="post">
+                                                <input type="hidden" name="status" value="Completed">
+                                                <button type="submit" class="dropdown-item"
+                                                        th:disabled="${m.status == 'Completed'}">
+                                                    <i class="fas fa-check-circle me-2"></i> Set Completed
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(maintenances)}">
-                        <td colspan="9" class="text-center py-4">
-                            <div class="text-muted">
-                                <i class="bi bi-inbox fs-1"></i>
-                                <p class="mt-2">No maintenance records found</p>
-                                <a th:href="@{/admin/maintenance/add}" class="btn btn-primary btn-sm">Add First Maintenance</a>
-                            </div>
+                        <td colspan="9" class="text-center py-4 text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <h5 class="mb-0">No maintenance records found</h5>
+                            <p class="mb-0">Try adding a new maintenance request</p>
                         </td>
                     </tr>
                     </tbody>
@@ -96,6 +109,3 @@
         </div>
     </div>
 </div>
-
-</body>
-</html>

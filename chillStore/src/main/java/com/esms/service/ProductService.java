@@ -65,5 +65,7 @@ public interface ProductService {
     List<ProductDTO> getRandomProducts(int limit);
     List<ProductDTO> getRandomProductsPaged(int page, int size);
     int getRandomProductsTotalPages(int size);
+    int getTotalSoldQuantity(Integer productId);
+
 }
 

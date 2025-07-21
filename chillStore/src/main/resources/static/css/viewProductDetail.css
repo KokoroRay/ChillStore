@@ -727,3 +727,133 @@
         /* Đã điều chỉnh: Giảm margin-bottom */
     }
 }
+
+/* Feedback Section Styles */
+.feedback-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 30px;
+    margin-top: 40px;
+}
+
+.feedback-section h3 {
+    color: #333;
+    font-weight: 600;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.feedback-list {
+    margin-bottom: 30px;
+}
+
+.feedback-item {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.feedback-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.feedback-rating {
+    color: #ffc107;
+    font-size: 18px;
+}
+
+.feedback-comment {
+    color: #6c757d;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.feedback-date {
+    color: #adb5bd;
+    font-size: 12px;
+}
+
+.feedback-actions {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e9ecef;
+}
+
+.feedback-reply {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 0 8px 8px 0;
+}
+
+.reply-staff {
+    font-weight: 600;
+    color: #1976d2;
+}
+
+.reply-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.reply-content {
+    color: #495057;
+    line-height: 1.6;
+}
+
+#feedback-form-container {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.rating-stars {
+    display: inline-block;
+    font-size: 20px;
+    color: #ffc107;
+}
+
+.rating-stars input {
+    display: none;
+}
+
+.rating-stars label {
+    cursor: pointer;
+    padding: 2px;
+}
+
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+    color: #ffc107;
+}
+
+.rating-stars input:checked ~ label {
+    color: #ffc107;
+}
+
+.feedback-alert {
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.feedback-alert a {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.feedback-alert a:hover {
+    text-decoration: underline;
+}

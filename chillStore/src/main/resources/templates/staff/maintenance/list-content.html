@@ -35,7 +35,7 @@
                         </td>
                         <td th:text="${#temporals.format(m.requestDate, 'dd/MM/yyyy HH:mm')}"></td>
                         <td>
-                            <span th:text="${#strings.abbreviate(m.reason, 50)}"
+                            <span th:text="${#strings.abbreviate(m.reason, 50)}" 
                                   th:title="${m.reason}"></span>
                         </td>
                         <td>
@@ -46,38 +46,38 @@
                             <div class="btn-group" role="group">
                                 <a th:href="@{/staff/maintenance/detail/{id}(id=${m.requestId})}"
                                    class="btn btn-sm btn-info" title="View Details">
-                                    <i class="bi bi-eye"></i> View
+                                   <i class="bi bi-eye"></i> View
                                 </a>
-                                <button type="button" class="btn btn-sm btn-success dropdown-toggle"
+                                <button type="button" class="btn btn-sm btn-success dropdown-toggle" 
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-check-circle"></i> Update Status
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}"
+                                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}" 
                                               method="post" style="display: inline;">
                                             <input type="hidden" name="status" value="Pending">
-                                            <button type="submit" class="dropdown-item"
+                                            <button type="submit" class="dropdown-item" 
                                                     th:disabled="${m.status == 'Pending'}">
                                                 <i class="bi bi-clock"></i> Set Pending
                                             </button>
                                         </form>
                                     </li>
                                     <li>
-                                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}"
+                                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}" 
                                               method="post" style="display: inline;">
                                             <input type="hidden" name="status" value="In Progress">
-                                            <button type="submit" class="dropdown-item"
+                                            <button type="submit" class="dropdown-item" 
                                                     th:disabled="${m.status == 'In Progress'}">
                                                 <i class="bi bi-tools"></i> Set In Progress
                                             </button>
                                         </form>
                                     </li>
                                     <li>
-                                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}"
+                                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${m.requestId})}" 
                                               method="post" style="display: inline;">
                                             <input type="hidden" name="status" value="Completed">
-                                            <button type="submit" class="dropdown-item"
+                                            <button type="submit" class="dropdown-item" 
                                                     th:disabled="${m.status == 'Completed'}">
                                                 <i class="bi bi-check-circle"></i> Set Completed
                                             </button>

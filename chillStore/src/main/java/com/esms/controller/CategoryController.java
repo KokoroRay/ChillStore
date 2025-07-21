@@ -35,7 +35,7 @@ public class CategoryController {
         List<Category> categories = categoryService.getCategories();
         model.addAttribute("categories", categories);
         String requestUrl = request.getRequestURI();
-        if (requestUrl.startsWith("/staff")) {
+        if (requestUrl.startsWith("/staff") ){
             return "staff/category/list";
         } else {
             return "admin/category/list";

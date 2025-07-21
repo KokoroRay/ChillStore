@@ -15,13 +15,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.esms.model.dto.ChangePasswordDTO;
 import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
-
 import java.time.LocalDate;
 import java.time.Period;
 
 @Controller
 @RequestMapping("/customer/profile")
-public class ProfileController {
+public class  ProfileController {
     private final CustomerService customerService;
 
     public ProfileController(CustomerService customerService) {
@@ -46,11 +45,11 @@ public class ProfileController {
         String email = authentication.getName();
         Customer customer = customerService.getCustomerByEmail(email);
         CustomerDTO customerDto = convertToDto(customer);
-
+        
         // Debug logging
         System.out.println("DEBUG: Edit Form - Customer Birth Date: " + customer.getBirth_date());
         System.out.println("DEBUG: Edit Form - DTO Birth Date: " + customerDto.getBirthDate());
-
+        
         model.addAttribute("customerDto", customerDto);
         return "customer/editProfile";
     }
@@ -58,42 +57,42 @@ public class ProfileController {
     // Xử lý cập nhật profile cho customer hiện tại
     @PostMapping("/edit")
     public String updateProfile(@ModelAttribute("customerDto") CustomerDTO customerDto,
-                                BindingResult bindingResult,
-                                Model model,
-                                RedirectAttributes redirectAttributes) {
-
+                               BindingResult bindingResult,
+                               Model model, 
+                               RedirectAttributes redirectAttributes) {
+        
         // Debug logging
         System.out.println("DEBUG: Birth Date from form: " + customerDto.getBirthDate());
-
+        
         // Manual validation cho các fields
         if (customerDto.getName() == null || customerDto.getName().trim().isEmpty()) {
             bindingResult.rejectValue("name", "error.name", "Name cannot be empty");
         }
-
+        
         if (customerDto.getDisplayName() == null || customerDto.getDisplayName().trim().isEmpty()) {
             bindingResult.rejectValue("displayName", "error.displayName", "Display name cannot be empty");
         }
-
+        
         if (customerDto.getEmail() == null || customerDto.getEmail().trim().isEmpty()) {
             bindingResult.rejectValue("email", "error.email", "Email cannot be empty");
         } else if (!customerDto.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             bindingResult.rejectValue("email", "error.email", "Invalid email format");
         }
-
+        
         if (customerDto.getPhone() != null && !customerDto.getPhone().trim().isEmpty()) {
             String phone = customerDto.getPhone().replaceAll("\\D", "");
             if (phone.length() < 10 || phone.length() > 11) {
                 bindingResult.rejectValue("phone", "error.phone", "Phone number must be 10 or 11 digits");
             }
         }
-
+        
         // Validation cho avatarUrl
         if (customerDto.getAvatarUrl() != null && !customerDto.getAvatarUrl().trim().isEmpty()) {
             if (!customerDto.getAvatarUrl().matches("^https?://.*")) {
                 bindingResult.rejectValue("avatarUrl", "error.avatarUrl", "Avatar URL must be a valid HTTP/HTTPS URL");
             }
         }
-
+        
         // Manual validation cho birthDate
         if (customerDto.getBirthDate() != null) {
             LocalDate currentDate = LocalDate.now();
@@ -107,7 +106,7 @@ public class ProfileController {
                 }
             }
         }
-
+        
         if (bindingResult.hasErrors()) {
             // Log validation errors
             bindingResult.getAllErrors().forEach(error -> {
@@ -117,24 +116,24 @@ public class ProfileController {
             model.addAttribute("customerDto", customerDto);
             return "customer/editProfile";
         }
-
+        
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         Customer customer = customerService.getCustomerByEmail(email);
-
+        
         // Set các trường không được thay đổi
         customerDto.setCustomerId(customer.getCustomerId());
         customerDto.setEmail(customer.getEmail());
         customerDto.setPassword(customer.getPassword()); // Giữ nguyên password hiện tại
-
+        
         System.out.println("DEBUG: Birth Date before update: " + customerDto.getBirthDate());
-
+        
         customerService.updateCustomer(customer.getCustomerId(), customerDto);
-
+        
         // Verify update
         Customer updatedCustomer = customerService.getCustomerByEmail(email);
         System.out.println("DEBUG: Birth Date after update: " + updatedCustomer.getBirth_date());
-
+        
         redirectAttributes.addFlashAttribute("success", "Profile updated successfully!");
         return "redirect:/customer/profile";
     }

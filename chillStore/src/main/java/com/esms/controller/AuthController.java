@@ -68,7 +68,7 @@ public class AuthController {
                                 @RequestParam(value = "error", required = false) String error,
                                 @RequestParam(value = "logout", required = false) String logout,
                                 @RequestParam(value = "register", required = false) String register,
-                                @RequestParam(value = "resetSuccess", required = false) String resetSuccess) {
+                                @RequestParam(value = "resetSuccess", required = false ) String resetSuccess) {
         if (error != null) {
             model.addAttribute("error", "Invalid email or password");
         }
@@ -87,14 +87,14 @@ public class AuthController {
     @GetMapping("/home")
     public String home(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+        
         if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
             Object principal = authentication.getPrincipal();
             String name = "";
             String email = "";
             String provider = "local";
             Integer customerId = null;
-
+            
             if (principal instanceof CustomerOAuth2User) {
                 CustomerOAuth2User customerOAuth2User = (CustomerOAuth2User) principal;
                 name = customerOAuth2User.getCustomerName();
@@ -114,7 +114,7 @@ public class AuthController {
                     model.addAttribute("loggedInUserName", customer.getDisplay_name() != null ? customer.getDisplay_name() : customer.getName());
                 });
             }
-
+            
             if (customerId != null) {
                 model.addAttribute("loggedInCustomerId", customerId);
             }
@@ -134,7 +134,7 @@ public class AuthController {
             model.addAttribute("loggedInProvider", "none");
             model.addAttribute("loggedInUserRole", "GUEST");
         }
-
+        
         return "home";
     }
 

@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -16,7 +15,7 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Integer> {
      * Tìm danh sách giao dịch kho có tên sản phẩm chứa từ khóa, dùng phân trang.
      * Dùng trong chức năng tìm kiếm có paging.
      *
-     * @param keyword  từ khóa cần tìm trong tên sản phẩm
+     * @param keyword từ khóa cần tìm trong tên sản phẩm
      * @param pageable đối tượng phân trang (số trang, kích thước trang,...)
      * @return danh sách trang các giao dịch phù hợp
      */

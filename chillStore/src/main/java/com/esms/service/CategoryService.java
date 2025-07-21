@@ -15,11 +15,8 @@ public interface CategoryService {
     List<Category> getCategories();
 
     Optional<Category> getCategoryById(Integer id);
-
     Category createCategory(CategoryDTO categoryDto);
-
     Category updateCategory(Integer id, CategoryDTO categoryDto);
-
     void deleteCategory(Integer id);
 
     List<Category> getAllParentOptions();

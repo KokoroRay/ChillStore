@@ -38,33 +38,32 @@
                             <i class="fas fa-info-circle"></i>
                             Basic Information
                         </h4>
-
+                        
                         <!-- Avatar Preview Section -->
                         <div class="avatar-preview-section">
                             <div class="avatar-preview-container">
-                                <img th:src="${customerDto.avatarUrl != null and customerDto.avatarUrl != '' ? customerDto.avatarUrl : '/images/default-avatar.svg'}"
-                                     alt="Avatar Preview"
+                                <img th:src="${customerDto.avatarUrl != null and customerDto.avatarUrl != '' ? customerDto.avatarUrl : '/images/default-avatar.svg'}" 
+                                     alt="Avatar Preview" 
                                      class="avatar-preview-img"
                                      id="avatarPreview">
                             </div>
                             <div class="avatar-preview-info">
                                 <p class="avatar-preview-text">Profile Picture Preview</p>
-                                <p class="avatar-preview-help">Your profile picture will appear here when you enter a
-                                    valid image URL</p>
+                                <p class="avatar-preview-help">Your profile picture will appear here when you enter a valid image URL</p>
                             </div>
                         </div>
-
+                        
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="name" class="form-label">
                                     <i class="fas fa-user"></i>
                                     Full Name <span class="required">*</span>
                                 </label>
-                                <input type="text"
-                                       id="name"
-                                       th:field="*{name}"
-                                       class="form-input"
-                                       required
+                                <input type="text" 
+                                       id="name" 
+                                       th:field="*{name}" 
+                                       class="form-input" 
+                                       required 
                                        placeholder="Enter your full name">
                                 <div class="form-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                             </div>
@@ -74,13 +73,12 @@
                                     <i class="fas fa-id-badge"></i>
                                     Display Name
                                 </label>
-                                <input type="text"
-                                       id="displayName"
-                                       th:field="*{displayName}"
-                                       class="form-input"
+                                <input type="text" 
+                                       id="displayName" 
+                                       th:field="*{displayName}" 
+                                       class="form-input" 
                                        placeholder="Enter your display name">
-                                <div class="form-error" th:if="${#fields.hasErrors('displayName')}"
-                                     th:errors="*{displayName}"></div>
+                                <div class="form-error" th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}"></div>
                             </div>
 
                             <div class="form-group">
@@ -88,15 +86,14 @@
                                     <i class="fas fa-envelope"></i>
                                     Email <span class="required">*</span>
                                 </label>
-                                <input type="email"
-                                       id="email"
-                                       th:field="*{email}"
-                                       class="form-input"
-                                       required
+                                <input type="email" 
+                                       id="email" 
+                                       th:field="*{email}" 
+                                       class="form-input" 
+                                       required 
                                        readonly>
                                 <div class="form-help">Email cannot be changed</div>
-                                <div class="form-error" th:if="${#fields.hasErrors('email')}"
-                                     th:errors="*{email}"></div>
+                                <div class="form-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                             </div>
 
                             <div class="form-group">
@@ -104,14 +101,13 @@
                                     <i class="fas fa-phone"></i>
                                     Phone Number
                                 </label>
-                                <input type="tel"
-                                       id="phone"
-                                       th:field="*{phone}"
-                                       class="form-input"
+                                <input type="tel" 
+                                       id="phone" 
+                                       th:field="*{phone}" 
+                                       class="form-input" 
                                        placeholder="Enter your phone number (10-11 digits)">
                                 <div class="form-help">Phone number must be 10 or 11 digits</div>
-                                <div class="form-error" th:if="${#fields.hasErrors('phone')}"
-                                     th:errors="*{phone}"></div>
+                                <div class="form-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
                             </div>
                         </div>
                     </div>
@@ -129,9 +125,8 @@
                                     Address
                                 </label>
                                 <div id="address-selector-container"></div>
-                                <input type="hidden" th:field="*{address}" id="address-hidden"/>
-                                <div class="form-error" th:if="${#fields.hasErrors('address')}"
-                                     th:errors="*{address}"></div>
+                                <input type="hidden" th:field="*{address}" id="address-hidden" />
+                                <div class="form-error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
                             </div>
 
                             <div class="form-group">
@@ -145,8 +140,7 @@
                                     <option value="Female">Female</option>
                                     <option value="Other">Other</option>
                                 </select>
-                                <div class="form-error" th:if="${#fields.hasErrors('gender')}"
-                                     th:errors="*{gender}"></div>
+                                <div class="form-error" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
                             </div>
 
                             <div class="form-group">
@@ -154,14 +148,13 @@
                                     <i class="fas fa-birthday-cake"></i>
                                     Date of Birth
                                 </label>
-                                <input type="date"
-                                       id="birthDate"
-                                       th:field="*{birthDate}"
+                                <input type="date" 
+                                       id="birthDate" 
+                                       th:field="*{birthDate}" 
                                        th:value="${customerDto.birthDate != null ? #temporals.format(customerDto.birthDate, 'yyyy-MM-dd') : ''}"
                                        class="form-input">
                                 <div class="form-help">You must be at least 18 years old</div>
-                                <div class="form-error" th:if="${#fields.hasErrors('birthDate')}"
-                                     th:errors="*{birthDate}"></div>
+                                <div class="form-error" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></div>
                             </div>
 
                             <div class="form-group">
@@ -169,14 +162,13 @@
                                     <i class="fas fa-image"></i>
                                     Avatar URL
                                 </label>
-                                <input type="url"
-                                       id="avatarUrl"
-                                       th:field="*{avatarUrl}"
-                                       class="form-input"
+                                <input type="url" 
+                                       id="avatarUrl" 
+                                       th:field="*{avatarUrl}" 
+                                       class="form-input" 
                                        placeholder="Enter avatar image URL">
                                 <div class="form-help">Enter a valid image URL for your profile picture</div>
-                                <div class="form-error" th:if="${#fields.hasErrors('avatarUrl')}"
-                                     th:errors="*{avatarUrl}"></div>
+                                <div class="form-error" th:if="${#fields.hasErrors('avatarUrl')}" th:errors="*{avatarUrl}"></div>
                             </div>
                         </div>
                     </div>
@@ -199,127 +191,127 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const avatarUrlInput = document.getElementById('avatarUrl');
-        const avatarPreview = document.getElementById('avatarPreview');
-        const phoneInput = document.getElementById('phone');
-        const birthDateInput = document.getElementById('birthDate');
-
-        // Initialize avatar preview
-        if (avatarPreview) {
-            avatarPreview.addEventListener('load', function () {
-                this.style.opacity = '1';
-                this.classList.add('loaded');
-            });
-
-            avatarPreview.addEventListener('error', function () {
-                this.src = '/images/default-avatar.svg';
-                this.style.opacity = '1';
-                this.classList.add('loaded');
-            });
-
-            // If image is already loaded (cached)
-            if (avatarPreview.complete) {
+document.addEventListener('DOMContentLoaded', function() {
+    const avatarUrlInput = document.getElementById('avatarUrl');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const phoneInput = document.getElementById('phone');
+    const birthDateInput = document.getElementById('birthDate');
+    
+    // Initialize avatar preview
+    if (avatarPreview) {
+        avatarPreview.addEventListener('load', function() {
+            this.style.opacity = '1';
+            this.classList.add('loaded');
+        });
+        
+        avatarPreview.addEventListener('error', function() {
+            this.src = '/images/default-avatar.svg';
+            this.style.opacity = '1';
+            this.classList.add('loaded');
+        });
+        
+        // If image is already loaded (cached)
+        if (avatarPreview.complete) {
+            avatarPreview.style.opacity = '1';
+            avatarPreview.classList.add('loaded');
+        }
+    }
+    
+    // Preview avatar when URL is entered
+    if (avatarUrlInput) {
+        avatarUrlInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            if (url && avatarPreview) {
+                avatarPreview.src = url;
+                avatarPreview.style.opacity = '0';
+                avatarPreview.classList.remove('loaded');
+            } else if (avatarPreview) {
+                // Reset to default if URL is empty
+                avatarPreview.src = '/images/default-avatar.svg';
                 avatarPreview.style.opacity = '1';
                 avatarPreview.classList.add('loaded');
             }
-        }
-
-        // Preview avatar when URL is entered
-        if (avatarUrlInput) {
-            avatarUrlInput.addEventListener('input', function () {
-                const url = this.value.trim();
-                if (url && avatarPreview) {
-                    avatarPreview.src = url;
-                    avatarPreview.style.opacity = '0';
-                    avatarPreview.classList.remove('loaded');
-                } else if (avatarPreview) {
-                    // Reset to default if URL is empty
-                    avatarPreview.src = '/images/default-avatar.svg';
-                    avatarPreview.style.opacity = '1';
-                    avatarPreview.classList.add('loaded');
-                }
-            });
-        }
-
-        // Phone number validation
-        if (phoneInput) {
-            phoneInput.addEventListener('input', function () {
-                const phone = this.value.replace(/\D/g, ''); // Remove non-digits
-                this.value = phone;
-
-                if (phone.length > 0 && (phone.length < 10 || phone.length > 11)) {
-                    this.classList.add('error');
-                    this.setCustomValidity('Phone number must be 10 or 11 digits');
+        });
+    }
+    
+    // Phone number validation
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            const phone = this.value.replace(/\D/g, ''); // Remove non-digits
+            this.value = phone;
+            
+            if (phone.length > 0 && (phone.length < 10 || phone.length > 11)) {
+                this.classList.add('error');
+                this.setCustomValidity('Phone number must be 10 or 11 digits');
+            } else {
+                this.classList.remove('error');
+                this.setCustomValidity('');
+            }
+        });
+    }
+    
+    // Birth date validation
+    if (birthDateInput) {
+        birthDateInput.addEventListener('change', function() {
+            if (!this.value) {
+                this.classList.remove('error');
+                this.setCustomValidity('');
+                return;
+            }
+            
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            // Adjust age if birthday hasn't occurred this year
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            if (age < 18) {
+                this.classList.add('error');
+                this.setCustomValidity('You must be at least 18 years old');
+            } else {
+                this.classList.remove('error');
+                this.setCustomValidity('');
+            }
+        });
+    }
+    
+    // Form validation
+    const form = document.querySelector('.edit-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('error');
                 } else {
-                    this.classList.remove('error');
-                    this.setCustomValidity('');
+                    field.classList.remove('error');
                 }
             });
-        }
-
-        // Birth date validation
-        if (birthDateInput) {
-            birthDateInput.addEventListener('change', function () {
-                if (!this.value) {
-                    this.classList.remove('error');
-                    this.setCustomValidity('');
-                    return;
-                }
-
-                const birthDate = new Date(this.value);
-                const today = new Date();
-                let age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
-
-                // Adjust age if birthday hasn't occurred this year
-                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                    age--;
-                }
-
-                if (age < 18) {
-                    this.classList.add('error');
-                    this.setCustomValidity('You must be at least 18 years old');
-                } else {
-                    this.classList.remove('error');
-                    this.setCustomValidity('');
-                }
-            });
-        }
-
-        // Form validation
-        const form = document.querySelector('.edit-form');
-        if (form) {
-            form.addEventListener('submit', function (e) {
-                const requiredFields = form.querySelectorAll('[required]');
-                let isValid = true;
-
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
-                        isValid = false;
-                        field.classList.add('error');
-                    } else {
-                        field.classList.remove('error');
-                    }
-                });
-
-                if (!isValid) {
-                    e.preventDefault();
-                    alert('Please fill in all required fields!');
-                }
-            });
-        }
-
-        // Initialize Address Selector
-        const addressSelector = new AddressSelector('address-selector-container', 'address-hidden');
-        // Set existing address if available
-        const existingAddress = document.getElementById('address-hidden').value;
-        if (existingAddress) {
-            setTimeout(() => {
-                addressSelector.setAddress(existingAddress);
-            }, 1000);
-        }
-    });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields!');
+            }
+        });
+    }
+    
+    // Initialize Address Selector
+    const addressSelector = new AddressSelector('address-selector-container', 'address-hidden');
+    // Set existing address if available
+    const existingAddress = document.getElementById('address-hidden').value;
+    if (existingAddress) {
+        setTimeout(() => {
+            addressSelector.setAddress(existingAddress);
+        }, 1000);
+    }
+});
 </script>
 <script th:src="@{/js/address-selector.js}"></script>
 </body>

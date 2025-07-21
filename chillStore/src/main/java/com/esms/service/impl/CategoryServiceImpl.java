@@ -42,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category createCategory(CategoryDTO categoryDto) {
-        if (categoryDto.getName() == null || categoryDto.getName().trim().isEmpty()) {
+        if(categoryDto.getName() == null || categoryDto.getName().trim().isEmpty()){
             throw new RuntimeException("Tên thư mục không được để trống");
         }
         Category category = new Category();
@@ -87,7 +87,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryRepository.delete(cat);
             Integer maxId = categoryRepository.findMaxId();
             reseedIdentityTo(maxId);
-        } else {
+        }else {
             throw new RuntimeException("Category không tồn tại id" + id);
         }
     }

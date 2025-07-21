@@ -144,7 +144,7 @@ public class OrderDTO {
         }
         return null;
     }
-
+    
     // Method to get display status (convert Paid to Confirmed for display)
     public String getDisplayStatus() {
         return "Paid".equals(this.status) ? "Confirmed" : this.status;

@@ -23,22 +23,22 @@ class GlobalControllerAdvice {
     return 0;
   }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public String handleUserNotFound(UserNotFoundException ex, Model model) {
-        model.addAttribute("error", ex.getMessage());
-        return "forgot-password";  // quay lại form nhập email
-    }
+  @ExceptionHandler(UserNotFoundException.class)
+  public String handleUserNotFound(UserNotFoundException ex, Model model) {
+    model.addAttribute("error", ex.getMessage());
+    return "forgot-password";  // quay lại form nhập email
+  }
 
-    @ExceptionHandler(InvalidOtpException.class)
-    public String handleInvalidOtp(InvalidOtpException ex, Model model) {
-        model.addAttribute("error", ex.getMessage());
-        return "verify-otp";  // quay lại form nhập OTP
-    }
+  @ExceptionHandler(InvalidOtpException.class)
+  public String handleInvalidOtp(InvalidOtpException ex, Model model) {
+    model.addAttribute("error", ex.getMessage());
+    return "verify-otp";  // quay lại form nhập OTP
+  }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String handleIllegalArg(IllegalArgumentException ex, Model model) {
-        model.addAttribute("error", ex.getMessage());
-        return "reset-password";  // quay lại form reset password
-    }
+  @ExceptionHandler(IllegalArgumentException.class)
+  public String handleIllegalArg(IllegalArgumentException ex, Model model) {
+    model.addAttribute("error", ex.getMessage());
+    return "reset-password";  // quay lại form reset password
+  }
 
 }

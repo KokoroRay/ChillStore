@@ -95,7 +95,7 @@ class AddressSelector {
             const provinceCode = e.target.value;
             districtSelect.disabled = !provinceCode;
             wardSelect.disabled = true;
-
+            
             if (provinceCode) {
                 await this.loadDistricts(provinceCode);
                 districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>' +
@@ -110,7 +110,7 @@ class AddressSelector {
         districtSelect.addEventListener('change', async (e) => {
             const districtCode = e.target.value;
             wardSelect.disabled = !districtCode;
-
+            
             if (districtCode) {
                 await this.loadWards(districtCode);
                 wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>' +
@@ -142,7 +142,7 @@ class AddressSelector {
 
     async setAddress(address) {
         if (!address) return;
-
+        
         // Parse address parts (assuming format: "detail, ward, district, province")
         const parts = address.split(', ');
         if (parts.length >= 1) {
@@ -151,20 +151,20 @@ class AddressSelector {
                 detailInput.value = parts[0];
             }
         }
-
+        
         // Try to match province, district, ward if available
         if (parts.length >= 4) {
             const provinceName = parts[3];
             const districtName = parts[2];
             const wardName = parts[1];
-
+            
             // Find and select province
             const provinceSelect = document.getElementById('province-select');
             const province = this.provinces.find(p => p.name.includes(provinceName) || provinceName.includes(p.name));
             if (province && provinceSelect) {
                 provinceSelect.value = province.code;
                 await this.loadDistricts(province.code);
-
+                
                 // Find and select district
                 const districtSelect = document.getElementById('district-select');
                 const district = this.districts.find(d => d.name.includes(districtName) || districtName.includes(d.name));
@@ -173,9 +173,9 @@ class AddressSelector {
                     districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>' +
                         this.districts.map(d => `<option value="${d.code}">${d.name}</option>`).join('');
                     districtSelect.value = district.code;
-
+                    
                     await this.loadWards(district.code);
-
+                    
                     // Find and select ward
                     const wardSelect = document.getElementById('ward-select');
                     const ward = this.wards.find(w => w.name.includes(wardName) || wardName.includes(w.name));
@@ -188,7 +188,7 @@ class AddressSelector {
                 }
             }
         }
-
+        
         this.updateHiddenInput();
     }
 

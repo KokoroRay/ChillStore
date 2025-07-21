@@ -12,8 +12,7 @@ public class Warehouse {
     private Integer transId; //Mã giao dịch kho(PK)
 
     @ManyToOne(fetch = FetchType.EAGER) // Liên kết đến product, luôn load ngay
-    @JoinColumn(name = "product_id", nullable = false)
-// Chỉ rõ rằng cột product_id là (FK) and mỗi giao dịch phải gắn 1 product
+    @JoinColumn(name="product_id", nullable = false)// Chỉ rõ rằng cột product_id là (FK) and mỗi giao dịch phải gắn 1 product
     private Product product; //Sản phẩm liên quan đến giao dịch kho
 
     @Column(name = "quantity_change", nullable = false)

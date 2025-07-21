@@ -17,28 +17,25 @@ import java.util.List;
  */
 @Repository
 public interface DiscountProductRepository extends JpaRepository<DiscountProduct, DiscountProductId> {
-
+    
     /**
      * Tìm tất cả sản phẩm được áp dụng bởi một discount
-     *
      * @param promoId ID của discount
      * @return List<DiscountProduct>
      */
     @Query("SELECT dp FROM DiscountProduct dp WHERE dp.discount.promoId = :promoId")
     List<DiscountProduct> findByPromoId(@Param("promoId") Integer promoId);
-
+    
     /**
      * Tìm tất cả discount được áp dụng cho một sản phẩm
-     *
      * @param productId ID của sản phẩm
      * @return List<DiscountProduct>
      */
     @Query("SELECT dp FROM DiscountProduct dp WHERE dp.product.productId = :productId")
     List<DiscountProduct> findByProductId(@Param("productId") Integer productId);
-
+    
     /**
      * Xóa tất cả liên kết của một discount
-     *
      * @param promoId ID của discount
      */
     @Modifying

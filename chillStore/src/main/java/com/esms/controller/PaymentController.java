@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.Map;
 
 @Controller
@@ -25,13 +24,13 @@ public class PaymentController {
 
     @Autowired
     private IOrderService orderService;
-
+    
     @Autowired
     private CustomerService customerService;
 
     @GetMapping("/vnpay/{orderId}")
-    public String vnpayPayment(@PathVariable Integer orderId, Model model,
-                               HttpServletRequest request, HttpSession session) {
+    public String vnpayPayment(@PathVariable Integer orderId, Model model, 
+                              HttpServletRequest request, HttpSession session) {
         try {
             // Kiểm tra authentication
             Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
@@ -67,11 +66,11 @@ public class PaymentController {
 
             // Tạo URL thanh toán VNPay
             String paymentUrl = vnPayService.createPaymentUrl(vnPayRequest);
-
+            
             model.addAttribute("orderId", orderId);
             model.addAttribute("orderDetail", orderDetail);
             model.addAttribute("paymentUrl", paymentUrl);
-
+            
             return "payment/vnpay";
         } catch (Exception e) {
             model.addAttribute("error", "Error creating payment: " + e.getMessage());
@@ -81,17 +80,17 @@ public class PaymentController {
 
     @GetMapping("/vnpay/callback")
     public String vnpayCallback(@RequestParam("vnp_ResponseCode") String responseCode,
-                                @RequestParam("vnp_TxnRef") String orderId,
-                                @RequestParam("vnp_Amount") String amount,
-                                @RequestParam("vnp_SecureHash") String secureHash,
-                                @RequestParam(value = "vnp_BankTranNo", required = false) String bankTranNo,
-                                @RequestParam(value = "vnp_TransactionNo", required = false) String transactionNo,
-                                @RequestParam(value = "vnp_ResponseMessage", required = false) String responseMessage,
-                                RedirectAttributes redirectAttributes) {
+                               @RequestParam("vnp_TxnRef") String orderId,
+                               @RequestParam("vnp_Amount") String amount,
+                               @RequestParam("vnp_SecureHash") String secureHash,
+                               @RequestParam(value = "vnp_BankTranNo", required = false) String bankTranNo,
+                               @RequestParam(value = "vnp_TransactionNo", required = false) String transactionNo,
+                               @RequestParam(value = "vnp_ResponseMessage", required = false) String responseMessage,
+                               RedirectAttributes redirectAttributes) {
         try {
             // Xử lý callback từ VNPay
             VNPayResponseDTO response = vnPayService.processPaymentCallback(
-                    responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
+                responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
             );
 
             if (response.isSuccess()) {
@@ -120,7 +119,7 @@ public class PaymentController {
         if (customerId == null) {
             return "redirect:/auth/login";
         }
-
+        
         // Redirect to VNPay payment
         return "redirect:/payment/vnpay/" + orderId;
     }
@@ -140,7 +139,7 @@ public class PaymentController {
 
             // Xử lý callback
             VNPayResponseDTO response = vnPayService.processPaymentCallback(
-                    responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
+                responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
             );
 
             if (response.isSuccess()) {
@@ -165,13 +164,13 @@ public class PaymentController {
             if (customerId == null) {
                 return "redirect:/auth/login";
             }
-
+            
             CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, orderId);
             if (orderDetail == null) {
                 model.addAttribute("error", "Order not found or access denied");
                 return "payment/payment-success";
             }
-
+            
             model.addAttribute("orderDetail", orderDetail);
             return "payment/payment-success";
         } catch (Exception e) {
@@ -188,13 +187,13 @@ public class PaymentController {
             if (customerId == null) {
                 return "redirect:/auth/login";
             }
-
+            
             CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, orderId);
             if (orderDetail == null) {
                 model.addAttribute("error", "Order not found or access denied");
                 return "payment/payment-failed";
             }
-
+            
             model.addAttribute("orderDetail", orderDetail);
             return "payment/payment-failed";
         } catch (Exception e) {

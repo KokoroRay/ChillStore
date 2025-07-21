@@ -10,11 +10,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.ResponseBody;
-import java.util.List;
 
 @Controller
-@RequestMapping({"/admin/manageFeedback", "/staff/manageFeedback"})
+@RequestMapping({"/admin/manageFeedback","/staff/manageFeedback"})
 public class FeedbackController {
 
     @Autowired
@@ -49,10 +47,9 @@ public class FeedbackController {
     @PostMapping("/reply")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String submitReply(@ModelAttribute("reply") ReplyFeedbackDTO dto) {
-        dto.setStaffId(1);
+        dto.setStaffId(1); // TODO: Get current staff ID from security context
 
         replyService.saveReply(dto);
-        return "redirect:/staff/feedback/feedbackmanageFeedback";
+        return "redirect:/staff/manageFeedback";
     }
-
 }

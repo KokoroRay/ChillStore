@@ -4,7 +4,9 @@ import com.esms.model.entity.Reply;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ReplyRepository extends JpaRepository<Reply, Integer> {
-    Reply findByFeedback_Id(int feedbackId);
+    Optional<Reply> findByFeedbackId(int feedbackId);
 }

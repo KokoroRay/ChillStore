@@ -1,7 +1,6 @@
 package com.esms.model.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -45,7 +44,7 @@ public class Customer {
         this.providerId = providerId;
     }
 
-    public Customer(String name, String email, String password, String phone, String address, String gender, LocalDate birth_date) {
+    public  Customer (String name, String email, String password, String phone, String address, String gender, LocalDate birth_date) {
         this.name = name;
         this.display_name = name;
         this.email = email;
@@ -57,93 +56,37 @@ public class Customer {
         this.provider = "local";
     }
 
-    public Integer getCustomerId() {
-        return customerId;
-    }
+    public Integer getCustomerId() { return customerId; }
+    public void setCustomerId(Integer customerId) { this.customerId = customerId; }
 
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
+    public String getDisplay_name() { return display_name; }
+    public void setDisplay_name(String display_name) { this.display_name = display_name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getDisplay_name() {
-        return display_name;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public void setDisplay_name(String display_name) {
-        this.display_name = display_name;
-    }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
-    public String getEmail() {
-        return email;
-    }
+    public LocalDate getBirth_date() { return birth_date; }
+    public void setBirth_date(LocalDate birth_date) { this.birth_date = birth_date; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public LocalDateTime getCreated_at() { return created_at; }
+    public void setCreated_at(LocalDateTime created_at) { this.created_at = created_at; }
 
-    public String getPassword() {
-        return password;
-    }
+    public LocalDateTime getUpdated_at() { return updated_at; }
+    public void setUpdated_at(LocalDateTime updated_at) { this.updated_at = updated_at; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public LocalDate getBirth_date() {
-        return birth_date;
-    }
-
-    public void setBirth_date(LocalDate birth_date) {
-        this.birth_date = birth_date;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
-    }
-
-    public boolean isLocked() {
-        return isLocked;
-    }
-
-    public void setLocked(boolean locked) {
-        isLocked = locked;
-    }
+    public boolean isLocked() { return isLocked; }
+    public void setLocked(boolean locked) { isLocked = locked; }
 
     public String getGender() {
         return gender;

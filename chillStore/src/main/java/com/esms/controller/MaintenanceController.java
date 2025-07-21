@@ -33,19 +33,19 @@ import java.util.List;
 @RequestMapping({"/admin/maintenance", "/staff/maintenance"})
 public class MaintenanceController {
     private static final Logger logger = LoggerFactory.getLogger(MaintenanceController.class);
-
+    
     @Autowired
     private MaintenanceService maintenanceService;
-
+    
     @Autowired
     private OrderRepository orderRepository;
-
+    
     @Autowired
     private ProductRepository productRepository;
-
+    
     @Autowired
     private CustomerRepository customerRepository;
-
+    
     @Autowired
     private StaffRepository staffRepository;
 
@@ -114,18 +114,18 @@ public class MaintenanceController {
             }
             model.addAttribute("maintenanceDto", maintenance);
             model.addAttribute("activeMenu", "maintenance");
-
+            
             // Add dropdown data
             List<Order> orders = orderRepository.findAll();
             List<Product> products = productRepository.findAll();
             List<Customer> customers = customerRepository.findAll();
             List<Staff> staffList = staffRepository.findAll();
-
+            
             model.addAttribute("orders", orders);
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
             model.addAttribute("staffList", staffList);
-
+            
             String requestUrl = request.getRequestURI();
             if (requestUrl.startsWith("/staff")) {
                 return "staff/maintenance/edit";
@@ -155,18 +155,18 @@ public class MaintenanceController {
         if (bindingResult.hasErrors()) {
             logger.warn("Validation errors in maintenance update form");
             model.addAttribute("activeMenu", "maintenance");
-
+            
             // Add dropdown data back for form re-render
             List<Order> orders = orderRepository.findAll();
             List<Product> products = productRepository.findAll();
             List<Customer> customers = customerRepository.findAll();
             List<Staff> staffList = staffRepository.findAll();
-
+            
             model.addAttribute("orders", orders);
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
             model.addAttribute("staffList", staffList);
-
+            
             return "admin/maintenance/editmaintenance";
         }
         try {
@@ -178,18 +178,18 @@ public class MaintenanceController {
             logger.error("Error updating maintenance with ID: {}", id, e);
             redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
             model.addAttribute("activeMenu", "maintenance");
-
+            
             // Add dropdown data back for form re-render
             List<Order> orders = orderRepository.findAll();
             List<Product> products = productRepository.findAll();
             List<Customer> customers = customerRepository.findAll();
             List<Staff> staffList = staffRepository.findAll();
-
+            
             model.addAttribute("orders", orders);
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
             model.addAttribute("staffList", staffList);
-
+            
             return "admin/maintenance/editmaintenance";
         }
         String requestUrl = request.getRequestURI();
@@ -204,18 +204,18 @@ public class MaintenanceController {
     public String addMaintenanceForm(Model model, HttpServletRequest request) {
         model.addAttribute("maintenanceDto", new MaintenanceDto());
         model.addAttribute("activeMenu", "maintenance");
-
+        
         // Add dropdown data
         List<Order> orders = orderRepository.findAll();
         List<Product> products = productRepository.findAll();
         List<Customer> customers = customerRepository.findAll();
         List<Staff> staffList = staffRepository.findAll();
-
+        
         model.addAttribute("orders", orders);
         model.addAttribute("products", products);
         model.addAttribute("customers", customers);
         model.addAttribute("staffList", staffList);
-
+        
         String requestUrl = request.getRequestURI();
         if (requestUrl.startsWith("/staff")) {
             return "staff/maintenance/add";
@@ -234,18 +234,18 @@ public class MaintenanceController {
         if (bindingResult.hasErrors()) {
             logger.warn("Validation errors in maintenance add form");
             model.addAttribute("activeMenu", "maintenance");
-
+            
             // Add dropdown data back for form re-render
             List<Order> orders = orderRepository.findAll();
             List<Product> products = productRepository.findAll();
             List<Customer> customers = customerRepository.findAll();
             List<Staff> staffList = staffRepository.findAll();
-
+            
             model.addAttribute("orders", orders);
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
             model.addAttribute("staffList", staffList);
-
+            
             return "admin/maintenance/addmaintenance";
         }
         try {
@@ -256,7 +256,7 @@ public class MaintenanceController {
             if (maintenanceDto.getStatus() == null || maintenanceDto.getStatus().isEmpty()) {
                 maintenanceDto.setStatus("Pending"); // Default status from database
             }
-
+            
             maintenanceService.addMaintenance(maintenanceDto);
             logger.info("Successfully added new maintenance");
             redirectAttributes.addFlashAttribute("success", "Maintenance schedule created successfully!");
@@ -264,18 +264,18 @@ public class MaintenanceController {
             logger.error("Error adding maintenance", e);
             model.addAttribute("error", "An error occurred: " + e.getMessage());
             model.addAttribute("activeMenu", "maintenance");
-
+            
             // Add dropdown data back for form re-render
             List<Order> orders = orderRepository.findAll();
             List<Product> products = productRepository.findAll();
             List<Customer> customers = customerRepository.findAll();
             List<Staff> staffList = staffRepository.findAll();
-
+            
             model.addAttribute("orders", orders);
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
             model.addAttribute("staffList", staffList);
-
+            
             return "admin/maintenance/addmaintenance";
         }
         String requestUrl = request.getRequestURI();
@@ -304,10 +304,10 @@ public class MaintenanceController {
                     return "redirect:/admin/maintenance";
                 }
             }
-
+            
             maintenance.setStatus(status);
             maintenanceService.updateMaintenance(maintenance);
-
+            
             logger.info("Updated maintenance status to {} for ID: {}", status, id);
             redirectAttributes.addFlashAttribute("success", "Maintenance status updated successfully!");
         } catch (Exception e) {

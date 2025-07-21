@@ -80,14 +80,14 @@ public class VoucherController {
     public String addVoucher(
             @Valid @ModelAttribute("voucherDto")
             VoucherDTO voucherDto, BindingResult bindingResult,
-            Model model, Authentication authentication) {
+            Model model, Authentication  authentication) {
         if (bindingResult.hasErrors()) {
             List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
-            List<Brand> selBrands = voucherDto.getBrandIds() != null ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
+            List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
             model.addAttribute("allCategories", categoryRepository.findAll());
             model.addAttribute("allBrands", brandRepository.findAll());
             model.addAttribute("selectedCategories", selCats);
-            model.addAttribute("selectedBrands", selBrands);
+            model.addAttribute("selectedBrands",selBrands);
             model.addAttribute("voucherDto", voucherDto);
             model.addAttribute("activeMenu", "vouchers");
             model.addAttribute("currentSection", "voucher");
@@ -99,11 +99,11 @@ public class VoucherController {
             voucherService.createVoucher(voucherDto, adminEmail);
         } catch (Exception e) {
             List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
-            List<Brand> selBrands = voucherDto.getBrandIds() != null ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
+            List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
             model.addAttribute("allCategories", categoryRepository.findAll());
             model.addAttribute("allBrands", brandRepository.findAll());
             model.addAttribute("selectedCategories", selCats);
-            model.addAttribute("selectedBrands", selBrands);
+            model.addAttribute("selectedBrands",selBrands);
             model.addAttribute("voucherDto", voucherDto);
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("activeMenu", "vouchers");
@@ -155,7 +155,7 @@ public class VoucherController {
                               BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
-            List<Brand> selBrands = voucherDto.getBrandIds() != null ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
+            List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
             model.addAttribute("allCategories", categoryRepository.findAll());
             model.addAttribute("allBrands", brandRepository.findAll());
             model.addAttribute("selectedCategories", selCats);
@@ -169,7 +169,7 @@ public class VoucherController {
             voucherService.updateVoucher(id, voucherDto);
         } catch (Exception e) {
             List<Category> selCats = voucherDto.getCategoryIds() != null ? categoryRepository.findAllById(voucherDto.getCategoryIds()) : List.of();
-            List<Brand> selBrands = voucherDto.getBrandIds() != null ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
+            List<Brand> selBrands = voucherDto.getBrandIds() != null  ? brandRepository.findAllById(voucherDto.getBrandIds()) : List.of();
             model.addAttribute("allCategories", categoryRepository.findAll());
             model.addAttribute("allBrands", brandRepository.findAll());
             model.addAttribute("selectedCategories", selCats);
@@ -201,7 +201,7 @@ public class VoucherController {
     public Map<String, Object> searchCategories(
             @RequestParam(name = "q", required = false) String q,
             @RequestParam(name = "page", defaultValue = "1") int page) {
-        int pageSize = 50;
+            int pageSize = 50;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("name").ascending());
         Page<Category> pg;
         if (q == null || q.isBlank()) {

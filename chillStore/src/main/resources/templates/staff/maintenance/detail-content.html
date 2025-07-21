@@ -52,12 +52,9 @@
                                     <tr>
                                         <td class="fw-bold">Status:</td>
                                         <td>
-                                            <span th:if="${maintenance.status == 'Completed'}" class="badge bg-success"
-                                                  th:text="${maintenance.status}"></span>
-                                            <span th:if="${maintenance.status == 'In Progress'}"
-                                                  class="badge bg-warning" th:text="${maintenance.status}"></span>
-                                            <span th:if="${maintenance.status != 'Completed' and maintenance.status != 'In Progress'}"
-                                                  class="badge bg-secondary" th:text="${maintenance.status}"></span>
+                                            <span th:if="${maintenance.status == 'Completed'}" class="badge bg-success" th:text="${maintenance.status}"></span>
+                                            <span th:if="${maintenance.status == 'In Progress'}" class="badge bg-warning" th:text="${maintenance.status}"></span>
+                                            <span th:if="${maintenance.status != 'Completed' and maintenance.status != 'In Progress'}" class="badge bg-secondary" th:text="${maintenance.status}"></span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -76,19 +73,13 @@
                         <h5 class="card-title mb-0">Update Status</h5>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${maintenance.requestId})}"
-                              method="post">
+                        <form th:action="@{/staff/maintenance/update-status/{id}(id=${maintenance.requestId})}" method="post">
                             <div class="mb-3">
                                 <label for="status" class="form-label">Current Status</label>
                                 <select class="form-select" id="status" name="status" required>
-                                    <option value="Pending" th:selected="${maintenance.status == 'Pending'}">Pending
-                                    </option>
-                                    <option value="In Progress" th:selected="${maintenance.status == 'In Progress'}">In
-                                        Progress
-                                    </option>
-                                    <option value="Completed" th:selected="${maintenance.status == 'Completed'}">
-                                        Completed
-                                    </option>
+                                    <option value="Pending" th:selected="${maintenance.status == 'Pending'}">Pending</option>
+                                    <option value="In Progress" th:selected="${maintenance.status == 'In Progress'}">In Progress</option>
+                                    <option value="Completed" th:selected="${maintenance.status == 'Completed'}">Completed</option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">

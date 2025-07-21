@@ -1,48 +1,48 @@
 <div th:fragment="content(categories, keyword, error)">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <form th:action="@{/staff/category}" method="get" class="d-flex w-75">
-            <input type="text"
-                   name="keyword"
-                   class="form-control"
-                   placeholder="Search Category"
-                   th:value="${keyword}">
-            <button type="submit" class="btn btn-outline-primary ms-2">
-                <i class="fas fa-search"></i> Search
-            </button>
-        </form>
-    </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <form th:action="@{/staff/category}" method="get" class="d-flex w-75">
+      <input type="text"
+             name="keyword"
+             class="form-control"
+             placeholder="Search Category"
+             th:value="${keyword}">
+      <button type="submit" class="btn btn-outline-primary ms-2">
+        <i class="fas fa-search"></i> Search
+      </button>
+    </form>
+  </div>
 
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-    <div th:if="${#lists.isEmpty(categories)}" class="text-center text-muted py-5">
-        <h4><i class="fas fa-inbox"></i> No categories found</h4>
-        <p>Try changing your search.</p>
-    </div>
+  <div th:if="${#lists.isEmpty(categories)}" class="text-center text-muted py-5">
+    <h4><i class="fas fa-inbox"></i> No categories found</h4>
+    <p>Try changing your search.</p>
+  </div>
 
-    <div th:if="${!#lists.isEmpty(categories)}" class="row">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Category List</h5>
-                </div>
-                <div class="card-body p-0">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="cat : ${categories}">
-                            <td th:text="${cat.id}">1</td>
-                            <td th:text="${cat.name}">Category Name</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+  <div th:if="${!#lists.isEmpty(categories)}" class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Category List</h5>
         </div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cat : ${categories}">
+              <td th:text="${cat.id}">1</td>
+              <td th:text="${cat.name}">Category Name</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

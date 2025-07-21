@@ -1,7 +1,6 @@
 package com.esms.model.entity;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
 @Entity
@@ -26,22 +25,14 @@ public class OrderItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public OrderItem() {
-    }
-
+    public OrderItem() {}
     public OrderItem(OrderItemId id, int quantity, BigDecimal priceEach) {
         this.id = id;
         this.quantity = quantity;
         this.priceEach = priceEach;
     }
-
-    public OrderItemId getId() {
-        return id;
-    }
-
-    public void setId(OrderItemId id) {
-        this.id = id;
-    }
+    public OrderItemId getId() { return id; }
+    public void setId(OrderItemId id) { this.id = id; }
 
     public Order getOrder() {
         return order;
@@ -59,19 +50,8 @@ public class OrderItem {
         this.product = product;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public BigDecimal getPriceEach() {
-        return priceEach;
-    }
-
-    public void setPriceEach(BigDecimal priceEach) {
-        this.priceEach = priceEach;
-    }
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public BigDecimal getPriceEach() { return priceEach; }
+    public void setPriceEach(BigDecimal priceEach) { this.priceEach = priceEach; }
 } 

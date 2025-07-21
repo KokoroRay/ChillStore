@@ -2,44 +2,37 @@
     <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
         <div class="card shadow p-4 w-100" style="max-width: 600px;">
             <h2 class="mb-4 text-center">Update User</h2>
-            <form th:action="@{'/admin/customer/update/' + ${customerDto.customerId}}" th:object="${customerDto}"
-                  method="post">
+            <form th:action="@{'/admin/customer/update/' + ${customerDto.customerId}}" th:object="${customerDto}" method="post">
                 <div class="row g-3">
                     <div class="col-12">
                         <label class="form-label" for="name">Full Name</label>
                         <input class="form-control" id="name" th:field="*{name}" type="text" required>
-                        <div class="text-danger small mt-1" th:errors="*{name}"
-                             th:if="${#fields.hasErrors('name')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></div>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="email">Email</label>
                         <input class="form-control" id="email" th:field="*{email}" type="email" required>
-                        <div class="text-danger small mt-1" th:errors="*{email}"
-                             th:if="${#fields.hasErrors('email')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="password">Password (leave blank to keep current)</label>
                         <input class="form-control" id="password" th:field="*{password}" type="password">
-                        <div class="text-danger small mt-1" th:errors="*{password}"
-                             th:if="${#fields.hasErrors('password')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{password}" th:if="${#fields.hasErrors('password')}"></div>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="phone">Phone Number</label>
                         <input class="form-control" id="phone" th:field="*{phone}" type="text">
-                        <div class="text-danger small mt-1" th:errors="*{phone}"
-                             th:if="${#fields.hasErrors('phone')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{phone}" th:if="${#fields.hasErrors('phone')}"></div>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="address">Address</label>
                         <input class="form-control" id="address" th:field="*{address}" type="text">
-                        <div class="text-danger small mt-1" th:errors="*{address}"
-                             th:if="${#fields.hasErrors('address')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{address}" th:if="${#fields.hasErrors('address')}"></div>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="birthDate">Date of Birth</label>
                         <input class="form-control" id="birthDate" th:field="*{birthDate}" type="date">
-                        <div class="text-danger small mt-1" th:errors="*{birthDate}"
-                             th:if="${#fields.hasErrors('birthDate')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{birthDate}" th:if="${#fields.hasErrors('birthDate')}"></div>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end gap-2 mt-4">

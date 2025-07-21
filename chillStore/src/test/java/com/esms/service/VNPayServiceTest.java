@@ -72,7 +72,7 @@ class VNPayServiceTest {
 
         // When
         VNPayResponseDTO response = vnPayService.processPaymentCallback(
-                responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
+            responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
         );
 
         // Then
@@ -99,7 +99,7 @@ class VNPayServiceTest {
 
         // When
         VNPayResponseDTO response = vnPayService.processPaymentCallback(
-                responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
+            responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
         );
 
         // Then
@@ -163,7 +163,7 @@ class VNPayServiceTest {
 
         // When
         boolean isValid = vnPayService.validateCallback(
-                responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
+            responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
         );
 
         // Then
@@ -207,7 +207,7 @@ class VNPayServiceTest {
 
         // When
         VNPayResponseDTO response = vnPayService.processPaymentCallback(
-                responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
+            responseCode, orderId, amount, secureHash, bankTranNo, transactionNo, responseMessage
         );
 
         // Then

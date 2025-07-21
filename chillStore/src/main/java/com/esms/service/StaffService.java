@@ -9,9 +9,7 @@ import java.util.List;
 public interface StaffService {
     // add
     Staff addStaff(Staff staff);
-
     boolean isNationalIdExists(String nationalId);
-
     boolean isEmailExists(String email);
 
     //update
@@ -22,14 +20,11 @@ public interface StaffService {
 
     //show list
     List<Staff> getAllStaff();
-
     // get 1 staff
     Staff getOneStaff(int id);
 
     List<Staff> searchStaff(String keyword, String gender);
-
     Page<Staff> getAllStaff(Pageable pageable);
-
     Page<Staff> searchStaff(String keyword, Staff.Gender gender, Pageable pageable);
 
 

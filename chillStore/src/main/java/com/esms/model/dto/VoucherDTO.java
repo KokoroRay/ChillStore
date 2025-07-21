@@ -20,7 +20,7 @@ public class VoucherDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "discount amount phai lon hon 0")
     private BigDecimal discount_amount;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "discount percent phai lon hon 0")
+    @DecimalMin(value = "0.0",inclusive = false, message = "discount percent phai lon hon 0")
     private BigDecimal discount_pct;
 
     @DecimalMin(value = "0.0", message = "min order amount phai lon hon 0")
@@ -120,13 +120,9 @@ public class VoucherDTO {
         this.active = active;
     }
 
-    public List<Integer> getCategoryIds() {
-        return categoryIds;
-    }
+    public List<Integer> getCategoryIds() {return categoryIds;}
 
-    public void setCategoryIds(List<Integer> categoryIds) {
-        this.categoryIds = categoryIds;
-    }
+    public void setCategoryIds(List<Integer> categoryIds) {this.categoryIds = categoryIds;}
 
     public List<Integer> getBrandIds() {
         return brandIds;

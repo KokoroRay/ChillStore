@@ -43,9 +43,9 @@ public class CheckoutController {
 
     @GetMapping("")
     public String showCheckout(@RequestParam(value = "voucher", required = false) String voucherCode,
-                               @RequestParam(value = "tempAddress", required = false) String tempAddress,
-                               Model model,
-                               HttpSession session) {
+                              @RequestParam(value = "tempAddress", required = false) String tempAddress,
+                              Model model,
+                              HttpSession session) {
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
         if (customerId == null) {
             return "redirect:/auth/login";
@@ -113,14 +113,14 @@ public class CheckoutController {
 
     @PostMapping("/submit")
     public String submitOrder(@RequestParam String customerName,
-                              @RequestParam String customerPhone,
-                              @RequestParam(required = false) String customerEmail,
-                              @RequestParam String deliveryAddress,
-                              @RequestParam String paymentMethod,
-                              @RequestParam(required = false) String orderNotes,
-                              @RequestParam(value = "voucherCode", required = false) String voucherCode,
-                              HttpSession session,
-                              RedirectAttributes redirectAttributes) {
+                             @RequestParam String customerPhone,
+                             @RequestParam(required = false) String customerEmail,
+                             @RequestParam String deliveryAddress,
+                             @RequestParam String paymentMethod,
+                             @RequestParam(required = false) String orderNotes,
+                             @RequestParam(value = "voucherCode", required = false) String voucherCode,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
         if (customerId == null) {
             return "redirect:/auth/login";
@@ -129,9 +129,9 @@ public class CheckoutController {
         try {
             // Lấy thông tin customer để có email mặc định
             var customer = customerService.getCustomerById(customerId);
-            String finalEmail = customerEmail != null && !customerEmail.trim().isEmpty()
-                    ? customerEmail.trim()
-                    : customer.getEmail();
+            String finalEmail = customerEmail != null && !customerEmail.trim().isEmpty() 
+                ? customerEmail.trim() 
+                : customer.getEmail();
 
             System.out.println("Creating order for customer: " + customerId);
             System.out.println("Customer name: " + customerName);
@@ -140,7 +140,7 @@ public class CheckoutController {
             System.out.println("Delivery address: " + deliveryAddress);
             System.out.println("Payment method: " + paymentMethod);
             System.out.println("Voucher code: " + voucherCode);
-
+            
             // Tạo đơn hàng
             Integer orderId = checkoutService.createOrder(
                     customerId,
@@ -159,7 +159,7 @@ public class CheckoutController {
             cartService.clearCart(customerId);
 
             redirectAttributes.addFlashAttribute("success", "Order placed successfully! Order ID: " + orderId);
-
+            
             if ("VNpay".equals(paymentMethod)) {
                 // Redirect to payment gateway
                 return "redirect:/payment/vnpay/" + orderId;
@@ -178,8 +178,8 @@ public class CheckoutController {
 
     @PostMapping("/apply-voucher")
     public String applyVoucher(@RequestParam String voucherCode,
-                               @RequestParam(value = "tempAddress", required = false) String tempAddress,
-                               HttpSession session) {
+                              @RequestParam(value = "tempAddress", required = false) String tempAddress,
+                              HttpSession session) {
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
         if (customerId == null) {
             return "redirect:/auth/login";
@@ -195,8 +195,8 @@ public class CheckoutController {
     @PostMapping("/apply-voucher-ajax")
     @ResponseBody
     public ResponseEntity<?> applyVoucherAjax(@RequestParam String voucherCode,
-                                              @RequestParam(value = "tempAddress", required = false) String tempAddress,
-                                              HttpSession session) {
+                                             @RequestParam(value = "tempAddress", required = false) String tempAddress,
+                                             HttpSession session) {
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
         if (customerId == null) {
             return ResponseEntity.badRequest().body("Not logged in");
@@ -217,8 +217,8 @@ public class CheckoutController {
             Voucher voucher = null;
             if (voucherCode != null && !voucherCode.trim().isEmpty()) {
                 voucher = voucherService.getVoucherByCode(voucherCode.trim());
-                if (voucher == null || !voucher.isActive() ||
-                        subtotal < (voucher.getMin_order_amount() != null ? voucher.getMin_order_amount().doubleValue() : 0.0)) {
+                if (voucher == null || !voucher.isActive() || 
+                    subtotal < (voucher.getMin_order_amount() != null ? voucher.getMin_order_amount().doubleValue() : 0.0)) {
                     return ResponseEntity.badRequest().body("Invalid or expired voucher");
                 }
             }
@@ -241,16 +241,16 @@ public class CheckoutController {
             double total = subtotal - discountAmount + shippingCost;
 
             return ResponseEntity.ok(Map.of(
-                    "subtotal", subtotal,
-                    "discountAmount", discountAmount,
-                    "shippingCost", shippingCost,
-                    "total", total,
-                    "voucherCode", voucherCode,
-                    "voucherDescription", voucher != null ? voucher.getDescription() : "",
-                    "formattedSubtotal", String.format("%,.0f VND", subtotal),
-                    "formattedDiscount", String.format("%,.0f VND", discountAmount),
-                    "formattedShipping", String.format("%,.0f VND", shippingCost),
-                    "formattedTotal", String.format("%,.0f VND", total)
+                "subtotal", subtotal,
+                "discountAmount", discountAmount,
+                "shippingCost", shippingCost,
+                "total", total,
+                "voucherCode", voucherCode,
+                "voucherDescription", voucher != null ? voucher.getDescription() : "",
+                "formattedSubtotal", String.format("%,.0f VND", subtotal),
+                "formattedDiscount", String.format("%,.0f VND", discountAmount),
+                "formattedShipping", String.format("%,.0f VND", shippingCost),
+                "formattedTotal", String.format("%,.0f VND", total)
             ));
 
         } catch (Exception e) {
@@ -261,8 +261,8 @@ public class CheckoutController {
     @PostMapping("/update-address")
     @ResponseBody
     public ResponseEntity<?> updateAddress(@RequestParam String address,
-                                           @RequestParam(value = "tempAddress", required = false) String tempAddress,
-                                           HttpSession session) {
+                                          @RequestParam(value = "tempAddress", required = false) String tempAddress,
+                                          HttpSession session) {
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
         if (customerId == null) {
             return ResponseEntity.badRequest().body("Not logged in");
@@ -271,10 +271,10 @@ public class CheckoutController {
         try {
             var customer = customerService.getCustomerById(customerId);
             double shippingCost = calculateShippingCost(address, tempAddress);
-
+            
             return ResponseEntity.ok(Map.of(
-                    "shippingCost", shippingCost,
-                    "formattedShippingCost", String.format("%,.0f VND", shippingCost)
+                "shippingCost", shippingCost,
+                "formattedShippingCost", String.format("%,.0f VND", shippingCost)
             ));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error calculating shipping cost");
@@ -283,7 +283,7 @@ public class CheckoutController {
 
     private double calculateShippingCost(String defaultAddress, String tempAddress) {
         String addressToUse = tempAddress != null && !tempAddress.trim().isEmpty() ? tempAddress : defaultAddress;
-
+        
         if (addressToUse == null || addressToUse.trim().isEmpty()) {
             return 20000; // Default shipping cost
         }
@@ -297,13 +297,13 @@ public class CheckoutController {
 
         // List of northern provinces
         String[] northernProvinces = {
-                "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
-                "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
-                "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
-                "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
-                "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
-                "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
-                "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
+            "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
+            "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
+            "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
+            "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
+            "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
+            "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
+            "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
         };
 
         // Check if province is in northern list
@@ -328,9 +328,9 @@ public class CheckoutController {
         try {
             List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
             var customer = customerService.getCustomerById(customerId);
-
-            return String.format("Customer: %s, Cart items: %d",
-                    customer.getName(), cartItems.size());
+            
+            return String.format("Customer: %s, Cart items: %d", 
+                customer.getName(), cartItems.size());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -341,16 +341,16 @@ public class CheckoutController {
     @ResponseBody
     public Map<String, Object> testCart(HttpSession session) {
         Map<String, Object> response = new HashMap<>();
-
+        
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
         response.put("customerId", customerId);
-
+        
         if (customerId != null) {
             try {
                 List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
                 response.put("cartItems", cartItems);
                 response.put("cartSize", cartItems.size());
-
+                
                 // Debug each cart item
                 List<Map<String, Object>> debugItems = new ArrayList<>();
                 for (CartItemDTO item : cartItems) {
@@ -364,7 +364,7 @@ public class CheckoutController {
                     debugItems.add(debugItem);
                 }
                 response.put("debugItems", debugItems);
-
+                
                 // Also check if products exist in database
                 List<Map<String, Object>> productChecks = new ArrayList<>();
                 for (CartItemDTO item : cartItems) {
@@ -374,7 +374,7 @@ public class CheckoutController {
                     productChecks.add(productCheck);
                 }
                 response.put("productChecks", productChecks);
-
+                
             } catch (Exception e) {
                 response.put("error", e.getMessage());
                 e.printStackTrace();
@@ -382,7 +382,7 @@ public class CheckoutController {
         } else {
             response.put("error", "No customer ID in session");
         }
-
+        
         return response;
     }
 } 

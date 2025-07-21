@@ -1,6 +1,6 @@
 /* Profile Page Styles */
 :root {
-    --primary-color: #4f46e5;
+    --primary-color: #0c16fb;
     --primary-hover: #4338ca;
     --secondary-color: #6b7280;
     --success-color: #10b981;
@@ -243,12 +243,8 @@ body {
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .avatar-overlay {
@@ -531,15 +527,9 @@ body {
 }
 
 @keyframes shake {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    25% {
-        transform: translateX(-5px);
-    }
-    75% {
-        transform: translateX(5px);
-    }
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
 }
 
 .form-input::placeholder {
@@ -584,38 +574,38 @@ select.form-input {
     .profile-container {
         padding: 1rem;
     }
-
+    
     .profile-title {
         font-size: 1.5rem;
     }
-
+    
     .avatar-section {
         flex-direction: column;
         text-align: center;
         gap: 1rem;
     }
-
+    
     .avatar-container {
         width: 100px;
         height: 100px;
     }
-
+    
     .info-grid,
     .form-grid {
         grid-template-columns: 1fr;
     }
-
+    
     .profile-actions,
     .form-actions {
         flex-direction: column;
         align-items: center;
     }
-
+    
     .btn {
         width: 100%;
         max-width: 300px;
     }
-
+    
     .profile-card {
         padding: 1.5rem;
     }
@@ -625,15 +615,15 @@ select.form-input {
     .profile-container {
         padding: 0.5rem;
     }
-
+    
     .profile-card {
         padding: 1rem;
     }
-
+    
     .info-item {
         padding: 1rem;
     }
-
+    
     .section-title {
         font-size: 1.125rem;
     }

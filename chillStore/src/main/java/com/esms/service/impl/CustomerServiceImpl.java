@@ -57,8 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
             this.expirationTime = expirationTime;
         }
 
-        public OtpData() {
-        }
+        public OtpData() {}
 
         public String getOtp() {
             return otp;
@@ -190,9 +189,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Page<Customer> searchCustomersWithFilters(String keyword, Boolean locked, Pageable pageable) {
         return customerRepository.searchCustomersWithFilters(
-                (keyword == null || keyword.isBlank()) ? null : keyword.trim(),
-                locked,
-                pageable
+            (keyword == null || keyword.isBlank()) ? null : keyword.trim(),
+            locked,
+            pageable
         );
     }
 
@@ -222,7 +221,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerRepository.save(customer);
     }
-
     @Override
     public Customer getCustomerById(Integer id) {
         return customerRepository.findById(id)
@@ -269,8 +267,8 @@ public class CustomerServiceImpl implements CustomerService {
         Pageable pageable = PageRequest.of(0, limit);
         Page<Customer> page = customerRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
         return page.getContent().stream()
-                .map(c -> c.getDisplay_name() + " (" + c.getEmail() + ")")
-                .collect(Collectors.toList());
+            .map(c -> c.getDisplay_name() + " (" + c.getEmail() + ")")
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -341,7 +339,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer getCustomerByEmail(String email) {
         return customerRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng với email: " + email));
+            .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng với email: " + email));
     }
 
     @Override

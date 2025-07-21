@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,10 +40,6 @@ public class ProductController {
 
     @Autowired
     private BrandService brandService;
-
-    // Nếu có CustomerService thì inject, nếu không thì comment lại
-    // @Autowired
-    // private CustomerService customerService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
@@ -92,20 +90,10 @@ public class ProductController {
             sortBy = "name";
             sortDir = "asc";
             switch (sortOption) {
-                case "name_desc":
-                    sortBy = "name";
-                    sortDir = "desc";
-                    break;
-                case "price_asc":
-                    sortBy = "price";
-                    sortDir = "asc";
-                    break;
-                case "price_desc":
-                    sortBy = "price";
-                    sortDir = "desc";
-                    break;
-                default:
-                    break;
+                case "name_desc": sortBy = "name"; sortDir = "desc"; break;
+                case "price_asc": sortBy = "price"; sortDir = "asc"; break;
+                case "price_desc": sortBy = "price"; sortDir = "desc"; break;
+                default: break;
             }
         }
         Pageable pageable;
@@ -142,7 +130,7 @@ public class ProductController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("priceError", priceError);
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/staff")) {
+        if(requestURI.startsWith("/staff")){
             return "staff/ManageProduct/Product";
         } else {
             return "admin/ManageProduct/Product";
@@ -176,8 +164,21 @@ public class ProductController {
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("minStock", minStock);
         model.addAttribute("sortOption", sortOption);
+
+        // Determine current role for the view
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentRole = "GUEST"; // Default
+        if (authentication != null) {
+            if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                currentRole = "ADMIN";
+            } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_STAFF"))) {
+                currentRole = "STAFF";
+            }
+        }
+        model.addAttribute("currentRole", currentRole);
+
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/staff")) {
+        if(requestURI.startsWith("/staff")){
             return "staff/ManageProduct/ProductDetail";
         } else {
             return "admin/ManageProduct/ProductDetail";
@@ -235,7 +236,7 @@ public class ProductController {
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption,
             Model model) {
-
+        
         // Validation logic for product price
         String priceError = null;
         if (product.getPrice() != null) {
@@ -276,7 +277,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-
+        
         // Handle image upload
         if (image != null && !image.isEmpty()) {
             try {
@@ -284,17 +285,17 @@ public class ProductController {
                 String originalFilename = image.getOriginalFilename();
                 String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String filename = "product_" + System.currentTimeMillis() + fileExtension;
-
+                
                 // Save file to static/images directory
                 String uploadDir = "src/main/resources/static/images/";
                 java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
                 if (!java.nio.file.Files.exists(uploadPath)) {
                     java.nio.file.Files.createDirectories(uploadPath);
                 }
-
+                
                 java.nio.file.Path filePath = uploadPath.resolve(filename);
                 java.nio.file.Files.copy(image.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-
+                
                 // Set image URL for product
                 product.setImageUrl("/images/" + filename);
             } catch (Exception e) {
@@ -316,7 +317,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-
+        
         productService.updateProduct(id, product);
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
                 page, size,
@@ -401,7 +402,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-
+        
         // Handle image upload
         if (image != null && !image.isEmpty()) {
             try {
@@ -409,17 +410,17 @@ public class ProductController {
                 String originalFilename = image.getOriginalFilename();
                 String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String filename = "product_" + System.currentTimeMillis() + fileExtension;
-
+                
                 // Save file to static/images directory
                 String uploadDir = "src/main/resources/static/images/";
                 java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
                 if (!java.nio.file.Files.exists(uploadPath)) {
                     java.nio.file.Files.createDirectories(uploadPath);
                 }
-
+                
                 java.nio.file.Path filePath = uploadPath.resolve(filename);
                 java.nio.file.Files.copy(image.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-
+                
                 // Set image URL for product
                 product.setImageUrl("/images/" + filename);
             } catch (Exception e) {
@@ -430,7 +431,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-
+        
         productService.saveProduct(product);
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
                 page, size,
@@ -442,30 +443,5 @@ public class ProductController {
                 maxPrice != null ? maxPrice : "",
                 minStock != null ? minStock : "",
                 sortOption != null ? sortOption : "");
-    }
-
-    // Route cho user xem chi tiết sản phẩm (hiển thị feedback)
-    @GetMapping("/Product/{id}")
-    public String customerProductDetail(@PathVariable("id") Integer id, Model model, jakarta.servlet.http.HttpSession session) {
-        Product product = productService.getProductById(id);
-        model.addAttribute("product", product);
-        // Lấy customer từ session nếu đã đăng nhập (nếu có CustomerService)
-        Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
-        Object customer = null;
-        // Nếu có CustomerService thì mở comment dưới
-        // if (customerId != null) {
-        //     customer = customerService.getCustomerById(customerId);
-        // }
-        model.addAttribute("customer", customer);
-        // Các biến dưới đây để null hoặc comment lại nếu chưa có method/service
-        // Object discount = null;
-        // Object imageGallery = null;
-        // Object specifications = null;
-        // Object shippingCost = null;
-        // model.addAttribute("discount", discount);
-        // model.addAttribute("imageGallery", imageGallery);
-        // model.addAttribute("specifications", specifications);
-        // model.addAttribute("shippingCost", shippingCost);
-        return "customer/product/viewProductDetail";
     }
 }

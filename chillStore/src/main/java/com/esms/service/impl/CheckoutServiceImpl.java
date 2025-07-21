@@ -49,15 +49,15 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     @Override
     @Transactional
-    public Integer createOrder(Integer customerId,
-                               String customerName,
-                               String customerPhone,
-                               String customerEmail,
-                               String deliveryAddress,
-                               String paymentMethod,
-                               String orderNotes,
-                               String voucherCode) {
-
+    public Integer createOrder(Integer customerId, 
+                             String customerName, 
+                             String customerPhone, 
+                             String customerEmail,
+                             String deliveryAddress, 
+                             String paymentMethod, 
+                             String orderNotes, 
+                             String voucherCode) {
+        
         // Lấy thông tin customer
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
@@ -74,13 +74,13 @@ public class CheckoutServiceImpl implements CheckoutService {
         if (cartItems.isEmpty()) {
             throw new RuntimeException("Cart is empty");
         }
-
+        
         // Debug: Print cart items
         for (CartItemDTO item : cartItems) {
-            System.out.println("Cart Item - ID: " + item.getCartItemId() +
-                    ", Product ID: " + item.getProductId() +
-                    ", Name: " + item.getProductName() +
-                    ", Quantity: " + item.getQuantity());
+            System.out.println("Cart Item - ID: " + item.getCartItemId() + 
+                             ", Product ID: " + item.getProductId() + 
+                             ", Name: " + item.getProductName() + 
+                             ", Quantity: " + item.getQuantity());
         }
 
         // Tính toán tổng tiền
@@ -93,9 +93,9 @@ public class CheckoutServiceImpl implements CheckoutService {
         BigDecimal discountAmount = BigDecimal.ZERO;
         if (voucherCode != null && !voucherCode.trim().isEmpty()) {
             voucher = voucherService.getVoucherByCode(voucherCode);
-            if (voucher != null && voucher.isActive() &&
-                    subtotal >= (voucher.getMin_order_amount() != null ? voucher.getMin_order_amount().doubleValue() : 0.0)) {
-
+            if (voucher != null && voucher.isActive() && 
+                subtotal >= (voucher.getMin_order_amount() != null ? voucher.getMin_order_amount().doubleValue() : 0.0)) {
+                
                 if (voucher.getDiscount_pct() != null) {
                     discountAmount = BigDecimal.valueOf(subtotal * voucher.getDiscount_pct().doubleValue() / 100);
                 } else if (voucher.getDiscount_amount() != null) {
@@ -108,7 +108,7 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         // Tính shipping cost dựa trên địa chỉ
         double shippingCost = calculateShippingCost(deliveryAddress);
-
+        
         // Tính tổng tiền cuối cùng (bao gồm shipping)
         BigDecimal totalAmount = BigDecimal.valueOf(subtotal).subtract(discountAmount).add(BigDecimal.valueOf(shippingCost));
 
@@ -124,34 +124,34 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         // Lưu đơn hàng
         System.out.println("Saving order to database...");
-        System.out.println("Order before save - Customer: " + order.getCustomer().getCustomerId() +
-                ", Total: " + order.getTotalAmount() +
-                ", Status: " + order.getStatus());
-
+        System.out.println("Order before save - Customer: " + order.getCustomer().getCustomerId() + 
+                          ", Total: " + order.getTotalAmount() + 
+                          ", Status: " + order.getStatus());
+        
         Order savedOrder = orderRepository.save(order);
         System.out.println("Order saved with ID: " + savedOrder.getOrderId());
         System.out.println("Saved order customer ID: " + savedOrder.getCustomer().getCustomerId());
-
+        
         // Verify the order was saved properly
         if (savedOrder.getOrderId() == null) {
             throw new RuntimeException("Order was not saved properly - orderId is null");
         }
-
+        
         // Flush to ensure order is persisted
         orderRepository.flush();
 
         // Tạo order items
         System.out.println("Creating order items...");
         for (CartItemDTO cartItem : cartItems) {
-            System.out.println("Processing cart item - CartItemID: " + cartItem.getCartItemId() +
-                    ", ProductID: " + cartItem.getProductId() +
-                    ", Name: " + cartItem.getProductName() +
-                    ", Quantity: " + cartItem.getQuantity());
-
+            System.out.println("Processing cart item - CartItemID: " + cartItem.getCartItemId() + 
+                             ", ProductID: " + cartItem.getProductId() + 
+                             ", Name: " + cartItem.getProductName() + 
+                             ", Quantity: " + cartItem.getQuantity());
+            
             if (cartItem.getProductId() <= 0) {
                 throw new RuntimeException("Invalid product ID: " + cartItem.getProductId() + " for cart item: " + cartItem.getCartItemId());
             }
-
+            
             Product product = productRepository.findById(cartItem.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found: " + cartItem.getProductId()));
 
@@ -165,8 +165,8 @@ public class CheckoutServiceImpl implements CheckoutService {
             productRepository.save(product);
 
             // Tạo warehouse transaction (export)
-            warehouseService.exportProduct(product.getProductId(), cartItem.getQuantity(),
-                    "Order export - Order ID: " + savedOrder.getOrderId());
+            warehouseService.exportProduct(product.getProductId(), cartItem.getQuantity(), 
+                "Order export - Order ID: " + savedOrder.getOrderId());
 
             // Tạo order item với embedded ID
             OrderItem orderItem = new OrderItem();
@@ -184,7 +184,7 @@ public class CheckoutServiceImpl implements CheckoutService {
             System.out.println("  - Price: " + cartItem.getPrice());
             System.out.println("  - OrderItem.order is null: " + (orderItem.getOrder() == null));
             System.out.println("  - OrderItem.product is null: " + (orderItem.getProduct() == null));
-
+            
             orderItemRepository.save(orderItem);
             System.out.println("Order item saved successfully");
         }
@@ -200,6 +200,7 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         return savedOrder.getOrderId();
     }
+    
 
 
     private double calculateShippingCost(String deliveryAddress) {
@@ -216,13 +217,13 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         // List of northern provinces
         String[] northernProvinces = {
-                "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
-                "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
-                "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
-                "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
-                "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
-                "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
-                "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
+            "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
+            "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
+            "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
+            "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
+            "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
+            "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
+            "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
         };
 
         // Check if province is in northern list
@@ -239,29 +240,29 @@ public class CheckoutServiceImpl implements CheckoutService {
         try {
             String subject = "Order Confirmation - ChillStore";
             StringBuilder emailContent = new StringBuilder();
-
+            
             emailContent.append("Dear ").append(customer.getName()).append(",\n\n");
             emailContent.append("Thank you for your order! Your order has been successfully placed.\n\n");
             emailContent.append("Order Details:\n");
             emailContent.append("Order ID: ").append(order.getOrderId()).append("\n");
             emailContent.append("Order Date: ").append(order.getOrderDate()).append("\n");
             emailContent.append("Payment Method: ").append(order.getPaymentMethod()).append("\n\n");
-
+            
             emailContent.append("Items Ordered:\n");
             for (CartItemDTO item : cartItems) {
                 emailContent.append("- ").append(item.getProductName())
-                        .append(" x").append(item.getQuantity())
-                        .append(" - $").append(String.format("%.2f", item.getTotalPrice())).append("\n");
+                           .append(" x").append(item.getQuantity())
+                           .append(" - $").append(String.format("%.2f", item.getTotalPrice())).append("\n");
             }
-
+            
             emailContent.append("\nTotal Amount: $").append(String.format("%.2f", totalAmount)).append("\n");
             emailContent.append("Status: ").append(order.getStatus()).append("\n\n");
-
+            
             emailContent.append("We will process your order and ship it to you as soon as possible.\n");
             emailContent.append("You will receive another email with tracking information once your order ships.\n\n");
             emailContent.append("Thank you for choosing ChillStore!\n");
             emailContent.append("Best regards,\nChillStore Team");
-
+            
             emailService.sendEmail(customer.getEmail(), subject, emailContent.toString());
         } catch (Exception e) {
             System.err.println("Failed to send order confirmation email: " + e.getMessage());

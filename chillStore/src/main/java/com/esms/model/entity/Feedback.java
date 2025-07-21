@@ -2,11 +2,10 @@ package com.esms.model.entity;
 
 import jakarta.persistence.*;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
-
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "feedback")
+@Table(name ="feedback")
 public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,23 +13,22 @@ public class Feedback {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn (name ="customer_id", nullable = false)
     private Customer customer;
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn (name ="product_id", nullable = false)
     private Product product;
 
     private Byte rating;
     private String comment;
     private String status;
 
-    @Column(name = "created_at")
+    @Column(name ="created_at")
     private LocalDateTime createdAt;
 
     public Feedback() {
 
     }
-
     public Feedback(int id, Customer customer, Product product, Byte rating, String comment, String status, LocalDateTime createdAt) {
         this.id = id;
         this.customer = customer;

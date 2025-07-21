@@ -27,7 +27,6 @@ public class CustomerOAuth2UserService extends DefaultOAuth2UserService {
 
     /**
      * Xử lý đăng nhập OAuth2 từ các provider khác (không phải Google)
-     *
      * @param userRequest thông tin request từ OAuth2 provider
      * @return CustomerOAuth2User với role CUSTOMER
      */
@@ -36,10 +35,10 @@ public class CustomerOAuth2UserService extends DefaultOAuth2UserService {
         // Lấy thông tin user từ OAuth2 provider
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-
+        
         // Tạo hoặc cập nhật Customer trong database
         Customer customer = customerService.processOAuth2User(oAuth2User, registrationId);
-
+        
         // Trả về CustomerOAuth2User với role CUSTOMER
         return new CustomerOAuth2User(customer, oAuth2User);
     }

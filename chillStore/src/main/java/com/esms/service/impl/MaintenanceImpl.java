@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 public class MaintenanceImpl implements MaintenanceService {
     @Autowired
     private MaintenanceRepository maintenanceRepository;
-
+    
     @Autowired
     private OrderRepository orderRepository;
-
+    
     @Autowired
     private ProductRepository productRepository;
-
+    
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -90,27 +90,27 @@ public class MaintenanceImpl implements MaintenanceService {
                 staffName = staff.getName();
             }
         }
-
+        
         // Build info strings
         String orderInfo = "";
         if (order != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            orderInfo = "Order #" + order.getOrderId() + " - " + order.getCustomer().getName() +
-                    " (" + order.getOrderDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate().format(formatter) +
-                    " - " + order.getStatus() + ")";
+            orderInfo = "Order #" + order.getOrderId() + " - " + order.getCustomer().getName() + 
+                       " (" + order.getOrderDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate().format(formatter) + 
+                       " - " + order.getStatus() + ")";
         }
-
+        
         String productInfo = "";
         if (product != null) {
-            productInfo = product.getName() + " - " + product.getCategory().getName() +
-                    " (" + product.getBrand().getName() + ")";
+            productInfo = product.getName() + " - " + product.getCategory().getName() + 
+                         " (" + product.getBrand().getName() + ")";
         }
-
+        
         String customerInfo = "";
         if (customer != null) {
             customerInfo = customer.getName() + " (" + customer.getPhone() + ")";
         }
-
+        
         return new MaintenanceDto(
                 entity.getRequestId(),
                 entity.getOrderId(),

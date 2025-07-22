@@ -52,6 +52,9 @@ public class Voucher {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime created_at;
 
+    @Column(name ="is_special")
+    private boolean isSpecial;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "voucher_categories",
@@ -183,5 +186,13 @@ public class Voucher {
 
     public void setBrands(Set<Brand> brands) {
         this.brands = brands;
+    }
+
+    public boolean isSpecial() {
+        return isSpecial;
+    }
+
+    public void setSpecial(boolean special) {
+        isSpecial = special;
     }
 }

@@ -1,199 +1,225 @@
 <!-- admin/vouchers/form-content.html -->
 <div th:fragment="content(voucherDto, selectedCategories, selectedBrands, errorMessage)">
-  <div id="voucherFormContainer"
-       th:attr="data-discount-pct=${voucherDto != null and voucherDto.discount_pct != null} ? ${voucherDto.discount_pct} : null,
+    <div id="voucherFormContainer"
+         th:attr="data-discount-pct=${voucherDto != null and voucherDto.discount_pct != null} ? ${voucherDto.discount_pct} : null,
                 data-discount-amount=${voucherDto != null and voucherDto.discount_amount != null} ? ${voucherDto.discount_amount} : null">
-    <div class="form-container">
-      <h2 class="mb-4 text-center"
-          th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Chỉnh sửa Voucher' : 'Tạo Voucher Mới'">
-        Voucher Form
-      x`
-      <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+        <div class="form-container">
+            <h2 class="mb-4 text-center"
+                th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Chỉnh sửa Voucher' : 'Tạo Voucher Mới'">
+                Voucher Form
+                x`
+                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-      <form th:action="${voucherDto != null and voucherDto.voucher_id != null}
+                <form th:action="${voucherDto != null and voucherDto.voucher_id != null}
                          ? @{/admin/vouchers/edit/{id}(id=${voucherDto.voucher_id})}
                          : @{/admin/vouchers/add}"
-            th:object="${voucherDto}" method="post" novalidate id="voucherFormElement">
-        <input type="hidden" th:field="*{voucher_id}"
-               th:if="${voucherDto != null and voucherDto.voucher_id != null}"/>
+                      th:object="${voucherDto}" method="post" novalidate id="voucherFormElement">
+                    <input type="hidden" th:field="*{voucher_id}"
+                           th:if="${voucherDto != null and voucherDto.voucher_id != null}"/>
 
-        <!-- Thông tin Voucher -->
-        <div class="form-section">
-          <div class="form-section-title">
-            <i class="fas fa-info-circle"></i> Thông tin Voucher
-          </div>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="code" class="form-label">Mã <span class="text-danger">*</span></label>
-              <input type="text" th:field="*{code}" class="form-control" id="code"
-                     placeholder="Nhập mã voucher" required/>
-              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('code')}"
-                   th:errors="*{code}"></div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="quantity_available" class="form-label">Số lượng khả dụng <span class="text-danger">*</span></label>
-              <input type="number" min="1" th:field="*{quantity_available}" class="form-control"
-                     id="quantity_available" placeholder="ví dụ: 100" required/>
-              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('quantity_available')}"
-                   th:errors="*{quantity_available}"></div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label for="description" class="form-label">Mô tả</label>
-            <textarea th:field="*{description}" class="form-control" id="description" rows="2"
-                      placeholder="Mô tả chi tiết về voucher (tùy chọn)"></textarea>
-            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('description')}"
-                 th:errors="*{description}"></div>
-          </div>
-        </div>
+                    <!-- Thông tin Voucher -->
+                    <div class="form-section">
+                        <div class="form-section-title">
+                            <i class="fas fa-info-circle"></i> Thông tin Voucher
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="code" class="form-label">Mã <span class="text-danger">*</span></label>
+                                <input type="text" th:field="*{code}" class="form-control" id="code"
+                                       placeholder="Nhập mã voucher" required/>
+                                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('code')}"
+                                     th:errors="*{code}"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="quantity_available" class="form-label">Số lượng khả dụng <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" min="1" th:field="*{quantity_available}" class="form-control"
+                                       id="quantity_available" placeholder="ví dụ: 100" required/>
+                                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('quantity_available')}"
+                                     th:errors="*{quantity_available}"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Mô tả</label>
+                            <textarea th:field="*{description}" class="form-control" id="description" rows="2"
+                                      placeholder="Mô tả chi tiết về voucher (tùy chọn)"></textarea>
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('description')}"
+                                 th:errors="*{description}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" th:field="*{isSpecial}" id="isSpecial"
+                                       role="switch"/>
+                                <label class="form-check-label" for="isSpecial">
+                                    Voucher đặc biệt (khách hàng phải nhập mã thủ công)
+                                </label>
+                            </div>
+                            <small class="text-muted">
+                                Nếu chọn, voucher này sẽ không tự động áp dụng mà khách hàng phải nhập mã để sử dụng
+                            </small>
+                        </div>
 
-        <!-- Chi tiết khuyến mãi -->
-        <div class="form-section">
-          <div class="form-section-title">
-            <i class="fas fa-percentage"></i> Chi tiết khuyến mãi
-          </div>
-          <div class="row">
-            <div class="col-lg-6 mb-3">
-              <label class="form-label">Loại giảm giá <span class="text-danger">*</span></label>
-              <div class="d-flex gap-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="discountType"
-                         id="discountPercent" value="percent"
-                         onclick="toggleDiscountType('percent')"
-                         th:checked="${voucherDto != null and voucherDto.discount_pct != null and voucherDto.discount_pct > 0}"/>
-                  <label class="form-check-label" for="discountPercent">Phần trăm</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="discountType"
-                         id="discountAmount" value="amount"
-                         onclick="toggleDiscountType('amount')"
-                         th:checked="${voucherDto != null and voucherDto.discount_amount != null and voucherDto.discount_amount > 0}"/>
-                  <label class="form-check-label" for="discountAmount">Số tiền cố định</label>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6 mb-3">
-              <label for="min_order_amount" class="form-label">Giá trị đơn hàng tối thiểu (₫)</label>
-              <div class="input-group">
-                <span class="input-group-text">₫</span>
-                <input type="number" step="1000" min="0" th:field="*{min_order_amount}"
-                       class="form-control" id="min_order_amount"
-                       placeholder="ví dụ: 500.000"/>
-              </div>
-              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('min_order_amount')}"
-                   th:errors="*{min_order_amount}"></div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-6 mb-3" id="discountPctField">
-              <label for="discount_pct" class="form-label">Phần trăm giảm giá (%)</label>
-              <div class="input-group">
-                <input type="number" step="0.01" min="0" max="100" th:field="*{discount_pct}"
-                       class="form-control" id="discount_pct" placeholder="ví dụ: 10"/>
-                <span class="input-group-text">%</span>
-              </div>
-              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('discount_pct')}"
-                   th:errors="*{discount_pct}"></div>
-            </div>
-            <div class="col-lg-6 mb-3" id="discountAmountField">
-              <label for="discount_amount" class="form-label">Số tiền giảm giá (₫)</label>
-              <div class="input-group">
-                <span class="input-group-text">₫</span>
-                <input type="number" step="1000" min="0" th:field="*{discount_amount}"
-                       class="form-control" id="discount_amount" placeholder="ví dụ: 100.000"/>
-              </div>
-              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('discount_amount')}"
-                   th:errors="*{discount_amount}"></div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-6 mb-3">
-              <label for="start_date" class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
-              <input type="date" th:field="*{start_date}" class="form-control" id="start_date" required/>
-              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('start_date')}"
-                   th:errors="*{start_date}"></div>
-            </div>
-            <div class="col-lg-6 mb-3">
-              <label for="end_date" class="form-label">Ngày kết thúc <span class="text-danger">*</span></label>
-              <input type="date" th:field="*{end_date}" class="form-control" id="end_date" required/>
-              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('end_date')}"
-                   th:errors="*{end_date}"></div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" th:field="*{active}" id="active" role="switch"/>
-              <label class="form-check-label" for="active">Kích hoạt voucher ngay lập tức</label>
-            </div>
-          </div>
-        </div>
+                    </div>
 
-        <!-- Sản phẩm áp dụng -->
-        <div class="form-section">
-          <div class="form-section-title">
-            <i class="fas fa-box-open"></i> Sản phẩm áp dụng
-          </div>
-          <p class="text-muted mb-4">
-            Chọn danh mục và thương hiệu mà voucher này sẽ áp dụng.
-            Để trống cả hai để áp dụng cho tất cả sản phẩm.
-          </p>
-          <div class="row">
-            <div class="col-md-6 mb-4">
-              <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                  <span>Danh mục</span>
-                  <i id="clearCategories" class="fas fa-times-circle clear-all-btn" title="Xóa tất cả"></i>
-                </div>
-                <div class="card-body">
-                  <select id="categoryIds" name="categoryIds" multiple="multiple"
-                          class="form-control"
-                          th:classappend="${#fields.hasErrors('categoryIds')}? 'is-invalid' : ''">
-                    <option th:each="cat : ${selectedCategories}"
-                            th:value="${cat.id}"
-                            th:text="${cat.name}"
-                            selected="selected"></option>
-                  </select>
-                  <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('categoryIds')}"
-                       th:errors="*{categoryIds}"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 mb-4">
-              <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                  <span>Thương hiệu</span>
-                  <i id="clearBrands" class="fas fa-times-circle clear-all-btn" title="Xóa tất cả"></i>
-                </div>
-                <div class="card-body">
-                  <select id="brandIds" name="brandIds" multiple="multiple"
-                          class="form-control"
-                          th:classappend="${#fields.hasErrors('brandIds')}? 'is-invalid' : ''">
-                    <option th:each="br : ${selectedBrands}"
-                            th:value="${br.id}"
-                            th:text="${br.name}"
-                            selected="selected"></option>
-                  </select>
-                  <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('brandIds')}"
-                       th:errors="*{brandIds}"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                    <!-- Chi tiết khuyến mãi -->
+                    <div class="form-section">
+                        <div class="form-section-title">
+                            <i class="fas fa-percentage"></i> Chi tiết khuyến mãi
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Loại giảm giá <span class="text-danger">*</span></label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="discountType"
+                                               id="discountPercent" value="percent"
+                                               onclick="toggleDiscountType('percent')"
+                                               th:checked="${voucherDto != null and voucherDto.discount_pct != null and voucherDto.discount_pct > 0}"/>
+                                        <label class="form-check-label" for="discountPercent">Phần trăm</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="discountType"
+                                               id="discountAmount" value="amount"
+                                               onclick="toggleDiscountType('amount')"
+                                               th:checked="${voucherDto != null and voucherDto.discount_amount != null and voucherDto.discount_amount > 0}"/>
+                                        <label class="form-check-label" for="discountAmount">Số tiền cố định</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label for="min_order_amount" class="form-label">Giá trị đơn hàng tối thiểu (₫)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₫</span>
+                                    <input type="number" step="1000" min="0" th:field="*{min_order_amount}"
+                                           class="form-control" id="min_order_amount"
+                                           placeholder="ví dụ: 500.000"/>
+                                </div>
+                                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('min_order_amount')}"
+                                     th:errors="*{min_order_amount}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 mb-3" id="discountPctField">
+                                <label for="discount_pct" class="form-label">Phần trăm giảm giá (%)</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" min="0" max="100" th:field="*{discount_pct}"
+                                           class="form-control" id="discount_pct" placeholder="ví dụ: 10"/>
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('discount_pct')}"
+                                     th:errors="*{discount_pct}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3" id="discountAmountField">
+                                <label for="discount_amount" class="form-label">Số tiền giảm giá (₫)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₫</span>
+                                    <input type="number" step="1000" min="0" th:field="*{discount_amount}"
+                                           class="form-control" id="discount_amount" placeholder="ví dụ: 100.000"/>
+                                </div>
+                                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('discount_amount')}"
+                                     th:errors="*{discount_amount}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label for="start_date" class="form-label">Ngày bắt đầu <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" th:field="*{start_date}" class="form-control" id="start_date"
+                                       required/>
+                                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('start_date')}"
+                                     th:errors="*{start_date}"></div>
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label for="end_date" class="form-label">Ngày kết thúc <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" th:field="*{end_date}" class="form-control" id="end_date" required/>
+                                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('end_date')}"
+                                     th:errors="*{end_date}"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" th:field="*{active}" id="active"
+                                       role="switch"/>
+                                <label class="form-check-label" for="active">Kích hoạt voucher ngay lập tức</label>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Nút hành động -->
-        <div class="form-actions mt-4 d-flex justify-content-end gap-2">
-          <a th:href="@{/admin/vouchers}" class="btn btn-secondary">
-            <i class="fas fa-times me-2"></i> Hủy
-          </a>
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save me-2"></i>
-            <span th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Cập nhật Voucher' : 'Tạo Voucher'">
+                    <!-- Sản phẩm áp dụng -->
+                    <div class="form-section">
+                        <div class="form-section-title">
+                            <i class="fas fa-box-open"></i> Sản phẩm áp dụng
+                        </div>
+                        <p class="text-muted mb-4">
+                            Chọn danh mục và thương hiệu mà voucher này sẽ áp dụng.
+                            Để trống cả hai để áp dụng cho tất cả sản phẩm.
+                        </p>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span>Danh mục</span>
+                                        <i id="clearCategories" class="fas fa-times-circle clear-all-btn"
+                                           title="Xóa tất cả"></i>
+                                    </div>
+                                    <div class="card-body">
+                                        <select id="categoryIds" name="categoryIds" multiple="multiple"
+                                                class="form-control"
+                                                th:classappend="${#fields.hasErrors('categoryIds')}? 'is-invalid' : ''">
+                                            <option th:each="cat : ${selectedCategories}
+                                                    th:value="${cat.id}"
+                                                    th:text="${cat.name}"
+                                                    selected="selected"></option>
+                                        </select>
+                                        <div class="invalid-feedback d-block"
+                                             th:if="${#fields.hasErrors('categoryIds')}"
+                                             th:errors="*{categoryIds}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span>Thương hiệu</span>
+                                        <i id="clearBrands" class="fas fa-times-circle clear-all-btn"
+                                           title="Xóa tất cả"></i>
+                                    </div>
+                                    <div class="card-body">
+                                        <select id="brandIds" name="brandIds" multiple="multiple"
+                                                class="form-control"
+                                                th:classappend="${#fields.hasErrors('brandIds')}? 'is-invalid' : ''">
+                                            <option th:each="br : ${selectedBrands}"
+                                                    th:value="${br.id}"
+                                                    th:text="${br.name}"
+                                                    selected="selected"></option>
+                                        </select>
+                                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('brandIds')}"
+                                             th:errors="*{brandIds}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="isSpecial" th:field="*{isSpecial}">
+                                <label class="form-check-label" for="isSpecial">Special Voucher (Customer must enter
+                                    code manually)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nút hành động -->
+                    <div class="form-actions mt-4 d-flex justify-content-end gap-2">
+                        <a th:href="@{/admin/vouchers}" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i> Hủy
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            <span th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Cập nhật Voucher' : 'Tạo Voucher'">
               Lưu
             </span>
-          </button>
+                        </button>
+                    </div>
+                </form>
         </div>
-      </form>
     </div>
-  </div>
 </div>

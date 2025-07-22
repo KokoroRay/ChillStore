@@ -15,12 +15,14 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <input type="date" name="fromDate" class="form-control" 
+                    <input type="date" id="fromDate" name="fromDate" class="form-control" 
                            placeholder="From Date" th:value="${fromDate}">
+                    <label for="fromDate" class="form-label mt-1">Start</label>
                 </div>
                 <div class="col-md-2">
-                    <input type="date" name="toDate" class="form-control" 
+                    <input type="date" id="toDate" name="toDate" class="form-control" 
                            placeholder="To Date" th:value="${toDate}">
+                    <label for="toDate" class="form-label mt-1">End</label>
                 </div>
                 <div class="col-md-2">
                     <select name="sortDir" class="form-control">

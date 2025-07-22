@@ -6,7 +6,11 @@ import com.esms.exception.InvalidOtpException;
 import com.esms.exception.UserNotFoundException;
 import com.esms.model.dto.*;
 import com.esms.model.entity.Customer;
+import com.esms.model.entity.Order;
+import com.esms.model.entity.Voucher;
 import com.esms.repository.CustomerRepository;
+import com.esms.repository.OrderRepository;
+import com.esms.repository.VoucherRepository;
 import com.esms.service.CustomerService;
 import com.esms.util.MapperUtils.CustomerMapper;
 import jakarta.transaction.Transactional;
@@ -22,7 +26,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -36,6 +43,12 @@ public class CustomerServiceImpl implements CustomerService {
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
     private final CacheManager cacheManager;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private VoucherRepository voucherRepository;
 
     @Autowired
     public CustomerServiceImpl(CustomerRepository customerRepository, CustomerMapper customerMapper,
@@ -292,6 +305,23 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Page<Customer> searchCustomersByEmail(String email, Pageable pageable) {
         return customerRepository.findByEmailContainingIgnoreCase(email, pageable);
+    }
+
+    //add voucher cho customer
+    @Override
+    public void addVoucherToCustomer(Integer customerId, Integer voucherId) {
+        Customer customer = getCustomerById(customerId);
+        Voucher voucher = voucherRepository.findById(voucherId).orElseThrow(() -> new RuntimeException("Voucher not found"));
+
+        Order voucherOrder = new Order();
+        voucherOrder.setCustomer(customer);
+        voucherOrder.setVoucher(voucher);
+        voucherOrder.setVoucherAcquisition(true);
+        voucherOrder.setOrderDate(new Date());
+        voucherOrder.setStatus("Pending"); // Must be one of: Pending, Paid, Shipped, Delivered, Cancelled
+        voucherOrder.setTotalAmount(BigDecimal.ZERO);
+
+        orderRepository.save(voucherOrder);
     }
 
     @Override

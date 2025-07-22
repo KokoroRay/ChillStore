@@ -336,13 +336,13 @@ body {
     margin-bottom: 16px;
 }
 
- .container {
-     display: flex;
-     flex-wrap: nowrap;
-     gap: 16px;
-     overflow-x: auto;
-     padding: 20px;
- }
+.container {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 20px;
+}
 
 .why {
     width: 200px;

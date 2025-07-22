@@ -49,6 +49,9 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @Column(name = "is_voucher_acquisition")
+    private boolean isVoucherAcquisition;
+
     public Order() {
     }
 
@@ -169,5 +172,13 @@ public class Order {
 
     public void setStaff(Staff staff) {
         this.staff = staff;
+    }
+
+    public boolean isVoucherAcquisition() {
+        return isVoucherAcquisition;
+    }
+
+    public void setVoucherAcquisition(boolean voucherAcquisition) {
+        isVoucherAcquisition = voucherAcquisition;
     }
 }

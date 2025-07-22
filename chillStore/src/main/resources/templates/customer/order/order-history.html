@@ -290,7 +290,10 @@
 
                     order.items.forEach(item => {
                         content += `<tr>
-                            <td>${item.productName}</td>
+                            <td>
+                                ${item.productName}
+                                ${order.status === 'Delivered' ? `<a href='/Product/${item.productId}?review=1' class='btn btn-primary btn-sm ms-2'><i class='fas fa-star me-1'></i>Đánh giá</a>` : ''}
+                            </td>
                             <td>${item.categoryName}</td>
                             <td>${item.quantity}</td>
                             <td>$${item.priceEach.toFixed(2)}</td>
@@ -299,25 +302,20 @@
                     });
 
                     content += `</tbody></table></div>
-
-                        <div class="row justify-content-end">
-                            <div class="col-md-4">
-                                <table class="table table-borderless">
-                                    <tr><td><strong>Subtotal:</strong></td><td>$${(order.totalAmount - (order.shippingCost || 0) + (order.discountAmount || 0)).toFixed(2)}</td></tr>`;
-
-                    if (order.shippingCost > 0) {
-                        content += `<tr><td><strong>Shipping Fee:</strong></td><td>$${order.shippingCost.toFixed(2)}</td></tr>`;
-                    }
-
-                    if (order.discountAmount > 0) {
-                        content += `<tr><td><strong>Discount:</strong></td><td class="text-success">$${order.discountAmount.toFixed(2)}</td></tr>`;
-                    }
-
-                    content += `<tr class="border-top"><td><strong>Total:</strong></td><td><strong>$${order.totalAmount.toFixed(2)}</strong></td></tr>
-                                </table>
-                            </div>
-                        </div>`;
-
+    <div class="row justify-content-end">
+        <div class="col-md-4">
+            <table class="table table-borderless">
+                <tr><td><strong>Subtotal:</strong></td><td>$${(order.totalAmount - (order.shippingCost || 0) + (order.discountAmount || 0)).toFixed(2)}</td></tr>`;
+if (order.shippingCost > 0) {
+    content += `<tr><td><strong>Shipping Fee:</strong></td><td>$${order.shippingCost.toFixed(2)}</td></tr>`;
+}
+if (order.discountAmount > 0) {
+    content += `<tr><td><strong>Discount:</strong></td><td class="text-success">$${order.discountAmount.toFixed(2)}</td></tr>`;
+}
+content += `<tr class="border-top"><td><strong>Total:</strong></td><td><strong>$${order.totalAmount.toFixed(2)}</strong></td></tr>
+            </table>
+        </div>
+    </div>`;
                     document.getElementById('orderDetailContent').innerHTML = content;
                     new bootstrap.Modal(document.getElementById('orderDetailModal')).show();
                 })
@@ -325,13 +323,6 @@
                     console.error('Error:', error);
                     document.getElementById('orderDetailContent').innerHTML = '<p class="text-danger">Error loading order details</p>';
                 });
-        }
-
-        function cancelOrder(orderId) {
-            const modal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
-            const form = document.getElementById('cancelOrderForm');
-            form.action = `/customer/order/${orderId}/cancel`;
-            modal.show();
         }
     </script>
 </body>

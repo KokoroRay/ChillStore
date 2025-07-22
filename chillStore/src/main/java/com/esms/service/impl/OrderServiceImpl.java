@@ -129,7 +129,8 @@ public class OrderServiceImpl implements IOrderService {
             Product product = productRepository.findById(item.getId().getProductId()).orElse(null);
             String productName = (product != null) ? product.getName() : "Unknown";
             String categoryName = (product != null && product.getCategory() != null) ? product.getCategory().getName() : "Unknown";
-            result.add(new OrderItemDetailDTO(productName, item.getQuantity(),
+            int productId = item.getId().getProductId();
+            result.add(new OrderItemDetailDTO(productId, productName, item.getQuantity(),
                                               item.getPriceEach().doubleValue(), categoryName));
         }
         return result;

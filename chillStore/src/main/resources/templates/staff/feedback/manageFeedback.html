@@ -5,45 +5,140 @@
     <title>Manage Feedback</title>
     <link rel="icon" type="image/png" th:href="@{/images/logo.png}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/sidebarStaff.css">
+    <style>
+        .feedback-card {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .feedback-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .feedback-body {
+            padding: 20px;
+        }
+        .rating-stars {
+            color: #ffc107;
+            font-size: 18px;
+        }
+        .status-badge {
+            font-size: 12px;
+            padding: 4px 8px;
+        }
+        .feedback-actions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+        .search-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
 <div th:insert="~{fragments/header :: headerContent}"></div>
 
 <div class="container mt-4 main-container">
     <div th:insert="~{fragments/sidebarStaff :: sidebarStaff}"></div>
-<div class="content">
-    <h2 class="text-center mb-4">Feedback List</h2>
-    <table class="table table-bordered table-striped">
-        <thead class="table-info">
-        <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Product</th>
-            <th>Rating</th>
-            <th>Comment</th>
-            <th>Status</th>
-            <th>Time</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="fb : ${feedbacks}">
-            <td th:text="${fb.id}"></td>
-            <td th:text="${fb.customer}"></td>
-            <td th:text="${fb.product}"></td>
-            <td th:text="${fb.rating}"></td>
-            <td th:text="${fb.comment}"></td>
-            <td th:text="${fb.status}"></td>
-            <td th:text="${fb.createdAt != null ? #temporals.format(fb.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}">22/06/2025</td>
-            <td>
-                <a th:href="@{'/staff/manageFeedback/' + ${fb.id} + '/reply'}" class="btn btn-sm btn-success">Reply</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <div class="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-comments me-2"></i>Customer Feedback Management</h2>
+            <div class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                <span th:text="${feedbacks.size()} + ' feedbacks'"></span>
+            </div>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <form class="row g-3" method="get">
+                <div class="col-md-4">
+                    <input type="text" name="keyword" class="form-control" placeholder="Search by customer name or product..."
+                           th:value="${param.keyword}">
+                </div>
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="New" th:selected="${param.status == 'New'}">New</option>
+                        <option value="Replied" th:selected="${param.status == 'Replied'}">Replied</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-1"></i>Search
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <a href="/staff/manageFeedback" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-refresh me-1"></i>Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Feedback List -->
+        <div th:if="${feedbacks.empty}" class="text-center py-5">
+            <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No feedbacks found</h4>
+            <p class="text-muted">There are no customer feedbacks to display.</p>
+        </div>
+
+        <div th:each="fb : ${feedbacks}" class="feedback-card">
+            <div class="feedback-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h6 class="mb-1">
+                            <i class="fas fa-user me-2"></i>
+                            <span th:text="${fb.customer != null ? fb.customer.name : 'Anonymous'}">Customer Name</span>
+                        </h6>
+                        <small class="text-muted">
+                            <i class="fas fa-box me-1"></i>
+                            <span th:text="${fb.product}">Product Name</span>
+                        </small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="rating-stars" th:text="'★'.repeat(fb.rating) + '☆'.repeat(5 - fb.rating)">★★★★☆</div>
+                        <small class="text-muted" th:text="${fb.rating} + '/5'">4/5</small>
+                    </div>
+                    <div class="col-md-3 text-end">
+                        <span th:class="${fb.status == 'New' ? 'badge bg-warning' : 'badge bg-success'} + ' status-badge'"
+                              th:text="${fb.status}">New</span>
+                        <br>
+                        <small class="text-muted" th:text="${fb.createdAt != null ? #temporals.format(fb.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}">
+                            22/06/2025 14:30
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="feedback-body">
+                <div class="feedback-comment mb-3">
+                    <strong>Comment:</strong>
+                    <p class="mb-0 mt-2" th:text="${fb.comment}">Customer comment here...</p>
+                </div>
+                <div class="feedback-actions">
+                    <a th:href="@{'/staff/manageFeedback/' + ${fb.id} + '/reply'}" 
+                       class="btn btn-sm btn-primary">
+                        <i class="fas fa-reply me-1"></i>
+                        <span th:text="${fb.status == 'New' ? 'Reply' : 'View/Edit Reply'}">Reply</span>
+                    </a>
+                    <span th:if="${fb.status == 'Replied'}" class="text-success ms-2">
+                        <i class="fas fa-check-circle me-1"></i>Replied
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

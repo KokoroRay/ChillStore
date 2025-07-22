@@ -357,10 +357,6 @@ public class ProductController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public String addProduct(
             @ModelAttribute("product") Product product,
-            @RequestParam("imageFiles")  MultipartFile[] imageFiles,
-            @RequestParam(value = "primaryImageIndex", defaultValue = "0") int primaryImageIndex,
-            @RequestParam("specKeys") List<String> specKeys,
-            @RequestParam("specValues") List<String> specValues,
             @RequestParam(value = "image", required = false) MultipartFile image,
             @RequestParam(value = "galleryImages", required = false) MultipartFile[] galleryImages,
             @RequestParam(value = "specKeys", required = false) String[] specKeys,

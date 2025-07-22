@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -68,7 +68,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="wishlist-container">
+                                    <div class="wishlist-container" sec:authorize="hasRole('CUSTOMER')">
                                         <button class="wishlist-btn" id="wishlistBtn" onclick="toggleWishlist()"
                                             type="button">
                                             <i class="far fa-heart"></i>
@@ -933,6 +933,8 @@
         });
     </script>
     <script src="/js/feedback.js"></script>
+    <div th:replace="fragments/footer :: footer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

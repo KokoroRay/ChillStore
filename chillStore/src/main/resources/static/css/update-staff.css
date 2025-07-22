@@ -1,7 +1,7 @@
 /* update-staff.css */
 
 /* Toàn bộ phần thân */
-html,body {
+html, body {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,6 +68,7 @@ form button[type="submit"] {
 form button[type="submit"]:hover {
     background-color: #0056b3;
 }
+
 .btn-back {
     display: block;
     margin-top: 15px;
@@ -84,6 +85,7 @@ form button[type="submit"]:hover {
 .btn-back:hover {
     background-color: #5a6268;
 }
+
 .content form {
     width: 100%;
     max-width: 1200px;
@@ -91,5 +93,5 @@ form button[type="submit"]:hover {
     padding: 30px;
     background-color: #f9f9f9;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }

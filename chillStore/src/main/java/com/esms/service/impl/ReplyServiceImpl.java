@@ -43,5 +43,21 @@ public class ReplyServiceImpl implements ReplyService {
         feedback.setStatus("Replied");
         feedbackRepository.save(feedback);
     }
+
+    @Override
+    public Reply getReplyByFeedbackId(int feedbackId) {
+        return replyRepository.findByFeedbackId(feedbackId).orElse(null);
+    }
+
+    @Override
+    public Reply updateReply(int feedbackId, ReplyFeedbackDTO dto, int staffId) {
+        Reply reply = replyRepository.findByFeedbackId(feedbackId).orElseThrow(() -> new RuntimeException("Không tìm thấy reply"));
+        if (reply.getStaff().getId() != staffId) {
+            throw new RuntimeException("Bạn không có quyền sửa reply này!");
+        }
+        reply.setContent(dto.getContent());
+        reply.setCreatedAt(LocalDateTime.now());
+        return replyRepository.save(reply);
+    }
 }
 

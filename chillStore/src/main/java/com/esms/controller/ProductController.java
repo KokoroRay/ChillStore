@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -162,6 +164,19 @@ public class ProductController {
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("minStock", minStock);
         model.addAttribute("sortOption", sortOption);
+
+        // Determine current role for the view
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentRole = "GUEST"; // Default
+        if (authentication != null) {
+            if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                currentRole = "ADMIN";
+            } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_STAFF"))) {
+                currentRole = "STAFF";
+            }
+        }
+        model.addAttribute("currentRole", currentRole);
+
         String requestURI = request.getRequestURI();
         if(requestURI.startsWith("/staff")){
             return "staff/ManageProduct/ProductDetail";

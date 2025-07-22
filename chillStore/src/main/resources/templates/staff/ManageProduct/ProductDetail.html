@@ -9,6 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/sidebarStaff.css">
+    <link rel="stylesheet" href="/css/feedback.css"> <!-- Add feedback css -->
     <style>
         /* CSS cho Body và Main Content được nhúng trực tiếp vào đây */
         body {
@@ -327,8 +328,27 @@
             </div>
         </div>
     </div>
+
+    <!-- FEEDBACK SECTION START (Staff view) -->
+    <div class="container my-5">
+        <div class="feedback-section" id="feedback-section-staff">
+            <h3 class="mb-4">
+                <i class="fas fa-comments me-2"></i>
+                Customer Reviews
+            </h3>
+            <div id="feedback-summary" class="mb-4"></div>
+            <div id="feedback-list" class="feedback-list"></div>
+            <div id="feedback-loadmore-container" class="text-center mt-3"></div>
+            <!-- Staff không có form gửi feedback -->
+            <input type="hidden" id="feedback-product-id" th:value="${product.productId}" />
+            <input type="hidden" id="feedback-customer-id" th:value="0" />
+            <input type="hidden" id="current-role" th:value="${currentRole}" />
+        </div>
+    </div>
+    <!-- FEEDBACK SECTION END -->
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/feedback.js"></script>
 </body>
 </html>

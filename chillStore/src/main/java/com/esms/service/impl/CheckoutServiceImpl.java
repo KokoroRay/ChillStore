@@ -160,11 +160,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                 throw new RuntimeException("Insufficient stock for product: " + product.getName());
             }
 
-            // Cập nhật stock
-            product.setStockQty(product.getStockQty() - cartItem.getQuantity());
-            productRepository.save(product);
-
-            // Tạo warehouse transaction (export)
+            // Tạo warehouse transaction (export) - Service này sẽ tự động cập nhật stock
             warehouseService.exportProduct(product.getProductId(), cartItem.getQuantity(), 
                 "Order export - Order ID: " + savedOrder.getOrderId());
 

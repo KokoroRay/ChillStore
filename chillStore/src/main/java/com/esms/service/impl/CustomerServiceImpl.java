@@ -318,7 +318,7 @@ public class CustomerServiceImpl implements CustomerService {
         voucherOrder.setVoucher(voucher);
         voucherOrder.setVoucherAcquisition(true);
         voucherOrder.setOrderDate(new Date());
-        voucherOrder.setStatus("VoucherAcquisition");
+        voucherOrder.setStatus("Pending"); // Must be one of: Pending, Paid, Shipped, Delivered, Cancelled
         voucherOrder.setTotalAmount(BigDecimal.ZERO);
 
         orderRepository.save(voucherOrder);

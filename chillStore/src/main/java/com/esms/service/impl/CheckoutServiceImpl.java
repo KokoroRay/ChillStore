@@ -121,6 +121,7 @@ public class CheckoutServiceImpl implements CheckoutService {
         order.setTotalAmount(totalAmount);
         order.setStatus("Pending");
         order.setPaymentMethod(paymentMethod);
+        order.setVoucherAcquisition(false); // Ensure no null assignment
 
         // Lưu đơn hàng
         System.out.println("Saving order to database...");

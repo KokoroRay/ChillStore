@@ -51,6 +51,6 @@ public class CustomerVoucherController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
 
-        return  "redirect:/customer/vouchers";
+        return  "redirect:/customer/voucher";
     }
 }

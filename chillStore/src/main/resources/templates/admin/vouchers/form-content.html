@@ -167,7 +167,7 @@
                                         <select id="categoryIds" name="categoryIds" multiple="multiple"
                                                 class="form-control"
                                                 th:classappend="${#fields.hasErrors('categoryIds')}? 'is-invalid' : ''">
-                                            <option th:each="cat : ${selectedCategories}"
+                                            <option th:each="cat : ${selectedCategories}
                                                     th:value="${cat.id}"
                                                     th:text="${cat.name}"
                                                     selected="selected"></option>

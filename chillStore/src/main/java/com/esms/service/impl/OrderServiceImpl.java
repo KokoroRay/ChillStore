@@ -130,12 +130,18 @@ public class OrderServiceImpl implements IOrderService {
         java.util.List<OrderItem> items = orderItemRepository.findByIdOrderId(orderId);
         java.util.List<OrderItemDetailDTO> result = new ArrayList<>();
         for (OrderItem item : items) {
-            Product product = productRepository.findById(item.getId().getProductId()).orElse(null);
+            if (item == null || item.getId() == null) continue; // tránh lỗi null
+            Product product = null;
+            try {
+                product = productRepository.findById(item.getId().getProductId()).orElse(null);
+            } catch (Exception ex) {
+                // ignore, giữ product = null
+            }
             String productName = (product != null) ? product.getName() : "Unknown";
             String categoryName = (product != null && product.getCategory() != null) ? product.getCategory().getName() : "Unknown";
-            int productId = item.getId().getProductId();
+            int productId = (item.getId().getProductId() != null) ? item.getId().getProductId() : -1;
             result.add(new OrderItemDetailDTO(productId, productName, item.getQuantity(),
-                                              item.getPriceEach().doubleValue(), categoryName));
+                                              item.getPriceEach() != null ? item.getPriceEach().doubleValue() : 0.0, categoryName));
         }
         return result;
     }
@@ -208,8 +214,8 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public CustomerOrderDetailDTO getCustomerOrderDetail(Integer customerId, Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Invalid order id: " + orderId));
-        if (!order.getCustomer().getCustomerId().equals(customerId)) {
-            throw new IllegalArgumentException("Order dose not belong to the customer");
+        if (order.getCustomer() == null || order.getCustomer().getCustomerId() == null || !order.getCustomer().getCustomerId().equals(customerId)) {
+            throw new IllegalArgumentException("Order does not belong to the customer or customer info missing");
         }
         CustomerOrderDetailDTO detailDTO = new CustomerOrderDetailDTO();
         detailDTO.setOrderId(order.getOrderId());
@@ -220,7 +226,6 @@ public class OrderServiceImpl implements IOrderService {
         detailDTO.setDiscountAmount(order.getDiscountAmount());
         detailDTO.setRefundStatus(order.getRefundStatus());
         detailDTO.setItems(getOrderItemsDetail(orderId));
-        
         // Set customer information with null checks
         Customer customer = order.getCustomer();
         if (customer != null) {
@@ -228,8 +233,12 @@ public class OrderServiceImpl implements IOrderService {
             detailDTO.setCustomerEmail(customer.getEmail());
             detailDTO.setCustomerPhone(customer.getPhone());
             detailDTO.setCustomerAddress(customer.getAddress());
+        } else {
+            detailDTO.setCustomerName("Unknown");
+            detailDTO.setCustomerEmail("");
+            detailDTO.setCustomerPhone("");
+            detailDTO.setCustomerAddress("");
         }
-        
         return detailDTO;
     }
     
@@ -250,27 +259,43 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     private OrderDTO convertToDto(Order order) {
-        int itemsCount = orderItemRepository.countItemsByOrderId(order.getOrderId());
-        Double totalAmountRaw = orderItemRepository.sumTotalAmountByOrderId(order.getOrderId());
+        int itemsCount = 0;
+        Double totalAmountRaw = 0.0;
+        try {
+            itemsCount = orderItemRepository.countItemsByOrderId(order.getOrderId());
+            totalAmountRaw = orderItemRepository.sumTotalAmountByOrderId(order.getOrderId());
+        } catch (Exception ex) {
+            // giữ giá trị mặc định
+        }
         java.math.BigDecimal totalAmount = totalAmountRaw != null ? java.math.BigDecimal.valueOf(totalAmountRaw) : java.math.BigDecimal.ZERO;
-        
         // Get representative product info
-        java.util.List<OrderItem> orderItems = orderItemRepository.findByIdOrderId(order.getOrderId());
+        java.util.List<OrderItem> orderItems = new ArrayList<>();
+        try {
+            orderItems = orderItemRepository.findByIdOrderId(order.getOrderId());
+        } catch (Exception ex) {
+            // giữ orderItems rỗng
+        }
         String representativeProductName = null;
         String representativeProductImage = null;
-        
         if (!orderItems.isEmpty()) {
             OrderItem firstItem = orderItems.get(0);
-            Product product = productRepository.findById(firstItem.getId().getProductId()).orElse(null);
+            Product product = null;
+            try {
+                product = productRepository.findById(firstItem.getId().getProductId()).orElse(null);
+            } catch (Exception ex) {
+                // giữ product = null
+            }
             if (product != null) {
                 representativeProductName = product.getName();
                 representativeProductImage = product.getImageUrl();
             }
         }
-        
+        String customerName = (order.getCustomer() != null) ? order.getCustomer().getName() : "Unknown";
+        String customerEmail = (order.getCustomer() != null) ? order.getCustomer().getEmail() : "";
+        String customerPhone = (order.getCustomer() != null) ? order.getCustomer().getPhone() : "";
         return new OrderDTO(
                 order.getOrderId(),
-                order.getCustomer().getName(),
+                customerName,
                 order.getDiscountAmount(),
                 order.getOrderDate(),
                 totalAmount,
@@ -279,8 +304,8 @@ public class OrderServiceImpl implements IOrderService {
                 itemsCount,
                 representativeProductName,
                 representativeProductImage,
-                order.getCustomer().getEmail(),
-                order.getCustomer().getPhone());
+                customerEmail,
+                customerPhone);
     }
 
 } 

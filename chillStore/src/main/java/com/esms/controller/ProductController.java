@@ -356,6 +356,10 @@ public class ProductController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public String addProduct(
             @ModelAttribute("product") Product product,
+            @RequestParam("imageFiles")  MultipartFile[] imageFiles,
+            @RequestParam(value = "primaryImageIndex", defaultValue = "0") int primaryImageIndex,
+            @RequestParam("specKeys") List<String> specKeys,
+            @RequestParam("specValues") List<String> specValues,
             @RequestParam(value = "image", required = false) MultipartFile image,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size,
@@ -416,6 +420,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
+
         
         productService.saveProduct(product);
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",

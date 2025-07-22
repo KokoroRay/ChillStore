@@ -65,7 +65,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="wishlist-container">
+                                    <!-- Wishlist button only for logged-in users -->
+                                    <div class="wishlist-container" th:if="${customer != null}">
                                         <button class="wishlist-btn" id="wishlistBtn" onclick="toggleWishlist()"
                                             type="button">
                                             <i class="far fa-heart"></i>

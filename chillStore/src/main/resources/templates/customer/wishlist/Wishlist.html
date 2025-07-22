@@ -48,6 +48,26 @@
         .custom-checkbox.selected .fa-check {
             display: block;
         }
+        .floating-message {
+            position: fixed;
+            top: 100px;
+            right: 40px;
+            background: #4caf50;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-size: 1.1rem;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, top 0.3s;
+        }
+        .floating-message.show {
+            opacity: 1;
+            pointer-events: auto;
+            top: 120px;
+        }
     </style>
 </head>
 <body>
@@ -56,17 +76,19 @@
         <i class="fa fa-arrow-left"></i> Back
     </a>
     <div style="position:fixed;top:90px;right:30px;z-index:1000;display:flex;gap:10px;">
-        <a href="#" id="btn-buy-selected" class="btn btn-primary" style="display:none;">
-            <i class="fa fa-shopping-cart"></i> Buy selected
-        </a>
+        <!-- Only keep Remove button -->
         <a href="#" id="btn-remove-selected" class="btn btn-danger" style="display:none;">
             <i class="fa fa-trash"></i> Remove
         </a>
     </div>
+    <div id="floatingMessage" class="floating-message" style="display: none;">
+        <i class="fas fa-check-circle me-2"></i>
+        <span id="messageText"></span>
+    </div>
     <div class="container main-content">
         <h2 class="text-center mb-4">Wishlist</h2>
         <div class="row" id="wishlist-products">
-            <!-- Sản phẩm sẽ được render bằng JS -->
+            <!-- Products will be rendered by JS -->
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -86,18 +108,17 @@
             // Format price
             let priceHtml = 'N/A';
             if (product.price !== undefined && product.price !== null && !isNaN(product.price)) {
-                priceHtml = `Giá: ${Number(product.price).toLocaleString('vi-VN')} VND`;
+                priceHtml = `Price: ${Number(product.price).toLocaleString('en-US')} VND`;
             }
             col.innerHTML = `
-                <div class="product-card w-100 position-relative" style="cursor:pointer;">
+                <div class="product-card w-100 position-relative" style="cursor:pointer;" data-product-id="${product.productId}">
                     <span class="custom-checkbox">
                         <i class="fa fa-check"></i>
                     </span>
                     <img src="${product.imageUrl}" alt="${product.name}" class="product-img">
-                    <h5 class="product-title">${product.name}</h5>
-                    <div class="mb-2 text-center">${priceHtml}</div>
+                    <h5 class="product-title" style="color: #2196f3;">${product.name}</h5>
+                    <p class="mb-2 text-center"><span style="font-weight: bold;">Price:</span> <span style="font-weight: bold;">${Number(product.price).toLocaleString('vi-VN')} VND</span></p>
                     <div class="product-actions mt-auto gap-2">
-                        <button class="btn btn-buy flex-grow-1" onclick="buyNow(${product.productId})">Buy now</button>
                     </div>
                 </div>
             `;
@@ -125,13 +146,10 @@
     // Hàm cập nhật hiển thị nút buy selected và remove
     function updateBuySelectedAndRemoveButtons() {
         const anySelected = document.querySelector('.custom-checkbox.selected');
-        const btnBuySelected = document.getElementById('btn-buy-selected');
         const btnRemoveSelected = document.getElementById('btn-remove-selected');
         if (anySelected) {
-            btnBuySelected.style.display = '';
             btnRemoveSelected.style.display = '';
         } else {
-            btnBuySelected.style.display = 'none';
             btnRemoveSelected.style.display = 'none';
         }
     }
@@ -161,13 +179,9 @@
         cards.forEach(card => {
             const checkbox = card.querySelector('.custom-checkbox');
             if (checkbox && checkbox.classList.contains('selected')) {
-                const buyButton = card.querySelector('.btn-buy');
-                if (buyButton) {
-                    const onclick = buyButton.getAttribute('onclick');
-                    const productIdMatch = onclick.match(/buyNow\((\d+)\)/);
-                    if (productIdMatch) {
-                        selectedProductIds.push(parseInt(productIdMatch[1]));
-                    }
+                const productId = card.getAttribute('data-product-id');
+                if (productId) {
+                    selectedProductIds.push(parseInt(productId));
                 }
             }
         });
@@ -177,7 +191,19 @@
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
         window.dispatchEvent(new Event('wishlist-updated'));
         renderWishlist();
+        updateBuySelectedAndRemoveButtons();
     });
+
+    function showFloatingMessage(message) {
+        const floatingMessage = document.getElementById('floatingMessage');
+        const messageText = document.getElementById('messageText');
+        messageText.textContent = message;
+        floatingMessage.style.display = '';
+        floatingMessage.classList.add('show');
+        setTimeout(() => floatingMessage.classList.remove('show'), 3000);
+    }
+
+    // Remove all JS related to btn-buy-selected
     </script>
 <div th:replace="fragments/footer :: footer"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

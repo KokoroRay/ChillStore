@@ -114,7 +114,7 @@
         <img th:src="@{${product.imageUrl}}" alt="Ảnh sản phẩm">
         <h3 th:text="${product.name}" style="color: #2196f3;">Tên sản phẩm</h3>
         <p style=""
-           th:text="'Giá: ' + ${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'">
+           th:text="'Price: ' + ${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'">
         </p>
       </a>
     </div>

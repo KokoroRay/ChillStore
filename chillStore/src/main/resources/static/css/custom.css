@@ -27,7 +27,7 @@
 .card {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Placeholder image */
@@ -42,10 +42,12 @@
     background-color: #a8f0a3;
     color: #000;
 }
+
 .btn-update {
     background-color: #c0e4f3;
     color: #000;
 }
+
 .btn-delete {
     background-color: #f38c8c;
     color: #000;

@@ -11,6 +11,7 @@ import com.esms.repository.OrderRepository;
 import com.esms.repository.OrderItemRepository;
 import com.esms.repository.ProductRepository;
 import com.esms.service.IOrderService;
+import com.esms.service.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.support.PropertiesLoaderSupport;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class OrderServiceImpl implements IOrderService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private WarehouseService warehouseService;
     private PropertiesLoaderSupport propertiesLoaderSupport;
 
     @Override
@@ -129,7 +133,8 @@ public class OrderServiceImpl implements IOrderService {
             Product product = productRepository.findById(item.getId().getProductId()).orElse(null);
             String productName = (product != null) ? product.getName() : "Unknown";
             String categoryName = (product != null && product.getCategory() != null) ? product.getCategory().getName() : "Unknown";
-            result.add(new OrderItemDetailDTO(productName, item.getQuantity(),
+            int productId = item.getId().getProductId();
+            result.add(new OrderItemDetailDTO(productId, productName, item.getQuantity(),
                                               item.getPriceEach().doubleValue(), categoryName));
         }
         return result;
@@ -142,6 +147,7 @@ public class OrderServiceImpl implements IOrderService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid order Id:" + orderId));
         String currentStatus = order.getStatus();
         System.out.println("Current status: " + currentStatus);
+
         // Xử lý refund status cho VNpay TRƯỚC khi cập nhật status
         if ("Cancelled".equals(status) && "VNpay".equals(order.getPaymentMethod())) {
             System.out.println("Setting refund status for VNpay order: " + orderId);
@@ -154,22 +160,24 @@ public class OrderServiceImpl implements IOrderService {
             }
         }
 
-        // Cập nhật status sau khi đã set refund status
-        if ("Pending".equals(currentStatus)) {
-            if ("Paid".equals(status) || "Cancelled".equals(status)) {
-                order.setStatus(status);
-            }
-        } else if ("Paid".equals(currentStatus)) {
-            if ("Shipped".equals(status) || "Cancelled".equals(status)) {
-                order.setStatus(status);
-            }
-        } else if ("Shipped".equals(currentStatus)) {
-            if ("Delivered".equals(status) || "Cancelled".equals(status)) {
-                order.setStatus(status);
+        boolean isValidTransition = false;
+        // Kiểm tra các luồng chuyển trạng thái hợp lệ
+        if (("Pending".equals(currentStatus) && ("Paid".equals(status) || "Cancelled".equals(status))) ||
+            ("Paid".equals(currentStatus) && "Shipped".equals(status)) ||
+            ("Shipped".equals(currentStatus) && "Delivered".equals(status))) {
+            isValidTransition = true;
+        }
+
+        if (isValidTransition) {
+            order.setStatus(status);
+            // Nếu đơn hàng bị hủy, hoàn trả lại số lượng tồn kho
+            if ("Cancelled".equals(status)) {
+                restoreProductStock(order);
             }
         } else {
-            throw  new IllegalArgumentException("Invalid status transition from " + currentStatus);
+            throw new IllegalArgumentException("Invalid status transition from " + currentStatus + " to " + status);
         }
+
         orderRepository.save(order);
     }
 
@@ -223,6 +231,22 @@ public class OrderServiceImpl implements IOrderService {
         }
         
         return detailDTO;
+    }
+    
+    /**
+     * Hoàn trả lại số lượng tồn kho cho các sản phẩm trong đơn hàng bị hủy.
+     * @param order Đơn hàng bị hủy
+     */
+    private void restoreProductStock(Order order) {
+        List<OrderItem> items = orderItemRepository.findByIdOrderId(order.getOrderId());
+        for (OrderItem item : items) {
+            // Tạo giao dịch nhập kho. Service này sẽ tự động cập nhật stock.
+            warehouseService.importProduct(
+                item.getId().getProductId(), 
+                item.getQuantity(), 
+                "Order cancelled - Order ID: " + order.getOrderId()
+            );
+        }
     }
 
     private OrderDTO convertToDto(Order order) {

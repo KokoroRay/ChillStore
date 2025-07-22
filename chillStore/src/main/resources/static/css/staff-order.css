@@ -84,7 +84,7 @@
 .order-table {
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .order-table th {
@@ -144,21 +144,21 @@
         font-size: 0.875rem;
         min-width: 1000px;
     }
-    
+
     .order-table td {
         padding: 8px 4px;
         white-space: nowrap;
     }
-    
+
     .btn-sm {
         padding: 0.25rem 0.5rem;
         font-size: 0.75rem;
     }
-    
+
     .search-form .row {
         flex-direction: column;
     }
-    
+
     .search-form .col-md-3,
     .search-form .col-md-2,
     .search-form .col-md-1 {

@@ -1,0 +1,221 @@
+/* Feedback Styles */
+#feedback-section-staff,
+.feedback-section {
+    background: #ffffff; /* White background to create a card effect */
+    border-radius: 1rem;   /* Smoother corners */
+    padding: 2rem;         /* More internal spacing */
+    margin-top: 40px;
+    border: 1px solid #e9ecef; /* A subtle border */
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.075); /* A softer, more modern shadow */
+}
+
+.feedback-section h3 {
+    color: #333;
+    font-weight: 600;
+    border-bottom: 3px solid #007bff;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.feedback-list {
+    margin-bottom: 30px;
+}
+
+.feedback-item {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    padding: 25px;
+    background: white;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feedback-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.feedback-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.feedback-rating {
+    color: #ffc107;
+    font-size: 20px;
+    letter-spacing: 2px;
+}
+
+.feedback-comment {
+    color: #6c757d;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    font-size: 15px;
+}
+
+.feedback-date {
+    color: #adb5bd;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.feedback-actions {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+}
+
+.feedback-reply {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    border-left: 4px solid #2196f3;
+    padding: 20px;
+    margin-top: 15px;
+    border-radius: 0 12px 12px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.reply-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.reply-staff {
+    font-weight: 600;
+    color: #1976d2;
+    font-size: 14px;
+}
+
+.reply-content {
+    color: #495057;
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+#feedback-form-container {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rating-stars {
+    direction: rtl;
+    unicode-bidi: bidi-override;
+    font-size: 2rem;
+    display: inline-flex;
+    gap: 2px;
+}
+.rating-stars input[type="radio"] {
+    display: none;
+}
+.rating-stars label {
+    color: #bbb;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.rating-stars input[type="radio"]:checked ~ label,
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+    color: #222;
+}
+
+.feedback-alert {
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.feedback-alert a {
+    text-decoration: none;
+    font-weight: 600;
+    color: inherit;
+}
+
+.feedback-alert a:hover {
+    text-decoration: underline;
+}
+
+/* Card styles for feedback form */
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 12px;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border-radius: 12px 12px 0 0 !important;
+    border: none;
+}
+
+.card-body {
+    padding: 25px;
+}
+
+/* Button improvements */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Form improvements */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+/* Empty state */
+.text-center.text-muted.py-4 {
+    padding: 60px 20px !important;
+}
+
+.text-center.text-muted.py-4 i {
+    opacity: 0.5;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .feedback-section {
+        padding: 20px;
+        margin-top: 30px;
+    }
+    
+    .feedback-item {
+        padding: 20px;
+    }
+    
+    .feedback-user {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .reply-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+} 

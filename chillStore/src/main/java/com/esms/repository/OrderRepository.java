@@ -182,5 +182,5 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT COUNT(o) > 0 FROM Order o JOIN o.orderItems oi WHERE o.customer.customerId = :customerId AND oi.product.productId = :productId AND o.status = 'Delivered'")
     boolean hasCustomerDeliveredProduct(@Param("customerId") Integer customerId, @Param("productId") Integer productId);
 
-
-    }
+    List<Order> findByCustomer_CustomerIdAndStatus(Integer customerId, String status);
+}

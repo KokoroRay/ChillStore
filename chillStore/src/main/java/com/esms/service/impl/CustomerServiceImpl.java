@@ -393,4 +393,22 @@ public class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
+    @Override
+    public BigDecimal calculateTotalSpending(Integer customerId) {
+        List<Order> deliveredOrders = orderRepository.findByCustomer_CustomerIdAndStatus(customerId, "Delivered");
+        List<Order> paidOrders = orderRepository.findByCustomer_CustomerIdAndStatus(customerId, "Paid");
+
+        BigDecimal totalSpending = BigDecimal.ZERO;
+        for (Order order : deliveredOrders) {
+            if (order.getTotalAmount() != null) {
+                totalSpending = totalSpending.add(order.getTotalAmount());
+            }
+        }
+        for (Order order : paidOrders) {
+            if (order.getTotalAmount() != null) {
+                totalSpending = totalSpending.add(order.getTotalAmount());
+            }
+        }
+        return totalSpending;
+    }
 }

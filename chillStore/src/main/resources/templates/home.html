@@ -145,48 +145,32 @@
     <a th:if="${currentPage + 1 < totalPages}"
        th:href="@{/home(page=${totalPages - 1}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'">&raquo;</a>
   </div><br>
-<div>
-  <h2 class="title">
-    Why Choose Our Store?
-  </h2>
-  <div class="container">
-  <div class="why"><p>
-    Genuine Products – Competitive Prices
-  </p>
-  <p>
-    We are committed to providing 100% authentic products from trusted brands such as Panasonic,
-    LG, Samsung, Daikin… with transparent and reasonable pricing, always updated with attractive promotions.
-  </p></div>
-  <div class="why"><p>
-    Wide Product Range – Easy to Choose
-  </p>
-    <p>
-      Whether you need air conditioners, refrigerators, washing machines, or industrial cooling equipment,
-      our website offers a full range of categories and powerful filters to help you find what you need in just a few clicks.
-    </p></div>
-  <div class="why"><p>
-    Fast Delivery – On-site Installation
-  </p>
-    <p>
-      We offer nationwide delivery and professional installation by experienced technicians,
-      so you can start using your products with confidence right away.
-    </p></div>
-  <div class="why"><p>
-    24/7 Customer Support
-  </p>
-    <p>
-      Got a question? Our support team is always ready to assist you via phone, live chat,
-      or email to ensure your shopping experience is smooth and satisfying.
-    </p></div>
-
-  <div class="why"><p>
-    Easy Ordering – Secure Payment – Real-time Tracking
-  </p>
-    <p>
-      With ESMS, you can place orders easily, choose flexible payment methods (COD, bank transfer, e-wallets),
-      and track your order status in real time, anytime, anywhere.
-    </p></div>
+<div class="why-section" style="background-color: #113F67; padding: 40px 20px;">
+  <div class="floating-icon"></div>
+  <h2 class="title galaxy-text">Why Choose Our Store?</h2>
+  <div class="why-container">
+    <div class="why">
+      <p>Genuine Products – Competitive Prices</p>
+      <p>We offer authentic products from trusted brands with transparent and competitive pricing.</p>
+    </div>
+    <div class="why">
+      <p>Wide Range – Easy to Find</p>
+      <p>A full range of refrigeration products with clear categories and convenient filtering options.</p>
+    </div>
+    <div class="why">
+      <p>Fast Delivery – On-Site Installation</p>
+      <p>Professional technicians deliver and install products quickly and efficiently at your location.</p>
+    </div>
+    <div class="why">
+      <p>24/7 Customer Support</p>
+      <p>Support via phone, live chat, and email to ensure a smooth shopping experience.</p>
+    </div>
+    <div class="why">
+      <p>Easy Ordering – Payment – Tracking</p>
+      <p>Quick ordering process, flexible payment methods, and real-time order tracking.</p>
+    </div>
   </div>
+  <div class="floating-icon microwave-icon"></div>
 </div>
 
   <div th:replace="fragments/footer :: footer"></div>

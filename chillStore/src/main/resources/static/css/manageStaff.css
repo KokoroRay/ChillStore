@@ -27,9 +27,11 @@ body {
 }
 
 .main-content {
+
     background-color: var(--background);
     flex: 1;
     padding: 1.5rem;
+    padding-top: 100px;
     overflow-y: auto;
     min-height: 0;
 }
@@ -113,9 +115,10 @@ body {
 
 /* Buttons & Actions */
 .btn-primary {
-    background-color: var(--primary);
+    background-color: #58A0C8;
     border-color: var(--primary);
 }
+
 
 .btn-primary:hover {
     background-color: #0d3253;
@@ -223,13 +226,8 @@ body {
         color: var(--primary);
     }
 
-    /* Specific labels for columns */
-    td:nth-child(1):before { content: "ID: "; }
-    td:nth-child(2):before { content: "Name: "; }
-    td:nth-child(3):before { content: "Gender: "; }
-    td:nth-child(4):before { content: "Email: "; }
-    td:nth-child(5):before { content: "Phone: "; }
-    td:nth-child(6):before { content: "Address: "; }
-    td:nth-child(7):before { content: "National ID: "; }
-    td:nth-child(8):before { content: "Actions: "; }
+    td[data-label]:before {
+        content: attr(data-label);
+    }
+
 }

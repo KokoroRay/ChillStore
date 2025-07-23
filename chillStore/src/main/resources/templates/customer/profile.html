@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Profile - ChillStore</title>
     <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/navigationBar.css">
@@ -41,10 +42,23 @@
                             alt="Profile Avatar" class="avatar-img" id="profileAvatar">
                     </div>
                     <div class="avatar-info">
-                        <h3 class="customer-name"
-                            th:text="${customerDto.displayName != null ? customerDto.displayName : customerDto.name}">
-                            Customer Name</h3>
-                        <p class="customer-email" th:text="${customerDto.email}">customer@email.com</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="customer-name"
+                                    th:text="${customerDto.displayName != null ? customerDto.displayName : customerDto.name}">
+                                    Customer Name</h3>
+                                <p class="customer-email" th:text="${customerDto.email}">customer@email.com</p>
+                            </div>
+
+                            <!-- New membership tier display -->
+                            <div class="membership-tier-container">
+                                <div class="membership-badge"
+                                     th:classappend="'tier-' + ${customerDto.membershipTier}"
+                                     th:text="${customerDto.membershipTier != null ? customerDto.membershipTier : 'Not available'}"
+                                     id="membershipTierBadge">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -115,20 +129,20 @@
                                     th:text="${customerDto.birthDate != null ? #temporals.format(customerDto.birthDate, 'dd/MM/yyyy') : 'Not updated'}">
                                     -</div>
                             </div>
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="fas fa-gem"></i>
-                                    <span id="membershipTierLabel">Membership Tier</span>
-                                </div>
-                                <div class="info-value"
-                                    th:text="${customerDto.membershipTier != null ? customerDto.membershipTier : 'Not available'}"
-                                    id="membershipTierValue">-</div>
-                                <div id="totalSpendingDetail"
-                                    style="display: none; font-size: 0.9em; color: #666; margin-top: 5px;">
-                                    Total Spending: <span
-                                        th:text="${customerDto.totalSpending != null ? #numbers.formatDecimal(customerDto.totalSpending, 0, 'COMMA', 2, 'POINT') + ' VND' : '0 VND'}"></span>
-                                </div>
-                            </div>
+<!--                            <div class="info-item">-->
+<!--                                <div class="info-label">-->
+<!--                                    <i class="fas fa-gem"></i>-->
+<!--                                    <span id="membershipTierLabel">Membership Tier</span>-->
+<!--                                </div>-->
+<!--                                <div class="info-value"-->
+<!--                                    th:text="${customerDto.membershipTier != null ? customerDto.membershipTier : 'Not available'}"-->
+<!--                                    id="membershipTierValue">-</div>-->
+<!--                                <div id="totalSpendingDetail"-->
+<!--                                    style="display: none; font-size: 0.9em; color: #666; margin-top: 5px;">-->
+<!--                                    Total Spending: <span-->
+<!--                                        th:text="${customerDto.totalSpending != null ? #numbers.formatDecimal(customerDto.totalSpending, 0, 'COMMA', 2, 'POINT') + ' VND' : '0 VND'}"></span>-->
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>

@@ -2,6 +2,7 @@ package com.esms.controller;
 
 
 import com.esms.model.dto.ProductDTO;
+import com.esms.service.DiscountService;
 import com.esms.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,9 @@ public class HomeController {
     // ----Product----
     @Autowired
     private ProductService productService;
+    // Thêm dòng này để lấy sản phẩm discount
+    @Autowired
+    private DiscountService discountService;
     @GetMapping({"/", "/home"}) // Cả / và /home đều dẫn đến trang chủ
 
     public String home(Model model,
@@ -50,6 +54,19 @@ public class HomeController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("nextPage", Math.min(page + 1, totalPages - 1));
         model.addAttribute("prevPage", Math.max(page - 1, 0));
+        // Lấy tối đa 10 sản phẩm giảm giá nổi bật (discount)
+        var discountPage = productService.getDiscountProducts(org.springframework.data.domain.PageRequest.of(0, 10));
+        var highlightDiscountProducts = discountPage.getContent();
+        model.addAttribute("highlightDiscountProducts", highlightDiscountProducts);
+        // Chuẩn bị map productId -> discount cho các sản phẩm giảm giá nổi bật
+        java.util.Map<Integer, com.esms.model.entity.Discount> productDiscountMap = new java.util.HashMap<>();
+        for (var product : highlightDiscountProducts) {
+            var discount = productService.getActiveDiscountForProduct(product);
+            if (discount != null) {
+                productDiscountMap.put(product.getProductId(), discount);
+            }
+        }
+        model.addAttribute("productDiscountMap", productDiscountMap);
         return "home";
     }
 

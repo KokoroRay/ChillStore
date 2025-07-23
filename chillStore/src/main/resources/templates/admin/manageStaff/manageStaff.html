@@ -24,45 +24,48 @@
     </div>
 
     <!-- Main Content -->
+
     <main class="col main-content">
+
       <div class="staff-management">
         <!-- Header with Title and Add Button -->
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h2 class="mb-0"><i class="fas fa-users me-2"></i>Staff Management</h2>
-          <a href="/admin/add-form" class="btn btn-primary">
+          <!-- Search Form -->
+          <form class="card border-0 shadow-sm mb-4" th:action="@{/admin/ManageStaff}" method="get">
+            <div class="card-body p-3">
+              <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                  <label class="form-label small fw-bold">Search</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" name="keyword" class="form-control"
+                           placeholder="Search" th:value="${keyword}">
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <label class="form-label small fw-bold">Gender</label>
+                  <select name="gender" class="form-select">
+                    <option value="">All Genders</option>
+                    <option value="MALE" th:selected="${gender == 'MALE'}">Male</option>
+                    <option value="FEMALE" th:selected="${gender == 'FEMALE'}">Female</option>
+                    <option value="OTHER" th:selected="${gender == 'OTHER'}">Other</option>
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <button type="submit" class="btn btn-accent w-100">
+                    <i class="fas fa-filter me-1"></i> Apply
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form> <br>
+          <a href="/admin/add-form" class="btn btn-primary btn-add">
             <i class="fas fa-plus me-2"></i> Add Staff
           </a>
         </div>
 
-        <!-- Search Form -->
-        <form class="card border-0 shadow-sm mb-4" th:action="@{/admin/ManageStaff}" method="get">
-          <div class="card-body p-3">
-            <div class="row g-3 align-items-end">
-              <div class="col-md-5">
-                <label class="form-label small fw-bold">Search Keyword</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fas fa-search"></i></span>
-                  <input type="text" name="keyword" class="form-control"
-                         placeholder="Search by name or email" th:value="${keyword}">
-                </div>
-              </div>
-              <div class="col-md-5">
-                <label class="form-label small fw-bold">Gender</label>
-                <select name="gender" class="form-select">
-                  <option value="">All Genders</option>
-                  <option value="MALE" th:selected="${gender == 'MALE'}">Male</option>
-                  <option value="FEMALE" th:selected="${gender == 'FEMALE'}">Female</option>
-                  <option value="OTHER" th:selected="${gender == 'OTHER'}">Other</option>
-                </select>
-              </div>
-              <div class="col-md-2">
-                <button type="submit" class="btn btn-accent w-100">
-                  <i class="fas fa-filter me-1"></i> Apply
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
+
 
         <!-- Staff Table Card -->
         <div class="card border-0 shadow-sm">
@@ -104,7 +107,7 @@
                     </div>
                   </td>
                 </tr>
-                <tr th:if="${staffList.empty}">
+                <tr th:if="${staffList.isEmpty()}">
                   <td colspan="8" class="text-center py-4 text-muted">
                     <i class="fas fa-user-slash fa-2x mb-2"></i>
                     <h5 class="mb-0">No staff members found</h5>

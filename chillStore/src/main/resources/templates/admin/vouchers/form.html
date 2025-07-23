@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Edit Voucher' : 'Create New Voucher'">Voucher Form</title>
+    <title th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Edit Voucher' : 'Create New Voucher'">
+        Voucher Form</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}" />
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/sidebar.css">
     <!-- Select2 CSS nếu cần -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
-          rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css"
+        rel="stylesheet" />
+    rel="stylesheet" />
 
     <!-- CSS custom -->
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
         }
+
         .d-flex-fullheight {
             min-height: 100vh;
         }
+
         /* Nếu sidebar fixed: */
         .sidebar-fixed {
             position: fixed;
@@ -34,8 +40,10 @@
             overflow-y: auto;
             /* background-color: #2d6a88;  Nếu bạn đã có CSS riêng cho sidebar, không cần đặt lại */
         }
+
         .main-with-sidebar {
-            margin-left: 250px; /* phù hợp với width sidebar */
+            margin-left: 250px;
+            /* phù hợp với width sidebar */
             padding: 20px;
         }
 
@@ -49,11 +57,13 @@
             border-radius: 12px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         }
+
         .form-section {
             margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 1px solid #eee;
         }
+
         .form-section-title {
             font-size: 1.2rem;
             font-weight: 600;
@@ -62,9 +72,11 @@
             display: flex;
             align-items: center;
         }
+
         .form-section-title i {
             margin-right: 10px;
         }
+
         .clear-all-btn {
             background: none;
             border: none;
@@ -72,9 +84,11 @@
             cursor: pointer;
             font-size: 0.9rem;
         }
+
         .clear-all-btn:hover {
             color: #dc3545;
         }
+
         /* Select2 multi-select styling */
         .select2-container--bootstrap4 .select2-selection--multiple {
             min-height: calc(2.25rem + 2px);
@@ -88,6 +102,7 @@
             padding: 0.375rem 0.75rem;
             gap: 0.3rem;
         }
+
         .select2-selection__choice {
             background-color: #007bff;
             border: 1px solid #007bff;
@@ -101,340 +116,365 @@
             flex-shrink: 0;
             margin: 0.1rem;
         }
+
         .select2-selection__choice__remove {
             color: white;
             margin-right: 0.3rem;
             font-weight: bold;
         }
+
         .select2-selection__choice__remove:hover {
             color: #ffcccc;
         }
+
         .select2-container--bootstrap4 .select2-selection--multiple .select2-search--inline .select2-search__field {
             margin-top: 0;
             height: auto;
         }
-        
+
         /* Professional list styling */
         .list-group-item {
             border: none;
             border-bottom: 1px solid #f0f0f0;
         }
+
         .list-group-item:last-child {
             border-bottom: none;
         }
+
         .list-group-item:hover {
             background-color: #f8f9fa;
         }
+
         .form-check {
             margin-bottom: 0;
         }
+
         .form-check-input {
             margin-top: 0.125rem;
         }
+
         .form-check-label {
             cursor: pointer;
             font-weight: 500;
             color: #495057;
         }
-        .form-check-input:checked ~ .form-check-label {
+
+        .form-check-input:checked~.form-check-label {
             color: #007bff;
         }
+
         /* Nếu muốn nút Save/Cancel luôn ở cuối form, có thể sticky */
         /* .form-actions { position: sticky; bottom: 0; background: white; padding-top: 10px; } */
     </style>
 </head>
 
 <body>
-<!-- Nếu sidebar là fragment riêng -->
-<div th:insert="~{fragments/sidebar :: sidebar}" class="sidebar-fixed"></div>
-<main class="main-with-sidebar">
-    <div th:fragment="content">
-        <div id="voucherForm" class="form-container">
-            <h2 class="mb-4"
-                th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Edit Voucher' : 'Create New Voucher'">
-                Voucher Form
-            </h2>
-            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <!-- Nếu sidebar là fragment riêng -->
+    <div th:insert="~{fragments/sidebar :: sidebar}" class="sidebar-fixed"></div>
+    <main class="main-with-sidebar">
+        <div th:fragment="content">
+            <div id="voucherForm" class="form-container">
+                <h2 class="mb-4"
+                    th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Edit Voucher' : 'Create New Voucher'">
+                    Voucher Form
+                </h2>
+                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-            <form th:action="${voucherDto != null and voucherDto.voucher_id != null}
+                <form th:action="${voucherDto != null and voucherDto.voucher_id != null}
                                  ? @{/admin/vouchers/edit/{id}(id=${voucherDto.voucher_id})}
-                                 : @{/admin/vouchers/add}"
-                  th:object="${voucherDto}" method="post" novalidate>
-                <!-- Hidden ID nếu edit -->
-                <input type="hidden" th:field="*{voucher_id}"
-                       th:if="${voucherDto != null and voucherDto.voucher_id != null}"/>
+                                 : @{/admin/vouchers/add}" th:object="${voucherDto}" method="post" novalidate>
+                    <!-- Hidden ID nếu edit -->
+                    <input type="hidden" th:field="*{voucher_id}"
+                        th:if="${voucherDto != null and voucherDto.voucher_id != null}" />
 
-                <!-- Voucher Information -->
-                <div class="form-section">
-                    <div class="form-section-title">
-                        <i class="fas fa-info-circle"></i> Voucher Information
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="code" class="form-label">Code <span class="text-danger">*</span></label>
-                            <input type="text" th:field="*{code}" class="form-control" id="code"
-                                   placeholder="Enter voucher code" required/>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('code')}"
-                                 th:errors="*{code}"></div>
+                    <!-- Voucher Information -->
+                    <div class="form-section">
+                        <div class="form-section-title">
+                            <i class="fas fa-info-circle"></i> Voucher Information
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="quantity_available" class="form-label">Quantity <span class="text-danger">*</span></label>
-                            <input type="number" min="0" th:field="*{quantity_available}" class="form-control"
-                                   id="quantity_available" placeholder="e.g., 100" required/>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity_available')}"
-                                 th:errors="*{quantity_available}"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea th:field="*{description}" class="form-control" id="description" rows="2"
-                                  placeholder="Description (optional)"></textarea>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
-                             th:errors="*{description}"></div>
-                    </div>
-                </div>
-
-                <!-- Applicable Categories and Brands -->
-                <div class="form-section">
-                    <div class="form-section-title">
-                        <i class="fas fa-tags"></i> Applicable Products
-                    </div>
-                    <div class="mb-4">
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Hướng dẫn:</strong> Bạn có thể chọn nhiều categories và brands cùng lúc. 
-                            Để trống cả hai để áp dụng voucher cho tất cả sản phẩm.
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <span>Categories</span>
-                                    <button type="button" id="clearCategories" class="clear-all-btn">
-                                        <i class="fas fa-times"></i> Clear All
-                                    </button>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="code" class="form-label">Code <span class="text-danger">*</span></label>
+                                <input type="text" th:field="*{code}" class="form-control" id="code"
+                                    placeholder="Enter voucher code" required />
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('code')}" th:errors="*{code}">
                                 </div>
-                                <div class="card-body">
-                                    <div class="mb-2">
-                                        <small class="text-muted">Không chọn = áp dụng tất cả categories</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="quantity_available" class="form-label">Quantity <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" min="0" th:field="*{quantity_available}" class="form-control"
+                                    id="quantity_available" placeholder="e.g., 100" required />
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity_available')}"
+                                    th:errors="*{quantity_available}"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea th:field="*{description}" class="form-control" id="description" rows="2"
+                                placeholder="Description (optional)"></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
+                                th:errors="*{description}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Voucher Type <span class="text-danger">*</span></label>
+                            <div>
+                                <input type="radio" th:field="*{special}" value="true" id="specialVoucher">
+                                <label for="specialVoucher" class="me-3">Special</label>
+                                <input type="radio" th:field="*{special}" value="false" id="normalVoucher">
+                                <label for="normalVoucher">Normal</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Applicable Categories and Brands -->
+                    <div class="form-section">
+                        <div class="form-section-title">
+                            <i class="fas fa-tags"></i> Applicable Products
+                        </div>
+                        <div class="mb-4">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Hướng dẫn:</strong> Bạn có thể chọn nhiều categories và brands cùng lúc.
+                                Để trống cả hai để áp dụng voucher cho tất cả sản phẩm.
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span>Categories</span>
+                                        <button type="button" id="clearCategories" class="clear-all-btn">
+                                            <i class="fas fa-times"></i> Clear All
+                                        </button>
                                     </div>
-                                    <div class="list-group list-group-flush" style="max-height: 200px; overflow-y: auto;">
-                                        <div th:each="cat : ${allCategories}" class="list-group-item px-0 py-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" 
-                                                       name="categoryIds" th:value="${cat.id}" 
-                                                       th:id="'cat_' + ${cat.id}"
-                                                       th:checked="${selectedCategories != null and selectedCategories.contains(cat)}">
-                                                <label class="form-check-label" th:for="'cat_' + ${cat.id}" th:text="${cat.name}">
-                                                </label>
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <small class="text-muted">Không chọn = áp dụng tất cả categories</small>
+                                        </div>
+                                        <div class="list-group list-group-flush"
+                                            style="max-height: 200px; overflow-y: auto;">
+                                            <div th:each="cat : ${allCategories}" class="list-group-item px-0 py-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="categoryIds"
+                                                        th:value="${cat.id}" th:id="'cat_' + ${cat.id}"
+                                                        th:checked="${selectedCategories != null and selectedCategories.contains(cat)}">
+                                                    <label class="form-check-label" th:for="'cat_' + ${cat.id}"
+                                                        th:text="${cat.name}">
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryIds')}"
+                                            th:errors="*{categoryIds}"></div>
                                     </div>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryIds')}"
-                                         th:errors="*{categoryIds}"></div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <span>Brands</span>
-                                    <button type="button" id="clearBrands" class="clear-all-btn">
-                                        <i class="fas fa-times"></i> Clear All
-                                    </button>
-                                </div>
-                                <div class="card-body">
-                                    <div class="mb-2">
-                                        <small class="text-muted">Không chọn = áp dụng tất cả brands</small>
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span>Brands</span>
+                                        <button type="button" id="clearBrands" class="clear-all-btn">
+                                            <i class="fas fa-times"></i> Clear All
+                                        </button>
                                     </div>
-                                    <div class="list-group list-group-flush" style="max-height: 200px; overflow-y: auto;">
-                                        <div th:each="br : ${allBrands}" class="list-group-item px-0 py-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" 
-                                                       name="brandIds" th:value="${br.id}" 
-                                                       th:id="'brand_' + ${br.id}"
-                                                       th:checked="${selectedBrands != null and selectedBrands.contains(br)}">
-                                                <label class="form-check-label" th:for="'brand_' + ${br.id}" th:text="${br.name}">
-                                                </label>
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <small class="text-muted">Không chọn = áp dụng tất cả brands</small>
+                                        </div>
+                                        <div class="list-group list-group-flush"
+                                            style="max-height: 200px; overflow-y: auto;">
+                                            <div th:each="br : ${allBrands}" class="list-group-item px-0 py-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="brandIds"
+                                                        th:value="${br.id}" th:id="'brand_' + ${br.id}"
+                                                        th:checked="${selectedBrands != null and selectedBrands.contains(br)}">
+                                                    <label class="form-check-label" th:for="'brand_' + ${br.id}"
+                                                        th:text="${br.name}">
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('brandIds')}"
+                                            th:errors="*{brandIds}"></div>
                                     </div>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('brandIds')}"
-                                         th:errors="*{brandIds}"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Promotion Details -->
-                <div class="form-section">
-                    <div class="form-section-title">
-                        <i class="fas fa-percentage"></i> Promotion Details
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Discount Type <span class="text-danger">*</span></label>
-                            <div class="d-flex gap-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="discountType"
-                                           id="discountPercent" value="percent"
-                                           th:checked="${voucherDto != null and voucherDto.discount_pct != null}"/>
-                                    <label class="form-check-label" for="discountPercent">Percentage</label>
+                    <!-- Promotion Details -->
+                    <div class="form-section">
+                        <div class="form-section-title">
+                            <i class="fas fa-percentage"></i> Promotion Details
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Discount Type <span class="text-danger">*</span></label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="discountType"
+                                            id="discountPercent" value="percent"
+                                            th:checked="${voucherDto != null and voucherDto.discount_pct != null}" />
+                                        <label class="form-check-label" for="discountPercent">Percentage</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="discountType"
+                                            id="discountAmount" value="amount"
+                                            th:checked="${voucherDto != null and voucherDto.discount_amount != null}" />
+                                        <label class="form-check-label" for="discountAmount">Fixed Amount</label>
+                                    </div>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="discountType"
-                                           id="discountAmount" value="amount"
-                                           th:checked="${voucherDto != null and voucherDto.discount_amount != null}"/>
-                                    <label class="form-check-label" for="discountAmount">Fixed Amount</label>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="min_order_amount" class="form-label">Min Order Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₫</span>
+                                    <input type="number" step="0.01" min="0" th:field="*{min_order_amount}"
+                                        class="form-control" id="min_order_amount" placeholder="e.g., 500000" />
                                 </div>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('min_order_amount')}"
+                                    th:errors="*{min_order_amount}"></div>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="min_order_amount" class="form-label">Min Order Amount</label>
-                            <div class="input-group">
-                                <span class="input-group-text">₫</span>
-                                <input type="number" step="0.01" min="0" th:field="*{min_order_amount}"
-                                       class="form-control" id="min_order_amount"
-                                       placeholder="e.g., 500000"/>
+                        <div class="row">
+                            <div class="col-md-6 mb-3" id="discountPctField">
+                                <label for="discount_pct" class="form-label">Discount Percent (%)</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" min="0" max="100" th:field="*{discount_pct}"
+                                        class="form-control" id="discount_pct" placeholder="e.g., 10" />
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('discount_pct')}"
+                                    th:errors="*{discount_pct}"></div>
                             </div>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('min_order_amount')}"
-                                 th:errors="*{min_order_amount}"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3" id="discountPctField">
-                            <label for="discount_pct" class="form-label">Discount Percent (%)</label>
-                            <div class="input-group">
-                                <input type="number" step="0.01" min="0" max="100" th:field="*{discount_pct}"
-                                       class="form-control" id="discount_pct" placeholder="e.g., 10"/>
-                                <span class="input-group-text">%</span>
+                            <div class="col-md-6 mb-3" id="discountAmountField">
+                                <label for="discount_amount" class="form-label">Discount Amount (₫)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₫</span>
+                                    <input type="number" step="1000" min="0" th:field="*{discount_amount}"
+                                        class="form-control" id="discount_amount" placeholder="e.g., 100000" />
+                                </div>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('discount_amount')}"
+                                    th:errors="*{discount_amount}"></div>
                             </div>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('discount_pct')}"
-                                 th:errors="*{discount_pct}"></div>
                         </div>
-                        <div class="col-md-6 mb-3" id="discountAmountField">
-                            <label for="discount_amount" class="form-label">Discount Amount (₫)</label>
-                            <div class="input-group">
-                                <span class="input-group-text">₫</span>
-                                <input type="number" step="1000" min="0" th:field="*{discount_amount}"
-                                       class="form-control" id="discount_amount" placeholder="e.g., 100000"/>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="start_date" class="form-label">Start Date <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" th:field="*{start_date}" class="form-control" id="start_date"
+                                    required />
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('start_date')}"
+                                    th:errors="*{start_date}"></div>
                             </div>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('discount_amount')}"
-                                 th:errors="*{discount_amount}"></div>
+                            <div class="col-md-6 mb-3">
+                                <label for="end_date" class="form-label">End Date <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" th:field="*{end_date}" class="form-control" id="end_date" required />
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('end_date')}"
+                                    th:errors="*{end_date}"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" th:field="*{active}" id="active"
+                                    role="switch" />
+                                <label class="form-check-label" for="active">Activate this voucher immediately</label>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
-                            <input type="date" th:field="*{start_date}" class="form-control" id="start_date" required/>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('start_date')}"
-                                 th:errors="*{start_date}"></div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="end_date" class="form-label">End Date <span class="text-danger">*</span></label>
-                            <input type="date" th:field="*{end_date}" class="form-control" id="end_date" required/>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('end_date')}"
-                                 th:errors="*{end_date}"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" th:field="*{active}" id="active"
-                                   role="switch"/>
-                            <label class="form-check-label" for="active">Activate this voucher immediately</label>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Actions -->
-                <div class="form-actions mt-4 d-flex justify-content-end gap-2">
-                    <a th:href="@{/admin/vouchers}" class="btn btn-secondary">
-                        <i class="fas fa-times me-2"></i> Cancel
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>
-                        <span th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Update Voucher' : 'Create Voucher'">Save</span>
-                    </button>
-                </div>
-            </form>
+                    <!-- Actions -->
+                    <div class="form-actions mt-4 d-flex justify-content-end gap-2">
+                        <a th:href="@{/admin/vouchers}" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            <span
+                                th:text="${voucherDto != null and voucherDto.voucher_id != null} ? 'Update Voucher' : 'Create Voucher'">Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-</main>
+    </main>
 
-<!-- Scripts cuối body -->
-<th:block th:fragment="scripts">
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        var contextPath = /*[[${#httpServletRequest.contextPath}]]*/ '';
-        /*]]>*/
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle discount type ban đầu
-            const initialType = document.querySelector('input[name="discountType"]:checked')?.value || 'percent';
-            toggleDiscountType(initialType);
-            // Lắng nghe change radio discountType
-            document.querySelectorAll('input[name="discountType"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    toggleDiscountType(this.value);
+    <!-- Scripts cuối body -->
+    <th:block th:fragment="scripts">
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var contextPath = /*[[${#httpServletRequest.contextPath}]]*/ '';
+            /*]]>*/
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Toggle discount type ban đầu
+                const initialType = document.querySelector('input[name="discountType"]:checked')?.value || 'percent';
+                toggleDiscountType(initialType);
+                // Lắng nghe change radio discountType
+                document.querySelectorAll('input[name="discountType"]').forEach(radio => {
+                    radio.addEventListener('change', function () {
+                        toggleDiscountType(this.value);
+                    });
+                });
+
+                // Không cần Select2 nữa vì dùng checkbox buttons
+
+                // Clear all categories
+                $('#clearCategories').on('click', function () {
+                    $('input[name="categoryIds"]').prop('checked', false);
+                });
+                // Clear all brands
+                $('#clearBrands').on('click', function () {
+                    $('input[name="brandIds"]').prop('checked', false);
+                });
+
+                // Date logic: Set min end date dựa trên start date
+                $('#start_date').on('change', function () {
+                    const startDate = new Date(this.value);
+                    // end date phải > start date
+                    if (!isNaN(startDate)) {
+                        startDate.setDate(startDate.getDate() + 1);
+                        const minEndDate = startDate.toISOString().split('T')[0];
+                        $('#end_date').attr('min', minEndDate);
+                    }
+                });
+                // Set max start date dựa trên end date
+                $('#end_date').on('change', function () {
+                    const endDate = new Date(this.value);
+                    if (!isNaN(endDate)) {
+                        endDate.setDate(endDate.getDate() - 1);
+                        const maxStartDate = endDate.toISOString().split('T')[0];
+                        $('#start_date').attr('max', maxStartDate);
+                    }
                 });
             });
 
-            // Không cần Select2 nữa vì dùng checkbox buttons
+            function toggleDiscountType(type) {
+                const pctField = document.getElementById('discountPctField');
+                const amtField = document.getElementById('discountAmountField');
+                const inputPct = document.getElementById('discount_pct');
+                const inputAmt = document.getElementById('discount_amount');
 
-            // Clear all categories
-            $('#clearCategories').on('click', function() {
-                $('input[name="categoryIds"]').prop('checked', false);
-            });
-            // Clear all brands
-            $('#clearBrands').on('click', function() {
-                $('input[name="brandIds"]').prop('checked', false);
-            });
-
-            // Date logic: Set min end date dựa trên start date
-            $('#start_date').on('change', function() {
-                const startDate = new Date(this.value);
-                // end date phải > start date
-                if (!isNaN(startDate)) {
-                    startDate.setDate(startDate.getDate() + 1);
-                    const minEndDate = startDate.toISOString().split('T')[0];
-                    $('#end_date').attr('min', minEndDate);
+                if (type === 'percent') {
+                    if (pctField) pctField.style.display = 'block';
+                    if (amtField) amtField.style.display = 'none';
+                    if (inputPct) inputPct.required = true;
+                    if (inputAmt) inputAmt.required = false;
+                } else {
+                    if (amtField) amtField.style.display = 'block';
+                    if (pctField) pctField.style.display = 'none';
+                    if (inputAmt) inputAmt.required = true;
+                    if (inputPct) inputPct.required = false;
                 }
-            });
-            // Set max start date dựa trên end date
-            $('#end_date').on('change', function() {
-                const endDate = new Date(this.value);
-                if (!isNaN(endDate)) {
-                    endDate.setDate(endDate.getDate() - 1);
-                    const maxStartDate = endDate.toISOString().split('T')[0];
-                    $('#start_date').attr('max', maxStartDate);
-                }
-            });
-        });
-
-        function toggleDiscountType(type) {
-            const pctField = document.getElementById('discountPctField');
-            const amtField = document.getElementById('discountAmountField');
-            const inputPct = document.getElementById('discount_pct');
-            const inputAmt = document.getElementById('discount_amount');
-
-            if (type === 'percent') {
-                if (pctField) pctField.style.display = 'block';
-                if (amtField) amtField.style.display = 'none';
-                if (inputPct) inputPct.required = true;
-                if (inputAmt) inputAmt.required = false;
-            } else {
-                if (amtField) amtField.style.display = 'block';
-                if (pctField) pctField.style.display = 'none';
-                if (inputAmt) inputAmt.required = true;
-                if (inputPct) inputPct.required = false;
             }
-        }
-    </script>
-</th:block>
+        </script>
+    </th:block>
 </body>
+
 </html>

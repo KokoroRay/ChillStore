@@ -10,12 +10,13 @@
 }
 
 .discount-card:hover {
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transform: translateY(-2px);
 }
 
 .discount-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     color: white;
     padding: 20px;
     border-radius: 10px 10px 0 0;
@@ -119,26 +120,27 @@
 
 /* Statistics cards */
 .stats-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     color: white;
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 20px;
     text-align: center;
     transition: transform 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .stats-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .stats-number {
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 5px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .stats-label {
@@ -151,13 +153,14 @@
 .detail-card {
     border: 1px solid #e0e0e0;
     border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     background: white;
     overflow: hidden;
 }
 
 .detail-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     color: white;
     padding: 30px;
     border-radius: 15px 15px 0 0;
@@ -258,7 +261,7 @@
 }
 
 .product-item:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .product-item:last-child {
@@ -332,30 +335,50 @@
     .discount-card {
         margin-bottom: 20px;
     }
-    
+
     .action-buttons {
         flex-direction: column;
         gap: 8px;
     }
-    
+
     .btn-sm {
         width: 100%;
     }
-    
+
     .info-row {
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
     }
-    
+
     .info-value {
         text-align: left;
     }
-    
+
     .action-buttons .btn-lg {
         width: 100%;
         margin-bottom: 10px;
     }
+}
+.collapse-icon {
+    transition: transform 0.3s ease;
+}
+[aria-expanded="true"] .collapse-icon {
+    transform: rotate(180deg);
+}
+
+/* Điều chỉnh giao diện cho phần lọc */
+.search-filter-card .card-header {
+    cursor: pointer;
+    padding: 12px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+.search-filter-card .card-header h5 {
+    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* Animation effects */
@@ -395,15 +418,20 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Discount Management Styles */
 
 /* Statistics Cards */
 .stats-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     color: white;
     padding: 1.5rem;
     border-radius: 15px;
@@ -446,7 +474,8 @@
 }
 
 .discount-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     color: white;
     padding: 1.5rem;
 }
@@ -671,28 +700,28 @@
         padding: 12px;
         margin-bottom: 15px;
     }
-    
+
     .stats-number {
         font-size: 1.5rem;
     }
-    
+
     .stats-label {
         font-size: 0.8rem;
     }
-    
+
     .discount-card {
         margin-bottom: 1rem;
     }
-    
+
     .action-buttons {
         flex-direction: column;
     }
-    
+
     .action-buttons .btn {
         width: 100%;
         margin-bottom: 0.5rem;
     }
-    
+
     .action-buttons .btn:last-child {
         margin-bottom: 0;
     }
@@ -773,7 +802,7 @@
 .search-filter-card {
     border: 1px solid #e0e0e0;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     background: white;
     margin-bottom: 30px;
 }
@@ -849,7 +878,8 @@
 }
 
 .search-filter-actions .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #113F67;
+    background: linear-gradient(9deg,rgba(17, 63, 103, 1) 0%, rgba(34, 101, 151, 1) 10%, rgba(135, 192, 205, 1) 61%);
     border: none;
 }
 
@@ -888,17 +918,17 @@
     .search-filter-card .card-body {
         padding: 15px;
     }
-    
+
     .search-filter-actions {
         flex-direction: column;
         gap: 15px;
         align-items: stretch;
     }
-    
+
     .search-filter-actions .btn {
         width: 100%;
     }
-    
+
     .search-filter-info {
         text-align: center;
     }
@@ -989,7 +1019,7 @@
     background: white;
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     margin-top: 30px;
 }
 
@@ -1061,26 +1091,26 @@
     .pagination-container {
         padding: 15px;
     }
-    
+
     .pagination-container .d-flex {
         flex-direction: column;
         gap: 15px;
         align-items: center !important;
     }
-    
+
     .pagination {
         order: 2;
     }
-    
+
     .pagination-info {
         order: 1;
         text-align: center;
     }
-    
+
     .page-size-selector {
         order: 3;
     }
-    
+
     .pagination .page-link {
         padding: 6px 10px;
         font-size: 0.8rem;

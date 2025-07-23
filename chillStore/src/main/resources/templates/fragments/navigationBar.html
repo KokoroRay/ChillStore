@@ -16,7 +16,7 @@
             <div class="nav-left">
                 <ul>
                     <li><a href="/"><img src="/images/logo.png" alt=""></a></li>
-                    <li><a th:href="@{/Product}">Product</a></li>
+                    <li><a href="/#product-list">Product</a></li>
                     <li><a th:href="@{/DiscountProducts}">Discount</a></li>
                     <li sec:authorize="hasRole('CUSTOMER')">
                         <a th:href="@{/customer/order}">Order</a>
@@ -26,6 +26,8 @@
                     </li>
                 </ul>
             </div>
+
+            <!-- Thanh tìm kiếm ở giữa navbar -->
 
             <div class="nav-right">
                 <!-- Cart and Avatar for Customer -->
@@ -49,14 +51,14 @@
                             <li>
                                 <a th:href="@{/customer/profile}">
                                     <span class="menu-icon"><img src="/images/settings.png" alt="profile"></span>
-                                    Settings
+                                    Profile
                                 </a>
                             </li>
                             <li>
-                                <a th:href="@{/customer/notifications}">
+                                <a th:href="@{/customer/voucher}">
                                     <span class="menu-icon"><img src="/images/notification.png"
                                             alt="notification"></span>
-                                    Notifications
+                                    Voucher
                                 </a>
                             </li>
                             <li>
@@ -156,7 +158,7 @@
         <div class="mobile-menu" id="mobileMenu">
             <ul>
                 <li><a href="/">Introduct</a></li>
-                <li><a th:href="@{/Product}">Product</a></li>
+                <li><a href="/#product-list">Product</a></li>
                 <li><a th:href="@{/DiscountProducts}">Discount</a></li>
                 <li sec:authorize="hasRole('CUSTOMER')">
                     <a th:href="@{/order}">Order</a>
@@ -174,6 +176,29 @@
 
 
         <script>
+
+            // Biến lưu vị trí scroll trước đó
+            let lastScrollTop = 0;
+            // Ngưỡng scroll để bắt đầu ẩn thanh nav (px)
+            const scrollThreshold = 50;
+
+            window.addEventListener('scroll', function() {
+                const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+                const nav = document.querySelector('.horizontal-sidebar');
+
+                // Kiểm tra hướng cuộn
+                if (currentScroll > lastScrollTop && currentScroll > scrollThreshold) {
+                    // Cuộn xuống -> ẩn thanh nav
+                    nav.classList.add('hidden');
+                } else if (currentScroll < lastScrollTop) {
+                    // Cuộn lên -> hiện thanh nav
+                    nav.classList.remove('hidden');
+                }
+
+                // Lưu lại vị trí scroll hiện tại để so sánh lần sau
+                lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+            }, false);
+
             // Enhanced dropdown functionality for all roles
             function setupDropdown(dropdownId, menuId) {
                 const dropdown = document.getElementById(dropdownId);
@@ -277,6 +302,7 @@
             // Global function to trigger cart count update
             window.updateCartCount = updateCartCount;
         </script>
+        <script src="/js/autocomplete.js"></script>
 </body>
 
 </html>

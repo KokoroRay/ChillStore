@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,6 +38,7 @@ public class CartController {
         }
 
         List<CartItemDTO> cartItems = cartService.getCartItems(customerId);
+
 
         // Lấy voucher còn hiệu lực
         List<Voucher> allVouchers = voucherService.getAllVouchers();
@@ -87,26 +89,36 @@ public class CartController {
     @PostMapping("/add")
     public String addToCart(@RequestParam int productId,
                             @RequestParam(defaultValue = "1") int quantity,
-                            HttpSession session) {
+                            HttpSession session,
+                            RedirectAttributes redirectAttributes) {
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
         if (customerId == null) {
             return "redirect:/auth/login";
         }
-
-        cartService.addToCart(customerId, productId, quantity);
+        try {
+            cartService.addToCart(customerId, productId, quantity);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("cartError", e.getMessage());
+            return "redirect:/cart";
+        }
         return "redirect:/cart";
     }
 
     @PostMapping("/update")
     public String updateCart(@RequestParam int cartId,
                              @RequestParam int quantity,
-                             HttpSession session) {
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
         Integer customerId = (Integer) session.getAttribute("loggedInCustomerId");
         if (customerId == null) {
             return "redirect:/auth/login";
         }
-
-        cartService.updateQuantity(cartId, quantity);
+        try {
+            cartService.updateQuantity(cartId, quantity);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("cartError", e.getMessage());
+            return "redirect:/cart";
+        }
         return "redirect:/cart";
     }
 

@@ -1,110 +1,152 @@
 <div th:fragment="list-content">
-    <div class="content">
-        <h2 class="mb-4">Customer List</h2>
+    <div class="customer-management">
+        <!-- Header with Title and Add Button -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0"><i class="fas fa-users me-2"></i>Customer Management</h2>
+            <a th:href="@{/admin/customer/addform}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add New Customer
+            </a>
+        </div>
 
-        <!-- Search Form -->
-        <form class="row g-3 mb-3" th:action="@{/admin/customer}" method="get">
-            <div class="col-md-3">
-                <select name="type" class="form-select">
-                    <option value="name">Name</option>
-                    <option value="email">Email</option>
-                </select>
+        <!-- Search and Filter Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-3">
+                <form th:action="@{/admin/customer}" method="get">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold">Search Type</label>
+                            <select name="type" class="form-select">
+                                <option value="name">Name</option>
+                                <option value="email">Email</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Search Keyword</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" name="search" class="form-control"
+                                       placeholder="Enter name or email" th:value="${search}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold">Account Status</label>
+                            <select name="locked" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="false" th:selected="${locked == 'false'}">Active</option>
+                                <option value="true" th:selected="${locked == 'true'}">Locked</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-accent w-100">
+                                <i class="fas fa-filter me-1"></i> Apply
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="col-md-4">
-                <input type="text" name="search" class="form-control" placeholder="Search by name or email"
-                       th:value="${search}">
-            </div>
-            <div class="col-md-3">
-                <select name="locked" class="form-select">
-                    <option value="">All Status</option>
-                    <option value="false" th:selected="${locked == 'false'}">Active</option>
-                    <option value="true" th:selected="${locked == 'true'}">Locked</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-success w-100">Search</button>
-            </div>
-        </form>
-
-        <a th:href="@{/admin/customer/addform}" class="btn btn-primary mb-3">Add New Customer</a>
+        </div>
 
         <!-- Alert Messages -->
-        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div class="mb-4">
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
 
-        <!-- Customer Table -->
-        <table class="table table-bordered table-hover">
-            <thead class="table-primary">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Password</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Status</th>
-                <th>Created Date</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="customer : ${customers}">
-                <td th:text="${customer.customerId}"></td>
-                <td th:text="${customer.name}"></td>
-                <td th:text="${customer.email}"></td>
-                <td th:text="${customer.password != null ? (#strings.substring(customer.password,0,4) + '****') : '****'}"></td>
-                <td th:text="${customer.phone}"></td>
-                <td th:text="${customer.address}"></td>
-                <td>
-                    <span th:if="${customer.locked}" class="badge bg-danger">Locked</span>
-                    <span th:unless="${customer.locked}" class="badge bg-success">Active</span>
-                </td>
-                <td th:text="${#temporals.format(customer.created_at, 'dd/MM/yyyy')}"></td>
-                <td>
-                    <div class="customer-buttons">
-                        <a th:href="@{/admin/customer/edit/{id}(id=${customer.customerId})}"
-                           class="btn-update">Edit</a>
-                        <a th:if="${!customer.locked}"
-                           th:href="@{/admin/customer/delete/{id}(id=${customer.customerId})}"
-                           onclick="return confirm('Are you sure you want to lock this customer?')"
-                           class="btn btn-sm btn-warning btn-lock">
-                            Lock
-                        </a>
-                        <a th:if="${customer.locked}"
-                           th:href="@{/admin/customer/unlock/{id}(id=${customer.customerId})}"
-                           onclick="return confirm('Are you sure you want to unlock this customer?')"
-                           class="btn btn-sm btn-success btn-unlock">
-                            Unlock
-                        </a>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <!-- Customer Table Card -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Password</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="customer : ${customers}">
+                            <td th:text="${customer.customerId}"></td>
+                            <td th:text="${customer.name}"></td>
+                            <td th:text="${customer.email}"></td>
+                            <td th:text="${customer.password != null ? (#strings.substring(customer.password,0,4) + '****') : '****'}"></td>
+                            <td th:text="${customer.phone}"></td>
+                            <td class="address-cell" th:text="${customer.address}"></td>
+                            <td>
+                                <span th:if="${customer.locked}" class="badge bg-danger rounded-pill">Locked</span>
+                                <span th:unless="${customer.locked}" class="badge bg-success rounded-pill">Active</span>
+                            </td>
+                            <td th:text="${#temporals.format(customer.created_at, 'dd/MM/yyyy')}"></td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a th:href="@{/admin/customer/edit/{id}(id=${customer.customerId})}"
+                                       class="btn btn-sm btn-action">
+                                        <img src="/images/update.png" alt="edit">
+                                    </a>
+                                    <a th:if="${!customer.locked}"
+                                       th:href="@{/admin/customer/delete/{id}(id=${customer.customerId})}"
+                                       onclick="return confirm('Are you sure you want to lock this customer?')"
+                                       class="btn btn-sm btn-action btn-lock">
+                                        <i class="fas fa-lock"></i>
+                                    </a>
+                                    <a th:if="${customer.locked}"
+                                       th:href="@{/admin/customer/unlock/{id}(id=${customer.customerId})}"
+                                       onclick="return confirm('Are you sure you want to unlock this customer?')"
+                                       class="btn btn-sm btn-action btn-unlock">
+                                        <i class="fas fa-unlock"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${customers.empty}">
+                            <td colspan="9" class="text-center py-4 text-muted">
+                                <i class="fas fa-user-slash fa-2x mb-2"></i>
+                                <h5 class="mb-0">No customers found</h5>
+                                <p class="mb-0">Try adjusting your search filters</p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
         <!-- Pagination -->
         <div class="d-flex justify-content-center mt-4" th:if="${totalPages > 1}">
             <nav>
                 <ul class="pagination">
-                    <!-- Previous -->
                     <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{/admin/customer(page=${currentPage - 1}, search=${search}, type=${type}, locked=${locked})}">Previous</a>
+                           th:href="@{/admin/customer(page=${currentPage - 1}, search=${search}, type=${type}, locked=${locked})}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
                     </li>
 
-                    <!-- Page Numbers -->
                     <li class="page-item"
                         th:each="i : ${#numbers.sequence(1, totalPages)}"
                         th:classappend="${i == currentPage} ? 'active'">
                         <a class="page-link"
                            th:href="@{/admin/customer(page=${i}, search=${search}, type=${type}, locked=${locked})}"
-                           th:text="${i}">1</a>
+                           th:text="${i}"></a>
                     </li>
 
-                    <!-- Next -->
                     <li class="page-item" th:classappend="${currentPage >= totalPages} ? 'disabled'">
                         <a class="page-link"
-                           th:href="@{/admin/customer(page=${currentPage + 1}, search=${search}, type=${type}, locked=${locked})}">Next</a>
+                           th:href="@{/admin/customer(page=${currentPage + 1}, search=${search}, type=${type}, locked=${locked})}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
                     </li>
                 </ul>
             </nav>

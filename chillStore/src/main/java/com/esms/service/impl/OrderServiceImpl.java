@@ -11,6 +11,7 @@ import com.esms.repository.OrderRepository;
 import com.esms.repository.OrderItemRepository;
 import com.esms.repository.ProductRepository;
 import com.esms.service.IOrderService;
+import com.esms.service.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.support.PropertiesLoaderSupport;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class OrderServiceImpl implements IOrderService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private WarehouseService warehouseService;
     private PropertiesLoaderSupport propertiesLoaderSupport;
 
     @Override
@@ -126,11 +130,18 @@ public class OrderServiceImpl implements IOrderService {
         java.util.List<OrderItem> items = orderItemRepository.findByIdOrderId(orderId);
         java.util.List<OrderItemDetailDTO> result = new ArrayList<>();
         for (OrderItem item : items) {
-            Product product = productRepository.findById(item.getId().getProductId()).orElse(null);
+            if (item == null || item.getId() == null) continue; // tránh lỗi null
+            Product product = null;
+            try {
+                product = productRepository.findById(item.getId().getProductId()).orElse(null);
+            } catch (Exception ex) {
+                // ignore, giữ product = null
+            }
             String productName = (product != null) ? product.getName() : "Unknown";
             String categoryName = (product != null && product.getCategory() != null) ? product.getCategory().getName() : "Unknown";
-            result.add(new OrderItemDetailDTO(productName, item.getQuantity(),
-                                              item.getPriceEach().doubleValue(), categoryName));
+            int productId = (item.getId().getProductId() != null) ? item.getId().getProductId() : -1;
+            result.add(new OrderItemDetailDTO(productId, productName, item.getQuantity(),
+                                              item.getPriceEach() != null ? item.getPriceEach().doubleValue() : 0.0, categoryName));
         }
         return result;
     }
@@ -142,6 +153,7 @@ public class OrderServiceImpl implements IOrderService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid order Id:" + orderId));
         String currentStatus = order.getStatus();
         System.out.println("Current status: " + currentStatus);
+
         // Xử lý refund status cho VNpay TRƯỚC khi cập nhật status
         if ("Cancelled".equals(status) && "VNpay".equals(order.getPaymentMethod())) {
             System.out.println("Setting refund status for VNpay order: " + orderId);
@@ -154,22 +166,24 @@ public class OrderServiceImpl implements IOrderService {
             }
         }
 
-        // Cập nhật status sau khi đã set refund status
-        if ("Pending".equals(currentStatus)) {
-            if ("Paid".equals(status) || "Cancelled".equals(status)) {
-                order.setStatus(status);
-            }
-        } else if ("Paid".equals(currentStatus)) {
-            if ("Shipped".equals(status) || "Cancelled".equals(status)) {
-                order.setStatus(status);
-            }
-        } else if ("Shipped".equals(currentStatus)) {
-            if ("Delivered".equals(status) || "Cancelled".equals(status)) {
-                order.setStatus(status);
+        boolean isValidTransition = false;
+        // Kiểm tra các luồng chuyển trạng thái hợp lệ
+        if (("Pending".equals(currentStatus) && ("Paid".equals(status) || "Cancelled".equals(status))) ||
+            ("Paid".equals(currentStatus) && "Shipped".equals(status)) ||
+            ("Shipped".equals(currentStatus) && "Delivered".equals(status))) {
+            isValidTransition = true;
+        }
+
+        if (isValidTransition) {
+            order.setStatus(status);
+            // Nếu đơn hàng bị hủy, hoàn trả lại số lượng tồn kho
+            if ("Cancelled".equals(status)) {
+                restoreProductStock(order);
             }
         } else {
-            throw  new IllegalArgumentException("Invalid status transition from " + currentStatus);
+            throw new IllegalArgumentException("Invalid status transition from " + currentStatus + " to " + status);
         }
+
         orderRepository.save(order);
     }
 
@@ -200,8 +214,8 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public CustomerOrderDetailDTO getCustomerOrderDetail(Integer customerId, Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Invalid order id: " + orderId));
-        if (!order.getCustomer().getCustomerId().equals(customerId)) {
-            throw new IllegalArgumentException("Order dose not belong to the customer");
+        if (order.getCustomer() == null || order.getCustomer().getCustomerId() == null || !order.getCustomer().getCustomerId().equals(customerId)) {
+            throw new IllegalArgumentException("Order does not belong to the customer or customer info missing");
         }
         CustomerOrderDetailDTO detailDTO = new CustomerOrderDetailDTO();
         detailDTO.setOrderId(order.getOrderId());
@@ -212,7 +226,6 @@ public class OrderServiceImpl implements IOrderService {
         detailDTO.setDiscountAmount(order.getDiscountAmount());
         detailDTO.setRefundStatus(order.getRefundStatus());
         detailDTO.setItems(getOrderItemsDetail(orderId));
-        
         // Set customer information with null checks
         Customer customer = order.getCustomer();
         if (customer != null) {
@@ -220,33 +233,69 @@ public class OrderServiceImpl implements IOrderService {
             detailDTO.setCustomerEmail(customer.getEmail());
             detailDTO.setCustomerPhone(customer.getPhone());
             detailDTO.setCustomerAddress(customer.getAddress());
+        } else {
+            detailDTO.setCustomerName("Unknown");
+            detailDTO.setCustomerEmail("");
+            detailDTO.setCustomerPhone("");
+            detailDTO.setCustomerAddress("");
         }
-        
         return detailDTO;
+    }
+    
+    /**
+     * Hoàn trả lại số lượng tồn kho cho các sản phẩm trong đơn hàng bị hủy.
+     * @param order Đơn hàng bị hủy
+     */
+    private void restoreProductStock(Order order) {
+        List<OrderItem> items = orderItemRepository.findByIdOrderId(order.getOrderId());
+        for (OrderItem item : items) {
+            // Tạo giao dịch nhập kho. Service này sẽ tự động cập nhật stock.
+            warehouseService.importProduct(
+                item.getId().getProductId(), 
+                item.getQuantity(), 
+                "Order cancelled - Order ID: " + order.getOrderId()
+            );
+        }
     }
 
     private OrderDTO convertToDto(Order order) {
-        int itemsCount = orderItemRepository.countItemsByOrderId(order.getOrderId());
-        Double totalAmountRaw = orderItemRepository.sumTotalAmountByOrderId(order.getOrderId());
+        int itemsCount = 0;
+        Double totalAmountRaw = 0.0;
+        try {
+            itemsCount = orderItemRepository.countItemsByOrderId(order.getOrderId());
+            totalAmountRaw = orderItemRepository.sumTotalAmountByOrderId(order.getOrderId());
+        } catch (Exception ex) {
+            // giữ giá trị mặc định
+        }
         java.math.BigDecimal totalAmount = totalAmountRaw != null ? java.math.BigDecimal.valueOf(totalAmountRaw) : java.math.BigDecimal.ZERO;
-        
         // Get representative product info
-        java.util.List<OrderItem> orderItems = orderItemRepository.findByIdOrderId(order.getOrderId());
+        java.util.List<OrderItem> orderItems = new ArrayList<>();
+        try {
+            orderItems = orderItemRepository.findByIdOrderId(order.getOrderId());
+        } catch (Exception ex) {
+            // giữ orderItems rỗng
+        }
         String representativeProductName = null;
         String representativeProductImage = null;
-        
         if (!orderItems.isEmpty()) {
             OrderItem firstItem = orderItems.get(0);
-            Product product = productRepository.findById(firstItem.getId().getProductId()).orElse(null);
+            Product product = null;
+            try {
+                product = productRepository.findById(firstItem.getId().getProductId()).orElse(null);
+            } catch (Exception ex) {
+                // giữ product = null
+            }
             if (product != null) {
                 representativeProductName = product.getName();
                 representativeProductImage = product.getImageUrl();
             }
         }
-        
+        String customerName = (order.getCustomer() != null) ? order.getCustomer().getName() : "Unknown";
+        String customerEmail = (order.getCustomer() != null) ? order.getCustomer().getEmail() : "";
+        String customerPhone = (order.getCustomer() != null) ? order.getCustomer().getPhone() : "";
         return new OrderDTO(
                 order.getOrderId(),
-                order.getCustomer().getName(),
+                customerName,
                 order.getDiscountAmount(),
                 order.getOrderDate(),
                 totalAmount,
@@ -255,8 +304,8 @@ public class OrderServiceImpl implements IOrderService {
                 itemsCount,
                 representativeProductName,
                 representativeProductImage,
-                order.getCustomer().getEmail(),
-                order.getCustomer().getPhone());
+                customerEmail,
+                customerPhone);
     }
 
 } 

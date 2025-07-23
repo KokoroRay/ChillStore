@@ -20,6 +20,10 @@ import com.esms.repository.DiscountRepository;
 import com.esms.model.entity.Discount;
 import java.time.LocalDate;
 import com.esms.model.entity.DiscountProduct;
+import com.esms.repository.OrderItemRepository;
+import org.springframework.data.domain.PageRequest;
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -60,94 +64,9 @@ public class ProductServiceImpl implements ProductService {
             Pageable pageable,
             Boolean status) {
 
-        List<Product> products = productRepository.findAll();
-
-        // Filter by keyword (tên sản phẩm, tên danh mục, mô tả)
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            String finalKeyword = removeDiacritics(keyword.trim().toLowerCase());
-            products = products.stream()
-                    .filter(p -> {
-                        String productName = removeDiacritics(p.getName() != null ? p.getName().toLowerCase() : "");
-                        String productDesc = removeDiacritics(p.getDescription() != null ? p.getDescription().toLowerCase() : "");
-                        String categoryName = removeDiacritics(p.getCategory() != null && p.getCategory().getName() != null ? p.getCategory().getName().toLowerCase() : "");
-                        return productName.contains(finalKeyword)
-                                || productDesc.contains(finalKeyword)
-                                || categoryName.contains(finalKeyword);
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        // Filter by category
-        if (categoryId != null) {
-            products = products.stream()
-                    .filter(p -> p.getCategory() != null && p.getCategory().getId().equals(categoryId))
-                    .collect(Collectors.toList());
-        }
-
-        // Filter by brand
-        if (brandId != null) {
-            products = products.stream()
-                    .filter(p -> p.getBrand() != null && p.getBrand().getId().equals(brandId))
-                    .collect(Collectors.toList());
-        }
-
-        // Filter by price range
-        if (minPrice != null) {
-            products = products.stream()
-                    .filter(p -> p.getPrice().doubleValue() >= minPrice)
-                    .collect(Collectors.toList());
-        }
-        if (maxPrice != null) {
-            products = products.stream()
-                    .filter(p -> p.getPrice().doubleValue() <= maxPrice)
-                    .collect(Collectors.toList());
-        }
-
-        // Filter by minStock
-        if (minStock != null) {
-            products = products.stream()
-                    .filter(p -> p.getStockQty() >= minStock)
-                    .collect(Collectors.toList());
-        }
-
-        // Filter by status
-        if (status != null) {
-            products = products.stream()
-                    .filter(p -> p.isStatus() == status)
-                    .collect(Collectors.toList());
-        }
-
-        // Sort products
-        if (sortBy != null && sortDir != null) {
-            boolean isAsc = sortDir.equalsIgnoreCase("asc");
-            switch (sortBy.toLowerCase()) {
-                case "name":
-                    products.sort((p1, p2) -> isAsc ?
-                            p1.getName().compareTo(p2.getName()) :
-                            p2.getName().compareTo(p1.getName()));
-                    break;
-                case "price":
-                    products.sort((p1, p2) -> isAsc ?
-                            p1.getPrice().compareTo(p2.getPrice()) :
-                            p2.getPrice().compareTo(p1.getPrice()));
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        // Apply pagination
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), products.size());
-
-        if (start > products.size()) {
-            return new PageImpl<>(List.of(), pageable, products.size());
-        }
-
-        return new PageImpl<>(
-                products.subList(start, end),
-                pageable,
-                products.size()
+        // Sử dụng query database trực tiếp thay vì filter trong memory
+        return productRepository.searchProductsWithFilters(
+                keyword, categoryId, brandId, minPrice, maxPrice, minStock, status, pageable
         );
     }
 
@@ -246,6 +165,8 @@ public class ProductServiceImpl implements ProductService {
     private DiscountProductRepository discountProductRepository;
     @Autowired
     private DiscountRepository discountRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @Override
     public Page<Product> getDiscountProducts(Pageable pageable) {
@@ -442,4 +363,53 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
+    @Override
+    public List<ProductDTO> getTopBestSellingProducts(int limit) {
+        List<Object[]> stats = orderItemRepository.getProductSalesStatistics(null, null);
+        List<String> productNames = stats.stream().map(row -> (String) row[0]).toList();
+        List<Product> products = productRepository.findAll().stream()
+            .filter(p -> productNames.contains(p.getName()))
+            .toList();
+        List<ProductDTO> result = new ArrayList<>();
+        for (Product p : products) {
+            result.add(convertToDTO(p));
+            if (result.size() >= limit) break;
+        }
+        return result;
+    }
+
+    @Override
+    public List<ProductDTO> getNewestProducts(int limit) {
+        return productRepository.findAll(PageRequest.of(0, limit, org.springframework.data.domain.Sort.by("productId").descending()))
+            .map(this::convertToDTO).getContent();
+    }
+
+    @Override
+    public List<ProductDTO> getRandomProducts(int limit) {
+        List<Product> all = productRepository.findAll();
+        Collections.shuffle(all);
+        // Nếu limit lớn hơn số lượng sản phẩm, trả về toàn bộ
+        return all.stream().map(this::convertToDTO).toList();
+    }
+
+    @Override
+    public List<ProductDTO> getRandomProductsPaged(int page, int size) {
+        List<Product> all = productRepository.findAll();
+        Collections.shuffle(all);
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, all.size());
+        if (fromIndex >= all.size()) return List.of();
+        return all.subList(fromIndex, toIndex).stream().map(this::convertToDTO).toList();
+    }
+    @Override
+    public int getRandomProductsTotalPages(int size) {
+        int total = productRepository.findAll().size();
+        return (int) Math.ceil((double) total / size);
+    }
+
+    @Override
+    public int getTotalSoldQuantity(Integer productId) {
+        Integer count = orderItemRepository.countTotalSoldByProductId(productId);
+        return count != null ? count : 0;
+    }
 }

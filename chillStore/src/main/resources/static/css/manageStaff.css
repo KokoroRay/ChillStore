@@ -1,57 +1,233 @@
-.staff-buttons {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    justify-content: flex-start;
+:root {
+    --primary: #D2E0FB;
+    --secondary: #226597;
+    --accent: #87C0CD;
+    --background: #F3F9FB;
 }
 
-.btn-update,
-.btn-delete {
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container-fluid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+}
+
+.content-row {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+.main-content {
+
+    background-color: var(--background);
+    flex: 1;
+    padding: 1.5rem;
+    padding-top: 100px;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.staff-management {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    /* Điều chỉnh quan trọng: bỏ flex-grow để card không chiếm quá nhiều không gian */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    padding: 0;
+    /* Điều chỉnh quan trọng: thêm flex-shrink để card-body co lại đúng cách */
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.table-responsive {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+.table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.table thead th {
+    background-color: var(--primary);
+    color: black;
+    font-weight: 700;
+    padding: 1rem 1.25rem;
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table tbody td {
+    padding: 1rem 1.25rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(135, 192, 205, 0.1);
+}
+
+.address-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Buttons & Actions */
+.btn-primary {
+    background-color: #58A0C8;
+    border-color: var(--primary);
+}
+
+
+.btn-primary:hover {
+    background-color: #0d3253;
+    border-color: #0d3253;
+}
+
+.btn-accent {
+    background-color: var(--accent);
+    color: #226597;
+    font-weight: 500;
+}
+
+.btn-accent:hover {
+    background-color: #76a9b5;
+    color: #226597;
+}
+
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 100px;
-    height: 40px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
-    border: none;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-    transition: 0.2s;
-    vertical-align: middle;
     padding: 0;
-    line-height: 1;
+}
+.text-end img {
+    width: 2rem;
+    height: 2rem;
 }
 
-
-.btn-update:hover {
-    background-color: #29aee0;
+/* Pagination */
+.pagination .page-link {
+    color: var(--primary);
+    border-radius: 8px;
+    margin: 0 4px;
+    min-width: 36px;
+    text-align: center;
+    border: none;
 }
 
-
-.btn-add {
-    background-color: #009990;
+.pagination .page-item.active .page-link {
+    background-color: var(--secondary);
     color: white;
-}
-.btn-search {
-    background-color: #074799;
-    color: white;
+    border: none;
 }
 
+.pagination .page-link:hover {
+    background-color: rgba(135, 192, 205, 0.2);
+    color: var(--primary);
+}
 
-.btn-delete:hover {
-    background-color: #e74c3c;
-}
-form .form-control,
-form .form-select {
-    height: 40px;
-    font-size: 14px;
-}
-.table{
-        border-collapse: separate;
-        border-spacing: 0;
-        border: 1px solid #dee2e6;
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .staff-management {
+        padding: 0 1rem;
+    }
+
+    .table-responsive {
         border-radius: 12px;
-        overflow: hidden;
+        border: 1px solid #dee2e6;
+    }
+}
+
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+
+    .table tbody tr {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 2px solid #dee2e6;
+        padding: 1rem;
+    }
+
+    .table tbody td {
+        display: flex;
+        border-bottom: 1px solid #f1f1f1;
+        padding: 0.75rem 0.5rem;
+    }
+
+    .table tbody td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        width: 120px;
+        min-width: 120px;
+        color: var(--primary);
+    }
+
+    .table tbody td .btn-action {
+        margin: 0 2px;
+    }
+
+    .address-cell {
+        max-width: 100%;
+    }
+
+    /* Add data labels for responsive table */
+    td[data-label]:before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: inline-block;
+        margin-right: 0.5rem;
+        color: var(--primary);
+    }
+
+    td[data-label]:before {
+        content: attr(data-label);
+    }
+
 }

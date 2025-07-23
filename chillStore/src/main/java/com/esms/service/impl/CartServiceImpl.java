@@ -1,13 +1,12 @@
 package com.esms.service.impl;
 
 import com.esms.model.dto.CartItemDTO;
-import com.esms.model.entity.Cart;
-import com.esms.model.entity.Customer;
-import com.esms.model.entity.Product;
+import com.esms.model.entity.*;
 import com.esms.repository.CartRepository;
 import com.esms.repository.CustomerRepository;
 import com.esms.repository.ProductRepository;
 import com.esms.service.CartService;
+import com.esms.service.ProductService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +28,14 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private ProductService productService;
+
     @Override
     public void addToCart(int customerId, int productId, int quantity) {
+        if (quantity > 99) {
+            throw new RuntimeException("Không thể thêm quá 99 sản phẩm mỗi lần vào giỏ hàng.");
+        }
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
@@ -49,12 +54,13 @@ public class CartServiceImpl implements CartService {
             // Nếu sản phẩm đã có trong giỏ
             cartItem = optionalCart.get();
             int newQuantity = cartItem.getQuantity() + quantity;
-            
+            if (newQuantity > 99) {
+                throw new RuntimeException("Không thể có quá 99 sản phẩm trong giỏ hàng cho mỗi sản phẩm.");
+            }
             // Kiểm tra lại tổng số lượng sau khi cộng thêm
             if (product.getStockQty() < newQuantity) {
                 throw new RuntimeException("Insufficient stock. Available: " + product.getStockQty() + ", Total requested: " + newQuantity);
             }
-            
             cartItem.setQuantity(newQuantity);
         } else {
             // Nếu chưa có
@@ -67,11 +73,41 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItemDTO> getCartItems(int customerId) {
-        return cartRepository.findCartItemsByCustomerId(customerId);
+        List<CartItemDTO> items = cartRepository.findCartItemsByCustomerId(customerId);
+        for (int i = 0; i < items.size(); i++) {
+            CartItemDTO item = items.get(i);
+            Product product = productRepository.findById(item.getProductId()).orElse(null);
+            if (product != null) {
+                Discount discount = productService.getActiveDiscountForProduct(product);
+                if (discount != null && discount.getDiscountPct() != null) {
+                    double discountPct = discount.getDiscountPct().doubleValue() / 100.0;
+                    double discountedPrice = product.getPrice().doubleValue() * (1 - discountPct);
+                    item.setDiscount(discountPct);
+                    item.setPrice(discountedPrice);
+                    item.setTotalPrice(discountedPrice * item.getQuantity());
+                } else {
+                    item.setDiscount(0.0);
+                    item.setPrice(product.getPrice().doubleValue());
+                    item.setTotalPrice(product.getPrice().doubleValue() * item.getQuantity());
+                }
+                item.setStockQty(product.getStockQty());
+                String imageUrl = product.getImages().stream()
+                        .filter(ProductImage::isPrimary)
+                        .map(ProductImage::getImageUrl)
+                        .findFirst()
+                        .orElse(null);
+
+                item.setImageUrl(imageUrl);
+            }
+        }
+        return items;
     }
 
     @Override
     public void updateQuantity(int cartId, int quantity) {
+        if (quantity > 99) {
+            throw new RuntimeException("Không thể cập nhật quá 99 sản phẩm cho mỗi sản phẩm trong giỏ hàng.");
+        }
         Cart cart = cartRepository.findById(cartId).orElse(null);
         if (cart != null && quantity > 0) {
             // Kiểm tra số lượng tồn kho
@@ -79,7 +115,6 @@ public class CartServiceImpl implements CartService {
             if (product.getStockQty() < quantity) {
                 throw new RuntimeException("Insufficient stock. Available: " + product.getStockQty() + ", Requested: " + quantity);
             }
-            
             cart.setQuantity(quantity);
             cartRepository.save(cart);
         }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -10,6 +10,9 @@
     <link rel="stylesheet" th:href="@{/static/style.css}" />
     <link rel="stylesheet" th:href="@{/css/navigationBar.css}" />
     <link rel="stylesheet" th:href="@{/css/viewProductDetail.css}" />
+    <link rel="stylesheet" th:href="@{/css/feedback.css}" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
 </head>
 
@@ -29,25 +32,15 @@
                     <div class="product-header">
                         <div class="container">
                             <div class="row align-items-center">
-                                <div class="col-md-7">
+                                <div class="col-md-8">
                                     <h1 class="product-title" th:text="${product.name}"></h1>
-                                    <div class="product-subtitle" th:if="${product.category != null}">
-                                        <a th:href="@{'/products/category/' + ${product.category.id}}"
-                                            class="text-decoration-none">
-                                            <span th:text="${product.category.name}"></span>
-                                        </a>
-                                        <span th:if="${product.brand != null}"> •
-                                            <a th:href="@{'/products/brand/' + ${product.brand.id}}"
-                                                class="text-decoration-none">
-                                                <span th:text="${product.brand.name}"></span>
-                                            </a>
+                                    <div class="meta-item">
+                                        <span class="">Sold: </span>
+                                        <span class="meta-value" th:text=" ${soldQuantity}"></span>
+                                        <span class="meta-value">
+                                            <a href="#specifications" class="ms-2 small text-primary">Specifications</a>
                                         </span>
                                     </div>
-                                </div>
-                                <div class="col-md-5 text-md-end">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
-                                        <i class="fas fa-arrow-left me-2"></i>Back to Products
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -75,8 +68,9 @@
                                         </div>
                                     </div>
 
-                                    <div class="wishlist-container">
-                                        <button class="wishlist-btn" id="wishlistBtn" onclick="toggleWishlist()">
+                                    <div class="wishlist-container" sec:authorize="hasRole('CUSTOMER')">
+                                        <button class="wishlist-btn" id="wishlistBtn" onclick="toggleWishlist()"
+                                            type="button">
                                             <i class="far fa-heart"></i>
                                         </button>
                                     </div>
@@ -148,48 +142,8 @@
                                     </span>
                                 </div>
 
-                                <!-- Product Metadata -->
-                                <div class="product-meta mb-4">
-                                    <div class="meta-item">
-                                        <span class="meta-label">Status:</span>
-                                        <span class="meta-value">
-                                            <span th:if="${product.status}" class="badge bg-success status-badge">In
-                                                Stock</span>
-                                            <span th:unless="${product.status}" class="badge bg-danger status-badge">Out
-                                                of Stock</span>
-                                        </span>
-                                    </div>
+                                <!-- Quick specifications preview -->
 
-                                    <div th:if="${product.brand != null}" class="meta-item">
-                                        <span class="meta-label">Brand:</span>
-                                        <span class="meta-value" th:text="${product.brand.name}"></span>
-                                    </div>
-
-                                    <div th:if="${product.category != null}" class="meta-item">
-                                        <span class="meta-label">Category:</span>
-                                        <span class="meta-value" th:text="${product.category.name}"></span>
-                                    </div>
-
-                                    <div class="meta-item">
-                                        <span class="meta-label">Product ID:</span>
-                                        <span class="meta-value" th:text="${product.productId}"></span>
-                                    </div>
-
-                                    <!-- Quick specifications preview -->
-                                    <div th:if="${not #lists.isEmpty(specifications) and #lists.size(specifications) > 0}"
-                                        class="meta-item">
-                                        <span class="meta-label">Key Specs:</span>
-                                        <span class="meta-value">
-                                            <span th:each="spec, iterStat : ${specifications}"
-                                                th:if="${iterStat.index < 2}">
-                                                <span th:text="${spec.specKey + ': ' + spec.specValue}"></span>
-                                                <span
-                                                    th:if="${iterStat.index < 1 and #lists.size(specifications) > 1}">&bull;</span>
-                                            </span>
-                                            <a href="#specifications" class="ms-2 small text-primary">See all</a>
-                                        </span>
-                                    </div>
-                                </div>
 
                                 <!-- Delivery Address Section -->
                                 <div class="delivery-section mb-4">
@@ -269,6 +223,7 @@
                                 </div>
 
                                 <!-- Quantity Selector and Total Price -->
+                                <div id="error-message" class="alert alert-danger d-none mb-4"></div>
                                 <div class="mb-5">
                                     <div class="row">
                                         <div class="col-md-5">
@@ -279,11 +234,15 @@
                                                     <i class="fas fa-minus"></i>
                                                 </button>
                                                 <input type="number" id="quantity" class="form-control text-center"
-                                                    value="1" min="1" max="99">
-                                                <button type="button" class="btn btn-outline-secondary"
+                                                    value="1" min="1" th:attr="max=${stockQty}" />
+                                                <button type="button" class="btn btn-outline-secondary" id="plusBtn"
                                                     onclick="incrementQuantity()">
                                                     <i class="fas fa-plus"></i>
                                                 </button>
+                                            </div>
+                                            <div class="mt-2 text-muted small">
+                                                <span>In stock: </span><span id="stock-display"
+                                                    th:text="${stockQty}"></span>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mt-3 mt-md-0">
@@ -323,52 +282,70 @@
                                 </div>
 
                                 <!-- Action Buttons -->
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <form th:action="@{/cart/add}" method="post" class="w-100" id="addToCartForm">
-                                            <input type="hidden" name="productId" th:value="${product.productId}" />
-                                            <input type="hidden" name="quantity" id="cartQuantity" value="1" />
-                                            <button type="submit" class="btn btn-action btn-cart w-100" id="cartBtn">
-                                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                                            </button>
-                                        </form>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <form th:action="@{/cart/add}" method="post" class="w-100">
-                                            <input type="hidden" name="productId" th:value="${product.productId}" />
-                                            <input type="hidden" name="quantity" id="buyQuantity" value="1" />
-                                            <button type="submit" class="btn btn-action btn-buy w-100">
-                                                <i class="fas fa-bolt me-2"></i>Buy Now
-                                            </button>
-                                        </form>
+                                <div th:if="${customer != null}">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <form th:action="@{/cart/add}" method="post" class="w-100"
+                                                id="addToCartForm" onsubmit="return validateQuantity()">
+                                                <input type="hidden" name="productId" th:value="${product.productId}" />
+                                                <input type="hidden" name="quantity" id="cartQuantity" value="1" />
+                                                <button type="submit" class="btn btn-action btn-cart w-100"
+                                                    id="cartBtn">
+                                                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <form th:action="@{/cart/add}" method="post" class="w-100">
+                                                <input type="hidden" name="productId" th:value="${product.productId}" />
+                                                <input type="hidden" name="quantity" id="buyQuantity" value="1" />
+                                                <button type="submit" class="btn btn-action btn-buy w-100">
+                                                    <i class="fas fa-bolt me-2"></i>Buy Now
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Specifications Section -->
-                        <div id="specifications" class="specs-section" th:if="${not #lists.isEmpty(specifications)}">
-                            <h3 class="section-title">Technical Specifications</h3>
-                            <table class="specs-table">
-                                <tr th:each="spec, specStat : ${specifications}"
-                                    th:if="${specStat.index == 0 || !specifications[specStat.index-1].specKey.equals(spec.specKey)}">
-                                    <th th:text="${spec.specKey}"></th>
-                                    <td th:text="${spec.specValue}"></td>
-                                </tr>
-                            </table>
+                    <!-- Specifications Section -->
+                    <div class="spec-desc-container">
+                        <div class="spec-desc-tabs">
+                            <div class="spec-desc-tab active" data-tab="specifications">Technical Specifications
+                            </div>
+                            <div class="spec-desc-tab" data-tab="description">Product Description</div>
                         </div>
 
-                        <!-- Description Section -->
-                        <div class="description-section">
-                            <h3 class="section-title">Product Description</h3>
-                            <div class="description-content"
-                                th:utext="${product.description != null ? product.description : 'No description available for this product.'}">
+                        <div class="spec-desc-content">
+                            <!-- Panel Technical Specifications -->
+                            <div class="specifications-panel spec-desc-panel active" id="specifications">
+                                <h3 class="section-title">Technical Specifications</h3>
+                                <table class="specs-table">
+                                    <tr th:each="spec, specStat : ${specifications}"
+                                        th:if="${specStat.index == 0 || !specifications[specStat.index-1].specKey.equals(spec.specKey)}">
+                                        <th th:text="${spec.specKey}"></th>
+                                        <td th:text="${spec.specValue}"></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Panel Product Description -->
+                            <div class="description-panel spec-desc-panel" id="description">
+                                <h3 class="section-title">Product Description</h3>
+                                <div class="description-content"
+                                    th:utext="${product.description != null ? product.description : 'No description available for this product.'}">
+                                </div>
                             </div>
                         </div>
                     </div>
+
+
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Address Selection Modal -->
@@ -387,8 +364,12 @@
                     </div>
                     <div class="address-text">
                         <h5>Default Address</h5>
-                        <p id="default-address-text"
-                            th:text="${customer.address != null ? customer.address : 'No default address set'}"></p>
+                        <p id="default-address-text" th:if="${customer != null && customer.address != null}"
+                            th:text="${customer.address}"></p>
+                        <p id="default-address-text" th:if="${customer != null && customer.address == null}"
+                            th:text="'No default address set'"></p>
+                        <p id="default-address-text" th:unless="${customer != null}" th:text="'No default address set'">
+                        </p>
                     </div>
                     <div class="address-actions">
                         <span class="badge bg-primary">Default</span>
@@ -445,8 +426,38 @@
             </div>
         </div>
     </div>
+    <!-- FEEDBACK SECTION START -->
+    <div class="container mt-5 mb-5 feedback-section" id="feedback-section">
+        <h3 class="mb-4">
+            <i class="fas fa-comments me-2"></i>
+            Đánh giá & Nhận xét sản phẩm
+        </h3>
+        <div id="feedback-summary" class="mb-4"></div>
+        <div id="feedback-list" class="feedback-list"></div>
+        <div id="feedback-loadmore-container" class="text-center mt-3"></div>
+        <div id="feedback-form-container" class="mt-4"></div>
+        <input type="hidden" id="feedback-product-id" th:value="${product.productId}" />
+        <input type="hidden" id="feedback-customer-id" th:value="${customer != null ? customer.customerId : 0}" />
+        <input type="hidden" id="current-role" th:value="${currentRole}" />
+    </div>
+    <!-- FEEDBACK SECTION END -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        var productDetails = {
+            productId: [[${product.productId}]],
+            name: /*[[${product.name}]]*/,
+            price: [[${product.price != null ? product.price : 0}]],
+            imageUrl: /*[[${primaryImage}]]*/
+        };
+    </script>
     <script>
+        console.log('Product details loaded:', productDetails);
+
+        // Ensure productDetails has valid data
+        if (!productDetails.productId || productDetails.productId === 0) {
+            alert('Lỗi: Không lấy được mã sản phẩm. Wishlist sẽ không hoạt động!');
+        }
+
         // Function to change main product image
         function changeMainImage(event) {
             const mainImage = document.getElementById('mainProductImage');
@@ -470,21 +481,34 @@
         // Quantity selector functionality
         function decrementQuantity() {
             const input = document.getElementById('quantity');
+            const plusBtn = document.getElementById('plusBtn');
             const currentValue = parseInt(input.value);
             if (currentValue > 1) {
                 input.value = currentValue - 1;
                 updateFormQuantities(currentValue - 1);
                 updateTotalPrice(currentValue - 1);
+                plusBtn.disabled = false;
             }
         }
 
         function incrementQuantity() {
             const input = document.getElementById('quantity');
             const currentValue = parseInt(input.value);
-            if (currentValue < 99) {
+            const stock = parseInt(document.getElementById('stock-display').textContent);
+            const plusBtn = document.getElementById('plusBtn');
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.classList.add('d-none');
+            if (currentValue < 99 && currentValue < stock) {
                 input.value = currentValue + 1;
                 updateFormQuantities(currentValue + 1);
                 updateTotalPrice(currentValue + 1);
+                if (currentValue + 1 === stock) {
+                    plusBtn.disabled = true;
+                }
+            } else {
+                plusBtn.disabled = true;
+                errorMessage.textContent = "Không thể thêm sản phẩm do vượt quá số lượng hiện tại";
+                errorMessage.classList.remove('d-none');
             }
         }
 
@@ -512,69 +536,126 @@
             document.querySelector('.total-price').textContent = formattedTotal + ' VND';
         }
 
-        // Initialize quantity change event listener
-        document.addEventListener('DOMContentLoaded', function () {
-            const quantityInput = document.getElementById('quantity');
+        // Wishlist functions
+        function getWishlist() {
+            try {
+                return JSON.parse(localStorage.getItem('wishlist')) || [];
+            } catch (e) {
+                console.error('Error reading wishlist:', e);
+                return [];
+            }
+        }
 
-            // Calculate initial total price
-            updateTotalPrice(1);
+        function saveWishlist(wishlist) {
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        }
 
-            quantityInput.addEventListener('change', function () {
-                let value = parseInt(this.value);
-                if (isNaN(value) || value < 1) value = 1;
-                if (value > 99) value = 99;
-                this.value = value;
-                updateFormQuantities(value);
-                updateTotalPrice(value);
-            });
+        function isInWishlist(productId) {
+            const wishlist = getWishlist();
+            return wishlist.some(p => p.productId === productId);
+        }
 
-            // Smooth scroll to specifications when clicking the "See all" link
-            const specLink = document.querySelector('a[href="#specifications"]');
-            if (specLink) {
-                specLink.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    document.getElementById('specifications').scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
+        function updateWishlistIcon(productId) {
+            const wishlistBtn = document.getElementById('wishlistBtn');
+            if (!wishlistBtn) {
+                console.error('Wishlist button not found');
+                return;
             }
 
-            // Add province selector for guest users or when customer address is empty
-            initializeAddressSelector();
-
-            // Add event listener for cart button
-            document.getElementById('addToCartForm').addEventListener('submit', function (e) {
-                e.preventDefault();
-                animateToCart();
-
-                // Submit form via AJAX
-                const formData = new FormData(this);
-                fetch('/cart/add', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            // Update cart count in navigation
-                            if (window.updateCartCount) {
-                                window.updateCartCount();
-                            }
-                            // Trigger custom event
-                            document.dispatchEvent(new Event('cartUpdated'));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error adding to cart:', error);
-                    });
-            });
-        });
-
-        function initializeAddressSelector() {
-            // If there's a custom address selection form, initialize province API
-            const addressForm = document.getElementById('address-selection-form');
-            if (addressForm) {
-                loadProvinces();
+            const heartIcon = wishlistBtn.querySelector('i');
+            if (!heartIcon) {
+                console.error('Heart icon not found');
+                return;
             }
+
+            if (isInWishlist(productId)) {
+                wishlistBtn.classList.add('active');
+                heartIcon.classList.remove('far');
+                heartIcon.classList.add('fas');
+                console.log('Product is in wishlist, icon updated to filled heart');
+            } else {
+                wishlistBtn.classList.remove('active');
+                heartIcon.classList.remove('fas');
+                heartIcon.classList.add('far');
+                console.log('Product is not in wishlist, icon updated to empty heart');
+            }
+        }
+
+        function toggleWishlist() {
+            console.log('Toggle wishlist clicked for product:', productDetails);
+
+            if (!productDetails || !productDetails.productId) {
+                console.error('Invalid product details');
+                return;
+            }
+
+            let wishlist = getWishlist();
+            const idx = wishlist.findIndex(p => p.productId === productDetails.productId);
+
+            if (idx === -1) {
+                wishlist.push(productDetails);
+                showFloatingMessage('Added to wishlist');
+                console.log('Product added to wishlist');
+            } else {
+                wishlist.splice(idx, 1);
+                showFloatingMessage('Removed from wishlist');
+                console.log('Product removed from wishlist');
+            }
+
+            saveWishlist(wishlist);
+            updateWishlistIcon(productDetails.productId);
+            window.dispatchEvent(new Event('wishlist-updated'));
+        }
+
+        function validateQuantity() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const stock = parseInt(document.getElementById('stock-display').textContent);
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.classList.add('d-none');
+            if (quantity > 99) {
+                errorMessage.textContent = "Bạn không thể thêm quá 99 sản phẩm";
+                errorMessage.classList.remove('d-none');
+                return false;
+            }
+            if (quantity > stock) {
+                errorMessage.textContent = "Không thể thêm sản phẩm do vượt quá số lượng hiện tại";
+                errorMessage.classList.remove('d-none');
+                return false;
+            }
+            return true;
+        }
+
+        // Show floating message
+        function showFloatingMessage(message) {
+            const floatingMessage = document.getElementById('floatingMessage');
+            const messageText = document.getElementById('messageText');
+            messageText.textContent = message;
+            floatingMessage.classList.add('show');
+            setTimeout(() => floatingMessage.classList.remove('show'), 3000);
+        }
+
+        // Animation for adding to cart
+        function animateToCart() {
+            const productImage = document.getElementById('mainProductImage');
+            const cartBtn = document.getElementById('cartBtn');
+
+            // Create a clone of the product image
+            const clone = productImage.cloneNode(true);
+            clone.classList.add('animate-to-cart');
+            clone.style.position = 'fixed';
+            clone.style.top = productImage.getBoundingClientRect().top + 'px';
+            clone.style.left = productImage.getBoundingClientRect().left + 'px';
+            clone.style.width = productImage.offsetWidth + 'px';
+            clone.style.height = productImage.offsetHeight + 'px';
+            clone.style.zIndex = '1000';
+
+            document.body.appendChild(clone);
+
+            // Remove the clone after animation completes
+            setTimeout(() => {
+                clone.remove();
+                showFloatingMessage('Added to cart!');
+            }, 1000);
         }
 
         // Address Modal Functions
@@ -744,63 +825,116 @@
             }
         }
 
-        // Wishlist functionality
-        function toggleWishlist() {
-            const wishlistBtn = document.getElementById('wishlistBtn');
-            const heartIcon = wishlistBtn.querySelector('i');
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOM loaded, initializing wishlist for product:', productDetails.productId);
+            // Initialize wishlist icon
+            updateWishlistIcon(productDetails.productId);
 
-            if (wishlistBtn.classList.contains('active')) {
-                // Remove from wishlist
-                wishlistBtn.classList.remove('active');
-                heartIcon.classList.remove('fas', 'fa-heart');
-                heartIcon.classList.add('far', 'fa-heart');
-                showFloatingMessage('Removed from wishlist');
-            } else {
-                // Add to wishlist
-                wishlistBtn.classList.add('active');
-                heartIcon.classList.remove('far', 'fa-heart');
-                heartIcon.classList.add('fas', 'fa-heart');
-                showFloatingMessage('Added to wishlist');
+            // Initialize quantity functionality
+            const quantityInput = document.getElementById('quantity');
+            if (quantityInput) {
+                // Calculate initial total price
+                updateTotalPrice(1);
+
+                quantityInput.addEventListener('change', function () {
+                    let value = parseInt(this.value);
+                    if (isNaN(value) || value < 1) value = 1;
+                    if (value > 99) value = 99;
+                    this.value = value;
+                    updateFormQuantities(value);
+                    updateTotalPrice(value);
+                });
             }
-        }
 
-        // Show floating message
-        function showFloatingMessage(message) {
-            const floatingMessage = document.getElementById('floatingMessage');
-            const messageText = document.getElementById('messageText');
+            // Smooth scroll to specifications when clicking the "See all" link
+            const specLink = document.querySelector('a[href="#specifications"]');
+            if (specLink) {
+                specLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.getElementById('specifications').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            }
 
-            messageText.textContent = message;
-            floatingMessage.classList.add('show');
+            // Add event listener for cart button
+            const addToCartForm = document.getElementById('addToCartForm');
+            if (addToCartForm) {
+                addToCartForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    animateToCart();
 
-            setTimeout(() => {
-                floatingMessage.classList.remove('show');
-            }, 3000);
-        }
+                    // Submit form via AJAX
+                    const formData = new FormData(this);
+                    fetch('/cart/add', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // Update cart count in navigation
+                                if (window.updateCartCount) {
+                                    window.updateCartCount();
+                                }
+                                // Trigger custom event
+                                document.dispatchEvent(new Event('cartUpdated'));
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error adding to cart:', error);
+                        });
+                });
+            }
 
-        // Animation for adding to cart
-        function animateToCart() {
-            const productImage = document.getElementById('mainProductImage');
-            const cartBtn = document.getElementById('cartBtn');
+            // Initialize tabs functionality
+            const tabs = document.querySelectorAll('.spec-desc-tab');
+            const panels = document.querySelectorAll('.spec-desc-panel');
 
-            // Create a clone of the product image
-            const clone = productImage.cloneNode(true);
-            clone.classList.add('animate-to-cart');
-            clone.style.position = 'fixed';
-            clone.style.top = productImage.getBoundingClientRect().top + 'px';
-            clone.style.left = productImage.getBoundingClientRect().left + 'px';
-            clone.style.width = productImage.offsetWidth + 'px';
-            clone.style.height = productImage.offsetHeight + 'px';
-            clone.style.zIndex = '1000';
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    const tabType = this.getAttribute('data-tab');
 
-            document.body.appendChild(clone);
+                    // Cập nhật active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
 
-            // Remove the clone after animation completes
-            setTimeout(() => {
-                clone.remove();
-                showFloatingMessage('Added to cart!');
-            }, 1000);
-        }
+                    // Ẩn tất cả các panel
+                    panels.forEach(panel => panel.classList.remove('active'));
+
+                    // Hiển thị panel được chọn với hiệu ứng
+                    setTimeout(() => {
+                        const activePanel = document.getElementById(tabType);
+                        if (activePanel) {
+                            activePanel.classList.add('active');
+                        }
+                    }, 10);
+                });
+            });
+
+            // Xử lý cho nút "See all"
+            const seeAllLink = document.querySelector('a[href="#specifications"]');
+            if (seeAllLink) {
+                seeAllLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // Kích hoạt tab Specifications
+                    const specTab = document.querySelector('.spec-desc-tab[data-tab="specifications"]');
+                    if (specTab) {
+                        specTab.click();
+                    }
+
+                    // Scroll đến phần này
+                    document.querySelector('.spec-desc-container').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
     </script>
+    <script src="/js/feedback.js"></script>
+    <div th:replace="fragments/footer :: footer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

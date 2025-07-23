@@ -131,7 +131,7 @@ public class CustomerController {
             RedirectAttributes redirectAttributes) {
         try {
             customerService.deleteCustomer(id);
-            redirectAttributes.addFlashAttribute("success", "Khóa tài khoản thành công!");
+            redirectAttributes.addFlashAttribute("success", "Account locked successfully!");
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -160,7 +160,7 @@ public class CustomerController {
             Customer customer = customerService.getCustomerById(id);
             customer.setLocked(false);
             customerService.updateCustomer(id, convertToDto(customer));
-            redirectAttributes.addFlashAttribute("success", "Mở khóa tài khoản thành công!");
+            redirectAttributes.addFlashAttribute("success", "Account unlocked successfully!");
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }

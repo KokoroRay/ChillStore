@@ -1,5 +1,6 @@
 package com.esms.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
 
     @ManyToOne
@@ -58,6 +60,11 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductSpecification> specifications = new ArrayList<>();
+
+    @Transient
+    private String priceString;
+    public String getPriceString() { return priceString; }
+    public void setPriceString(String priceString) { this.priceString = priceString; }
 
 
     public Product() {

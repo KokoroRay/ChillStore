@@ -30,6 +30,22 @@ import com.esms.model.entity.Customer;
 import com.esms.service.CustomerService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.esms.service.FeedbackService;
+import com.esms.model.entity.Feedback;
+import com.esms.repository.OrderRepository;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import java.security.Principal;
+import com.esms.service.ReplyService;
+import com.esms.model.entity.Reply;
+import com.esms.model.dto.ReplyFeedbackDTO;
+import com.esms.model.entity.Staff;
+import com.esms.repository.StaffRepository;
+import com.esms.model.dto.FeedbackDTO;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 public class CustomerProductController {
@@ -41,6 +57,14 @@ public class CustomerProductController {
     private BrandService brandService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private FeedbackService feedbackService;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private ReplyService replyService;
+    @Autowired
+    private StaffRepository staffRepository;
 
     @GetMapping("/Product")
     public String viewProductPage(
@@ -98,6 +122,8 @@ public class CustomerProductController {
                 productDiscountMap.put(product.getProductId(), discount);
             }
         }
+        // Map productId -> total sold quantity for displaying "đã bán"
+        Map<Integer, Integer> productSoldMap = new HashMap<>();
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
@@ -114,6 +140,7 @@ public class CustomerProductController {
         model.addAttribute("priceError", priceError);
         // Bổ sung: truyền map discount ra view
         model.addAttribute("productDiscountMap", productDiscountMap);
+        model.addAttribute("productSoldMap", productSoldMap);
         return "customer/product/viewProduct";
     }
 
@@ -135,120 +162,135 @@ public class CustomerProductController {
                 .filter(ProductImage::isPrimary)
                 .map(ProductImage::getImageUrl).findFirst().orElse(product.getImageUrl());
 
-            // Get current customer information if logged in
-            Customer customer = getCurrentCustomer();
-            Integer shippingCost = calculateShippingCost(customer);
-
-            model.addAttribute("product", product);
-            model.addAttribute("discount", discount);
-            model.addAttribute("primaryImage", primaryImage);
-            model.addAttribute("specifications", product.getSpecifications());
-            model.addAttribute("imageGallery", product.getImages());
-            model.addAttribute("customer", customer);
-            model.addAttribute("shippingCost", shippingCost);
-
-            return "customer/product/viewProductDetail";
-        }
-
-        /**
-         * Gets the currently logged-in customer
-         */
-        private Customer getCurrentCustomer() {
-            try {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (authentication != null && authentication.isAuthenticated()
-                        && !authentication.getPrincipal().equals("anonymousUser")) {
-                    String username = authentication.getName();
-                    return customerService.getCustomerByUsername(username);
-                }
-            } catch (Exception e) {
-                // Log error but don't disrupt the flow
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        /**
-         * Calculate shipping cost based on customer's address
-         * Free for Can Tho, 20,000 VND for other southern locations, 40,000 VND for northern locations
-         */
-        private Integer calculateShippingCost(Customer customer) {
-            if (customer == null || customer.getAddress() == null) {
-                return 20000; // Default shipping cost
-            }
-
-            String address = customer.getAddress().toLowerCase();
-
-            // Free shipping for Can Tho
-            if (address.contains("cần thơ") || address.contains("can tho")) {
-                return 0;
-            }
-
-            // List of northern provinces (simplified)
-            String[] northernProvinces = {
-                "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
-                "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
-                "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
-                "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
-                "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
-                "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
-                "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
-            };
-
-            // Check if address contains any northern province
-            for (String province : northernProvinces) {
-                if (address.contains(province)) {
-                    return 40000; // Northern provinces shipping cost
+        // Get current customer information if logged in
+        Customer customer = getCurrentCustomer();
+        Integer shippingCost = calculateShippingCost(customer);
+        int soldQuantity = productService.getTotalSoldQuantity(id);
+        model.addAttribute("product", product);
+        model.addAttribute("soldQuantity", soldQuantity);
+        model.addAttribute("discount", discount);
+        model.addAttribute("primaryImage", primaryImage);
+        model.addAttribute("specifications", product.getSpecifications());
+        model.addAttribute("imageGallery", product.getImages());
+        model.addAttribute("customer", customer);
+        model.addAttribute("shippingCost", shippingCost);
+        model.addAttribute("stockQty", product.getStockQty());
+        // Thêm biến currentRole cho Thymeleaf
+        String currentRole = "GUEST";
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+                for (var authority : authentication.getAuthorities()) {
+                    String role = authority.getAuthority();
+                    if (role.contains("ADMIN")) currentRole = "ADMIN";
+                    else if (role.contains("STAFF")) currentRole = "STAFF";
+                    else if (role.contains("CUSTOMER")) currentRole = "CUSTOMER";
                 }
             }
-
-            // Default for other southern provinces
-            return 20000;
+        } catch (Exception e) { }
+        model.addAttribute("currentRole", currentRole);
+        return "customer/product/viewProductDetail";
     }
 
-        @Autowired
-        private CategoryRepository categoryRepository;
+    /**
+     * Gets the currently logged-in customer
+     */
+    private Customer getCurrentCustomer() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated()
+                    && !authentication.getPrincipal().equals("anonymousUser")) {
+                String username = authentication.getName();
+                return customerService.getCustomerByUsername(username);
+            }
+        } catch (Exception e) {
+            // Log error but don't disrupt the flow
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-        @Autowired
-        private BrandRepository brandRepository;
-
-        @GetMapping("/products/category/{categoryId}")
-        public String viewProductsByCategory(
-                @PathVariable("categoryId") Integer categoryId,
-                Model model) {
-                    Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
-                    Page<ProductDTO> productDTOsPage = productService.getProductsByCategory(categoryId.toString(), pageable);
-                    List<ProductDTO> products = productDTOsPage.getContent();
-
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
-
-            model.addAttribute("products", products);
-            model.addAttribute("category", category);
-            model.addAttribute("title", "Products in " + category.getName());
-
-            return "customer/product/viewProduct";
+    /**
+     * Calculate shipping cost based on customer's address
+     * Free for Can Tho, 20,000 VND for other southern locations, 40,000 VND for northern locations
+     */
+    private Integer calculateShippingCost(Customer customer) {
+        if (customer == null || customer.getAddress() == null) {
+            return 20000; // Default shipping cost
         }
 
-        @GetMapping("/products/brand/{brandId}")
-        public String viewProductsByBrand(
-                @PathVariable("brandId") Integer brandId,
-                Model model) {
-                    // Get products by brand using the searchProductsWithFilters method
-                    Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
-                    Page<Product> productsPage = productService.searchProductsWithFilters(
-                        null, null, brandId, null, null, null, null, null, pageable, true);
-                    List<Product> products = productsPage.getContent();
+        String address = customer.getAddress().toLowerCase();
 
-            Brand brand = brandRepository.findById(brandId)
-                    .orElseThrow(() -> new RuntimeException("Brand not found"));
-
-            model.addAttribute("products", products);
-            model.addAttribute("brand", brand);
-            model.addAttribute("title", "Products by " + brand.getName());
-
-            return "customer/product/viewProduct";
+        // Free shipping for Can Tho
+        if (address.contains("cần thơ") || address.contains("can tho")) {
+            return 0;
         }
+
+        // List of northern provinces (simplified)
+        String[] northernProvinces = {
+            "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
+            "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
+            "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
+            "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
+            "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
+            "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
+            "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
+        };
+
+        // Check if address contains any northern province
+        for (String province : northernProvinces) {
+            if (address.contains(province)) {
+                return 40000; // Northern provinces shipping cost
+            }
+        }
+
+        // Default for other southern provinces
+        return 20000;
+    }
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private BrandRepository brandRepository;
+
+    @GetMapping("/products/category/{categoryId}")
+    public String viewProductsByCategory(
+            @PathVariable("categoryId") Integer categoryId,
+            Model model) {
+                Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
+                Page<ProductDTO> productDTOsPage = productService.getProductsByCategory(categoryId.toString(), pageable);
+                List<ProductDTO> products = productDTOsPage.getContent();
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        model.addAttribute("products", products);
+        model.addAttribute("category", category);
+        model.addAttribute("title", "Products in " + category.getName());
+
+        return "customer/product/viewProduct";
+    }
+
+    @GetMapping("/products/brand/{brandId}")
+    public String viewProductsByBrand(
+            @PathVariable("brandId") Integer brandId,
+            Model model) {
+                // Get products by brand using the searchProductsWithFilters method
+                Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
+                Page<Product> productsPage = productService.searchProductsWithFilters(
+                    null, null, brandId, null, null, null, null, null, pageable, true);
+                List<Product> products = productsPage.getContent();
+
+        Brand brand = brandRepository.findById(brandId)
+                .orElseThrow(() -> new RuntimeException("Brand not found"));
+
+        model.addAttribute("products", products);
+        model.addAttribute("brand", brand);
+        model.addAttribute("title", "Products by " + brand.getName());
+
+        return "customer/product/viewProduct";
+    }
 
     @GetMapping("/DiscountProducts")
     public String viewDiscountProducts(
@@ -314,6 +356,12 @@ public class CustomerProductController {
                 productDiscountMap.put(product.getProductId(), discount);
             }
         }
+        // Map productId -> total sold quantity for displaying "đã bán"
+        Map<Integer, Integer> productSoldMap = new HashMap<>();
+        for (Product product : products) {
+            int soldQty = productService.getTotalSoldQuantity(product.getProductId());
+            productSoldMap.put(product.getProductId(), soldQty);
+        }
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
@@ -329,6 +377,124 @@ public class CustomerProductController {
         model.addAttribute("totalItems", products.getTotalElements());
         model.addAttribute("priceError", priceError);
         model.addAttribute("productDiscountMap", productDiscountMap);
+        model.addAttribute("productSoldMap", productSoldMap);
         return "customer/product/discountProducts";
+    }
+
+    // API: Lấy danh sách feedback cho sản phẩm (có phân trang)
+    @GetMapping("/api/product/{productId}/feedbacks")
+    @ResponseBody
+    public Map<String, Object> getFeedbacksByProduct(
+            @PathVariable("productId") Integer productId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size) {
+        Pageable pageable = PageRequest.of(page, size, org.springframework.data.domain.Sort.by("createdAt").descending());
+        Page<FeedbackDTO> feedbackPage = feedbackService.getFeedbacksByProductIdPaged(productId, pageable);
+        Map<String, Object> result = new HashMap<>();
+        result.put("content", feedbackPage.getContent());
+        result.put("totalElements", feedbackPage.getTotalElements());
+        result.put("totalPages", feedbackPage.getTotalPages());
+        result.put("currentPage", feedbackPage.getNumber());
+        return result;
+    }
+
+    // API: Thêm feedback (chỉ cho user đã mua hàng, chưa feedback)
+    @PostMapping("/api/product/{productId}/feedback")
+    @ResponseBody
+    public Feedback addFeedback(@PathVariable("productId") Integer productId, @RequestBody Feedback feedback, Principal principal) {
+        Customer customer = getCurrentCustomer();
+        System.out.println("Add feedback: customer=" + (customer != null ? customer.getCustomerId() : "null") + ", productId=" + productId);
+        if (customer == null) throw new RuntimeException("Bạn cần đăng nhập để bình luận!");
+        boolean hasDelivered = orderRepository.hasCustomerDeliveredProduct(customer.getCustomerId(), productId);
+        System.out.println("hasDelivered: " + hasDelivered);
+        if (!hasDelivered) throw new RuntimeException("Bạn chỉ có thể bình luận khi đơn hàng đã giao thành công!");
+        return feedbackService.addFeedback(customer.getCustomerId(), productId, feedback.getRating(), feedback.getComment());
+    }
+
+    // API: Sửa feedback (chỉ cho chủ feedback)
+    @PutMapping("/api/feedback/{feedbackId}")
+    @ResponseBody
+    public Feedback updateFeedback(@PathVariable("feedbackId") Integer feedbackId, @RequestBody Feedback feedback, Principal principal) {
+        Customer customer = getCurrentCustomer();
+        if (customer == null) throw new RuntimeException("Bạn cần đăng nhập để sửa bình luận!");
+        return feedbackService.updateFeedback(feedbackId, feedback.getRating(), feedback.getComment(), customer.getCustomerId());
+    }
+
+    // API: Xóa feedback (chỉ cho chủ feedback)
+    @DeleteMapping("/api/feedback/{feedbackId}")
+    @ResponseBody
+    public void deleteFeedback(@PathVariable("feedbackId") Integer feedbackId, Principal principal) {
+        Customer customer = getCurrentCustomer();
+        if (customer == null) throw new RuntimeException("Bạn cần đăng nhập để xóa bình luận!");
+        feedbackService.deleteFeedback(feedbackId, customer.getCustomerId());
+    }
+
+    // API: Lấy reply cho feedback
+    @GetMapping("/api/feedback/{feedbackId}/reply")
+    @ResponseBody
+    public ResponseEntity<?> getReplyByFeedbackId(@PathVariable("feedbackId") int feedbackId) {
+        Reply reply = replyService.getReplyByFeedbackId(feedbackId);
+        if (reply == null) {
+            // Trả về JSON rỗng thay vì rỗng hoàn toàn để tránh lỗi JS
+            return ResponseEntity.ok().body(new HashMap<>());
+        }
+        return ResponseEntity.ok(reply);
+    }
+
+    // API: Staff/Admin gửi reply cho feedback
+    @PostMapping("/api/feedback/{feedbackId}/reply")
+    @ResponseBody
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    public Reply replyToFeedback(@PathVariable("feedbackId") int feedbackId, @RequestBody ReplyFeedbackDTO dto, Principal principal) {
+        String username = principal.getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer staffIdToLog = null;
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+        if (isAdmin) {
+            // Lấy staff đầu tiên trong DB để dùng làm staffId
+            Staff anyStaff = staffRepository.findAll().stream().findFirst()
+                .orElseThrow(() -> new RuntimeException("No staff found!"));
+            staffIdToLog = anyStaff.getId();
+        } else {
+            Staff staff = staffRepository.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("Staff account not found!"));
+            staffIdToLog = staff.getId();
+        }
+        dto.setFeedbackId(feedbackId);
+        dto.setStaffId(staffIdToLog);
+        replyService.saveReply(dto);
+        return replyService.getReplyByFeedbackId(feedbackId);
+    }
+
+    // API: Staff/Admin sửa reply cho feedback
+    @PutMapping("/api/feedback/{feedbackId}/reply")
+    @ResponseBody
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    public Reply updateReplyToFeedback(@PathVariable("feedbackId") int feedbackId, @RequestBody ReplyFeedbackDTO dto, Principal principal) {
+        String username = principal.getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer staffIdToLog = null;
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+        if (isAdmin) {
+            Staff anyStaff = staffRepository.findAll().stream().findFirst()
+                .orElseThrow(() -> new RuntimeException("No staff found!"));
+            staffIdToLog = anyStaff.getId();
+        } else {
+            Staff staff = staffRepository.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("Staff account not found!"));
+            staffIdToLog = staff.getId();
+        }
+        dto.setFeedbackId(feedbackId);
+        return replyService.updateReply(feedbackId, dto, staffIdToLog);
+    }
+
+    @GetMapping("/api/product/{productId}/can-review")
+    @ResponseBody
+    public boolean canReview(@PathVariable("productId") Integer productId, Principal principal) {
+        Customer customer = getCurrentCustomer();
+        if (customer == null) return false;
+        return orderRepository.hasCustomerDeliveredProduct(customer.getCustomerId(), productId);
     }
 }

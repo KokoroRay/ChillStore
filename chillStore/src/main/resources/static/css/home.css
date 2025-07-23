@@ -328,72 +328,6 @@ body {
     cursor: default;
 }
 /* === Why ===*/
-.why-section {
-    background-color: #799EFF;
-    padding: 40px 20px;
-    border-radius: 16px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-    margin: 20px auto;
-    max-width: 98%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-}
-
-.why-section:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.35);
-}
-.why-section::before,
-.why-section::after,
-.why-section .floating-icon {
-    content: "";
-    position: absolute;
-    background-size: contain;
-    background-repeat: no-repeat;
-    width: 60px;
-    height: 60px;
-    opacity: 0.8;
-    animation: float 6s ease-in-out infinite;
-    z-index: 5;
-}
-
-.why-section::before {
-    background-image: url('../images/fridge.png');
-    top: 50px;
-    left: 100px;
-    animation-delay: 0s;
-}
-
-.why-section::after {
-    background-image: url('../images/smart-tv.png');
-    bottom: 200px;
-    right: 1400px;
-    animation-delay: 2s;
-}
-
-.why-section .floating-icon {
-    background-image: url('../images/washing-machine.png');
-    top: 40px;
-    right: 120px;
-    animation-delay: 4s;
-}
-.why-section .microwave-icon {
-    background-image: url('../images/microwave.png');
-    top: 80px;
-    right: 60px;
-    animation-delay: 6s;
-}
-
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
 .title {
     text-align: center;
     font-size: 64px;
@@ -402,17 +336,16 @@ body {
     margin-bottom: 16px;
 }
 
-.why-container {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 16px;
-    overflow-x: auto;
-    padding: 20px;
-    justify-content: center;
-}
+ .container {
+     display: flex;
+     flex-wrap: nowrap;
+     gap: 16px;
+     overflow-x: auto;
+     padding: 20px;
+ }
 
 .why {
-    width: 245px;
+    width: 200px;
     flex-shrink: 0;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -423,7 +356,6 @@ body {
     overflow-wrap: break-word;
     word-wrap: break-word;
     white-space: normal;
-    text-align: center; /* Canh giữa nội dung trong .why */
 }
 
 .why p:first-child {
@@ -437,27 +369,7 @@ body {
     font-size: 14px;
     line-height: 1.4;
 }
-.why:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    background-color: #ffffff;
-}
-.galaxy-text {
-    font-family: 'Poppins', sans-serif;
-    font-size: 2.5rem;
-    background: linear-gradient(90deg, #00c9ff, #92fe9d, #ff6ec4, #7873f5);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: galaxyFlow 5s ease infinite;
-    font-weight: 600;
-}
 
-@keyframes galaxyFlow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
     .image-row img {

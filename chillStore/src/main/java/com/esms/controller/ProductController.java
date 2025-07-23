@@ -3,6 +3,8 @@ package com.esms.controller;
 import com.esms.model.entity.Brand;
 import com.esms.model.entity.Category;
 import com.esms.model.entity.Product;
+import com.esms.model.entity.ProductImage;
+import com.esms.model.entity.ProductSpecification;
 import com.esms.service.BrandService;
 import com.esms.service.CategoryService;
 import com.esms.service.ProductService;
@@ -13,6 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -162,6 +167,19 @@ public class ProductController {
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("minStock", minStock);
         model.addAttribute("sortOption", sortOption);
+
+        // Determine current role for the view
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentRole = "GUEST"; // Default
+        if (authentication != null) {
+            if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                currentRole = "ADMIN";
+            } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_STAFF"))) {
+                currentRole = "STAFF";
+            }
+        }
+        model.addAttribute("currentRole", currentRole);
+
         String requestURI = request.getRequestURI();
         if(requestURI.startsWith("/staff")){
             return "staff/ManageProduct/ProductDetail";
@@ -220,14 +238,17 @@ public class ProductController {
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption,
-            Model model) {
-        
-        // Validation logic for product price
-        String priceError = null;
-        if (product.getPrice() != null) {
-            if (product.getPrice().compareTo(new java.math.BigDecimal("1000")) < 0) {
-                priceError = "Price must be at least 1,000 VND";
-                model.addAttribute("priceError", priceError);
+            Model model,
+            HttpServletRequest request
+    ) {
+        // Xử lý giá trị price nếu là String có dấu chấm hoặc phẩy
+        String priceParam = request.getParameter("price");
+        if (priceParam != null && !priceParam.isEmpty()) {
+            String numericPrice = priceParam.replaceAll("[^\\d]", "");
+            try {
+                product.setPrice(new java.math.BigDecimal(numericPrice));
+            } catch (Exception e) {
+                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
                 model.addAttribute("product", productService.getProductById(id));
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
@@ -243,22 +264,17 @@ public class ProductController {
                 model.addAttribute("sortOption", sortOption);
                 return "admin/ManageProduct/ProductForm";
             }
-            if (product.getPrice().compareTo(new java.math.BigDecimal("1000000000")) > 0) {
-                priceError = "Price cannot exceed 1,000,000,000 VND";
-                model.addAttribute("priceError", priceError);
-                model.addAttribute("product", productService.getProductById(id));
+        }
+        
+        // Xử lý giá trị price từ priceString (nếu có)
+        if (product.getPriceString() != null && !product.getPriceString().isEmpty()) {
+            String numericPrice = product.getPriceString().replaceAll("[^\\d]", "");
+            try {
+                product.setPrice(new java.math.BigDecimal(numericPrice));
+            } catch (Exception e) {
+                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
-                model.addAttribute("currentPage", page);
-                model.addAttribute("size", size);
-                model.addAttribute("keyword", keyword);
-                model.addAttribute("categoryId", categoryId);
-                model.addAttribute("brandId", brandId);
-                model.addAttribute("filterStatus", filterStatus);
-                model.addAttribute("minPrice", minPrice);
-                model.addAttribute("maxPrice", maxPrice);
-                model.addAttribute("minStock", minStock);
-                model.addAttribute("sortOption", sortOption);
                 return "admin/ManageProduct/ProductForm";
             }
         }
@@ -357,6 +373,9 @@ public class ProductController {
     public String addProduct(
             @ModelAttribute("product") Product product,
             @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "galleryImages", required = false) MultipartFile[] galleryImages,
+            @RequestParam(value = "specKeys", required = false) String[] specKeys,
+            @RequestParam(value = "specValues", required = false) String[] specValues,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size,
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -367,21 +386,30 @@ public class ProductController {
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption,
-            Model model
+            Model model,
+            HttpServletRequest request
     ) {
-        // Validation logic for product price
-        String priceError = null;
-        if (product.getPrice() != null) {
-            if (product.getPrice().compareTo(new java.math.BigDecimal("1000")) < 0) {
-                priceError = "Price must be at least 1,000 VND";
-                model.addAttribute("priceError", priceError);
+        // Xử lý giá trị price nếu là String có dấu chấm hoặc phẩy
+        String priceParam = request.getParameter("price");
+        if (priceParam != null && !priceParam.isEmpty()) {
+            String numericPrice = priceParam.replaceAll("[^\\d]", "");
+            try {
+                product.setPrice(new java.math.BigDecimal(numericPrice));
+            } catch (Exception e) {
+                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
             }
-            if (product.getPrice().compareTo(new java.math.BigDecimal("1000000000")) > 0) {
-                priceError = "Price cannot exceed 1,000,000,000 VND";
-                model.addAttribute("priceError", priceError);
+        }
+        
+        // Xử lý giá trị price từ priceString (nếu có)
+        if (product.getPriceString() != null && !product.getPriceString().isEmpty()) {
+            String numericPrice = product.getPriceString().replaceAll("[^\\d]", "");
+            try {
+                product.setPrice(new java.math.BigDecimal(numericPrice));
+            } catch (Exception e) {
+                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
@@ -415,6 +443,50 @@ public class ProductController {
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
             }
+        }
+
+        
+        // Xử lý thông số kỹ thuật
+        if (specKeys != null && specValues != null && specKeys.length == specValues.length) {
+            List<ProductSpecification> specs = new ArrayList<>();
+            for (int i = 0; i < specKeys.length; i++) {
+                if (specKeys[i] != null && !specKeys[i].isBlank() && specValues[i] != null && !specValues[i].isBlank()) {
+                    ProductSpecification spec = new ProductSpecification();
+                    spec.setSpecKey(specKeys[i]);
+                    spec.setSpecValue(specValues[i]);
+                    spec.setProduct(product);
+                    specs.add(spec);
+                }
+            }
+            product.setSpecifications(specs);
+        }
+        // Xử lý nhiều ảnh gallery
+        if (galleryImages != null && galleryImages.length > 0) {
+            List<ProductImage> images = new ArrayList<>();
+            for (MultipartFile file : galleryImages) {
+                if (file != null && !file.isEmpty()) {
+                    try {
+                        String originalFilename = file.getOriginalFilename();
+                        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                        String filename = "product_gallery_" + System.currentTimeMillis() + "_" + originalFilename.hashCode() + fileExtension;
+                        String uploadDir = "src/main/resources/static/images/";
+                        java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
+                        if (!java.nio.file.Files.exists(uploadPath)) {
+                            java.nio.file.Files.createDirectories(uploadPath);
+                        }
+                        java.nio.file.Path filePath = uploadPath.resolve(filename);
+                        java.nio.file.Files.copy(file.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                        ProductImage img = new ProductImage();
+                        img.setImageUrl("/images/" + filename);
+                        img.setProduct(product);
+                        img.setPrimary(false); // Ảnh gallery không phải ảnh chính
+                        images.add(img);
+                    } catch (Exception e) {
+                        // Có thể log lỗi hoặc bỏ qua ảnh lỗi
+                    }
+                }
+            }
+            product.setImages(images);
         }
         
         productService.saveProduct(product);

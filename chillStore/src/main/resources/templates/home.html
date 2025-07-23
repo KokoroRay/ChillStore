@@ -161,6 +161,7 @@
       min-height: 60px;
     }
   </style>
+<section id="discount-section">
   <div class="container my-4 highlight-discount-section">
     <div class="row justify-content-center">
       <div th:each="row : ${#numbers.sequence(0, 1)}" class="w-100 d-flex flex-row mb-3 justify-content-center">
@@ -185,11 +186,16 @@
                 <span class="vnd">VND</span>
               </div>
             </a>
+            <!-- Icon chuyển sang trang discount -->
+            <a th:href="@{/DiscountProducts}" class="go-discount-page" title="Xem tất cả sản phẩm giảm giá" style="position:absolute;bottom:10px;right:10px;z-index:5;">
+              <i class="fa-solid fa-tags fa-lg" style="color:#e53935;"></i>
+            </a>
           </div>
         </div>
       </div>
     </div>
   </div>
+</section>
   <!-- End dòng sản phẩm giảm giá nổi bật -->
 
   <!--Category-->

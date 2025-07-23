@@ -31,37 +31,37 @@
 </section>
 <section id="main-content">
 
-  <div th:insert="~{fragments/navigationBar :: navBar}"></div><br>
+<div th:insert="~{fragments/navigationBar :: navBar}"></div><br>
   <div class="banner-row">
-    <div class="carousel-wrapper">
+  <div class="carousel-wrapper">
 
-      <div id="autoCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-pause="hover">
-        <div class="carousel-inner">
-          <div class="carousel-item active" data-bs-interval="2000">
-            <img src="/images/SA.png" class="d-block w-100 rounded" alt="Slide 1">
-          </div>
-          <div class="carousel-item" data-bs-interval="2000">
-            <img src="/images/SA1.png" class="d-block w-100 rounded" alt="Slide 2">
-          </div>
-          <div class="carousel-item" data-bs-interval="2000">
-            <img src="/images/SA2.png" class="d-block w-100 rounded" alt="Slide 3">
-          </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#autoCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#autoCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon"></span>
-        </button>
-      </div>
+<div id="autoCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-pause="hover">
+  <div class="carousel-inner">
+    <div class="carousel-item active" data-bs-interval="2000">
+      <img src="/images/SA.png" class="d-block w-100 rounded" alt="Slide 1">
     </div>
-    <br>
+    <div class="carousel-item" data-bs-interval="2000">
+      <img src="/images/SA1.png" class="d-block w-100 rounded" alt="Slide 2">
+    </div>
+    <div class="carousel-item" data-bs-interval="2000">
+      <img src="/images/SA2.png" class="d-block w-100 rounded" alt="Slide 3">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#autoCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#autoCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+</div>
+<br>
 
-    <div class="image-row-horizontal">
-      <img src="/images/maygiac.png" alt="Banner quảng cáo">
-      <img src="/images/robot.png" alt="Banner quảng cáo">
-      <img src="/images/tulanh3.png" alt="Banner quảng cáo">
-    </div>
+<div class="image-row-horizontal">
+  <img src="/images/maygiac.png" alt="Banner quảng cáo">
+  <img src="/images/robot.png" alt="Banner quảng cáo">
+  <img src="/images/tulanh3.png" alt="Banner quảng cáo">
+</div>
   </div>
 
 
@@ -69,66 +69,66 @@
 
   <!--Category-->
   <div class="container">
-    <div class="category-section">
-      <div class="category-toggle" onclick="toggleCategories()">
-        <span id="toggle-text">≡</span>
-      </div>
-
-      <div class="category-grid" id="category-grid">
-        <a th:each="cat : ${categories}" th:href="@{'/home?categoryId=' + ${cat.id} + '#product-list'}" class="category-item">
-          <img th:src="@{'/images/' + ${#strings.replace(#strings.toLowerCase(cat.name), ' ', '')} + '.png'}" alt="[[${cat.name}]]" onerror="this.onerror=null;this.src='/images/dots.png';">
-          <p th:text="${cat.name}"></p>
-        </a>
-        <a th:href="@{'/home#product-list'}" class="category-item">
-          <img src="/images/dots.png" alt="Tất cả">
-          <p>Tất cả danh mục</p>
-        </a>
-      </div>
+  <div class="category-section">
+    <div class="category-toggle" onclick="toggleCategories()">
+      <span id="toggle-text">≡</span>
     </div>
+
+    <div class="category-grid" id="category-grid">
+      <a th:each="cat : ${categories}" th:href="@{'/home?categoryId=' + ${cat.id} + '#product-list'}" class="category-item">
+        <img th:src="@{'/images/' + ${#strings.replace(#strings.toLowerCase(cat.name), ' ', '')} + '.png'}" alt="[[${cat.name}]]" onerror="this.onerror=null;this.src='/images/dots.png';">
+        <p th:text="${cat.name}"></p>
+      </a>
+      <a th:href="@{'/home#product-list'}" class="category-item">
+        <img src="/images/dots.png" alt="Tất cả">
+        <p>Tất cả danh mục</p>
+      </a>
+    </div>
+  </div>
   </div>
   <br>
-  <div class="container" style="max-width:1200px; margin-bottom: 1.5rem;">
-    <form method="get" th:action="@{/home}" id="filter-form"
-          style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; align-items:center; margin-left:10px;">
-      <div style="min-width:180px;">
-        <select name="brandId" class="form-select" style="height: 44px;">
-          <option value="">Tất cả thương hiệu</option>
-          <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brandId != null and brand.id == brandId}"></option>
-        </select>
-      </div>
-      <div style="min-width:120px;">
-        <input type="number" name="minPrice" class="form-control" placeholder="Giá từ (VND)" th:value="${minPrice}" min="0" style="height: 44px;" />
-      </div>
-      <div style="min-width:120px;">
-        <input type="number" name="maxPrice" class="form-control" placeholder="Đến (VND)" th:value="${maxPrice}" min="0" style="height: 44px;" />
-      </div>
-      <div style="min-width:120px;">
-        <select name="sortOption" class="form-select" style="height: 44px;">
-          <option value="default" th:selected="${sortOption == null or sortOption == 'default'}">Sắp xếp</option>
-          <option value="name_asc" th:selected="${sortOption == 'name_asc'}">Tên A-Z</option>
-          <option value="name_desc" th:selected="${sortOption == 'name_desc'}">Tên Z-A</option>
-          <option value="price_asc" th:selected="${sortOption == 'price_asc'}">Giá tăng dần</option>
-          <option value="price_desc" th:selected="${sortOption == 'price_desc'}">Giá giảm dần</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary" style="height: 44px; min-width: 80px;"><i class="fas fa-filter me-1"></i>Lọc</button>
-      <a th:href="@{/home}" class="btn btn-secondary ms-1" style="height: 44px; min-width: 90px;"><i class="fas fa-sync-alt me-1"></i>Đặt lại</a>
-    </form>
-  </div>
-  <div class="product-container"  id="product-list">
-    <div class="product-grid">
-      <div class="product-card" th:each="product : ${products}">
-        <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration: none; color: inherit; display: block;">
-          <img th:src="@{${product.imageUrl}}" alt="Ảnh sản phẩm">
-          <h3 th:text="${product.name}" style="color: #2196f3;">Tên sản phẩm</h3>
-          <p style=""
-             th:text="'Price: ' + ${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'">
-          </p>
-        </a>
-      </div>
-
+<div class="container" style="max-width:1200px; margin-bottom: 1.5rem;">
+  <form method="get" th:action="@{/home}" id="filter-form"
+        style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; align-items:center; margin-left:10px;">
+    <div style="min-width:180px;">
+      <select name="brandId" class="form-select" style="height: 44px;">
+        <option value="">Tất cả thương hiệu</option>
+        <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brandId != null and brand.id == brandId}"></option>
+      </select>
     </div>
+    <div style="min-width:120px;">
+      <input type="number" name="minPrice" class="form-control" placeholder="Giá từ (VND)" th:value="${minPrice}" min="0" style="height: 44px;" />
+    </div>
+    <div style="min-width:120px;">
+      <input type="number" name="maxPrice" class="form-control" placeholder="Đến (VND)" th:value="${maxPrice}" min="0" style="height: 44px;" />
+    </div>
+    <div style="min-width:120px;">
+      <select name="sortOption" class="form-select" style="height: 44px;">
+        <option value="default" th:selected="${sortOption == null or sortOption == 'default'}">Sắp xếp</option>
+        <option value="name_asc" th:selected="${sortOption == 'name_asc'}">Tên A-Z</option>
+        <option value="name_desc" th:selected="${sortOption == 'name_desc'}">Tên Z-A</option>
+        <option value="price_asc" th:selected="${sortOption == 'price_asc'}">Giá tăng dần</option>
+        <option value="price_desc" th:selected="${sortOption == 'price_desc'}">Giá giảm dần</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary" style="height: 44px; min-width: 80px;"><i class="fas fa-filter me-1"></i>Lọc</button>
+    <a th:href="@{/home}" class="btn btn-secondary ms-1" style="height: 44px; min-width: 90px;"><i class="fas fa-sync-alt me-1"></i>Đặt lại</a>
+  </form>
+</div>
+<div class="product-container"  id="product-list">
+  <div class="product-grid">
+    <div class="product-card" th:each="product : ${products}">
+      <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration: none; color: inherit; display: block;">
+        <img th:src="@{${product.imageUrl}}" alt="Ảnh sản phẩm">
+        <h3 th:text="${product.name}" style="color: #2196f3;">Tên sản phẩm</h3>
+        <p style=""
+           th:text="'Price: ' + ${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'">
+        </p>
+      </a>
+    </div>
+
   </div>
+</div>
   <div class="pagination">
     <th:block th:with="baseUrl=@{/home(
     categoryId=${categoryId},
@@ -170,56 +170,56 @@
       </div>
 
     </th:block></div><br>
-  <div class="why-section" style="background-color: #113F67; padding: 40px 20px;">
-    <div class="floating-icon"></div>
-    <h2 class="title galaxy-text">Why Choose Our Store?</h2>
-    <div class="why-container">
-      <div class="why">
-        <p>Genuine Products – Competitive Prices</p>
-        <p>We offer authentic products from trusted brands with transparent and competitive pricing.</p>
-      </div>
-      <div class="why">
-        <p>Wide Range – Easy to Find</p>
-        <p>A full range of refrigeration products with clear categories and convenient filtering options.</p>
-      </div>
-      <div class="why">
-        <p>Fast Delivery – On-Site Installation</p>
-        <p>Professional technicians deliver and install products quickly and efficiently at your location.</p>
-      </div>
-      <div class="why">
-        <p>24/7 Customer Support</p>
-        <p>Support via phone, live chat, and email to ensure a smooth shopping experience.</p>
-      </div>
-      <div class="why">
-        <p>Easy Ordering – Payment – Tracking</p>
-        <p>Quick ordering process, flexible payment methods, and real-time order tracking.</p>
-      </div>
+<div class="why-section" style="background-color: #113F67; padding: 40px 20px;">
+  <div class="floating-icon"></div>
+  <h2 class="title galaxy-text">Why Choose Our Store?</h2>
+  <div class="why-container">
+    <div class="why">
+      <p>Genuine Products – Competitive Prices</p>
+      <p>We offer authentic products from trusted brands with transparent and competitive pricing.</p>
     </div>
-    <div class="floating-icon microwave-icon"></div>
+    <div class="why">
+      <p>Wide Range – Easy to Find</p>
+      <p>A full range of refrigeration products with clear categories and convenient filtering options.</p>
+    </div>
+    <div class="why">
+      <p>Fast Delivery – On-Site Installation</p>
+      <p>Professional technicians deliver and install products quickly and efficiently at your location.</p>
+    </div>
+    <div class="why">
+      <p>24/7 Customer Support</p>
+      <p>Support via phone, live chat, and email to ensure a smooth shopping experience.</p>
+    </div>
+    <div class="why">
+      <p>Easy Ordering – Payment – Tracking</p>
+      <p>Quick ordering process, flexible payment methods, and real-time order tracking.</p>
+    </div>
   </div>
+  <div class="floating-icon microwave-icon"></div>
+</div>
 
   <div th:replace="fragments/footer :: footer"></div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script>
-    function toggleCategories() {
-      const grid = document.getElementById("category-grid");
-      const text = document.getElementById("toggle-text");
+<script>
+  function toggleCategories() {
+    const grid = document.getElementById("category-grid");
+    const text = document.getElementById("toggle-text");
 
-      if (grid.classList.contains("hidden")) {
-        grid.classList.remove("hidden");
-        text.innerText = "≡";
-      } else {
-        grid.classList.add("hidden");
-        text.innerText = "≡";
-      }
+    if (grid.classList.contains("hidden")) {
+      grid.classList.remove("hidden");
+      text.innerText = "≡";
+    } else {
+      grid.classList.add("hidden");
+      text.innerText = "≡";
     }
+  }
 
-    // Tự động cuộn xuống danh sách sản phẩm sau khi lọc
-    document.getElementById('filter-form').addEventListener('submit', function(e) {
-      this.action = this.action.split('#')[0] + '#product-list';
-    });
-  </script>
+  // Tự động cuộn xuống danh sách sản phẩm sau khi lọc
+  document.getElementById('filter-form').addEventListener('submit', function(e) {
+    this.action = this.action.split('#')[0] + '#product-list';
+  });
+</script>
 
 
 </section>

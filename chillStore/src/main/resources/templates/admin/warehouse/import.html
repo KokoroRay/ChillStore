@@ -52,7 +52,11 @@
                         <label for="file" class="form-label">Import via Excel file (.xlsx):</label>
                         <input type="file" id="file" name="file" class="form-control" accept=".xlsx" required>
                     </div>
-                    <div class="d-flex justify-content-end mt-4">
+                    <div class="d-flex justify-content-between mt-4">
+                        <!-- Link tải file mẫu -->
+                        <a href="/admin/warehouse/import-sample" class="btn btn-outline-info" download>
+                            <i class="fas fa-download"></i> Tải file mẫu Excel
+                        </a>
                         <button type="submit" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Import Excel
                         </button>

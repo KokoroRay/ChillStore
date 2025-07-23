@@ -412,4 +412,13 @@ public class ProductServiceImpl implements ProductService {
         Integer count = orderItemRepository.countTotalSoldByProductId(productId);
         return count != null ? count : 0;
     }
+
+    /**
+     * Tìm sản phẩm theo tên chính xác (không phân biệt hoa thường)
+     * Dùng cho import warehouse bằng Product Name
+     */
+    @Override
+    public Product getProductByName(String name) {
+        return productRepository.findByNameIgnoreCase(name);
+    }
 }

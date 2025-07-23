@@ -9,9 +9,10 @@ public class CartItemDTO {
     private int quantity;
     private double totalPrice;
     private int stockQty;
+    private String imageUrl;
 
 
-    public CartItemDTO(int cartItemId, int productId, String productName, double price, double discount, int quantity, double totalPrice, int stockQty) {
+    public CartItemDTO(int cartItemId, int productId, String productName, double price, double discount, int quantity, double totalPrice, int stockQty, String imageUrl) {
         this.cartItemId = cartItemId;
         this.productId = productId;
         this.productName = productName;
@@ -20,6 +21,8 @@ public class CartItemDTO {
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.stockQty = stockQty;
+        this.imageUrl = imageUrl;
+
     }
 
     public int getCartItemId() {
@@ -84,5 +87,13 @@ public class CartItemDTO {
 
     public void setStockQty(int stockQty) {
         this.stockQty = stockQty;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

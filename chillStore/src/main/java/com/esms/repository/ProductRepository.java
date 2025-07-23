@@ -40,4 +40,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findByStatus(boolean status);
     Page<Product> findByCategoryNameIgnoreCase(String category, Pageable pageable);
 
+    /**
+     * Tìm sản phẩm theo tên chính xác (không phân biệt hoa thường)
+     */
+    Product findByNameIgnoreCase(String name);
 } 

@@ -5,6 +5,7 @@ import com.esms.model.dto.ProductDTO;
 import com.esms.service.ProductService;
 import com.esms.service.CategoryService;
 import com.esms.service.BrandService;
+import com.esms.service.DiscountService;
 import com.esms.model.entity.Category;
 import com.esms.model.entity.Brand;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class HomeController {
     private CategoryService categoryService;
     @Autowired
     private BrandService brandService;
+    @Autowired
+    private DiscountService discountService;
 
     @GetMapping({"/", "/home"})
     public String home(Model model,
@@ -58,6 +61,22 @@ public class HomeController {
         var brands = brandService.getAllBrands();
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
+
+        // --- Thêm logic lấy sản phẩm giảm giá nổi bật ---
+        // Lấy tối đa 10 sản phẩm giảm giá nổi bật
+        var discountPage = productService.getDiscountProducts(org.springframework.data.domain.PageRequest.of(0, 10));
+        var highlightDiscountProducts = discountPage.getContent();
+        java.util.Map<Integer, com.esms.model.entity.Discount> productDiscountMap = new java.util.HashMap<>();
+        for (var product : highlightDiscountProducts) {
+            var discount = productService.getActiveDiscountForProduct(product);
+            if (discount != null) {
+                productDiscountMap.put(product.getProductId(), discount);
+            }
+        }
+        model.addAttribute("highlightDiscountProducts", highlightDiscountProducts);
+        model.addAttribute("productDiscountMap", productDiscountMap);
+        // --- End logic sản phẩm giảm giá ---
+
         // Nếu có filter thì search, không thì random
         boolean hasFilter = keyword != null || categoryId != null || brandId != null || minPrice != null || maxPrice != null || (sortOption != null && !sortOption.equals("default"));
         org.springframework.data.domain.Page<com.esms.model.entity.Product> productsPage;

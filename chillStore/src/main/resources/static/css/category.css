@@ -1,0 +1,153 @@
+/* Layout Improvements */
+.main-content {
+    background-color: var(--background);
+    min-height: calc(100vh - 56px);
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.category-management {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 2em;
+}
+
+/* Card Styling */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-responsive {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    flex: 1;
+}
+
+.table thead th {
+    background-color: var(--primary);
+    color: #000000;
+    font-weight: 700;
+    padding: 1rem 1.25rem;
+    border: none;
+}
+
+.table tbody td {
+    padding: 1rem 1.25rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(135, 192, 205, 0.1);
+}
+
+/* Buttons & Actions */
+.btn-primary {
+    background-color: #87C0CD;
+    border-color: #87C0CD;
+}
+
+.btn-primary:hover {
+    background-color: #0d3253;
+    border-color: #0d3253;
+}
+
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.text-end img {
+    width: 2rem;
+    height: 2rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .category-management {
+        padding: 0 1rem;
+    }
+
+    .table-responsive {
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    }
+}
+
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+
+    .table tbody tr {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 2px solid #dee2e6;
+        padding: 1rem;
+    }
+
+    .table tbody td {
+        display: flex;
+        border-bottom: 1px solid #f1f1f1;
+        padding: 0.75rem 0.5rem;
+    }
+
+    .table tbody td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        width: 120px;
+        min-width: 120px;
+        color: var(--primary);
+    }
+
+    .table tbody td .btn-action {
+        margin: 0 2px;
+    }
+
+    /* Add data labels for responsive table */
+    td[data-label]:before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: inline-block;
+        margin-right: 0.5rem;
+        color: var(--primary);
+    }
+
+    /* Specific labels for columns */
+    td:nth-child(1):before { content: "ID: "; }
+    td:nth-child(2):before { content: "Name: "; }
+    td:nth-child(3):before { content: "Actions: "; }
+}
+
+/* Empty State Styling */
+.text-center.text-muted i {
+    opacity: 0.6;
+}

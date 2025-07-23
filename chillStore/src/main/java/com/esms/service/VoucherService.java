@@ -15,5 +15,7 @@ public interface VoucherService {
     void deleteVoucher(Integer id);
     Voucher getVoucherByCode(String code);
     Voucher updateVoucher(Voucher voucher);
+    List<Voucher> getVoucherByCustomerId(Integer customerId);
+    void applySpecialVoucher(Integer customerId, String code);
 
 }

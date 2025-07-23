@@ -444,6 +444,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
+
         
         // Xử lý thông số kỹ thuật
         if (specKeys != null && specValues != null && specKeys.length == specValues.length) {

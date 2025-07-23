@@ -1,8 +1,6 @@
 package com.esms.model.entity;
 
 import jakarta.persistence.*;
-import org.springframework.security.core.parameters.P;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +47,9 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @Column(name = "is_voucher_acquisition", nullable = false)
+    private boolean isVoucherAcquisition = false;
+
     public Order() {
     }
 
@@ -62,7 +63,6 @@ public class Order {
         this.paymentMethod = paymentMethod;
     }
 
-    // Xử lý hoàn tiền khi customer thanh toán bằng VNPay nhưng hủy đơn hàng
     @Transient
     public String getRefundStatus() {
         if ("Cancelled".equals(this.status) && "VNpay".equals(this.paymentMethod)) {
@@ -169,5 +169,13 @@ public class Order {
 
     public void setStaff(Staff staff) {
         this.staff = staff;
+    }
+
+    public boolean isVoucherAcquisition() {
+        return isVoucherAcquisition;
+    }
+
+    public void setVoucherAcquisition(boolean voucherAcquisition) {
+        isVoucherAcquisition = voucherAcquisition;
     }
 }

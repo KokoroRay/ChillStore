@@ -37,6 +37,7 @@ public interface CustomerService {
     Page<Customer> searchCustomersByName(String name, Pageable pageable);
     Page<Customer> searchCustomersByEmail(String email, Pageable pageable);
 
+    void addVoucherToCustomer(Integer customerId, Integer voucherId);
 
     //xử lý liên quan đến đăng kí tài khoản bằng gg
     Optional<Customer> findCustomerByEmail(String email);

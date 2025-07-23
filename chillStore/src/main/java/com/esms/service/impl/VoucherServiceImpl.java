@@ -9,13 +9,17 @@ import com.esms.repository.AdminRepository;
 import com.esms.repository.BrandRepository;
 import com.esms.repository.CategoryRepository;
 import com.esms.repository.VoucherRepository;
+import com.esms.service.CustomerService;
 import com.esms.service.VoucherService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Transient;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transient
@@ -35,6 +39,8 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private CustomerService customerService;
 
     @Override
     public List<Voucher> getAllVouchers() {
@@ -73,6 +79,7 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setStart_date(voucherDto.getStart_date());
         voucher.setEnd_date(voucherDto.getEnd_date());
         voucher.setActive(voucherDto.isActive());
+        voucher.setSpecial(voucherDto.isSpecial());
 
         if (voucherDto.getCategoryIds() != null && !voucherDto.getCategoryIds().isEmpty()) {
             List<Category> categories = categoryRepository.findAllById(voucherDto.getCategoryIds());
@@ -150,5 +157,32 @@ public class VoucherServiceImpl implements VoucherService {
     @Override
     public Voucher updateVoucher(Voucher voucher) {
         return voucherRepository.save(voucher);
+    }
+
+    @Override
+    public List<Voucher> getVoucherByCustomerId(Integer customerId) {
+        List<Voucher> customerVouchers = new ArrayList<>();
+        customerVouchers.addAll(voucherRepository.findAutoApplyVouchers());
+
+        List<Voucher> specialVouchers = voucherRepository.findCustomerSpecialVoucher(customerId);
+        customerVouchers.addAll(specialVouchers);
+        LocalDate today = LocalDate.now();
+        return customerVouchers.stream().filter(v -> v.getEnd_date().isAfter(today) || v.getEnd_date().isEqual(today) ).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public void applySpecialVoucher(Integer customerId, String code) {
+        Voucher voucher = voucherRepository.findByCode(code).orElseThrow(() -> new RuntimeException("Voucher not found"));
+        if (!voucher.isSpecial())  {
+            throw new RuntimeException("This is not special voucher");
+        }
+        if (voucher.getQuantity_available() <= 0) {
+            throw new RuntimeException("Voucher is out of stock");
+        }
+
+        customerService.addVoucherToCustomer(customerId, voucher.getVoucher_id());
+        voucher.setQuantity_available(voucher.getQuantity_available() - 1);
+        voucherRepository.save(voucher);
     }
 }

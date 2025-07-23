@@ -250,12 +250,12 @@
             }
         }
         if (successCount > 0) {
-            showFloatingMessage(`Đã thêm ${successCount} sản phẩm vào giỏ hàng!`);
+            showFloatingMessage(`Added ${successCount} product${successCount > 1 ? 's' : ''} to cart!`);
             if (window.updateCartCount) window.updateCartCount();
             document.dispatchEvent(new Event('cartUpdated'));
         }
         if (failCount > 0) {
-            showFloatingMessage(`${failCount} sản phẩm không thể thêm vào giỏ hàng!`);
+            showFloatingMessage(`${failCount} product${failCount > 1 ? 's' : ''} could not be added to cart!`);
         }
     });
 

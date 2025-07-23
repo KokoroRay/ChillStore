@@ -386,8 +386,10 @@ public class ProductController {
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption,
+            @RequestParam(value = "imageUrlInput", required = false) String imageUrlInput,
             Model model,
-            HttpServletRequest request
+            HttpServletRequest request,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes
     ) {
         // Xử lý giá trị price nếu là String có dấu chấm hoặc phẩy
         String priceParam = request.getParameter("price");
@@ -443,6 +445,8 @@ public class ProductController {
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
             }
+        } else if (imageUrlInput != null && !imageUrlInput.isEmpty()) {
+            product.setImageUrl(imageUrlInput);
         }
         
         // Xử lý thông số kỹ thuật
@@ -489,6 +493,7 @@ public class ProductController {
         }
         
         productService.saveProduct(product);
+        redirectAttributes.addFlashAttribute("successMessage", "Product added successfully!");
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
                 page, size,
                 keyword != null ? keyword : "",

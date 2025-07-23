@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
+
 public class CustomerDTO {
     private Integer customerId;
 
@@ -30,6 +32,10 @@ public class CustomerDTO {
     private String avatarUrl;
 
     private String gender;
+
+    private String membershipTier;
+
+    private BigDecimal totalSpending;
 
     public CustomerDTO() {}
 
@@ -137,5 +143,21 @@ public class CustomerDTO {
     }
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getMembershipTier() {
+        return membershipTier;
+    }
+
+    public void setMembershipTier(String membershipTier) {
+        this.membershipTier = membershipTier;
+    }
+
+    public BigDecimal getTotalSpending() {
+        return totalSpending;
+    }
+
+    public void setTotalSpending(BigDecimal totalSpending) {
+        this.totalSpending = totalSpending;
     }
 }

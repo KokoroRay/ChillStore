@@ -27,6 +27,8 @@
                 </ul>
             </div>
 
+            <!-- Thanh tìm kiếm ở giữa navbar -->
+
             <div class="nav-right">
                 <!-- Cart and Avatar for Customer -->
                 <div sec:authorize="hasRole('CUSTOMER')" class="user-actions">
@@ -300,6 +302,7 @@
             // Global function to trigger cart count update
             window.updateCartCount = updateCartCount;
         </script>
+        <script src="/js/autocomplete.js"></script>
 </body>
 
 </html>

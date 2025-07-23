@@ -75,31 +75,11 @@
     </div>
 
     <div class="category-grid" id="category-grid">
-      <a th:href="@{'/home?category=máy lạnh'}" class="category-item">
-        <img src="/images/maylanh.png" alt="Máy lạnh">
-        <p>Máy lạnh</p>
+      <a th:each="cat : ${categories}" th:href="@{'/home?categoryId=' + ${cat.id} + '#product-list'}" class="category-item">
+        <img th:src="@{'/images/' + ${#strings.replace(#strings.toLowerCase(cat.name), ' ', '')} + '.png'}" alt="[[${cat.name}]]" onerror="this.onerror=null;this.src='/images/dots.png';">
+        <p th:text="${cat.name}"></p>
       </a>
-      <a th:href="@{'/home?category=quạt điều hòa'}" class="category-item">
-        <img src="/images/quat.png" alt="Quạt điều hòa">
-        <p>Quạt điều hòa</p>
-      </a>
-      <a th:href="@{'/home?category=máy giặc'}" class="category-item">
-        <img src="/images/maygiaci.png" alt="Máy giặt">
-        <p>Máy giặc</p>
-      </a>
-      <a th:href="@{'/home?category=máy lọc nước'}" class="category-item">
-        <img src="/images/maylocnuoc.png" alt="Máy lọc nước">
-        <p>Máy lọc nước</p>
-      </a>
-      <a th:href="@{'/home?category=tivi'}" class="category-item">
-        <img src="/images/tivi.png" alt="Tivi">
-        <p>Tivi</p>
-      </a>
-      <a th:href="@{'/home?category=tủ lạnh'}" class="category-item">
-        <img src="/images/tulanh.png" alt="Tủ lạnh">
-        <p>Tủ lạnh</p>
-      </a>
-      <a th:href="@{'/home?category=tất cả'}" class="category-item">
+      <a th:href="@{'/home#product-list'}" class="category-item">
         <img src="/images/dots.png" alt="Tất cả">
         <p>Tất cả danh mục</p>
       </a>
@@ -107,6 +87,34 @@
   </div>
   </div>
   <br>
+<div class="container" style="max-width:1200px; margin-bottom: 1.5rem;">
+  <form method="get" th:action="@{/home}" id="filter-form"
+        style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; align-items:center; margin-left:10px;">
+    <div style="min-width:180px;">
+      <select name="brandId" class="form-select" style="height: 44px;">
+        <option value="">Tất cả thương hiệu</option>
+        <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}" th:selected="${brandId != null and brand.id == brandId}"></option>
+      </select>
+    </div>
+    <div style="min-width:120px;">
+      <input type="number" name="minPrice" class="form-control" placeholder="Giá từ (VND)" th:value="${minPrice}" min="0" style="height: 44px;" />
+    </div>
+    <div style="min-width:120px;">
+      <input type="number" name="maxPrice" class="form-control" placeholder="Đến (VND)" th:value="${maxPrice}" min="0" style="height: 44px;" />
+    </div>
+    <div style="min-width:120px;">
+      <select name="sortOption" class="form-select" style="height: 44px;">
+        <option value="default" th:selected="${sortOption == null or sortOption == 'default'}">Sắp xếp</option>
+        <option value="name_asc" th:selected="${sortOption == 'name_asc'}">Tên A-Z</option>
+        <option value="name_desc" th:selected="${sortOption == 'name_desc'}">Tên Z-A</option>
+        <option value="price_asc" th:selected="${sortOption == 'price_asc'}">Giá tăng dần</option>
+        <option value="price_desc" th:selected="${sortOption == 'price_desc'}">Giá giảm dần</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary" style="height: 44px; min-width: 80px;"><i class="fas fa-filter me-1"></i>Lọc</button>
+    <a th:href="@{/home}" class="btn btn-secondary ms-1" style="height: 44px; min-width: 90px;"><i class="fas fa-sync-alt me-1"></i>Đặt lại</a>
+  </form>
+</div>
 <div class="product-container"  id="product-list">
   <div class="product-grid">
     <div class="product-card" th:each="product : ${products}">
@@ -122,18 +130,20 @@
   </div>
 </div>
   <div class="pagination">
-    <a th:if="${currentPage > 0}" th:href="@{'/home?page=0'}">&laquo;</a> <!-- << -->
-
-    <a th:if="${currentPage > 0}" th:href="@{'/home?page=' + ${currentPage - 1}}">&lt;</a> <!-- < -->
-
+    <a th:if="${currentPage > 0}"
+       th:href="@{/home(page=0, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'">&laquo;</a>
+    <a th:if="${currentPage > 0}"
+       th:href="@{/home(page=${currentPage - 1}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'">&lt;</a>
     <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-    <a th:if="${i != currentPage}" th:href="@{'/home?page=' + ${i}}" th:text="${i + 1}"></a>
-    <span th:if="${i == currentPage}" class="current-page" th:text="${i + 1}"></span>
-  </span>
-
-    <a th:if="${currentPage + 1 < totalPages}" th:href="@{'/home?page=' + ${currentPage + 1}}">&gt;</a>
-
-    <a th:if="${currentPage + 1 < totalPages}" th:href="@{'/home?page=' + ${totalPages - 1}}">&raquo;</a>
+      <a th:if="${i != currentPage}"
+         th:href="@{/home(page=${i}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'"
+         th:text="${i + 1}"></a>
+      <span th:if="${i == currentPage}" class="current-page" th:text="${i + 1}"></span>
+    </span>
+    <a th:if="${currentPage + 1 < totalPages}"
+       th:href="@{/home(page=${currentPage + 1}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'">&gt;</a>
+    <a th:if="${currentPage + 1 < totalPages}"
+       th:href="@{/home(page=${totalPages - 1}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'">&raquo;</a>
   </div><br>
 <div>
   <h2 class="title">
@@ -196,6 +206,10 @@
     }
   }
 
+  // Tự động cuộn xuống danh sách sản phẩm sau khi lọc
+  document.getElementById('filter-form').addEventListener('submit', function(e) {
+    this.action = this.action.split('#')[0] + '#product-list';
+  });
 </script>
 
 

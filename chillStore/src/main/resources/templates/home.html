@@ -130,21 +130,46 @@
   </div>
 </div>
   <div class="pagination">
-    <a th:if="${currentPage > 0}"
-       th:href="@{/home(page=0, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'">&laquo;</a>
-    <a th:if="${currentPage > 0}"
-       th:href="@{/home(page=${currentPage - 1}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'">&lt;</a>
-    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+    <th:block th:with="baseUrl=@{/home(
+    categoryId=${categoryId},
+    brandId=${brandId},
+    minPrice=${minPrice},
+    maxPrice=${maxPrice},
+    sortOption=${sortOption},
+    size=${size}
+)}">
+
+      <div class="pagination">
+
+        <!-- << Về trang đầu -->
+        <a th:if="${currentPage > 0}"
+           th:href="${baseUrl + '&page=0#product-list'}">&laquo;</a>
+
+        <!-- < Về trang trước -->
+        <a th:if="${currentPage > 0}"
+           th:href="${baseUrl + '&page=' + (currentPage - 1) + '#product-list'}">&lt;</a>
+
+        <!-- Trang số -->
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
       <a th:if="${i != currentPage}"
-         th:href="@{/home(page=${i}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'"
+         th:href="${baseUrl + '&page=' + i + '#product-list'}"
          th:text="${i + 1}"></a>
-      <span th:if="${i == currentPage}" class="current-page" th:text="${i + 1}"></span>
+
+      <span th:if="${i == currentPage}"
+            class="current-page"
+            th:text="${i + 1}"></span>
     </span>
-    <a th:if="${currentPage + 1 < totalPages}"
-       th:href="@{/home(page=${currentPage + 1}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'">&gt;</a>
-    <a th:if="${currentPage + 1 < totalPages}"
-       th:href="@{/home(page=${totalPages - 1}, categoryId=${categoryId}, brandId=${brandId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortOption=${sortOption}, size=${size})} + '#product-list'">&raquo;</a>
-  </div><br>
+
+        <!-- > Trang tiếp theo -->
+        <a th:if="${currentPage + 1 < totalPages}"
+           th:href="${baseUrl + '&page=' + (currentPage + 1) + '#product-list'}">&gt;</a>
+
+        <!-- >> Trang cuối -->
+        <a th:if="${currentPage + 1 < totalPages}"
+           th:href="${baseUrl + '&page=' + (totalPages - 1) + '#product-list'}">&raquo;</a>
+      </div>
+
+    </th:block></div><br>
 <div class="why-section" style="background-color: #113F67; padding: 40px 20px;">
   <div class="floating-icon"></div>
   <h2 class="title galaxy-text">Why Choose Our Store?</h2>

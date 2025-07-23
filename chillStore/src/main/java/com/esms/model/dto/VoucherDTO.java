@@ -35,6 +35,8 @@ public class VoucherDTO {
     @NotNull(message = "ngay ket thuc khong duoc phet null")
     private LocalDate end_date;
 
+    private boolean isSpecial;
+
     private boolean active;
 
     private List<Integer> categoryIds;
@@ -130,5 +132,13 @@ public class VoucherDTO {
 
     public void setBrandIds(List<Integer> brandIds) {
         this.brandIds = brandIds;
+    }
+
+    public boolean isSpecial() {
+        return isSpecial;
+    }
+
+    public void setSpecial(boolean special) {
+        isSpecial = special;
     }
 }

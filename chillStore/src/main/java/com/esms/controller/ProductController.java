@@ -448,6 +448,7 @@ public class ProductController {
         } else if (imageUrlInput != null && !imageUrlInput.isEmpty()) {
             product.setImageUrl(imageUrlInput);
         }
+
         
         // Xử lý thông số kỹ thuật
         if (specKeys != null && specValues != null && specKeys.length == specValues.length) {

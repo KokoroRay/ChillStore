@@ -160,11 +160,15 @@
       justify-content: flex-end;
       min-height: 60px;
     }
+    /* Thêm khoảng cách giữa các sản phẩm giảm giá */
+    .highlight-discount-section .discount-row-flex {
+      gap: 18px;
+    }
   </style>
 <section id="discount-section">
   <div class="container my-4 highlight-discount-section">
     <div class="row justify-content-center">
-      <div th:each="row : ${#numbers.sequence(0, 1)}" class="w-100 d-flex flex-row mb-3 justify-content-center">
+      <div th:each="row : ${#numbers.sequence(0, 1)}" class="w-100 d-flex flex-row mb-3 justify-content-center discount-row-flex">
         <div class="col-6 col-sm-4 col-md-2 mb-3 d-flex"
              th:each="product, iterStat : ${highlightDiscountProducts}"
              th:if="${iterStat.index >= row * 5 and iterStat.index < (row + 1) * 5}">

@@ -138,6 +138,11 @@
 .table-responsive {
     border-radius: 8px;
 }
+.table-light {
+    background-color: #D2E0FB;
+    background: #D2E0FB;
+    color: black;
+}
 
 @media (max-width: 768px) {
     .order-table {

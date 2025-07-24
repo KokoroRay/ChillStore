@@ -5,6 +5,7 @@ import com.esms.model.entity.Warehouse;
 import com.esms.model.entity.Product;
 import com.esms.service.WarehouseService;
 import com.esms.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/admin/warehouse")
+@RequestMapping({"/admin/warehouse", "/staff/warehouse"})
 public class WarehouseController {
     @Autowired
     private WarehouseService warehouseService;
@@ -36,11 +37,11 @@ public class WarehouseController {
 
     // Hiển thị tất cả các giao dịch kho với phân trang
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String viewWarehouse(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            Model model) {
+            Model model, HttpServletRequest response) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("transDate").descending());
         Page<Warehouse> warehousePage = warehouseService.getAllWarehouseTransactions(pageable);
         List<WarehouseDTO> transactions = warehousePage.getContent().stream()
@@ -51,17 +52,22 @@ public class WarehouseController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "admin/warehouse/view";
+        String requestUrl = response.getRequestURI();
+        if (requestUrl.startsWith("/staff") ){
+            return "staff/warehouse/view";
+        } else {
+            return "admin/warehouse/view";
+        }
     }
 
     // Tìm kiếm theo tên sản phẩm với phân trang
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String searchByProductName(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            Model model) {
+            Model model, HttpServletRequest response) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("transDate").descending());
         Page<Warehouse> warehousePage;
 
@@ -80,7 +86,12 @@ public class WarehouseController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "admin/warehouse/view";
+        String requestUrl = response.getRequestURI();
+        if(requestUrl.startsWith("/staff")) {
+            return "staff/warehouse/view";
+        } else {
+            return "admin/warehouse/view";
+        }
     }
 
     // Hiển thị form nhập kho

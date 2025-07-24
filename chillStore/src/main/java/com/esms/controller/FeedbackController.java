@@ -47,8 +47,21 @@ public class FeedbackController {
     @PostMapping("/reply")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String submitReply(@ModelAttribute("reply") ReplyFeedbackDTO dto) {
-        dto.setStaffId(1); // TODO: Get current staff ID from security context
-
+        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+        if (isAdmin) {
+            com.esms.model.entity.Admin admin = ((com.esms.service.impl.ReplyServiceImpl)replyService).getAdminRepository().findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("Admin account not found!"));
+            dto.setAdminId(admin.getAdminId());
+            dto.setStaffId(0);
+        } else {
+            com.esms.model.entity.Staff staff = ((com.esms.service.impl.ReplyServiceImpl)replyService).getStaffRepository().findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("Staff account not found!"));
+            dto.setStaffId(staff.getId());
+            dto.setAdminId(0);
+        }
         replyService.saveReply(dto);
         return "redirect:/staff/manageFeedback";
     }

@@ -25,54 +25,49 @@
         <!-- Table of Cart Items -->
         <table class="table table-bordered shopping-cart">
             <thead class="table-light">
-            <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Unit Price</th>
-                <th>Discount</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Actions</th>
-            </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Unit Price</th>
+                    <th>Discount</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
-            <!-- THÊM data-cart -->
-            <tr th:each="item : ${cartItems}" th:attr="data-cart-id=${item.cartItemId}">
-                <td>
-                    <img th:src="${item.imageUrl}" alt="Ảnh sản phẩm">
-                </td>
-
-                <td th:text="${item.productName}"></td>
-                <td th:text="${#numbers.formatDecimal(item.price, 0, 'POINT', 0, 'NONE')} + ' đ'"></td>
-                <td th:text="${item.discount * 100} + '%'"></td>
-                <td>
-                    <div class="d-flex">
-                        <input type="number" th:value="${item.quantity}" class="form-control form-control-sm me-2"
-                               style="width: 70px;" min="1" th:attr="max=${item.stockQty}"
-                               th:disabled="${item.quantity} >= ${item.stockQty}"
-                               th:onchange="'updateQuantity(' + ${item.cartItemId} + ', this.value)'">
-                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                <!-- THÊM data-cart-id VÀO TR -->
+                <tr th:each="item : ${cartItems}" th:attr="data-cart-id=${item.cartItemId}">
+                    <td th:text="${item.productName}"></td>
+                    <td th:text="${#numbers.formatDecimal(item.price, 0, 'POINT', 0, 'NONE')} + ' đ'"></td>
+                    <td th:text="${item.discount * 100} + '%'"></td>
+                    <td>
+                        <div class="d-flex">
+                            <input type="number" th:value="${item.quantity}" class="form-control form-control-sm me-2"
+                                style="width: 70px;" min="1" th:attr="max=${item.stockQty}"
+                                th:disabled="${item.quantity} >= ${item.stockQty}"
+                                th:onchange="'updateQuantity(' + ${item.cartItemId} + ', this.value)'">
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
                                 th:onclick="'updateQuantity(' + ${item.cartItemId} + ', this.previousElementSibling.value)'"
                                 th:disabled="${item.quantity} >= ${item.stockQty}">
-                            Update
-                        </button>
-                    </div>
-                    <div th:if="${item.quantity} >= ${item.stockQty}" class="text-danger small mt-1">
-                        Thêm sản phẩm không thành công: đã đạt số lượng tối đa trong kho
-                    </div>
-                </td>
-                <td class="item-total"
-                    th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'POINT', 0, 'NONE')} + ' đ'"></td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-danger"
+                                Update
+                            </button>
+                        </div>
+                        <div th:if="${item.quantity} >= ${item.stockQty}" class="text-danger small mt-1">
+                            Thêm sản phẩm không thành công: đã đạt số lượng tối đa trong kho
+                        </div>
+                    </td>
+                    <!-- THÊM CLASS item-total -->
+                    <td class="item-total"
+                        th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'POINT', 0, 'NONE')} + ' đ'"></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger"
                             th:onclick="'deleteItem(' + ${item.cartItemId} + ')'">
-                        Remove
-                    </button>
-                </td>
-            </tr>
+                            Remove
+                        </button>
+                    </td>
+                </tr>
             </tbody>
         </table>
-
 
         <!-- Voucher Application -->
         <form th:action="@{/cart/apply-voucher}" method="post" class="row g-3 mb-3">

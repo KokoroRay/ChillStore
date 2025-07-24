@@ -387,9 +387,15 @@ public class CustomerProductController {
     public Map<String, Object> getFeedbacksByProduct(
             @PathVariable("productId") Integer productId,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size) {
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            @RequestParam(value = "rating", required = false) Byte rating) {
         Pageable pageable = PageRequest.of(page, size, org.springframework.data.domain.Sort.by("createdAt").descending());
-        Page<FeedbackDTO> feedbackPage = feedbackService.getFeedbacksByProductIdPaged(productId, pageable);
+        Page<FeedbackDTO> feedbackPage;
+        if (rating != null && rating >= 1 && rating <= 5) {
+            feedbackPage = feedbackService.getFeedbacksByProductIdAndRatingPaged(productId, rating, pageable);
+        } else {
+            feedbackPage = feedbackService.getFeedbacksByProductIdPaged(productId, pageable);
+        }
         Map<String, Object> result = new HashMap<>();
         result.put("content", feedbackPage.getContent());
         result.put("totalElements", feedbackPage.getTotalElements());
@@ -432,13 +438,27 @@ public class CustomerProductController {
     // API: Lấy reply cho feedback
     @GetMapping("/api/feedback/{feedbackId}/reply")
     @ResponseBody
-    public ResponseEntity<?> getReplyByFeedbackId(@PathVariable("feedbackId") int feedbackId) {
+    public Map<String, Object> getReplyByFeedbackId(@PathVariable("feedbackId") int feedbackId) {
         Reply reply = replyService.getReplyByFeedbackId(feedbackId);
         if (reply == null) {
-            // Trả về JSON rỗng thay vì rỗng hoàn toàn để tránh lỗi JS
-            return ResponseEntity.ok().body(new HashMap<>());
+            return new HashMap<>();
         }
-        return ResponseEntity.ok(reply);
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("content", reply.getContent());
+        dto.put("createdAt", reply.getCreatedAt());
+        if (reply.getStaff() != null) {
+            Map<String, Object> staff = new HashMap<>();
+            staff.put("name", reply.getStaff().getName());
+            staff.put("email", reply.getStaff().getEmail());
+            dto.put("staff", staff);
+        }
+        if (reply.getAdmin() != null) {
+            Map<String, Object> admin = new HashMap<>();
+            admin.put("name", reply.getAdmin().getName());
+            admin.put("email", reply.getAdmin().getEmail());
+            dto.put("admin", admin);
+        }
+        return dto;
     }
 
     // API: Staff/Admin gửi reply cho feedback

@@ -78,13 +78,31 @@ let feedbackSize = 5;
 let feedbackTotalPages = 1;
 let feedbackLoading = false;
 let feedbacksLoaded = [];
+let feedbackRatingFilter = 0;
+
+function setRatingFilter(rating) {
+    feedbackRatingFilter = rating;
+    // Highlight nút đang chọn
+    document.querySelectorAll('.rating-filter-btn').forEach(btn => {
+        if (parseInt(btn.getAttribute('data-rating')) === rating) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    loadFeedbacks(0, false);
+}
 
 async function loadFeedbacks(page = 0, append = false) {
     if (feedbackLoading) return;
     feedbackLoading = true;
     const productId = getFeedbackProductId();
     const customerId = getFeedbackCustomerId();
-    const res = await fetch(`/api/product/${productId}/feedbacks?page=${page}&size=${feedbackSize}`);
+    let url = `/api/product/${productId}/feedbacks?page=${page}&size=${feedbackSize}`;
+    if (feedbackRatingFilter && feedbackRatingFilter >= 1 && feedbackRatingFilter <= 5) {
+        url += `&rating=${feedbackRatingFilter}`;
+    }
+    const res = await fetch(url);
     const data = await res.json();
     const feedbacks = data.content || [];
     feedbackTotalPages = data.totalPages;
@@ -110,7 +128,7 @@ function renderFeedbackList(feedbacks, customerId) {
     const listDiv = document.getElementById('feedback-list');
     const currentRole = getCurrentRole();
     if (!feedbacks.length) {
-        listDiv.innerHTML = '<div class="text-center text-muted py-4"><i class="fas fa-comment-slash fa-2x mb-2"></i><p>No reviews yet. Be the first to review this product!</p></div>';
+        listDiv.innerHTML = '';
         return;
     }
     let html = '<div class="row">';
@@ -184,10 +202,16 @@ function loadReplyForFeedback(feedbackId) {
                         hour: '2-digit',
                         minute: '2-digit'
                     }) : '';
+                    let responderName = 'Staff';
+                    if (reply.admin && reply.admin.name) {
+                        responderName = 'Admin: ' + reply.admin.name;
+                    } else if (reply.staff && reply.staff.name) {
+                        responderName = 'Staff: ' + reply.staff.name;
+                    }
                     replyDiv.innerHTML = `
                         <div class="feedback-reply">
                             <div class="reply-header">
-                                <span class="reply-staff"><i class="fas fa-shield-alt me-1"></i>Staff Response</span>
+                                <span class="reply-staff"><i class="fas fa-shield-alt me-1"></i>${responderName} Response</span>
                                 <span class="feedback-date"><i class="fas fa-clock me-1"></i>${replyDate}</span>
                             </div>
                             <div class="reply-content">${reply.content}</div>
@@ -310,7 +334,7 @@ function renderFeedbackForm(feedbacks, customerId, productId) {
     }
     const hasFeedback = feedbacks.some(fb => fb.customer && fb.customer.customerId === customerId);
     if (hasFeedback) {
-        formDiv.innerHTML = '<div class="alert alert-success feedback-alert"><i class="fas fa-check-circle me-2"></i>You have already left a review for this product.</div>';
+        formDiv.style.display = 'none';
         return;
     }
     formDiv.innerHTML = `
@@ -324,15 +348,15 @@ function renderFeedbackForm(feedbacks, customerId, productId) {
                         <label for="rating" class="form-label">Rating:</label>
                         <div class="rating-stars">
                             <input type="radio" name="rating" value="5" id="star5" required>
-                            <label for="star5">★</label>
+                            <label for="star5" class="text-dark">★</label>
                             <input type="radio" name="rating" value="4" id="star4">
-                            <label for="star4">★</label>
+                            <label for="star4" class="text-dark">★</label>
                             <input type="radio" name="rating" value="3" id="star3">
-                            <label for="star3">★</label>
+                            <label for="star3" class="text-dark">★</label>
                             <input type="radio" name="rating" value="2" id="star2">
-                            <label for="star2">★</label>
+                            <label for="star2" class="text-dark">★</label>
                             <input type="radio" name="rating" value="1" id="star1">
-                            <label for="star1">★</label>
+                            <label for="star1" class="text-dark">★</label>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -347,6 +371,7 @@ function renderFeedbackForm(feedbacks, customerId, productId) {
             </div>
         </div>
     `;
+    setupRatingStars();
 }
 
 async function submitFeedback(e, productId) {
@@ -355,6 +380,13 @@ async function submitFeedback(e, productId) {
     const comment = document.getElementById('comment').value.trim();
     if (!ratingInput) {
         showAlert('Bạn phải chọn số sao để đánh giá!', 'warning');
+        // Focus vào vùng rating
+        const ratingStars = document.querySelector('.rating-stars');
+        if (ratingStars) {
+            ratingStars.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            ratingStars.classList.add('border', 'border-danger');
+            setTimeout(() => ratingStars.classList.remove('border', 'border-danger'), 2000);
+        }
         return;
     }
     if (!comment) {
@@ -547,10 +579,54 @@ async function checkCanReview() {
     }
 }
 
+// Hiệu ứng hover cho rating stars (ngược: sao 5 bên trái, sao 1 bên phải, hover đúng hướng)
+function setupRatingStars() {
+    const stars = document.querySelectorAll('.rating-stars label');
+    stars.forEach((label, idx) => {
+        label.addEventListener('mouseenter', function() {
+            for (let i = 0; i < stars.length; i++) {
+                if (i >= idx) {
+                    stars[i].classList.add('text-warning');
+                    stars[i].classList.remove('text-dark');
+                } else {
+                    stars[i].classList.remove('text-warning');
+                    stars[i].classList.add('text-dark');
+                }
+            }
+        });
+        label.addEventListener('mouseleave', function() {
+            const checked = document.querySelector('input[name="rating"]:checked');
+            const checkedVal = checked ? parseInt(checked.value) : 0;
+            stars.forEach((l, i) => {
+                const starVal = 5 - i;
+                if (starVal <= checkedVal) {
+                    l.classList.add('text-warning');
+                    l.classList.remove('text-dark');
+                } else {
+                    l.classList.remove('text-warning');
+                    l.classList.add('text-dark');
+                }
+            });
+        });
+        label.addEventListener('click', function() {
+            for (let i = 0; i < stars.length; i++) {
+                if (i >= idx) {
+                    stars[i].classList.add('text-warning');
+                    stars[i].classList.remove('text-dark');
+                } else {
+                    stars[i].classList.remove('text-warning');
+                    stars[i].classList.add('text-dark');
+                }
+            }
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     loadFeedbacks(0, false);
     // Only run customer-specific checks if the form container exists
     if (document.getElementById('feedback-form-container')) {
         checkCanReview();
     }
+    setupRatingStars();
 }); 

@@ -5,6 +5,7 @@ import com.esms.model.entity.Warehouse;
 import com.esms.model.entity.Product;
 import com.esms.service.WarehouseService;
 import com.esms.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/admin/warehouse")
+@RequestMapping({"/admin/warehouse", "/staff/warehouse"})
 public class WarehouseController {
     @Autowired
     private WarehouseService warehouseService;
@@ -36,11 +37,11 @@ public class WarehouseController {
 
     // Hiển thị tất cả các giao dịch kho với phân trang
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String viewWarehouse(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            Model model) {
+            Model model, HttpServletRequest response) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("transDate").descending());
         Page<Warehouse> warehousePage = warehouseService.getAllWarehouseTransactions(pageable);
         List<WarehouseDTO> transactions = warehousePage.getContent().stream()
@@ -51,17 +52,22 @@ public class WarehouseController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "admin/warehouse/view";
+        String requestUrl = response.getRequestURI();
+        if (requestUrl.startsWith("/staff") ){
+            return "staff/warehouse/view";
+        } else {
+            return "admin/warehouse/view";
+        }
     }
 
     // Tìm kiếm theo tên sản phẩm với phân trang
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String searchByProductName(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            Model model) {
+            Model model, HttpServletRequest response) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("transDate").descending());
         Page<Warehouse> warehousePage;
 
@@ -80,7 +86,12 @@ public class WarehouseController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", warehousePage.getTotalPages());
         model.addAttribute("totalItems", warehousePage.getTotalElements());
-        return "admin/warehouse/view";
+        String requestUrl = response.getRequestURI();
+        if(requestUrl.startsWith("/staff")) {
+            return "staff/warehouse/view";
+        } else {
+            return "admin/warehouse/view";
+        }
     }
 
     // Hiển thị form nhập kho
@@ -107,6 +118,89 @@ public class WarehouseController {
             redirectAttributes.addFlashAttribute("error", "Import failed: " + e.getMessage());
         }
         return "redirect:/admin/warehouse";
+    }
+
+    /**
+     * Xử lý import warehouse bằng file Excel (theo Product Name)
+     * File mẫu: ProductName | Quantity | Notes
+     */
+    @PostMapping("/import-excel")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public String importWarehouseExcel(@RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+                                       RedirectAttributes redirectAttributes) {
+        try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
+            Sheet sheet = workbook.getSheetAt(0);
+            int successCount = 0;
+            int failCount = 0;
+            StringBuilder errorMsg = new StringBuilder();
+            // Duyệt từng dòng, bỏ qua header
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) continue;
+                String productName = row.getCell(0) != null ? row.getCell(0).getStringCellValue().trim() : null;
+                Integer quantity = null;
+                if (row.getCell(1) != null) {
+                    if (row.getCell(1).getCellType() == CellType.NUMERIC) {
+                        quantity = (int) row.getCell(1).getNumericCellValue();
+                    } else if (row.getCell(1).getCellType() == CellType.STRING) {
+                        try { quantity = Integer.parseInt(row.getCell(1).getStringCellValue().trim()); } catch (Exception ignored) {}
+                    }
+                }
+                String notes = row.getCell(2) != null ? row.getCell(2).getStringCellValue() : null;
+                if (productName == null || quantity == null || quantity <= 0) {
+                    failCount++;
+                    errorMsg.append("Dòng ").append(i+1).append(": Thiếu hoặc sai định dạng Product Name/Quantity. ");
+                    continue;
+                }
+                // Tìm sản phẩm theo tên (không phân biệt hoa thường)
+                Product product = productService.getProductByName(productName);
+                if (product == null) {
+                    failCount++;
+                    errorMsg.append("Dòng ").append(i+1).append(": Không tìm thấy sản phẩm với tên '").append(productName).append("'. ");
+                    continue;
+                }
+                try {
+                    warehouseService.importProduct(product.getProductId(), quantity, notes);
+                    successCount++;
+                } catch (Exception e) {
+                    failCount++;
+                    errorMsg.append("Dòng ").append(i+1).append(": Lỗi nhập kho: ").append(e.getMessage()).append(". ");
+                }
+            }
+            if (successCount > 0) {
+                redirectAttributes.addFlashAttribute("success", "Import thành công " + successCount + " dòng. " + (failCount > 0 ? (failCount + " dòng lỗi.") : ""));
+            }
+            if (failCount > 0) {
+                redirectAttributes.addFlashAttribute("error", errorMsg.toString());
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Import Excel thất bại: " + e.getMessage());
+        }
+        return "redirect:/admin/warehouse";
+    }
+
+    /**
+     * Endpoint trả về file Excel mẫu cho import warehouse (ProductName, Quantity, Notes)
+     */
+    @GetMapping("/import-sample")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public void downloadImportSample(HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=warehouse_import_sample.xlsx");
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("ImportSample");
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("ProductName");
+            header.createCell(1).setCellValue("Quantity");
+            header.createCell(2).setCellValue("Notes");
+            // Thêm 1 dòng ví dụ
+            Row example = sheet.createRow(1);
+            example.createCell(0).setCellValue("Tủ lạnh Samsung");
+            example.createCell(1).setCellValue(10);
+            example.createCell(2).setCellValue("Nhập mới");
+            for (int i = 0; i < 3; i++) sheet.autoSizeColumn(i);
+            workbook.write(response.getOutputStream());
+        }
     }
 
     // Chuyển đổi từ Entity sang DTO

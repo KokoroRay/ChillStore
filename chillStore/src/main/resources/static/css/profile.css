@@ -235,6 +235,8 @@ body {
     animation: spin 1s linear infinite;
     opacity: 1;
     transition: opacity 0.3s ease;
+    display: none !important;
+
 }
 
 .avatar-img.loaded + .avatar-container::before,
@@ -672,4 +674,71 @@ select.form-input {
 
 .profile-content::-webkit-scrollbar-thumb:hover {
     background: var(--secondary-color);
-} 
+}
+
+/* Membership tier animations */
+.membership-tier-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.membership-badge {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.membership-badge:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Tier specific styles */
+.tier-Vip {
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: #fff;
+    animation: vip-glow 2s infinite alternate;
+}
+
+.tier-Mem {
+    background: linear-gradient(135deg, #c0c0c0, #808080);
+    color: #fff;
+    animation: mem-pulse 1.5s infinite;
+}
+
+.tier-New {
+    background: linear-gradient(135deg, #cd7f32, #8c5a25);
+    color: #fff;
+    animation: new-bounce 3s infinite;
+}
+
+.tier-Null {
+    background: linear-gradient(135deg, #f0f0f0, #d0d0d0);
+    color: #666;
+}
+
+/* Animations */
+@keyframes vip-glow {
+    0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+    100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.8); }
+}
+
+@keyframes mem-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes new-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}

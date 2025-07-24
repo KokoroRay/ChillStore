@@ -6,7 +6,7 @@
       <div class="center-logo">
         <img th:src="@{/images/logo.png}" alt="FsMs Logo" class="logo-image">
       </div>
-      
+
       <div id="headerDropdown">
         <div class="profile-icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,9 +16,12 @@
         </div>
         <ul class="dropdown-menu" id="headerMenu">
           <div sec:authorize="hasRole('ADMIN')">
+            <li><a th:href="@{/admin/category}">
+              <span class="menu-icon"><img src="/images/administrator.png " alt="home"></span>
+                Admin</a></li>
             <li><a th:href="@{/staff/category}">
               <span class="menu-icon"><img src="/images/staff.png" alt="home"></span>
-                Staff</a></li>
+              Staff</a></li>
             <li><a th:href="@{/home}">
               <span class="menu-icon"><img src="/images/home.png" alt="home"></span>
                 Home</a></li>

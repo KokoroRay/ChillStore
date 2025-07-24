@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.List;
 import java.util.Optional;
+import java.math.BigDecimal;
 
 public interface CustomerService {
     void register(RegisterDTO dto);
@@ -49,4 +50,6 @@ public interface CustomerService {
     void changePassword(String email, ChangePasswordDTO dto);
 
     Customer getCustomerByUsername(String username);
+
+    BigDecimal calculateTotalSpending(Integer customerId);
 }

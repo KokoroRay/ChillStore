@@ -64,8 +64,42 @@
 </div>
   </div>
 
-
-
+<section id="discount-section">
+  <div class="container my-4 highlight-discount-section">
+    <div class="row justify-content-center">
+      <div th:each="row : ${#numbers.sequence(0, 1)}" class="w-100 d-flex flex-row mb-3 justify-content-center discount-row-flex">
+        <div class="col-6 col-sm-4 col-md-2 mb-3 d-flex"
+             th:each="product, iterStat : ${highlightDiscountProducts}"
+             th:if="${iterStat.index >= row * 5 and iterStat.index < (row + 1) * 5}">
+          <div class="product-card w-100 position-relative">
+            <!-- Badge giảm giá -->
+            <div th:if="${productDiscountMap[product.productId] != null}" class="discount-badge">
+              <span th:text="${T(java.lang.Math).floor(productDiscountMap[product.productId].discountPct)} + '%'">-10%</span>
+            </div>
+            <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration:none; color:inherit; display:block;">
+              <img th:src="@{${product.imageUrl}}" th:alt="${product.name}" class="product-img"/>
+              <h5 class="product-title" th:text="${product.name}"></h5>
+              <div class="price-block">
+                <span th:if="${productDiscountMap[product.productId] != null}" class="text-decoration-line-through" th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'"></span>
+                <span th:unless="${productDiscountMap[product.productId] != null}" class="text-decoration-line-through">&nbsp;</span>
+                <span class="discounted-price"
+                      th:text="${productDiscountMap[product.productId] != null && product.price != null && productDiscountMap[product.productId].discountPct != null ?
+                      #numbers.formatDecimal(product.price * (100 - productDiscountMap[product.productId].discountPct) / 100, 0, 'POINT', 0, 'COMMA') :
+                      #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}"></span>
+                <span class="vnd">VND</span>
+              </div>
+            </a>
+            <!-- Icon chuyển sang trang discount -->
+            <a th:href="@{/DiscountProducts}" class="go-discount-page" title="Xem tất cả sản phẩm giảm giá" style="position:absolute;bottom:10px;right:10px;z-index:5;">
+              <i class="fa-solid fa-tags fa-lg" style="color:#e53935;"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  <!-- End dòng sản phẩm giảm giá nổi bật -->
 
   <!--Category-->
   <div class="container">

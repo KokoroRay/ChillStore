@@ -55,6 +55,16 @@
     border-color: var(--primary);
 }
 
+.button-color  {
+    background-color: #2196f3;
+    border-color: #2196f3;
+    color: white;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
 .btn-primary:hover {
     background-color: #0d3253;
     border-color: #0d3253;

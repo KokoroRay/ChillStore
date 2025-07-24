@@ -17,7 +17,7 @@
                 <ul>
                     <li><a href="/"><img src="/images/logo.png" alt=""></a></li>
                     <li><a href="/#product-list">Product</a></li>
-                    <li><a th:href="@{/DiscountProducts}">Discount</a></li>
+                    <li><a href="/#discount-section">Discount</a></li>
                     <li sec:authorize="hasRole('CUSTOMER')">
                         <a th:href="@{/customer/order}">Order</a>
                     </li>
@@ -85,19 +85,20 @@
                 <div sec:authorize="hasRole('ADMIN')" class="user-actions">
                     <div class="dropdown" id="adminAvatarDropdown">
                         <a href="#" class="dropdown-toggle">
-                            <img src="/images/default-avatar.svg" alt="Avatar" class="avatar">
+                            <img th:src="${avatarUrl != null and avatarUrl != ''} ? ${avatarUrl} : @{/images/default-avatar.svg}"
+                                 alt="Avatar" class="avatar">
                         </a>
                         <ul class="dropdown-menu" id="adminDropdownMenu">
                             <li>
-                                <a th:href="@{/staff/category}">
-                                    <span class="menu-icon"><img src="/images/staff.png" alt="category"></span>
-                                    Staff
+                                <a th:href="@{/admin/category}">
+                                    <span class="menu-icon"><img src="/images/administrator.png" alt="admin"></span>
+                                    Admin
                                 </a>
                             </li>
                             <li>
-                                <a th:href="@{admin/category}">
-                                    <span class="menu-icon"><img src="/images/administrator.png" alt="admin"></span>
-                                    Admin
+                                <a th:href="@{staff/category}">
+                                    <span class="menu-icon"><img src="/images/staff.png" alt="staff"></span>
+                                    Staff
                                 </a>
                             </li>
                             <li class="divider"></li>
@@ -159,12 +160,12 @@
             <ul>
                 <li><a href="/">Introduct</a></li>
                 <li><a href="/#product-list">Product</a></li>
-                <li><a th:href="@{/DiscountProducts}">Discount</a></li>
+                <li><a href="/#discount-section">Discount</a></li>
                 <li sec:authorize="hasRole('CUSTOMER')">
                     <a th:href="@{/order}">Order</a>
                 </li>
                 <li sec:authorize="hasRole('CUSTOMER')">
-                    <a th:href="@{/contact}">Contact</a>
+                    <a th:href="@{customer/contact}">Contact</a>
                 </li>
             </ul>
 

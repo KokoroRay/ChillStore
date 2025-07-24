@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.time.Period;
+import java.math.BigDecimal;
 
 @Controller
 @RequestMapping("/customer/profile")
@@ -181,6 +182,24 @@ public class  ProfileController {
         dto.setLocked(customer.isLocked());
         dto.setAvatarUrl(customer.getAvatar_url());
         dto.setGender(customer.getGender());
+
+        // Calculate and set membership tier
+        BigDecimal totalSpending = customerService.calculateTotalSpending(customer.getCustomerId());
+        dto.setMembershipTier(getMembershipTier(totalSpending));
+        dto.setTotalSpending(totalSpending);
+
         return dto;
+    }
+
+    private String getMembershipTier(BigDecimal totalSpending) {
+        if (totalSpending.compareTo(new BigDecimal("50000000")) >= 0) {
+            return "Vip";
+        } else if (totalSpending.compareTo(new BigDecimal("15000000")) >= 0) {
+            return "Mem";
+        } else if (totalSpending.compareTo(new BigDecimal("4000000")) >= 0) {
+            return "New";
+        } else {
+            return "Null";
+        }
     }
 } 

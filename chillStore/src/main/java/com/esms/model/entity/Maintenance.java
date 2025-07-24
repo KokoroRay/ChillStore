@@ -33,7 +33,7 @@ public class Maintenance {
     private String status;
 
     @Column(name = "staff_id", nullable = false)
-    private int staffId;
+    private Integer staffId;
 
     // Constructors
     public Maintenance() {}
@@ -66,6 +66,6 @@ public class Maintenance {
     public void setReason(String reason) { this.reason = reason; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-    public int getStaffId() { return staffId; }
-    public void setStaffId(int staffId) { this.staffId = staffId; }
+    public Integer getStaffId() { return staffId; }
+    public void setStaffId(Integer staffId) { this.staffId = staffId; }
 }

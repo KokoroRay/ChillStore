@@ -59,6 +59,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN") //role cao nhất
                         // giai cấp bị bóc lộ
                         .requestMatchers("/staff/**").hasAnyRole("STAFF", "ADMIN") //có thể qua lại giữ 2 giai cấp
+                        // Cho phép STAFF, ADMIN, CUSTOMER truy cập API feedback reply
+                        .requestMatchers("/api/feedback/*/reply").hasAnyRole("ADMIN", "STAFF", "CUSTOMER")
                         //nguồn tiền duy trì hệ thống
                         .requestMatchers("/customer/**", "/profile", "/cart","/order","/order-history", "/checkout")
                         .hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
@@ -87,7 +89,14 @@ public class SecurityConfig {
                         .permitAll() // Cho phép tất cả truy cập URL logout
                 )
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/staff/orders/*/update-status", "/staff/orders/*/confirm-refund")
+                        .ignoringRequestMatchers(
+                                "/staff/orders/*/update-status",
+                                "/staff/orders/*/confirm-refund",
+                                "/api/feedback/*/reply",
+                                "/customer/api/maintenance",
+                                "/admin/maintenance/**",
+                                "/staff/maintenance/**"
+                        )
                 );
         return http.build();
     }

@@ -1,12 +1,15 @@
 package com.esms.service.impl;
 
 import com.esms.model.dto.CartItemDTO;
-import com.esms.model.entity.*;
+import com.esms.model.entity.Cart;
+import com.esms.model.entity.Customer;
+import com.esms.model.entity.Product;
 import com.esms.repository.CartRepository;
 import com.esms.repository.CustomerRepository;
 import com.esms.repository.ProductRepository;
 import com.esms.service.CartService;
 import com.esms.service.ProductService;
+import com.esms.model.entity.Discount;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,13 +94,6 @@ public class CartServiceImpl implements CartService {
                     item.setTotalPrice(product.getPrice().doubleValue() * item.getQuantity());
                 }
                 item.setStockQty(product.getStockQty());
-                String imageUrl = product.getImages().stream()
-                        .filter(ProductImage::isPrimary)
-                        .map(ProductImage::getImageUrl)
-                        .findFirst()
-                        .orElse(null);
-
-                item.setImageUrl(imageUrl);
             }
         }
         return items;

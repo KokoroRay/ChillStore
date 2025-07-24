@@ -4,9 +4,11 @@ import com.esms.model.dto.ReplyFeedbackDTO;
 import com.esms.model.entity.Feedback;
 import com.esms.model.entity.Reply;
 import com.esms.model.entity.Staff;
+import com.esms.model.entity.Admin;
 import com.esms.repository.FeedbackRepository;
 import com.esms.repository.ReplyRepository;
 import com.esms.repository.StaffRepository;
+import com.esms.repository.AdminRepository;
 import com.esms.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,21 +27,38 @@ public class ReplyServiceImpl implements ReplyService {
     @Autowired
     private StaffRepository staffRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
+    public AdminRepository getAdminRepository() {
+        return adminRepository;
+    }
+    public StaffRepository getStaffRepository() {
+        return staffRepository;
+    }
+
     @Override
     public void saveReply(ReplyFeedbackDTO dto) {
         Feedback feedback = feedbackRepository.findById(dto.getFeedbackId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy feedback"));
-        Staff staff = staffRepository.findById(dto.getStaffId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy staff"));
-
         Reply reply = new Reply();
         reply.setFeedback(feedback);
-        reply.setStaff(staff);
         reply.setContent(dto.getContent());
         reply.setCreatedAt(LocalDateTime.now());
-
+        if (dto.getStaffId() > 0) {
+            Staff staff = staffRepository.findById(dto.getStaffId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy staff"));
+            reply.setStaff(staff);
+            reply.setAdmin(null);
+        } else if (dto.getAdminId() > 0) {
+            Admin admin = adminRepository.findById(dto.getAdminId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy admin"));
+            reply.setAdmin(admin);
+            reply.setStaff(null);
+        } else {
+            throw new RuntimeException("Thiếu thông tin người trả lời");
+        }
         replyRepository.save(reply);
-
         feedback.setStatus("Replied");
         feedbackRepository.save(feedback);
     }

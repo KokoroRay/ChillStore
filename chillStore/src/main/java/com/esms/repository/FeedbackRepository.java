@@ -16,5 +16,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
     List<Feedback> findByProductProductId(Integer productId);
     List<Feedback> findByCustomerCustomerId(Integer customerId);
     Page<Feedback> findByProductProductId(Integer productId, Pageable pageable);
+    Page<Feedback> findByProductProductIdAndRating(Integer productId, Byte rating, Pageable pageable);
 }
 

@@ -391,33 +391,35 @@ public class ProductController {
             HttpServletRequest request,
             org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes
     ) {
-        // Xử lý giá trị price nếu là String có dấu chấm hoặc phẩy
+        // If status (active) is not checked, default to true
+        String statusParam = request.getParameter("status");
+        product.setStatus(statusParam != null ? true : true);
+        System.out.println("[DEBUG] Product status when adding: " + product.isStatus());
+        // Handle price value if it is a String with dots or commas
         String priceParam = request.getParameter("price");
         if (priceParam != null && !priceParam.isEmpty()) {
             String numericPrice = priceParam.replaceAll("[^\\d]", "");
             try {
                 product.setPrice(new java.math.BigDecimal(numericPrice));
             } catch (Exception e) {
-                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
+                model.addAttribute("priceError", "Invalid product price!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
-        // Xử lý giá trị price từ priceString (nếu có)
+        // Handle price value from priceString (if any)
         if (product.getPriceString() != null && !product.getPriceString().isEmpty()) {
             String numericPrice = product.getPriceString().replaceAll("[^\\d]", "");
             try {
                 product.setPrice(new java.math.BigDecimal(numericPrice));
             } catch (Exception e) {
-                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
+                model.addAttribute("priceError", "Invalid product price!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
         // Handle image upload
         if (image != null && !image.isEmpty()) {
             try {
@@ -425,17 +427,14 @@ public class ProductController {
                 String originalFilename = image.getOriginalFilename();
                 String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String filename = "product_" + System.currentTimeMillis() + fileExtension;
-                
                 // Save file to static/images directory
                 String uploadDir = "src/main/resources/static/images/";
                 java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
                 if (!java.nio.file.Files.exists(uploadPath)) {
                     java.nio.file.Files.createDirectories(uploadPath);
                 }
-                
                 java.nio.file.Path filePath = uploadPath.resolve(filename);
                 java.nio.file.Files.copy(image.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                
                 // Set image URL for product
                 product.setImageUrl("/images/" + filename);
             } catch (Exception e) {
@@ -448,9 +447,7 @@ public class ProductController {
         } else if (imageUrlInput != null && !imageUrlInput.isEmpty()) {
             product.setImageUrl(imageUrlInput);
         }
-
-        
-        // Xử lý thông số kỹ thuật
+        // Handle product specifications
         if (specKeys != null && specValues != null && specKeys.length == specValues.length) {
             List<ProductSpecification> specs = new ArrayList<>();
             for (int i = 0; i < specKeys.length; i++) {
@@ -464,7 +461,7 @@ public class ProductController {
             }
             product.setSpecifications(specs);
         }
-        // Xử lý nhiều ảnh gallery
+        // Handle multiple gallery images
         if (galleryImages != null && galleryImages.length > 0) {
             List<ProductImage> images = new ArrayList<>();
             for (MultipartFile file : galleryImages) {
@@ -483,16 +480,15 @@ public class ProductController {
                         ProductImage img = new ProductImage();
                         img.setImageUrl("/images/" + filename);
                         img.setProduct(product);
-                        img.setPrimary(false); // Ảnh gallery không phải ảnh chính
+                        img.setPrimary(false); // Gallery image is not the main image
                         images.add(img);
                     } catch (Exception e) {
-                        // Có thể log lỗi hoặc bỏ qua ảnh lỗi
+                        // Can log error or skip failed image
                     }
                 }
             }
             product.setImages(images);
         }
-        
         productService.saveProduct(product);
         redirectAttributes.addFlashAttribute("successMessage", "Product added successfully!");
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",

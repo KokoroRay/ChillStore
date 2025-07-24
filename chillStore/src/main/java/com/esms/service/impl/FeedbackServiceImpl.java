@@ -55,6 +55,12 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
+    public Page<FeedbackDTO> getFeedbacksByProductIdAndRatingPaged(Integer productId, Byte rating, Pageable pageable) {
+        Page<Feedback> feedbackPage = feedbackRepository.findByProductProductIdAndRating(productId, rating, pageable);
+        return feedbackPage.map(this::convertToDTO);
+    }
+
+    @Override
     public Feedback getFeedbackByCustomerAndProduct(Integer customerId, Integer productId) {
         return feedbackRepository.findByCustomerCustomerIdAndProductProductId(customerId, productId).orElse(null);
     }

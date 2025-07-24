@@ -27,9 +27,6 @@ public class Cart {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     // Constructors
     public Cart() {}
 
@@ -38,15 +35,6 @@ public class Cart {
         this.product = product;
         this.quantity = quantity;
         this.createdAt = LocalDateTime.now();
-    }
-
-    public Cart(int id, Customer customer, Product product, int quantity, LocalDateTime createdAt, String imageUrl) {
-        this.id = id;
-        this.customer = customer;
-        this.product = product;
-        this.quantity = quantity;
-        this.createdAt = createdAt;
-        this.imageUrl = imageUrl;
     }
 
     public int getId() {
@@ -87,13 +75,5 @@ public class Cart {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 }

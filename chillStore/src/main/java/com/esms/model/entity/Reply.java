@@ -1,5 +1,6 @@
 package com.esms.model.entity;
 
+import com.esms.model.entity.Admin;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,9 @@ public class Reply {
     @ManyToOne
     @JoinColumn(name = "staff_id", nullable = false)
     private Staff staff;
+    @ManyToOne
+    @JoinColumn(name = "admin_id", nullable = true)
+    private Admin admin;
 
     @Column(name = "content", length = 1000)
     private String content;
@@ -28,10 +32,11 @@ public class Reply {
     public Reply() {
     }
 
-    public Reply(int id, Feedback feedback, Staff staff, String content, LocalDateTime createdAt) {
+    public Reply(int id, Feedback feedback, Staff staff, Admin admin, String content, LocalDateTime createdAt) {
         this.id = id;
         this.feedback = feedback;
         this.staff = staff;
+        this.admin = admin;
         this.content = content;
         this.createdAt = createdAt;
     }
@@ -58,6 +63,14 @@ public class Reply {
 
     public void setStaff(Staff staff) {
         this.staff = staff;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
     }
 
     public String getContent() {

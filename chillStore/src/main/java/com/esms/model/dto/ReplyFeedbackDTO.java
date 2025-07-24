@@ -12,19 +12,21 @@ public class ReplyFeedbackDTO {
     private String content;
     private LocalDateTime createdAt;
     private int staffId;
+    private int adminId;
 
 
     public ReplyFeedbackDTO() {
 
     }
 
-    public ReplyFeedbackDTO(int feedbackId, Feedback feedback, Staff staff, String content, LocalDateTime createdAt, int staffId) {
+    public ReplyFeedbackDTO(int feedbackId, Feedback feedback, Staff staff, String content, LocalDateTime createdAt, int staffId, int adminId) {
         this.feedbackId = feedbackId;
         this.feedback = feedback;
         this.staff = staff;
         this.content = content;
         this.createdAt = createdAt;
         this.staffId = staffId;
+        this.adminId = adminId;
     }
 
     public int getFeedbackId() {
@@ -73,5 +75,12 @@ public class ReplyFeedbackDTO {
 
     public void setStaffId(int staffId) {
         this.staffId = staffId;
+    }
+
+    public int getAdminId() {
+        return adminId;
+    }
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
     }
 }

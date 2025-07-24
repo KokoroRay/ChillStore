@@ -65,109 +65,15 @@
   </div>
 
   <!-- Dòng sản phẩm giảm giá nổi bật -->
-  <style>
-    .highlight-discount-section {
-      background: linear-gradient(90deg, #e3f2fd 60%, #b3e5fc 100%);
-      border-radius: 24px;
-      box-shadow: 0 8px 32px rgba(33, 150, 243, 0.10), 0 1.5px 8px rgba(0,0,0,0.04);
-      padding: 32px 0 24px 0;
-      margin-bottom: 32px;
-      border: 2px solid #2196f3;
-    }
-    .highlight-discount-section .product-card {
-      border: 2px solid #2196f3;
-      border-radius: 18px;
-      background: #e3f2fd;
-      box-shadow: 0 4px 16px rgba(33, 150, 243, 0.10);
-      transition: box-shadow 0.2s, transform 0.2s;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 320px;
-    }
-    .highlight-discount-section .product-card:hover {
-      box-shadow: 0 8px 32px rgba(33, 150, 243, 0.18);
-      transform: translateY(-6px) scale(1.03);
-      z-index: 2;
-    }
-    .highlight-discount-section .discount-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: linear-gradient(135deg, #2196f3 60%, #b3e5fc 100%);
-      color: #fff;
-      font-weight: bold;
-      font-size: 1.05rem;
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(33,150,243,0.12);
-      border: 2px solid #fff;
-      z-index: 3;
-    }
-    .highlight-discount-section .product-img {
-      width: 100%;
-      height: 140px;
-      object-fit: contain;
-      margin-bottom: 8px;
-      background: #fff;
-      border-radius: 10px;
-      border: 1.5px solid #b3e5fc;
-      box-shadow: 0 1.5px 8px rgba(33,150,243,0.04);
-    }
-    .highlight-discount-section .product-title {
-      color: #2196f3;
-      font-size: 1.08rem;
-      font-weight: 500;
-      margin-bottom: 4px;
-      min-height: 40px;
-      text-align: center;
-      letter-spacing: 0.5px;
-    }
-    .highlight-discount-section .text-decoration-line-through {
-      font-size: 1.05rem;
-      color: #b0b0b0;
-      text-align: center;
-      display: block;
-      min-height: 24px;
-    }
-    .highlight-discount-section .discounted-price {
-      color: #1976d2;
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-shadow: 0 1.5px 8px #b3e5fc;
-      text-align: center;
-      display: block;
-      min-height: 32px;
-    }
-    .highlight-discount-section .vnd {
-      color: #1976d2;
-      font-size: 0.95rem;
-      font-weight: 700;
-      vertical-align: super;
-    }
-    .highlight-discount-section .price-block {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      min-height: 60px;
-    }
-  </style>
 <section id="discount-section">
   <div class="container my-4 highlight-discount-section">
     <div class="row justify-content-center">
       <div th:each="row : ${#numbers.sequence(0, 1)}" class="w-100 d-flex flex-row mb-3 justify-content-center">
+
         <div class="col-6 col-sm-4 col-md-2 mb-3 d-flex"
              th:each="product, iterStat : ${highlightDiscountProducts}"
              th:if="${iterStat.index >= row * 5 and iterStat.index < (row + 1) * 5}">
+
           <div class="product-card w-100 position-relative">
             <!-- Badge giảm giá -->
             <div th:if="${productDiscountMap[product.productId] != null}" class="discount-badge">

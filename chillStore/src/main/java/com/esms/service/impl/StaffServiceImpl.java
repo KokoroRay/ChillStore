@@ -6,6 +6,7 @@ import com.esms.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +14,14 @@ import java.util.List;
 public class StaffServiceImpl implements StaffService {
     @Autowired
     private StaffRepository staffRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Override
     public Staff addStaff(Staff staff) {
         if (staff != null) {
+            staff.setPassword(passwordEncoder.encode(staff.getPassword()));
             return staffRepository.save(staff);
         }
         return null;
@@ -26,19 +30,18 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public Staff updateStaff(int id, Staff staff) {
         if (staff != null) {
-            Staff staff1 = staffRepository.getById(id);
-            if (staff1 != null) {
-                Staff existingStaff = staffRepository.getById(id);
-
-                staff1.setName(staff.getName());
-                staff1.setEmail(staff.getEmail());
+            Staff existingStaff = staffRepository.getById(id);
+            if (existingStaff != null) {
+                existingStaff.setName(staff.getName());
+                existingStaff.setEmail(staff.getEmail());
                 if (staff.getPassword() != null && !staff.getPassword().isBlank()) {
-                    existingStaff.setPassword(staff.getPassword());
-                }                staff1.setPhone(staff.getPhone());
-                staff1.setAddress(staff.getAddress());
-                staff1.setGender(staff.getGender());
-                staff1.setNationalId(staff.getNationalId());
-                return staffRepository.save(staff1);
+                    existingStaff.setPassword(passwordEncoder.encode(staff.getPassword()));
+                }
+                existingStaff.setPhone(staff.getPhone());
+                existingStaff.setAddress(staff.getAddress());
+                existingStaff.setGender(staff.getGender());
+                existingStaff.setNationalId(staff.getNationalId());
+                return staffRepository.save(existingStaff);
             }
         }
         return null;

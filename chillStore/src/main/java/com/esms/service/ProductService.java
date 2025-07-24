@@ -67,5 +67,9 @@ public interface ProductService {
     int getRandomProductsTotalPages(int size);
     int getTotalSoldQuantity(Integer productId);
 
+    /**
+     * Tìm sản phẩm theo tên chính xác (không phân biệt hoa thường)
+     */
+    Product getProductByName(String name);
 }
 

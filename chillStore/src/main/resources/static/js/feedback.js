@@ -128,7 +128,7 @@ function renderFeedbackList(feedbacks, customerId) {
     const listDiv = document.getElementById('feedback-list');
     const currentRole = getCurrentRole();
     if (!feedbacks.length) {
-        listDiv.innerHTML = '<div class="text-center text-muted py-4"><i class="fas fa-comment-slash fa-2x mb-2"></i><p>No reviews yet. Be the first to review this product!</p></div>';
+        listDiv.innerHTML = '';
         return;
     }
     let html = '<div class="row">';

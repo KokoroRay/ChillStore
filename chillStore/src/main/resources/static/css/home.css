@@ -588,3 +588,7 @@ body {
         left: 4px;
     }
 }
+
+.footer {
+    background: linear-gradient(120deg, #1976d2 0%, #113F67 100%) !important;
+}

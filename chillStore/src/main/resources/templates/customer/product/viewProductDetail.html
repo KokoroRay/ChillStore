@@ -432,6 +432,17 @@
             <i class="fas fa-comments me-2"></i>
             Đánh giá & Nhận xét sản phẩm
         </h3>
+        <div class="mb-3" id="feedback-rating-filter-container">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fw-bold me-2">Lọc theo số sao:</span>
+                <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="0" onclick="setRatingFilter(0)">Tất cả</button>
+                <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="5" onclick="setRatingFilter(5)">5 <i class="fas fa-star"></i></button>
+                <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="4" onclick="setRatingFilter(4)">4 <i class="fas fa-star"></i></button>
+                <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="3" onclick="setRatingFilter(3)">3 <i class="fas fa-star"></i></button>
+                <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="2" onclick="setRatingFilter(2)">2 <i class="fas fa-star"></i></button>
+                <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="1" onclick="setRatingFilter(1)">1 <i class="fas fa-star"></i></button>
+            </div>
+        </div>
         <div id="feedback-summary" class="mb-4"></div>
         <div id="feedback-list" class="feedback-list"></div>
         <div id="feedback-loadmore-container" class="text-center mt-3"></div>

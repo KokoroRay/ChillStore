@@ -53,9 +53,25 @@ public class MaintenanceImpl implements MaintenanceService {
     public void updateMaintenance(MaintenanceDto dto) {
         Maintenance entity = maintenanceRepository.findById(dto.getRequestId()).orElse(null);
         if (entity != null) {
+            // Validate staffId
+            if (dto.getStaffId() == null || !staffRepository.existsById(dto.getStaffId())) {
+                throw new RuntimeException("Staff không tồn tại hoặc chưa chọn!");
+            }
+            // Validate order
+            Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(() -> new RuntimeException("Order không tồn tại!"));
+            // Validate product thuộc order
+            boolean productInOrder = order.getOrderItems().stream().anyMatch(oi -> oi.getProduct().getProductId().equals(dto.getProductId()));
+            if (!productInOrder) {
+                throw new RuntimeException("Sản phẩm không thuộc đơn hàng đã chọn!");
+            }
+            // Validate customer là chủ order
+            if (!order.getCustomer().getCustomerId().equals(dto.getCustomerId())) {
+                throw new RuntimeException("Khách hàng không khớp với đơn hàng!");
+            }
             entity.setOrderId(dto.getOrderId());
             entity.setProductId(dto.getProductId());
             entity.setCustomerId(dto.getCustomerId());
+            entity.setStaffId(dto.getStaffId());
             entity.setRequestType(dto.getRequestType());
             entity.setRequestDate(dto.getRequestDate());
             entity.setReason(dto.getReason());
@@ -66,10 +82,26 @@ public class MaintenanceImpl implements MaintenanceService {
 
     @Override
     public void addMaintenance(MaintenanceDto dto) {
+        // Chỉ validate staffId nếu không null
+        if (dto.getStaffId() != null && !staffRepository.existsById(dto.getStaffId())) {
+            throw new RuntimeException("Staff không tồn tại!");
+        }
+        // Validate order
+        Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(() -> new RuntimeException("Order không tồn tại!"));
+        // Validate product thuộc order
+        boolean productInOrder = order.getOrderItems().stream().anyMatch(oi -> oi.getProduct().getProductId().equals(dto.getProductId()));
+        if (!productInOrder) {
+            throw new RuntimeException("Sản phẩm không thuộc đơn hàng đã chọn!");
+        }
+        // Validate customer là chủ order
+        if (!order.getCustomer().getCustomerId().equals(dto.getCustomerId())) {
+            throw new RuntimeException("Khách hàng không khớp với đơn hàng!");
+        }
         Maintenance entity = new Maintenance();
         entity.setOrderId(dto.getOrderId());
         entity.setProductId(dto.getProductId());
         entity.setCustomerId(dto.getCustomerId());
+        entity.setStaffId(dto.getStaffId());
         entity.setRequestType(dto.getRequestType());
         entity.setRequestDate(dto.getRequestDate());
         entity.setReason(dto.getReason());
@@ -84,7 +116,7 @@ public class MaintenanceImpl implements MaintenanceService {
         Customer customer = customerRepository.findById(entity.getCustomerId()).orElse(null);
         Staff staff = null;
         String staffName = "";
-        if (entity.getStaffId() != 0) {
+        if (entity.getStaffId() != null && entity.getStaffId() != 0) {
             staff = staffRepository.findById(entity.getStaffId()).orElse(null);
             if (staff != null) {
                 staffName = staff.getName();

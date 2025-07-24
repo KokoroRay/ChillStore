@@ -183,4 +183,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     boolean hasCustomerDeliveredProduct(@Param("customerId") Integer customerId, @Param("productId") Integer productId);
 
     List<Order> findByCustomer_CustomerIdAndStatus(Integer customerId, String status);
+
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderItems oi LEFT JOIN FETCH oi.product")
+    List<Order> findAllForMaintenance();
 }

@@ -88,7 +88,7 @@
 </head>
 
 <body>
-    <!-- <div th:insert="~{fragments/navigationBar :: navBar}"></div> -->
+    <div th:insert="~{fragments/navigationBar :: navBar}"></div>
 
     <div class="order-header">
         <div class="container">
@@ -97,7 +97,7 @@
                     <h1><i class="fas fa-receipt"></i> Order #<span
                             th:text="${order != null && order.orderId != null ? order.orderId : 'N/A'}"></span></h1>
                     <p class="mb-0" th:if="${order != null}"
-                        th:text="|Placed on ${order.orderDate != null ? #dates.format(order.orderDate, 'EEEE, MMMM dd, yyyy at HH:mm') : 'N/A'}|">
+                        th:text="|Placed on ${order.orderDate != null ? #dates.format(order.orderDate, 'EEEE, MMMM dd, yyyy ''at'' HH:mm') : 'N/A'}|">
                     </p>
                 </div>
                 <div class="col-md-4 text-end">
@@ -165,7 +165,18 @@
                                     <td th:text="${item.productName}"></td>
                                     <td th:text="${item.categoryName}"></td>
                                     <td th:text="${item.quantity}"></td>
-                                    <td th:text="${item.priceEach}"></td>
+                                    <td th:text="${#numbers.formatDecimal(item.priceEach, 0, 'COMMA', 0, 'POINT')}"></td>
+                                    <td>
+                                        <button th:if="${order.status == 'Delivered'}" class="btn btn-sm btn-outline-warning me-1"
+                                            th:attr="data-productid=${item.productId},data-productname=${item.productName},data-orderid=${order.orderId}"
+                                            onclick="openMaintenanceModal(this)">
+                                            <i class="fas fa-tools"></i> Request Maintenance/Warranty
+                                        </button>
+                                        <button th:if="${order.status == 'Delivered'}" class="btn btn-sm btn-outline-primary"
+                                            th:attr="onclick='window.location=\'/customer/product/view/' + ${item.productId} + '#feedback-section\''">
+                                            <i class="fas fa-star"></i> Review
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -183,7 +194,97 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="maintenanceModal" tabindex="-1" aria-labelledby="maintenanceModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="maintenanceModalLabel">Request Maintenance/Warranty</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="maintenanceForm">
+              <input type="hidden" id="maint-orderId" name="orderId">
+              <input type="hidden" id="maint-productId" name="productId">
+              <div class="mb-3">
+                <label for="maint-productName" class="form-label">Product</label>
+                <input type="text" class="form-control" id="maint-productName" name="productName" readonly>
+              </div>
+              <div class="mb-3">
+                <label for="maint-requestType" class="form-label">Request Type</label>
+                <select class="form-select" id="maint-requestType" name="requestType" required>
+                  <option value="">Select type</option>
+                  <option value="maintenance">Maintenance</option>
+                  <option value="warranty">Warranty</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="maint-reason" class="form-label">Reason</label>
+                <textarea class="form-control" id="maint-reason" name="reason" rows="3" required></textarea>
+              </div>
+              <div id="maint-error" class="alert alert-danger d-none"></div>
+              <div id="maint-success" class="alert alert-success d-none"></div>
+              <button type="submit" class="btn btn-primary">Send Request</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:insert="~{fragments/footer :: footer}"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function openMaintenanceModal(btn) {
+            const orderId = btn.getAttribute('data-orderid');
+            const productId = btn.getAttribute('data-productid');
+            const productName = btn.getAttribute('data-productname');
+            document.getElementById('maint-orderId').value = orderId;
+            document.getElementById('maint-productId').value = productId;
+            document.getElementById('maint-productName').value = productName;
+            document.getElementById('maint-requestType').value = '';
+            document.getElementById('maint-reason').value = '';
+            document.getElementById('maint-error').classList.add('d-none');
+            document.getElementById('maint-success').classList.add('d-none');
+            var modal = new bootstrap.Modal(document.getElementById('maintenanceModal'));
+            modal.show();
+        }
+
+        document.getElementById('maintenanceForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const orderId = document.getElementById('maint-orderId').value;
+            const productId = document.getElementById('maint-productId').value;
+            const requestType = document.getElementById('maint-requestType').value;
+            const reason = document.getElementById('maint-reason').value;
+            const errorDiv = document.getElementById('maint-error');
+            const successDiv = document.getElementById('maint-success');
+            errorDiv.classList.add('d-none');
+            successDiv.classList.add('d-none');
+            if (!requestType || !reason) {
+                errorDiv.textContent = 'Please select request type and enter reason.';
+                errorDiv.classList.remove('d-none');
+                return;
+            }
+            try {
+                const res = await fetch('/customer/api/maintenance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId, productId, requestType, reason })
+                });
+                const text = await res.text();
+                if (res.ok) {
+                    successDiv.textContent = text;
+                    successDiv.classList.remove('d-none');
+                    setTimeout(() => { document.getElementById('maintenanceModal').querySelector('.btn-close').click(); }, 1500);
+                } else {
+                    errorDiv.textContent = text;
+                    errorDiv.classList.remove('d-none');
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Error sending request.';
+                errorDiv.classList.remove('d-none');
+            }
+        });
+    </script>
 </body>
 
 </html>

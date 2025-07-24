@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import com.esms.model.dto.MaintenanceDto;
+import com.esms.service.MaintenanceService;
 
 @Controller
 @RequestMapping("/customer")
@@ -22,6 +24,9 @@ public class CustomerOrderController {
     
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private MaintenanceService maintenanceService;
 
     @GetMapping("/order-history")
     public String orderHistory(Model model, Authentication authentication) {
@@ -198,6 +203,43 @@ public class CustomerOrderController {
             return ResponseEntity.ok(orderDetail);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Unable to load order details");
+        }
+    }
+
+    @PostMapping("/api/maintenance")
+    @ResponseBody
+    public ResponseEntity<?> createMaintenanceRequest(@RequestBody MaintenanceDto dto, Authentication authentication) {
+        try {
+            String email = authentication.getName();
+            Integer customerId = customerService.getCustomerByEmail(email).getCustomerId();
+            // Validate order thuộc customer
+            CustomerOrderDetailDTO orderDetail = orderService.getCustomerOrderDetail(customerId, dto.getOrderId());
+            if (orderDetail == null) {
+                return ResponseEntity.badRequest().body("Order not found or not belong to you");
+            }
+            // Validate order status Delivered
+            if (!"Delivered".equalsIgnoreCase(orderDetail.getStatus())) {
+                return ResponseEntity.badRequest().body("Order must be Delivered to request maintenance");
+            }
+            // Validate product thuộc order
+            boolean productInOrder = orderDetail.getItems().stream().anyMatch(i -> i.getProductId() == dto.getProductId());
+            if (!productInOrder) {
+                return ResponseEntity.badRequest().body("Product not in this order");
+            }
+            // Tạo maintenance request
+            MaintenanceDto req = new MaintenanceDto();
+            req.setOrderId(dto.getOrderId());
+            req.setProductId(dto.getProductId());
+            req.setCustomerId(customerId);
+            req.setReason(dto.getReason());
+            req.setRequestType(dto.getRequestType());
+            req.setStatus("Pending");
+            req.setRequestDate(null); // Admin sẽ chọn sau
+            req.setStaffId(null); // Admin sẽ chọn sau
+            maintenanceService.addMaintenance(req);
+            return ResponseEntity.ok("Request sent successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

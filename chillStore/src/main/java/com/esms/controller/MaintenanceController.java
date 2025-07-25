@@ -49,13 +49,28 @@ public class MaintenanceController {
     private StaffRepository staffRepository;
 
     @GetMapping
-    public String viewMaintenanceList(Model model, HttpServletRequest request) {
+    public String viewMaintenanceList(Model model, HttpServletRequest request, org.springframework.security.core.Authentication authentication) {
         try {
-            List<MaintenanceDto> maintenances = maintenanceService.getAllMaintenances();
+            String requestUrl = request.getRequestURI();
+            boolean isAdmin = requestUrl.startsWith("/admin");
+            model.addAttribute("isAdmin", isAdmin);
+            List<MaintenanceDto> maintenances;
+            if (requestUrl.startsWith("/staff")) {
+                // Lấy staffId hiện tại từ authentication
+                String email = authentication != null ? authentication.getName() : null;
+                Staff staff = (email != null) ? staffRepository.findByEmail(email).orElse(null) : null;
+                Integer staffId = (staff != null) ? staff.getId() : null;
+                // Chỉ lấy maintenance có staffId đúng, và staffId != null
+                maintenances = maintenanceService.getAllMaintenances().stream()
+                    .filter(m -> m.getStaffId() != null && m.getStaffId().equals(staffId))
+                    .toList();
+            } else {
+                // Admin: lấy tất cả
+                maintenances = maintenanceService.getAllMaintenances();
+            }
             logger.info("Retrieved {} maintenance records", maintenances.size());
             model.addAttribute("maintenances", maintenances);
             model.addAttribute("activeMenu", "maintenance");
-            String requestUrl = request.getRequestURI();
             if (requestUrl.startsWith("/staff")) {
                 return "staff/maintenance/list";
             } else {
@@ -67,6 +82,8 @@ public class MaintenanceController {
             model.addAttribute("maintenances", List.of());
             model.addAttribute("activeMenu", "maintenance");
             String requestUrl = request.getRequestURI();
+            boolean isAdmin = requestUrl.startsWith("/admin");
+            model.addAttribute("isAdmin", isAdmin);
             if (requestUrl.startsWith("/staff")) {
                 return "staff/maintenance/list";
             } else {
@@ -120,6 +137,7 @@ public class MaintenanceController {
                 model.addAttribute("error", "Maintenance not found with ID: " + id);
                 return "redirect:/admin/maintenance";
             }
+            logger.info("[GET] Edit Maintenance - requestType: {}", maintenance.getRequestType());
             model.addAttribute("maintenanceDto", maintenance);
             model.addAttribute("activeMenu", "maintenance");
             // Add dropdown data
@@ -158,6 +176,7 @@ public class MaintenanceController {
             Model model,
             RedirectAttributes redirectAttributes,
             HttpServletRequest request) {
+        logger.info("[POST] Update Maintenance - requestType: {}", maintenanceDto.getRequestType());
         if (bindingResult.hasErrors()) {
             logger.warn("Validation errors in maintenance update form");
             model.addAttribute("activeMenu", "maintenance");
@@ -172,6 +191,8 @@ public class MaintenanceController {
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
             model.addAttribute("staffList", staffList);
+            boolean isAdmin = request.getRequestURI().startsWith("/admin");
+            model.addAttribute("isAdmin", isAdmin);
             
             return "admin/maintenance/editmaintenance";
         }
@@ -195,6 +216,8 @@ public class MaintenanceController {
             model.addAttribute("products", products);
             model.addAttribute("customers", customers);
             model.addAttribute("staffList", staffList);
+            boolean isAdmin = request.getRequestURI().startsWith("/admin");
+            model.addAttribute("isAdmin", isAdmin);
             
             return "admin/maintenance/editmaintenance";
         }
@@ -307,15 +330,24 @@ public class MaintenanceController {
                     return "redirect:/admin/maintenance";
                 }
             }
-            
-            maintenance.setStatus(status);
-            maintenanceService.updateMaintenance(maintenance);
-            
-            logger.info("Updated maintenance status to {} for ID: {}", status, id);
-            redirectAttributes.addFlashAttribute("success", "Maintenance status updated successfully!");
+            String currentStatus = maintenance.getStatus();
+            boolean valid = false;
+            if ("Pending".equals(currentStatus) && "In Progress".equals(status)) {
+                valid = true;
+            } else if ("In Progress".equals(currentStatus) && "Completed".equals(status)) {
+                valid = true;
+            }
+            if (!valid) {
+                redirectAttributes.addFlashAttribute("error", "Chỉ được chuyển trạng thái từ Pending → In Progress → Completed!");
+            } else {
+                maintenance.setStatus(status);
+                maintenanceService.updateMaintenance(maintenance);
+                logger.info("Updated maintenance status to {} for ID: {}", status, id);
+                redirectAttributes.addFlashAttribute("success", "Cập nhật trạng thái thành công!");
+            }
         } catch (Exception e) {
             logger.error("Error updating maintenance status, ID: {}", id, e);
-            redirectAttributes.addFlashAttribute("error", "An error occurred: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
         }
         String requestUrl = request.getRequestURI();
         if (requestUrl.startsWith("/staff")) {

@@ -232,7 +232,7 @@ public class DiscountController {
                     return "redirect:/admin/discount/" + discountDto.getPromoId() + "/edit";
                 }
             }
-            
+
             if (discountDto.getStartDate() == null || discountDto.getEndDate() == null) {
                 redirectAttributes.addFlashAttribute("error", "Start date and end date are required");
                 return "redirect:/admin/discount/create";

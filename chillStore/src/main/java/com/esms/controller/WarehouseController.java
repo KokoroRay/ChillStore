@@ -112,10 +112,6 @@ public class WarehouseController {
             @RequestParam(value = "notes", required = false) String notes,
             RedirectAttributes redirectAttributes) {
         try {
-            if (quantity > 499) {
-                redirectAttributes.addFlashAttribute("error", "Chỉ được nhập tối đa 499 sản phẩm mỗi lần!");
-                return "redirect:/admin/warehouse";
-            }
             warehouseService.importProduct(productId, quantity, notes);
             redirectAttributes.addFlashAttribute("success", "Import successful!");
         } catch (Exception e) {
@@ -134,15 +130,6 @@ public class WarehouseController {
                                        RedirectAttributes redirectAttributes) {
         try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
-            int dataRows = 0;
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-                if (row != null) dataRows++;
-            }
-            if (dataRows >= 500) {
-                redirectAttributes.addFlashAttribute("error", "Chỉ được nhập tối đa 499 sản phẩm mỗi lần import!");
-                return "redirect:/admin/warehouse";
-            }
             int successCount = 0;
             int failCount = 0;
             StringBuilder errorMsg = new StringBuilder();

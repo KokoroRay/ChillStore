@@ -44,20 +44,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * Tìm sản phẩm theo tên chính xác (không phân biệt hoa thường)
      */
     Product findByNameIgnoreCase(String name);
-/* Tìm sản phẩm theo keyword */
-List<Product> findByNameContainingIgnoreCase(String keyword);
-    List<Product> findByCategoryId(Long categoryId);
-    List<Product> findByBrandId(Long brandId);
-    List<Product> findByCategoryIdAndBrandId(Long categoryId, Long brandId);
 
-    // Gợi ý có khuyến mãi ưu tiên
-    @Query("SELECT DISTINCT p FROM Product p " +
-            "LEFT JOIN p.discountProducts dp " +
-            "LEFT JOIN dp.discount d " +
-            "WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :term, '%')) " +
-            "ORDER BY d.discountPct DESC")
-    List<Product> findTop10ByNameContainingIgnoreCaseOrderByDiscountDesc(@Param("term") String term);
     @Query("SELECT oi.product FROM OrderItem oi WHERE oi.order.orderId = :orderId")
-
-    List<Product> findProductsByOrderId(Integer orderId);
-}
+    List<Product> findProductsByOrderId(@Param("orderId") Integer orderId);
+} 

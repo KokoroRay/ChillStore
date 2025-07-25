@@ -71,13 +71,5 @@ public interface ProductService {
      * Tìm sản phẩm theo tên chính xác (không phân biệt hoa thường)
      */
     Product getProductByName(String name);
-   /*Tìm sản phẩm theo keywword */
-    List<ProductDTO> searchProductsByKeyword(String keyword);
-    List<ProductDTO> searchByCategoryAndBrand(Long categoryId, Long brandId);
-    List<ProductDTO> getProductsByCategoryId(Long categoryId);
-    List<ProductDTO> getProductsByBrandId(Long brandId);
-    List<String> suggestProductNames(String term);
-
-
 }
 

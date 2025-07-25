@@ -44,4 +44,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * Tìm sản phẩm theo tên chính xác (không phân biệt hoa thường)
      */
     Product findByNameIgnoreCase(String name);
+
+    @Query("SELECT oi.product FROM OrderItem oi WHERE oi.order.orderId = :orderId")
+    List<Product> findProductsByOrderId(@Param("orderId") Integer orderId);
 } 

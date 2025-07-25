@@ -7,13 +7,6 @@
       <div class="center-logo" style="margin-right: 30px;">
         <img th:src="@{/images/logo.png}" alt="FsMs Logo" class="logo-image">
       </div>
-
-      <!-- Form tìm kiếm sản phẩm -->
-      <form th:action="@{/search}" method="get" class="search-form">
-        <input type="text" name="keyword" placeholder="Tìm kiếm sản phẩm..." />
-        <button type="submit">Tìm kiếm</button>
-      </form>
-
       <div id="headerDropdown">
         <div class="profile-icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -24,7 +17,7 @@
         <ul class="dropdown-menu" id="headerMenu">
           <div sec:authorize="hasRole('ADMIN')">
             <li><a th:href="@{/admin/category}">
-              <span class="menu-icon"><img src="/images/administrator.png " alt="home"></span>
+              <span class="menu-icon"><img src="/images/administrator.png" alt="home"></span>
                 Admin</a></li>
             <li><a th:href="@{/staff/category}">
               <span class="menu-icon"><img src="/images/staff.png" alt="home"></span>

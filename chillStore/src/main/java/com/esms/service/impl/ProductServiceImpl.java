@@ -99,6 +99,15 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setImageUrl(product.getImageUrl());
         }
 
+        // Update gallery images (ảnh phụ)
+        if (product.getImages() != null) {
+            existingProduct.getImages().clear();
+            for (var img : product.getImages()) {
+                img.setProduct(existingProduct);
+            }
+            existingProduct.getImages().addAll(product.getImages());
+        }
+
         return productRepository.save(existingProduct);
     }
 

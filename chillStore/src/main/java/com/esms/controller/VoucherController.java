@@ -39,7 +39,7 @@ public class VoucherController {
     private BrandRepository brandRepository;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'Staff')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public String listVouchers(
             @RequestParam(name = "keyword", required = false)
             String keyword,

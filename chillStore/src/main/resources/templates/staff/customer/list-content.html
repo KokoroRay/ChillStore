@@ -4,11 +4,8 @@
 
         <form th:action="@{/staff/customer}" method="get" class="d-flex w-100" style="max-width: 800px;">
             <div class="input-group">
-                <input type="text"
-                       name="search"
-                       class="form-control"
-                       placeholder="Search by name, email, or phone"
-                       th:value="${search}">
+                <input type="text" name="search" class="form-control" placeholder="Search by name, email, or phone"
+                    th:value="${search}">
                 <select name="locked" class="form-select w-auto">
                     <option value="">All Status</option>
                     <option value="false" th:selected="${locked != null and !locked}">Active</option>
@@ -45,37 +42,42 @@
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
-                        <tr>
-                            <th class="text-start" data-label="ID">ID</th>
-                            <th class="text-start" data-label="Full Name">Full Name</th>
-                            <th class="text-start" data-label="Date of Birth">Date of Birth</th>
-                            <th class="text-start" data-label="Phone Number">Phone Number</th>
-                            <th class="text-start" data-label="Address">Address</th>
-                            <th class="text-center" data-label="Status">Status</th>
-                        </tr>
+                            <tr>
+                                <th class="text-start" data-label="ID">ID</th>
+                                <th class="text-start" data-label="Full Name">Full Name</th>
+                                <th class="text-start" data-label="Date of Birth">Date of Birth</th>
+                                <th class="text-start" data-label="Phone Number">Phone Number</th>
+                                <th class="text-start" data-label="Address">Address</th>
+                                <th class="text-center" data-label="Status">Status</th>
+                                <th class="text-center" data-label="Actions">Actions</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="customer : ${customers}">
-                            <td class="text-start" data-label="ID" th:text="${customer.customerId}"></td>
-                            <td class="text-start" data-label="Full Name" th:text="${customer.name}"></td>
+                            <tr th:each="customer : ${customers}">
+                                <td class="text-start" data-label="ID" th:text="${customer.customerId}"></td>
+                                <td class="text-start" data-label="Full Name" th:text="${customer.name}"></td>
 
-                            <td class="text-start" data-label="Date of Birth"
-                                th:if="${customer.birth_date != null}"
-                                th:text="${#temporals.format(customer.birth_date, 'dd/MM/yyyy')}"></td>
-                            <td class="text-start" data-label="Date of Birth"
-                                th:unless="${customer.birth_date != null}">N/A</td>
+                                <td class="text-start" data-label="Date of Birth" th:if="${customer.birth_date != null}"
+                                    th:text="${#temporals.format(customer.birth_date, 'dd/MM/yyyy')}"></td>
+                                <td class="text-start" data-label="Date of Birth"
+                                    th:unless="${customer.birth_date != null}">N/A</td>
 
-                            <td class="text-start" data-label="Phone Number" th:text="${customer.phone}"></td>
+                                <td class="text-start" data-label="Phone Number" th:text="${customer.phone}"></td>
 
-                            <td class="text-start address-cell" data-label="Address"
-                                th:text="${customer.address}"
-                                title="${customer.address}"></td>
+                                <td class="text-start address-cell" data-label="Address" th:text="${customer.address}"
+                                    title="${customer.address}"></td>
 
-                            <td class="text-center" data-label="Status">
-                                <span th:if="${customer.locked}" class="badge bg-danger">Locked</span>
-                                <span th:unless="${customer.locked}" class="badge bg-success">Active</span>
-                            </td>
-                        </tr>
+                                <td class="text-center" data-label="Status">
+                                    <span th:if="${customer.locked}" class="badge bg-danger">Locked</span>
+                                    <span th:unless="${customer.locked}" class="badge bg-success">Active</span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:href="@{'/staff/customer/' + ${customer.customerId} + '/orders'}"
+                                        class="btn btn-info btn-sm">
+                                        <i class="fas fa-shopping-bag"></i> View order history
+                                    </a>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

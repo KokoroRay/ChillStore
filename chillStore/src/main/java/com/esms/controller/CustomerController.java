@@ -19,15 +19,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import com.esms.repository.OrderRepository;
+import com.esms.model.entity.Order;
 
 @Controller
 @RequestMapping({"/admin/customer", "/staff/customer"})
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final OrderRepository orderRepository;
 
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, OrderRepository orderRepository) {
         this.customerService = customerService;
+        this.orderRepository = orderRepository;
     }
 
 
@@ -165,6 +169,15 @@ public class CustomerController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/admin/customer";
+    }
+
+    @GetMapping("/{id}/orders")
+    @PreAuthorize("hasAnyRole('STAFF', 'ADMIN')")
+    public String viewCustomerOrders(@PathVariable("id") Integer customerId, Model model) {
+        List<com.esms.model.entity.Order> orders = orderRepository.findByCustomerCustomerId(customerId);
+        model.addAttribute("orders", orders);
+        model.addAttribute("customer", customerService.getCustomerById(customerId));
+        return "staff/customer/order-history";
     }
 
     private CustomerDTO convertToDto(Customer customer) {

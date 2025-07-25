@@ -1,0 +1,55 @@
+/* Decor cho thanh tìm kiếm trên header */
+.search-form {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 3px 10px 3px 16px;
+  min-width: 260px;
+  max-width: 400px;
+  transition: box-shadow 0.2s;
+}
+.search-form:focus-within {
+  box-shadow: 0 4px 16px rgba(0,123,255,0.18);
+}
+.search-form input[type="text"] {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  padding: 8px 0;
+  flex: 1;
+}
+.search-form input[type="text"]::placeholder {
+  color: #bbb;
+  font-style: italic;
+}
+.search-form button {
+  background: linear-gradient(90deg, #007bff 60%, #0056b3 100%);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 18px;
+  margin-left: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,123,255,0.10);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.search-form button:hover {
+  background: linear-gradient(90deg, #0056b3 60%, #007bff 100%);
+  box-shadow: 0 4px 12px rgba(0,123,255,0.18);
+}
+@media (max-width: 600px) {
+  .search-form {
+    min-width: 120px;
+    max-width: 100%;
+    padding: 2px 6px 2px 10px;
+  }
+  .search-form button {
+    padding: 6px 10px;
+    font-size: 0.95rem;
+  }
+} 

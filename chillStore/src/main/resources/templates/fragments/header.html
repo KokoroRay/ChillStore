@@ -1,11 +1,18 @@
 <link rel="stylesheet" href="/css/header.css">
+<link rel="stylesheet" th:href="@{/css/search-bar.css}" />
 <div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <div th:fragment="headerContent">
   <header class="container-fluid px-4 py-2 border-bottom">
-    <div class="header-container">
-      <div class="center-logo">
+    <div class="header-container" style="display: flex; align-items: center; justify-content: space-between;">
+      <div class="center-logo" style="margin-right: 30px;">
         <img th:src="@{/images/logo.png}" alt="FsMs Logo" class="logo-image">
       </div>
+
+      <!-- Form tìm kiếm sản phẩm -->
+      <form th:action="@{/search}" method="get" class="search-form">
+        <input type="text" name="keyword" placeholder="Tìm kiếm sản phẩm..." />
+        <button type="submit">Tìm kiếm</button>
+      </form>
 
       <div id="headerDropdown">
         <div class="profile-icon">

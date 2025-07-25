@@ -69,10 +69,16 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public Feedback addFeedback(Integer customerId, Integer productId, Byte rating, String comment) {
         if (feedbackRepository.findByCustomerCustomerIdAndProductProductId(customerId, productId).isPresent()) {
-            throw new RuntimeException("Bạn đã bình luận sản phẩm này rồi!");
+            throw new RuntimeException("You have already submitted feedback for this product!");
         }
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng!"));
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm!"));
+        if (comment == null || comment.length() > 500) {
+            throw new RuntimeException("Feedback content must not exceed 500 characters!");
+        }
+        if (rating == null) {
+            throw new RuntimeException("You must select a rating!");
+        }
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found!"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found!"));
         Feedback feedback = new Feedback();
         feedback.setCustomer(customer);
         feedback.setProduct(product);

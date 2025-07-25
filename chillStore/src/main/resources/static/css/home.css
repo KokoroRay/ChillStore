@@ -686,3 +686,23 @@ body {
 .footer {
     background: linear-gradient(120deg, #1976d2 0%, #113F67 100%) !important;
 }
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: transparent;
+    color: red;
+    border: 2px solid red;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    z-index: 10;
+    animation: pulseBadge 1.5s infinite ease-in-out;
+}
+
+@keyframes pulseBadge {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+    100% { transform: scale(1); opacity: 1; }
+}

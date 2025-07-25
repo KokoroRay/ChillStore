@@ -28,6 +28,10 @@
             </div>
 
             <!-- Thanh tìm kiếm ở giữa navbar -->
+            <form class="d-flex" th:action="@{/searchProduct}" method="get">
+                <input class="form-control me-2 rounded-pill" type="search" placeholder="Tìm sản phẩm..." aria-label="Search" name="keyword" required>
+                <button class="btn btn-primary rounded-pill px-4" type="submit">Tìm kiếm</button>
+            </form>
 
             <div class="nav-right">
                 <!-- Cart and Avatar for Customer -->

@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.text.Normalizer;
 import com.esms.repository.DiscountProductRepository;
@@ -22,8 +22,6 @@ import java.time.LocalDate;
 import com.esms.model.entity.DiscountProduct;
 import com.esms.repository.OrderItemRepository;
 import org.springframework.data.domain.PageRequest;
-import java.util.ArrayList;
-import java.util.Collections;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -421,4 +419,87 @@ public class ProductServiceImpl implements ProductService {
     public Product getProductByName(String name) {
         return productRepository.findByNameIgnoreCase(name);
     }
+
+    /*Tìm sản phẩm theo keyword*/
+    @Override
+    public List<ProductDTO> searchProductsByKeyword(String keyword) {
+        List<Product> products = productRepository.findByNameContainingIgnoreCase(keyword);
+        return convertToProductDTOs(products);
+    }
+
+    @Override
+    public List<ProductDTO> searchByCategoryAndBrand(Long categoryId, Long brandId) {
+        List<Product> products = productRepository.findByCategoryIdAndBrandId(categoryId, brandId);
+        return convertToProductDTOs(products);
+    }
+
+    @Override
+    public List<ProductDTO> getProductsByCategoryId(Long categoryId) {
+        List<Product> products = productRepository.findByCategoryId(categoryId);
+        return convertToProductDTOs(products);
+    }
+
+    @Override
+    public List<ProductDTO> getProductsByBrandId(Long brandId) {
+        List<Product> products = productRepository.findByBrandId(brandId);
+        return convertToProductDTOs(products);
+    }
+
+    @Override
+    public List<String> suggestProductNames(String term) {
+        List<Product> products = productRepository.findTop10ByNameContainingIgnoreCaseOrderByDiscountDesc(term);
+        return products.stream()
+                .map(Product::getName)
+                .collect(Collectors.toList());
+    }
+
+    private List<ProductDTO> convertToProductDTOs(List<Product> products) {
+        return products.stream().map(product -> {
+            ProductDTO dto = new ProductDTO();
+
+            // Basic info
+            dto.setProductId(product.getProductId());
+            dto.setName(product.getName());
+            dto.setPrice(product.getPrice());
+            dto.setDescription(product.getDescription());
+            dto.setImageUrl(product.getImageUrl());
+
+            // Category name
+            if (product.getCategory() != null) {
+                dto.setCategoryName(product.getCategory().getName());
+            }
+
+            // Brand name
+            if (product.getBrand() != null) {
+                dto.setBrandName(product.getBrand().getName());
+            }
+
+            // Discount info - if product has any promotion
+            List<DiscountProduct> discountProducts = product.getDiscountProducts();
+            if (discountProducts != null && !discountProducts.isEmpty()) {
+                DiscountProduct first = discountProducts.get(0); // Optional: sort by date if needed
+                Discount discount = first.getDiscount();
+                if (discount != null) {
+                    dto.setDiscountName(discount.getCode());
+
+                    // Convert BigDecimal to Double
+                    if (discount.getDiscountPct() != null) {
+                        dto.setDiscountPercent(discount.getDiscountPct().doubleValue());
+                    }
+
+                    // Convert java.sql.Date (if used) or LocalDate to LocalDateTime
+                    if (discount.getStartDate() != null) {
+                        dto.setDiscountStart(discount.getStartDate().atStartOfDay());
+                    }
+
+                    if (discount.getEndDate() != null) {
+                        dto.setDiscountEnd(discount.getEndDate().atStartOfDay());
+                    }
+                }
+            }
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
 }

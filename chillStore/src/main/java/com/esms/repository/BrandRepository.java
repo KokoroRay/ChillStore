@@ -22,6 +22,5 @@ public interface BrandRepository extends JpaRepository<Brand, Integer> {
     List<Brand> findAllByIdIn(List<Integer> ids);
 
     boolean existsByName(String name);
-    Optional<Brand> findByNameIgnoreCase(String name);
 
 }

@@ -46,7 +46,11 @@
                                 style="width: 70px;" min="1" th:attr="max=${item.stockQty}"
                                 th:disabled="${item.quantity} >= ${item.stockQty}"
                                 th:onchange="'updateQuantity(' + ${item.cartItemId} + ', this.value)'">
-
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                th:onclick="'updateQuantity(' + ${item.cartItemId} + ', this.previousElementSibling.value)'"
+                                th:disabled="${item.quantity} >= ${item.stockQty}">
+                                Update
+                            </button>
                         </div>
                         <div th:if="${item.quantity} >= ${item.stockQty}" class="text-danger small mt-1">
                             Thêm sản phẩm không thành công: đã đạt số lượng tối đa trong kho

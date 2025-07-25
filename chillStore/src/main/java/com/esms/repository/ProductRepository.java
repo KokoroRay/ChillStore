@@ -57,4 +57,7 @@ List<Product> findByNameContainingIgnoreCase(String keyword);
             "WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :term, '%')) " +
             "ORDER BY d.discountPct DESC")
     List<Product> findTop10ByNameContainingIgnoreCaseOrderByDiscountDesc(@Param("term") String term);
+    @Query("SELECT oi.product FROM OrderItem oi WHERE oi.order.orderId = :orderId")
+
+    List<Product> findProductsByOrderId(Integer orderId);
 }

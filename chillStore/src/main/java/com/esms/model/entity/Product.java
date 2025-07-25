@@ -55,7 +55,7 @@ public class Product {
 
     //chèn thêm thuộc tính mới cho phần mô tả thông số sản phầm và thêm hình ảnh sản phẩm
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch =  FetchType.LAZY)
     private List<ProductImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

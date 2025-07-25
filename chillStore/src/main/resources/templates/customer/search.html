@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Kết quả tìm kiếm sản phẩm</title>
+    <link rel="stylesheet" th:href="@{/static/css/product.css}" />
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    <div class="container">
+        <h2>Kết quả tìm kiếm cho: <span th:text="${keyword}"></span></h2>
+        <div th:if="${products.totalElements == 0}">
+            <p>Không tìm thấy sản phẩm nào phù hợp.</p>
+        </div>
+        <div class="product-list" th:if="${products.totalElements > 0}">
+            <div class="product-item" th:each="product : ${products.content}">
+                <a th:href="@{'/customer/product/viewProductDetail/' + ${product.productId}}">
+                    <img th:src="@{'/static/images/' + ${product.image}}" alt="Ảnh sản phẩm" />
+                    <h3 th:text="${product.name}"></h3>
+                    <p th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></p>
+                </a>
+            </div>
+        </div>
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:if="${currentPage > 0}" th:href="@{'/search?keyword=' + ${keyword} + '&page=' + (${currentPage - 1})}">Trước</a>
+            <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>
+            <a th:if="${currentPage < totalPages - 1}" th:href="@{'/search?keyword=' + ${keyword} + '&page=' + (${currentPage + 1})}">Sau</a>
+        </div>
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html> 

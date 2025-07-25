@@ -489,6 +489,7 @@ function showEditFeedback(id, rating, comment) {
             </div>
         </div>
     `;
+    formDiv.style.display = '';
 }
 
 async function updateFeedback(e, id) {

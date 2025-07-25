@@ -92,7 +92,10 @@ public class SecurityConfig {
                         .ignoringRequestMatchers(
                                 "/staff/orders/*/update-status",
                                 "/staff/orders/*/confirm-refund",
-                                "/api/feedback/*/reply"
+                                "/api/feedback/*/reply",
+                                "/customer/api/maintenance",
+                                "/admin/maintenance/**",
+                                "/staff/maintenance/**"
                         )
                 );
         return http.build();

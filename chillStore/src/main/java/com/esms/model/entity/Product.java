@@ -61,6 +61,9 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductSpecification> specifications = new ArrayList<>();
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<DiscountProduct> discountProducts;
+
     @Transient
     private String priceString;
     public String getPriceString() { return priceString; }
@@ -164,5 +167,13 @@ public class Product {
 
     public void setSpecifications(List<ProductSpecification> specifications) {
         this.specifications = specifications;
+    }
+
+    public List<DiscountProduct> getDiscountProducts() {
+        return discountProducts;
+    }
+
+    public void setDiscountProducts(List<DiscountProduct> discountProducts) {
+        this.discountProducts = discountProducts;
     }
 }

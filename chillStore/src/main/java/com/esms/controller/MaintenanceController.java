@@ -24,6 +24,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping({"/admin/maintenance", "/staff/maintenance"})
@@ -339,5 +342,49 @@ public class MaintenanceController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/orders/by-customer/{customerId}")
+    @ResponseBody
+    public List<Map<String, Object>> getOrdersByCustomer(@PathVariable Integer customerId) {
+        List<Order> orders = orderRepository.findByCustomerCustomerId(customerId);
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Order o : orders) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("orderId", o.getOrderId());
+            map.put("orderDate", o.getOrderDate());
+            map.put("status", o.getStatus());
+            Map<String, Object> customerMap = new HashMap<>();
+            if (o.getCustomer() != null) {
+                customerMap.put("name", o.getCustomer().getName());
+            }
+            map.put("customer", customerMap);
+            result.add(map);
+        }
+        return result;
+    }
+
+    @GetMapping("/products/by-order/{orderId}")
+    @ResponseBody
+    public List<Map<String, Object>> getProductsByOrder(@PathVariable Integer orderId) {
+        List<Product> products = productRepository.findProductsByOrderId(orderId);
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Product p : products) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("productId", p.getProductId());
+            map.put("name", p.getName());
+            Map<String, Object> categoryMap = new HashMap<>();
+            if (p.getCategory() != null) {
+                categoryMap.put("name", p.getCategory().getName());
+            }
+            map.put("category", categoryMap);
+            Map<String, Object> brandMap = new HashMap<>();
+            if (p.getBrand() != null) {
+                brandMap.put("name", p.getBrand().getName());
+            }
+            map.put("brand", brandMap);
+            result.add(map);
+        }
+        return result;
     }
 }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Results</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="icon" type="image/png" th:href="@{/images/logo.png}" />
+  <link rel="stylesheet" th:href="@{/static/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/navigationBar.css}" />
+  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+</head>
+<body>
+<div th:insert="~{fragments/navigationBar :: navBar}"></div><br>
+<br>
+<div class="container mt-5">
+  <h2>Search Results for: "<span th:text="${keyword}"></span>"</h2>
+
+  <div th:if="${#lists.isEmpty(searchResults)}">
+    <p>No products found.</p>
+  </div>
+
+  <div class="product-container" id="product-list" th:if="${not #lists.isEmpty(searchResults)}">
+    <div class="product-grid">
+      <div class="product-card position-relative" th:each="product : ${searchResults}">
+
+        <!-- Badge giảm giá nếu có -->
+        <div th:if="${product.discountPercent != null}" class="discount-badge">
+          <span th:text="'-' + ${T(java.lang.Math).floor(product.discountPercent)} + '%'">-10%</span>
+        </div>
+
+        <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration: none; color: inherit; display: block;">
+          <img th:src="@{${product.imageUrl}}" alt="Ảnh sản phẩm"
+               class="product-img"
+               onerror="this.onerror=null;this.src='/images/default.png';">
+
+          <h5 class="product-title" th:text="${product.name}">Tên sản phẩm</h5>
+
+          <div class="price-block">
+            <!-- Giá gốc nếu có giảm giá -->
+            <span th:if="${product.discountPercent != null}" class="text-decoration-line-through"
+                  th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'"></span>
+            <!-- Nếu không có giảm thì bỏ trống (ẩn giá gốc) -->
+            <span th:unless="${product.discountPercent != null}" class="text-decoration-line-through">&nbsp;</span>
+
+            <!-- Giá đã giảm hoặc giá thường -->
+            <span class="discounted-price"
+                  th:text="${product.discountPercent != null ?
+                    #numbers.formatDecimal(product.price * (100 - product.discountPercent) / 100, 0, 'POINT', 0, 'COMMA') :
+                    #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}">
+          </span>
+            <span class="vnd">VND</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

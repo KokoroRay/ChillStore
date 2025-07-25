@@ -18,4 +18,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     Integer findMaxId();
     Page<Category> findAll(Pageable pageable);
     Optional<Category> findById(Integer parentId);
+    Optional<Category> findByNameIgnoreCase(String name);
+
 }

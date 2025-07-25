@@ -39,13 +39,8 @@
                                   th:title="${m.reason}"></span>
                         </td>
                         <td>
-                            <span th:classappend="'badge ' + 
-                                (${m.status} == 'Pending' ? 'bg-secondary' : 
-                                (${m.status} == 'In Progress' ? 'bg-warning text-dark' : 
-                                (${m.status} == 'Completed' ? 'bg-success' : 'bg-light')))"
-                                th:title="${m.status == 'Pending' ? 'Chờ xử lý' : (m.status == 'In Progress' ? 'Đang bảo trì' : (m.status == 'Completed' ? 'Đã hoàn thành' : ''))}">
-                                <span th:text="${m.status}"></span>
-                            </span>
+                            <span th:class="${m.status == 'Completed'} ? 'badge bg-success' : (${m.status == 'In Progress'} ? 'badge bg-warning' : 'badge bg-secondary')"
+                                  th:text="${m.status}"></span>
                         </td>
                         <td>
                             <div class="btn-group" role="group">

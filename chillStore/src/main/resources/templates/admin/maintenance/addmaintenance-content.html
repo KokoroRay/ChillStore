@@ -31,7 +31,7 @@
                                     <option value="">Select a product</option>
                                     <option th:each="product : ${products}" 
                                             th:value="${product.productId}" 
-                                            th:text="${product.name} + ' - ' + ${product.category.name} + ' (' + ${product.brand.name} + ')'">
+                                            th:text="${product.name} + ' - ' + (product.category != null ? product.category.name : '') + ' (' + (product.brand != null ? product.brand.name : '') + ')'">
                                     </option>
                                 </select>
                                 <div class="text-danger small mt-1" th:errors="*{productId}" th:if="${#fields.hasErrors('productId')}"></div>
@@ -86,61 +86,4 @@
         </div>
     </div>
 </div> 
-<div th:with="orderProductJson=${orders.stream().collect(T(java.util.stream.Collectors).toMap(o -> o.orderId, o -> o.orderItems.stream().map(oi -> oi.product.productId).collect(T(java.util.stream.Collectors).toList()))}, orderCustomerJson=${orders.stream().collect(T(java.util.stream.Collectors).toMap(o -> o.orderId, o -> o.customer.customerId))}">
-<script th:inline="javascript">
-    var orderProductMap = /*[[${orderProductJson}]]*/ {};
-    var orderCustomerMap = /*[[${orderCustomerJson}]]*/ {};
-    var allProductOptions = [];
-    var allCustomerOptions = [];
-    document.addEventListener('DOMContentLoaded', function() {
-        var productSelect = document.getElementById('productId');
-        var customerSelect = document.getElementById('customerId');
-        var orderSelect = document.getElementById('orderId');
-        allProductOptions = Array.from(productSelect.options);
-        allCustomerOptions = Array.from(customerSelect.options);
-        function filterByOrder(orderId) {
-            // Product filter
-            if (orderProductMap[orderId]) {
-                var allowedProducts = orderProductMap[orderId].map(String);
-                productSelect.innerHTML = '';
-                allProductOptions.forEach(function(opt) {
-                    if (opt.value === '' || allowedProducts.includes(opt.value)) {
-                        productSelect.appendChild(opt.cloneNode(true));
-                    }
-                });
-            } else {
-                productSelect.innerHTML = '';
-                allProductOptions.forEach(function(opt) {
-                    productSelect.appendChild(opt.cloneNode(true));
-                });
-            }
-            // Customer filter
-            if (orderCustomerMap[orderId]) {
-                var allowedCustomer = String(orderCustomerMap[orderId]);
-                customerSelect.innerHTML = '';
-                allCustomerOptions.forEach(function(opt) {
-                    if (opt.value === '' || opt.value === allowedCustomer) {
-                        customerSelect.appendChild(opt.cloneNode(true));
-                    }
-                });
-            } else {
-                customerSelect.innerHTML = '';
-                allCustomerOptions.forEach(function(opt) {
-                    customerSelect.appendChild(opt.cloneNode(true));
-                });
-            }
-            // Debug
-            console.log('Order:', orderId, 'Allowed products:', orderProductMap[orderId], 'Allowed customer:', orderCustomerMap[orderId]);
-        }
-        if (orderSelect) {
-            orderSelect.addEventListener('change', function() {
-                filterByOrder(orderSelect.value);
-            });
-            // Filter on page load if order is pre-selected
-            if (orderSelect.value) {
-                filterByOrder(orderSelect.value);
-            }
-        }
-    });
-</script>
-</div> 
+<script src="/js/maintenance-filter.js"></script> 

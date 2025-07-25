@@ -1,4 +1,4 @@
-package com.esms.controller;
+ package com.esms.controller;
 
 import com.esms.model.entity.Brand;
 import com.esms.model.entity.Category;
@@ -206,6 +206,16 @@ public class ProductController {
         Product product = productService.getProductById(id);
         List<Category> categories = categoryService.getAllCategory();
         List<Brand> brands = brandService.getAllBrands();
+        // Lấy danh sách link ảnh phụ (chỉ lấy link, không lấy file local)
+        List<String> galleryLinks = new ArrayList<>();
+        if (product.getImages() != null) {
+            for (ProductImage img : product.getImages()) {
+                if (img.getImageUrl() != null && img.getImageUrl().startsWith("http")) {
+                    galleryLinks.add(img.getImageUrl());
+                }
+            }
+        }
+        model.addAttribute("galleryImageLinks", galleryLinks);
         model.addAttribute("product", product);
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
@@ -228,6 +238,10 @@ public class ProductController {
             @PathVariable("id") Integer id,
             @ModelAttribute("product") Product product,
             @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "galleryImages", required = false) MultipartFile[] galleryImages,
+            @RequestParam(value = "imageUrl", required = false) String imageUrl,
+            @RequestParam(value = "specKeys", required = false) String[] specKeys,
+            @RequestParam(value = "specValues", required = false) String[] specValues,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size,
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -265,7 +279,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
+
         // Xử lý giá trị price từ priceString (nếu có)
         if (product.getPriceString() != null && !product.getPriceString().isEmpty()) {
             String numericPrice = product.getPriceString().replaceAll("[^\\d]", "");
@@ -278,7 +292,10 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            product.setImageUrl(imageUrl);
+
+        }
         // Handle image upload
         if (image != null && !image.isEmpty()) {
             try {
@@ -317,6 +334,66 @@ public class ProductController {
                 model.addAttribute("sortOption", sortOption);
                 return "admin/ManageProduct/ProductForm";
             }
+        }
+        
+        // Xử lý gallery images (file upload)
+        List<ProductImage> images = new ArrayList<>();
+        if (galleryImages != null && galleryImages.length > 0) {
+            for (MultipartFile file : galleryImages) {
+                if (file != null && !file.isEmpty()) {
+                    try {
+                        String originalFilename = file.getOriginalFilename();
+                        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                        String filename = "product_gallery_" + System.currentTimeMillis() + "_" + originalFilename.hashCode() + fileExtension;
+                        String uploadDir = "src/main/resources/static/images/";
+                        java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
+                        if (!java.nio.file.Files.exists(uploadPath)) {
+                            java.nio.file.Files.createDirectories(uploadPath);
+                        }
+                        java.nio.file.Path filePath = uploadPath.resolve(filename);
+                        java.nio.file.Files.copy(file.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                        ProductImage img = new ProductImage();
+                        img.setImageUrl("/images/" + filename);
+                        img.setProduct(product);
+                        img.setPrimary(false);
+                        images.add(img);
+                    } catch (Exception e) {
+                        // Có thể log lỗi hoặc bỏ qua ảnh lỗi
+                    }
+                }
+            }
+        }
+        // Xử lý gallery image links
+        String[] galleryImageLinks = request.getParameterValues("galleryImageLinks");
+        if (galleryImageLinks != null) {
+            for (String link : galleryImageLinks) {
+                if (link != null && !link.trim().isEmpty()) {
+                    ProductImage img = new ProductImage();
+                    img.setImageUrl(link.trim());
+                    img.setProduct(product);
+                    img.setPrimary(false);
+                    images.add(img);
+                }
+            }
+        }
+        // Xóa ảnh phụ cũ trước khi set list mới
+        Product existing = productService.getProductById(id);
+        existing.getImages().clear();
+        product.setImages(images);
+        
+        // Xử lý thông số kỹ thuật
+        if (specKeys != null && specValues != null && specKeys.length == specValues.length) {
+            List<ProductSpecification> specs = new ArrayList<>();
+            for (int i = 0; i < specKeys.length; i++) {
+                if (specKeys[i] != null && !specKeys[i].isBlank() && specValues[i] != null && !specValues[i].isBlank()) {
+                    ProductSpecification spec = new ProductSpecification();
+                    spec.setSpecKey(specKeys[i]);
+                    spec.setSpecValue(specValues[i]);
+                    spec.setProduct(product);
+                    specs.add(spec);
+                }
+            }
+            product.setSpecifications(specs);
         }
         
         productService.updateProduct(id, product);
@@ -374,6 +451,7 @@ public class ProductController {
             @ModelAttribute("product") Product product,
             @RequestParam(value = "image", required = false) MultipartFile image,
             @RequestParam(value = "galleryImages", required = false) MultipartFile[] galleryImages,
+            @RequestParam(value = "imageUrl", required = false) String imageUrl,
             @RequestParam(value = "specKeys", required = false) String[] specKeys,
             @RequestParam(value = "specValues", required = false) String[] specValues,
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -402,7 +480,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
+
         // Xử lý giá trị price từ priceString (nếu có)
         if (product.getPriceString() != null && !product.getPriceString().isEmpty()) {
             String numericPrice = product.getPriceString().replaceAll("[^\\d]", "");
@@ -415,25 +493,36 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
-        // Handle image upload
+
+        if (categoryId != null) {
+            Category category = new Category();
+            category.setId(categoryId);
+            product.setCategory(category);
+        }
+        if (brandId != null) {
+            Brand brand = new Brand();
+            brand.setId(brandId);
+            product.setBrand(brand);
+        }
+
+        // Handle image upload or link
         if (image != null && !image.isEmpty()) {
             try {
                 // Generate unique filename
                 String originalFilename = image.getOriginalFilename();
                 String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String filename = "product_" + System.currentTimeMillis() + fileExtension;
-                
+
                 // Save file to static/images directory
                 String uploadDir = "src/main/resources/static/images/";
                 java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
                 if (!java.nio.file.Files.exists(uploadPath)) {
                     java.nio.file.Files.createDirectories(uploadPath);
                 }
-                
+
                 java.nio.file.Path filePath = uploadPath.resolve(filename);
                 java.nio.file.Files.copy(image.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                
+
                 // Set image URL for product
                 product.setImageUrl("/images/" + filename);
             } catch (Exception e) {
@@ -443,26 +532,13 @@ public class ProductController {
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
             }
+        } else if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+            product.setImageUrl(imageUrl.trim());
         }
 
-        
-        // Xử lý thông số kỹ thuật
-        if (specKeys != null && specValues != null && specKeys.length == specValues.length) {
-            List<ProductSpecification> specs = new ArrayList<>();
-            for (int i = 0; i < specKeys.length; i++) {
-                if (specKeys[i] != null && !specKeys[i].isBlank() && specValues[i] != null && !specValues[i].isBlank()) {
-                    ProductSpecification spec = new ProductSpecification();
-                    spec.setSpecKey(specKeys[i]);
-                    spec.setSpecValue(specValues[i]);
-                    spec.setProduct(product);
-                    specs.add(spec);
-                }
-            }
-            product.setSpecifications(specs);
-        }
-        // Xử lý nhiều ảnh gallery
+        // Handle gallery images (file upload)
+        List<ProductImage> images = new ArrayList<>();
         if (galleryImages != null && galleryImages.length > 0) {
-            List<ProductImage> images = new ArrayList<>();
             for (MultipartFile file : galleryImages) {
                 if (file != null && !file.isEmpty()) {
                     try {
@@ -479,14 +555,45 @@ public class ProductController {
                         ProductImage img = new ProductImage();
                         img.setImageUrl("/images/" + filename);
                         img.setProduct(product);
-                        img.setPrimary(false); // Ảnh gallery không phải ảnh chính
+                        img.setPrimary(false);
                         images.add(img);
                     } catch (Exception e) {
                         // Có thể log lỗi hoặc bỏ qua ảnh lỗi
                     }
                 }
             }
+        }
+
+        // Handle gallery image links
+        String[] galleryImageLinks = request.getParameterValues("galleryImageLinks");
+        if (galleryImageLinks != null) {
+            for (String link : galleryImageLinks) {
+                if (link != null && !link.trim().isEmpty()) {
+                    ProductImage img = new ProductImage();
+                    img.setImageUrl(link.trim());
+                    img.setProduct(product);
+                    img.setPrimary(false);
+                    images.add(img);
+                }
+            }
+        }
+        if (!images.isEmpty()) {
             product.setImages(images);
+        }
+        
+        // Xử lý thông số kỹ thuật
+        if (specKeys != null && specValues != null && specKeys.length == specValues.length) {
+            List<ProductSpecification> specs = new ArrayList<>();
+            for (int i = 0; i < specKeys.length; i++) {
+                if (specKeys[i] != null && !specKeys[i].isBlank() && specValues[i] != null && !specValues[i].isBlank()) {
+                    ProductSpecification spec = new ProductSpecification();
+                    spec.setSpecKey(specKeys[i]);
+                    spec.setSpecValue(specValues[i]);
+                    spec.setProduct(product);
+                    specs.add(spec);
+                }
+            }
+            product.setSpecifications(specs);
         }
         
         productService.saveProduct(product);

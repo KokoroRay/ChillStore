@@ -223,6 +223,15 @@ public class DiscountController {
                 redirectAttributes.addFlashAttribute("error", "Discount percentage must be greater than 0");
                 return "redirect:/admin/discount/create";
             }
+            // Kiểm tra discount phải nhỏ hơn 50%
+            if (discountDto.getDiscountPct().compareTo(new BigDecimal("50")) >= 0) {
+                redirectAttributes.addFlashAttribute("error", "Discount must not exceed 50% of the product value.");
+                if (discountDto.getPromoId() == null) {
+                    return "redirect:/admin/discount/create";
+                } else {
+                    return "redirect:/admin/discount/" + discountDto.getPromoId() + "/edit";
+                }
+            }
             
             if (discountDto.getStartDate() == null || discountDto.getEndDate() == null) {
                 redirectAttributes.addFlashAttribute("error", "Start date and end date are required");

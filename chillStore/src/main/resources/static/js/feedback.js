@@ -47,7 +47,7 @@ function renderFeedbackSummary(feedbacks) {
                     `).join('')}
                 </div>
             </div>
-            <div class='text-center text-muted mt-3'><i class='fas fa-comment-slash fa-2x mb-2'></i><br>Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên!</div>
+            <div class='text-center text-muted mt-3'><i class='fas fa-comment-slash fa-2x mb-2'></i><br>No reviews yet. Be the first to review this product!</div>
         `;
         return;
     }
@@ -181,7 +181,7 @@ function renderFeedbackLoadMore() {
     const loadMoreDiv = document.getElementById('feedback-loadmore-container');
     if (feedbackPage < feedbackTotalPages - 1) {
         loadMoreDiv.innerHTML = `<button class="btn btn-outline-primary" onclick="loadFeedbacks(${feedbackPage + 1}, true)">
-            <i class="fas fa-plus me-1"></i>Xem thêm đánh giá
+            <i class="fas fa-plus me-1"></i>View more reviews
         </button>`;
     } else {
         loadMoreDiv.innerHTML = '';
@@ -379,7 +379,7 @@ async function submitFeedback(e, productId) {
     const ratingInput = document.querySelector('input[name="rating"]:checked');
     const comment = document.getElementById('comment').value.trim();
     if (!ratingInput) {
-        showAlert('Bạn phải chọn số sao để đánh giá!', 'warning');
+        showAlert('You must select a star rating!', 'warning');
         // Focus vào vùng rating
         const ratingStars = document.querySelector('.rating-stars');
         if (ratingStars) {
@@ -420,7 +420,7 @@ async function submitFeedback(e, productId) {
             }, 300);
         } else {
             const errorData = await res.json().catch(() => ({}));
-            showAlert(errorData.message || 'Bạn chỉ có thể bình luận khi đã mua và nhận hàng sản phẩm này!', 'danger');
+            showAlert(errorData.message || 'You can only review this product after purchasing and receiving it!', 'danger');
         }
     } catch (error) {
         showAlert('Network error. Please try again.', 'danger');
@@ -489,6 +489,7 @@ function showEditFeedback(id, rating, comment) {
             </div>
         </div>
     `;
+    formDiv.style.display = '';
 }
 
 async function updateFeedback(e, id) {
@@ -575,7 +576,7 @@ async function checkCanReview() {
     const res = await fetch(`/api/product/${productId}/can-review`);
     const canReview = await res.json();
     if (!canReview) {
-        formDiv.innerHTML = '<div class="alert alert-info feedback-alert"><i class="fas fa-info-circle me-2"></i>Bạn chỉ có thể đánh giá khi đã mua và nhận hàng sản phẩm này.</div>';
+        formDiv.innerHTML = '<div class="alert alert-info feedback-alert"><i class="fas fa-info-circle me-2"></i>You can only review this product after purchasing and receiving it.</div>';
     }
 }
 

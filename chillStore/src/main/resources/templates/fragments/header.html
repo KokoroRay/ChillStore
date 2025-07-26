@@ -1,12 +1,12 @@
 <link rel="stylesheet" href="/css/header.css">
+<link rel="stylesheet" th:href="@{/css/search-bar.css}" />
 <div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <div th:fragment="headerContent">
   <header class="container-fluid px-4 py-2 border-bottom">
-    <div class="header-container">
-      <div class="center-logo">
+    <div class="header-container" style="display: flex; align-items: center; justify-content: space-between;">
+      <div class="center-logo" style="margin-right: 30px;">
         <img th:src="@{/images/logo.png}" alt="FsMs Logo" class="logo-image">
       </div>
-
       <div id="headerDropdown">
         <div class="profile-icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,7 +17,7 @@
         <ul class="dropdown-menu" id="headerMenu">
           <div sec:authorize="hasRole('ADMIN')">
             <li><a th:href="@{/admin/category}">
-              <span class="menu-icon"><img src="/images/administrator.png " alt="home"></span>
+              <span class="menu-icon"><img src="/images/administrator.png" alt="home"></span>
                 Admin</a></li>
             <li><a th:href="@{/staff/category}">
               <span class="menu-icon"><img src="/images/staff.png" alt="home"></span>

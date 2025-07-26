@@ -381,6 +381,24 @@ public class CustomerProductController {
         return "customer/product/discountProducts";
     }
 
+    @GetMapping("/search")
+    public String searchProducts(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "12") int size,
+            Model model) {
+        String sortBy = "name";
+        String sortDir = "asc";
+        Pageable pageable = PageRequest.of(page, size, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, sortBy));
+        Page<Product> products = productService.searchProductsWithFilters(keyword, null, null, null, null, null, sortBy, sortDir, pageable, null);
+        model.addAttribute("products", products);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", products.getTotalPages());
+        model.addAttribute("totalItems", products.getTotalElements());
+        return "customer/search";
+    }
+
     // API: Lấy danh sách feedback cho sản phẩm (có phân trang)
     @GetMapping("/api/product/{productId}/feedbacks")
     @ResponseBody

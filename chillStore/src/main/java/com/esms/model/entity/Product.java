@@ -28,7 +28,7 @@ public class Product {
     private BigDecimal price; //price of the product(Dùng Bigdecimal để xác định số thapaj phân )
 
     @Column(name = "stock_qty")
-    private Integer stockQty; // Quantity hàng tồn kho
+    private Integer stockQty = 0; // Quantity hàng tồn kho
 
     @Column(name = "active")
     private boolean status;
@@ -55,11 +55,14 @@ public class Product {
 
     //chèn thêm thuộc tính mới cho phần mô tả thông số sản phầm và thêm hình ảnh sản phẩm
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch =  FetchType.LAZY)
     private List<ProductImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductSpecification> specifications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<DiscountProduct> discountProducts;
 
     @Transient
     private String priceString;
@@ -164,5 +167,13 @@ public class Product {
 
     public void setSpecifications(List<ProductSpecification> specifications) {
         this.specifications = specifications;
+    }
+
+    public List<DiscountProduct> getDiscountProducts() {
+        return discountProducts;
+    }
+
+    public void setDiscountProducts(List<DiscountProduct> discountProducts) {
+        this.discountProducts = discountProducts;
     }
 }

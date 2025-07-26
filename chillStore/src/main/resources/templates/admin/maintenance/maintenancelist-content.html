@@ -45,16 +45,21 @@
                                   th:title="${m.reason}"></span>
                         </td>
                         <td>
-                            <span th:class="${m.status == 'Completed'} ? 'badge bg-success' : (${m.status == 'In Progress'} ? 'badge bg-warning' : 'badge bg-secondary')"
-                                  th:text="${m.status}" class="badge rounded-pill"></span>
+                            <span th:classappend="'badge ' + 
+                                (${m.status} == 'Pending' ? 'bg-secondary' : 
+                                (${m.status} == 'In Progress' ? 'bg-warning text-dark' : 
+                                (${m.status} == 'Completed' ? 'bg-success' : 'bg-light')))"
+                                th:title="${m.status == 'Pending' ? 'Chờ xử lý' : (m.status == 'In Progress' ? 'Đang bảo trì' : (m.status == 'Completed' ? 'Đã hoàn thành' : ''))}">
+                                <span th:text="${m.status}"></span>
+                            </span>
                         </td>
                         <td class="text-end">
                             <div class="d-flex justify-content-end gap-2">
-                                <a th:href="@{/staff/maintenance/detail/{id}(id=${m.requestId})}"
+                                <a th:href="@{/admin/maintenance/detail/{id}(id=${m.requestId})}"
                                    class="btn btn-sm btn-action btn-view" title="View Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <div class="dropdown">
+                                <div class="dropdown" th:if="${!isAdmin and m.status != 'Completed'}">
                                     <button class="btn btn-sm btn-action btn-update dropdown-toggle"
                                             type="button" data-bs-toggle="dropdown"
                                             aria-expanded="false" title="Update Status">
@@ -66,7 +71,7 @@
                                                   method="post">
                                                 <input type="hidden" name="status" value="Pending">
                                                 <button type="submit" class="dropdown-item"
-                                                        th:disabled="${m.status == 'Pending'}">
+                                                        th:disabled="${m.status != 'Pending'}">
                                                     <i class="fas fa-clock me-2"></i> Set Pending
                                                 </button>
                                             </form>
@@ -76,7 +81,7 @@
                                                   method="post">
                                                 <input type="hidden" name="status" value="In Progress">
                                                 <button type="submit" class="dropdown-item"
-                                                        th:disabled="${m.status == 'In Progress'}">
+                                                        th:disabled="${m.status != 'Pending'}">
                                                     <i class="fas fa-tools me-2"></i> Set In Progress
                                                 </button>
                                             </form>
@@ -86,7 +91,7 @@
                                                   method="post">
                                                 <input type="hidden" name="status" value="Completed">
                                                 <button type="submit" class="dropdown-item"
-                                                        th:disabled="${m.status == 'Completed'}">
+                                                        th:disabled="${m.status != 'In Progress'}">
                                                     <i class="fas fa-check-circle me-2"></i> Set Completed
                                                 </button>
                                             </form>

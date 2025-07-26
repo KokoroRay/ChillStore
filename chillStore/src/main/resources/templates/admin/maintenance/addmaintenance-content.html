@@ -31,7 +31,7 @@
                                     <option value="">Select a product</option>
                                     <option th:each="product : ${products}" 
                                             th:value="${product.productId}" 
-                                            th:text="${product.name} + ' - ' + ${product.category.name} + ' (' + ${product.brand.name} + ')'">
+                                            th:text="${product.name} + ' - ' + (product.category != null ? product.category.name : '') + ' (' + (product.brand != null ? product.brand.name : '') + ')'">
                                     </option>
                                 </select>
                                 <div class="text-danger small mt-1" th:errors="*{productId}" th:if="${#fields.hasErrors('productId')}"></div>
@@ -86,3 +86,4 @@
         </div>
     </div>
 </div> 
+<script src="/js/maintenance-filter.js"></script> 

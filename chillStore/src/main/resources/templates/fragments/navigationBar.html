@@ -28,6 +28,11 @@
             </div>
 
             <!-- Thanh tìm kiếm ở giữa navbar -->
+            <form class="d-flex" th:action="@{/searchProduct}" method="get">
+                <input class="form-control me-2 rounded-pill" type="search" placeholder="Find products..."
+                    aria-label="Search" name="keyword" required>
+                <button class="btn btn-primary rounded-pill px-4" type="submit">Search</button>
+            </form>
 
             <div class="nav-right">
                 <!-- Cart and Avatar for Customer -->
@@ -56,16 +61,9 @@
                             </li>
                             <li>
                                 <a th:href="@{/customer/voucher}">
-                                    <span class="menu-icon"><img src="/images/notification.png"
+                                    <span class="menu-icon"><img src="/images/coupon.png"
                                             alt="notification"></span>
                                     Voucher
-                                </a>
-                            </li>
-                            <li>
-                                <a th:href="@{/customer/order-history}">
-                                    <span class="menu-icon"><img src="/images/order_history.png"
-                                            alt="order_history"></span>
-                                    Order History
                                 </a>
                             </li>
                             <li class="divider"></li>
@@ -86,7 +84,7 @@
                     <div class="dropdown" id="adminAvatarDropdown">
                         <a href="#" class="dropdown-toggle">
                             <img th:src="${avatarUrl != null and avatarUrl != ''} ? ${avatarUrl} : @{/images/default-avatar.svg}"
-                                 alt="Avatar" class="avatar">
+                                alt="Avatar" class="avatar">
                         </a>
                         <ul class="dropdown-menu" id="adminDropdownMenu">
                             <li>
@@ -183,7 +181,7 @@
             // Ngưỡng scroll để bắt đầu ẩn thanh nav (px)
             const scrollThreshold = 50;
 
-            window.addEventListener('scroll', function() {
+            window.addEventListener('scroll', function () {
                 const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
                 const nav = document.querySelector('.horizontal-sidebar');
 

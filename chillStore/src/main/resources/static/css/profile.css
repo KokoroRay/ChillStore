@@ -24,13 +24,25 @@
     box-sizing: border-box;
 }
 
+/* Ensure all form elements use border-box */
+.form-input,
+.form-group,
+.form-section,
+.form-sections,
+.edit-form,
+.profile-card,
+.profile-container {
+    box-sizing: border-box;
+}
+
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     color: var(--text-primary);
     line-height: 1.6;
 }
+
 
 /* Profile Container */
 .profile-container {
@@ -89,10 +101,47 @@ body {
 
 /* Profile Content */
 .profile-content {
-    background: white;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
+    background: transparent !important; /* Loại bỏ nền trắng */
+    box-shadow: none !important; /* Loại bỏ bóng */
+}
+
+.profile-content.tier-Null {
+    background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%) !important;
+}
+
+.profile-content.tier-New {
+    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%) !important;
+}
+
+.profile-content.tier-Mem {
+    background: linear-gradient(135deg, #fffde4 0%, #fff9b0 100%) !important;
+    animation: gold-glow 2s infinite alternate !important;
+}
+
+.profile-content.tier-Vip {
+    background: #000000;
+    background: linear-gradient(167deg, rgba(0, 0, 0, 1) 0%, rgba(9, 9, 92, 1) 85%, rgba(25, 118, 210, 1) 100%);
+    animation: night-glow 3s infinite alternate !important;
+}
+
+@keyframes gold-glow {
+    0% {
+        box-shadow: 0 0 10px #ffe066, 0 0 0 #fff9b0;
+    }
+
+    100% {
+        box-shadow: 0 0 30px #ffd700, 0 0 10px #fff9b0;
+    }
+}
+
+@keyframes night-glow {
+    0% {
+        box-shadow: 0 0 10px #232526, 0 0 0 #414345;
+    }
+
+    100% {
+        box-shadow: 0 0 30px #00c6ff, 0 0 10px #232526;
+    }
 }
 
 /* Alert Messages */
@@ -129,6 +178,32 @@ body {
 /* Profile Card */
 .profile-card {
     padding: 2rem;
+}
+.profile-card {
+    background: rgba(255, 255, 255, 0.6) !important; /* Nền trắng với độ trong suốt 40% */
+    backdrop-filter: blur(8px) !important; /* Hiệu ứng làm mờ */
+    -webkit-backdrop-filter: blur(8px) !important; /* Hỗ trợ cho Safari */
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important; /* Viền mờ */
+}
+.profile-content.tier-Null,
+.profile-content.tier-New,
+.profile-content.tier-Mem,
+.profile-content.tier-Vip {
+    background: transparent !important;
+    animation: none !important;
+}
+.alert {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.info-item {
+    background: rgba(255, 255, 255, 0.5) !important;
+}
+
+.avatar-section {
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5) !important;
 }
 
 /* Avatar Section */
@@ -178,6 +253,10 @@ body {
     background: var(--light-bg);
     border-radius: var(--radius-sm);
     border: 2px dashed var(--border-color);
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
 }
 
 .avatar-preview-container {
@@ -239,14 +318,19 @@ body {
 
 }
 
-.avatar-img.loaded + .avatar-container::before,
-.avatar-img.loaded ~ .avatar-container::before {
+.avatar-img.loaded+.avatar-container::before,
+.avatar-img.loaded~.avatar-container::before {
     opacity: 0;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .avatar-overlay {
@@ -458,10 +542,15 @@ body {
 /* Form Styles */
 .edit-form {
     max-width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 .form-sections {
     margin-bottom: 2rem;
+    width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 .form-section {
@@ -472,12 +561,28 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
+    width: 100%;
+}
+
+/* Ensure form groups don't overlap */
+.form-grid .form-group {
+    width: 100%;
+    min-width: 0; /* Prevent overflow */
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
     position: relative;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+/* Ensure form inputs don't overflow */
+.form-group .form-input {
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .form-label {
@@ -529,9 +634,19 @@ body {
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
 }
 
 .form-input::placeholder {
@@ -569,6 +684,9 @@ select.form-input {
     justify-content: center;
     padding-top: 2rem;
     border-top: 1px solid var(--border-color);
+    position: relative;
+    z-index: 1;
+    width: 100%;
 }
 
 /* Responsive Design */
@@ -576,40 +694,76 @@ select.form-input {
     .profile-container {
         padding: 1rem;
     }
-    
+
     .profile-title {
         font-size: 1.5rem;
     }
-    
+
     .avatar-section {
         flex-direction: column;
         text-align: center;
         gap: 1rem;
     }
-    
+
     .avatar-container {
         width: 100px;
         height: 100px;
     }
-    
+
     .info-grid,
     .form-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
-    
+
+    /* Ensure address selector works properly on mobile */
+    #address-selector-container {
+        width: 100%;
+    }
+
     .profile-actions,
     .form-actions {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .btn {
         width: 100%;
         max-width: 300px;
     }
-    
+
     .profile-card {
         padding: 1.5rem;
+    }
+    
+    /* Fix potential overlap issues */
+    .form-section {
+        margin-bottom: 2rem;
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Ensure proper spacing between form sections */
+    .form-section:not(:last-child) {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(229, 231, 235, 0.3);
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    /* Improve avatar preview section on mobile */
+    .avatar-preview-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .avatar-preview-container {
+        width: 100px;
+        height: 100px;
     }
 }
 
@@ -617,17 +771,36 @@ select.form-input {
     .profile-container {
         padding: 0.5rem;
     }
-    
+
     .profile-card {
         padding: 1rem;
     }
-    
+
     .info-item {
         padding: 1rem;
     }
-    
+
     .section-title {
         font-size: 1.125rem;
+    }
+    
+    /* Ensure proper spacing on very small screens */
+    .form-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-section:not(:last-child) {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+    }
+    
+    .form-grid {
+        gap: 0.75rem;
+    }
+    
+    .avatar-preview-section {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
     }
 }
 
@@ -637,6 +810,7 @@ select.form-input {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -654,7 +828,7 @@ select.form-input {
 }
 
 /* Focus States */
-.form-input:focus + .form-label {
+.form-input:focus+.form-label {
     color: var(--primary-color);
 }
 
@@ -702,6 +876,28 @@ select.form-input {
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
+/* --- Membership Tier Backgrounds (phải nằm sau cùng) --- */
+body.tier-Null {
+    background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%) !important;
+}
+
+body.tier-New {
+    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%) !important;
+}
+
+body.tier-Mem {
+    background: linear-gradient(135deg, #fffde4 0%, #fff9b0 100%) !important;
+    animation: gold-glow 2s infinite alternate !important;
+}
+
+body.tier-Vip,
+body.tier-VIP {
+    background: #000000;
+    background: linear-gradient(167deg, rgba(0, 0, 0, 1) 0%, rgba(9, 9, 92, 1) 85%, rgba(25, 118, 210, 1) 100%);
+    color: #fff !important;
+    animation: night-glow 3s infinite alternate !important;
+}
+
 /* Tier specific styles */
 .tier-Vip {
     background: linear-gradient(135deg, #ffd700, #ff8c00);
@@ -728,17 +924,129 @@ select.form-input {
 
 /* Animations */
 @keyframes vip-glow {
-    0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
-    100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.8); }
+    0% {
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
+    }
 }
 
 @keyframes mem-pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 @keyframes new-bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Additional fixes to prevent overlap issues */
+.form-group {
+    overflow: visible !important;
+}
+
+.form-input {
+    overflow: visible !important;
+}
+
+/* Ensure proper stacking context */
+.profile-container {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-content {
+    position: relative;
+    z-index: 1;
+}
+
+/* Fix for any potential floating issues */
+.form-grid::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+/* Ensure address selector doesn't break layout */
+#address-selector-container {
+    clear: both;
+    overflow: visible;
+}
+
+/* Additional responsive fixes */
+@media (max-width: 1024px) {
+    .form-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .address-selector-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Ensure proper form validation display */
+.form-error {
+    position: relative;
+    z-index: 2;
+    margin-top: 0.25rem;
+}
+
+.form-help {
+    position: relative;
+    z-index: 2;
+    margin-top: 0.25rem;
+}
+
+/* Fix for any potential absolute positioning issues */
+.form-group {
+    position: relative;
+}
+
+/* Ensure proper spacing for all form elements */
+.form-section .form-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Additional safety measures */
+.profile-card * {
+    max-width: 100%;
+}
+
+/* Ensure proper form submission */
+.edit-form {
+    overflow: visible;
+}
+
+/* Fix for any potential transform issues */
+.form-input:focus {
+    transform: translateY(-1px);
+    z-index: 2;
 }

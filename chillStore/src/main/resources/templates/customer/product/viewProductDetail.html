@@ -430,12 +430,12 @@
     <div class="container mt-5 mb-5 feedback-section" id="feedback-section">
         <h3 class="mb-4">
             <i class="fas fa-comments me-2"></i>
-            Đánh giá & Nhận xét sản phẩm
+            Product Reviews & Feedback
         </h3>
         <div class="mb-3" id="feedback-rating-filter-container">
             <div class="d-flex align-items-center gap-2">
-                <span class="fw-bold me-2">Lọc theo số sao:</span>
-                <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="0" onclick="setRatingFilter(0)">Tất cả</button>
+                <span class="fw-bold me-2">Filter by star rating:</span>
+                <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="0" onclick="setRatingFilter(0)">All</button>
                 <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="5" onclick="setRatingFilter(5)">5 <i class="fas fa-star"></i></button>
                 <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="4" onclick="setRatingFilter(4)">4 <i class="fas fa-star"></i></button>
                 <button class="btn btn-sm btn-outline-warning rating-filter-btn" data-rating="3" onclick="setRatingFilter(3)">3 <i class="fas fa-star"></i></button>
@@ -943,9 +943,9 @@
             }
         });
     </script>
-    <script src="/js/feedback.js"></script>
     <div th:replace="fragments/footer :: footer"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/feedback.js}"></script>
 </body>
 
 </html>

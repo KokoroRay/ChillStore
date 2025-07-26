@@ -3,11 +3,14 @@
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     margin-top: 10px;
+    width: 100%;
 }
 
 .address-selector-grid .form-group {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    margin-bottom: 0;
 }
 
 .address-selector-grid .form-label {
@@ -15,6 +18,9 @@
     color: #495057;
     margin-bottom: 8px;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .address-selector-grid .form-input {
@@ -24,6 +30,8 @@
     font-size: 14px;
     transition: all 0.3s ease;
     background: #fff;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .address-selector-grid .form-input:focus {
@@ -50,9 +58,42 @@
     font-size: 14px;
 }
 
+/* Ensure the address selector container doesn't interfere with other elements */
+#address-selector-container {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+/* Fix for potential overlap issues */
+.address-selector-grid .form-group:nth-child(3),
+.address-selector-grid .form-group:nth-child(4) {
+    grid-column: span 1;
+}
+
 @media (max-width: 768px) {
     .address-selector-grid {
         grid-template-columns: 1fr;
         gap: 15px;
+    }
+    
+    .address-selector-grid .form-group:nth-child(3),
+    .address-selector-grid .form-group:nth-child(4) {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .address-selector-grid {
+        gap: 12px;
+    }
+    
+    .address-selector-grid .form-input {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .address-selector-grid .form-label {
+        font-size: 13px;
     }
 }

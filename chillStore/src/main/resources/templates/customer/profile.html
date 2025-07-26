@@ -6,208 +6,299 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Profile - ChillStore</title>
     <link rel="stylesheet" href="/css/profile.css">
-    <link rel="stylesheet" th:href="@{/css/home.css}" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/navigationBar.css">
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <style>
+        /* Enhanced VIP background animation */
+        body.tier-Vip,
+        body.tier-VIP {
+            /*background: #000000;*/
+            background: linear-gradient(167deg, rgba(0, 0, 0, 1) 0%, rgba(9, 9, 92, 1) 85%, rgba(25, 118, 210, 1) 100%);
+            color: #fff !important;
+            animation: night-glow 3s infinite alternate;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Falling stars animation */
+        .falling-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            top: -20px;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: fall linear infinite;
+        }
+
+        .star:nth-child(5n) {
+            background: #c6e2ff;
+        }
+
+        .star:nth-child(3n) {
+            background: #a7d7ff;
+        }
+
+        .star:nth-child(7n) {
+            background: #e6f7ff;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        /* Enhanced VIP glow effect */
+        @keyframes night-glow {
+            0% {
+                box-shadow: 0 0 10px #232526, 0 0 0 #414345;
+            }
+            100% {
+                box-shadow: 0 0 30px #00c6ff, 0 0 10px #232526;
+            }
+        }
+
+    </style>
 </head>
 
-<body>
-    <div th:insert="~{fragments/navigationBar :: navBar}"></div><br>
-    <div class="profile-container">
-        <div class="profile-header">
-            <div class="breadcrumb">
-                <a href="/" class="breadcrumb-item">Home</a>
-                <i class="fas fa-chevron-right breadcrumb-separator"></i>
-                <span class="breadcrumb-item active">Personal Profile</span>
-            </div>
-            <h1 class="profile-title">
-                <i class="fas fa-user-circle"></i>
-                Personal Profile
-            </h1>
+<body th:classappend="'tier-' + ${customerDto.membershipTier}">
+<div class="falling-stars" id="starsContainer"></div>
+<div th:insert="~{fragments/navigationBar :: navBar}"></div><br>
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="breadcrumb">
+            <a href="/" class="breadcrumb-item">Home</a>
+            <i class="fas fa-chevron-right breadcrumb-separator"></i>
+            <span class="breadcrumb-item active">Personal Profile</span>
+        </div>
+        <h1 class="profile-title">
+            <i class="fas fa-user-circle"></i>
+            Personal Profile
+        </h1>
+    </div>
+
+    <div class="profile-content">
+        <!-- Success Message -->
+        <div th:if="${success}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${success}"></span>
         </div>
 
-        <div class="profile-content">
-            <!-- Success Message -->
-            <div th:if="${success}" class="alert alert-success">
-                <i class="fas fa-check-circle"></i>
-                <span th:text="${success}"></span>
+        <div class="profile-card">
+            <!-- Avatar Section -->
+            <div class="avatar-section">
+                <div class="avatar-container">
+                    <img th:src="${customerDto.avatarUrl != null and customerDto.avatarUrl != '' ? customerDto.avatarUrl : '/images/default-avatar.svg'}"
+                         alt="Profile Avatar" class="avatar-img" id="profileAvatar">
+                </div>
+                <div class="avatar-info">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="customer-name"
+                                th:text="${customerDto.displayName != null ? customerDto.displayName : customerDto.name}">
+                                Customer Name</h3>
+                            <p class="customer-email" th:text="${customerDto.email}">customer@email.com</p>
+                        </div>
+
+                        <!-- New membership tier display -->
+                        <div class="membership-tier-container">
+                            <div class="membership-badge" th:classappend="'tier-' + ${customerDto.membershipTier}"
+                                 th:text="${customerDto.membershipTier != null ? customerDto.membershipTier : 'Not available'}"
+                                 id="membershipTierBadge">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="profile-card">
-                <!-- Avatar Section -->
-                <div class="avatar-section">
-                    <div class="avatar-container">
-                        <img th:src="${customerDto.avatarUrl != null and customerDto.avatarUrl != '' ? customerDto.avatarUrl : '/images/default-avatar.svg'}"
-                            alt="Profile Avatar" class="avatar-img" id="profileAvatar">
-                    </div>
-                    <div class="avatar-info">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h3 class="customer-name"
-                                    th:text="${customerDto.displayName != null ? customerDto.displayName : customerDto.name}">
-                                    Customer Name</h3>
-                                <p class="customer-email" th:text="${customerDto.email}">customer@email.com</p>
+            <!-- Profile Information -->
+            <div class="profile-info">
+                <div class="info-section">
+                    <h4 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Basic Information
+                    </h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-user"></i>
+                                Full Name
                             </div>
-
-                            <!-- New membership tier display -->
-                            <div class="membership-tier-container">
-                                <div class="membership-badge"
-                                     th:classappend="'tier-' + ${customerDto.membershipTier}"
-                                     th:text="${customerDto.membershipTier != null ? customerDto.membershipTier : 'Not available'}"
-                                     id="membershipTierBadge">
-                                </div>
+                            <div class="info-value" th:text="${customerDto.name}">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-id-badge"></i>
+                                Display Name
                             </div>
+                            <div class="info-value"
+                                 th:text="${customerDto.displayName != null ? customerDto.displayName : 'Not updated'}">
+                                -</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </div>
+                            <div class="info-value" th:text="${customerDto.email}">-</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-phone"></i>
+                                Phone Number
+                            </div>
+                            <div class="info-value"
+                                 th:text="${customerDto.phone != null and customerDto.phone != '' ? customerDto.phone : 'Not updated'}">
+                                -</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Address
+                            </div>
+                            <div class="info-value"
+                                 th:text="${customerDto.address != null and customerDto.address != '' ? customerDto.address : 'Not updated'}">
+                                -</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-venus-mars"></i>
+                                Gender
+                            </div>
+                            <div class="info-value"
+                                 th:text="${customerDto.gender != null and customerDto.gender != '' ? customerDto.gender : 'Not updated'}">
+                                -</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-birthday-cake"></i>
+                                Date of Birth
+                            </div>
+                            <div class="info-value"
+                                 th:text="${customerDto.birthDate != null ? #temporals.format(customerDto.birthDate, 'dd/MM/yyyy') : 'Not updated'}">
+                                -</div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Profile Information -->
-                <div class="profile-info">
-                    <div class="info-section">
-                        <h4 class="section-title">
-                            <i class="fas fa-info-circle"></i>
-                            Basic Information
-                        </h4>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="fas fa-user"></i>
-                                    Full Name
-                                </div>
-                                <div class="info-value" th:text="${customerDto.name}">-</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="fas fa-id-badge"></i>
-                                    Display Name
-                                </div>
-                                <div class="info-value"
-                                    th:text="${customerDto.displayName != null ? customerDto.displayName : 'Not updated'}">
-                                    -</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="fas fa-envelope"></i>
-                                    Email
-                                </div>
-                                <div class="info-value" th:text="${customerDto.email}">-</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="fas fa-phone"></i>
-                                    Phone Number
-                                </div>
-                                <div class="info-value"
-                                    th:text="${customerDto.phone != null and customerDto.phone != '' ? customerDto.phone : 'Not updated'}">
-                                    -</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    Address
-                                </div>
-                                <div class="info-value"
-                                    th:text="${customerDto.address != null and customerDto.address != '' ? customerDto.address : 'Not updated'}">
-                                    -</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="fas fa-venus-mars"></i>
-                                    Gender
-                                </div>
-                                <div class="info-value"
-                                    th:text="${customerDto.gender != null and customerDto.gender != '' ? customerDto.gender : 'Not updated'}">
-                                    -</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="fas fa-birthday-cake"></i>
-                                    Date of Birth
-                                </div>
-                                <div class="info-value"
-                                    th:text="${customerDto.birthDate != null ? #temporals.format(customerDto.birthDate, 'dd/MM/yyyy') : 'Not updated'}">
-                                    -</div>
-                            </div>
-<!--                            <div class="info-item">-->
-<!--                                <div class="info-label">-->
-<!--                                    <i class="fas fa-gem"></i>-->
-<!--                                    <span id="membershipTierLabel">Membership Tier</span>-->
-<!--                                </div>-->
-<!--                                <div class="info-value"-->
-<!--                                    th:text="${customerDto.membershipTier != null ? customerDto.membershipTier : 'Not available'}"-->
-<!--                                    id="membershipTierValue">-</div>-->
-<!--                                <div id="totalSpendingDetail"-->
-<!--                                    style="display: none; font-size: 0.9em; color: #666; margin-top: 5px;">-->
-<!--                                    Total Spending: <span-->
-<!--                                        th:text="${customerDto.totalSpending != null ? #numbers.formatDecimal(customerDto.totalSpending, 0, 'COMMA', 2, 'POINT') + ' VND' : '0 VND'}"></span>-->
-<!--                                </div>-->
-<!--                            </div>-->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="profile-actions">
-                    <a th:href="@{/customer/profile/edit}" class="btn btn-edit btn-success">
-                        <i class="fas fa-edit"></i>
-                        Edit Profile
-                    </a>
-                    <a th:href="@{/customer/profile/change-password}" class="btn btn-primary">
-                        <i class="fas fa-key"></i>
-                        Change Password
-                    </a>
-                    <a href="/" class="btn btn-secondary">
-                        <i class="fas fa-home"></i>
-                        Back to Home
-                    </a>
-                </div>
+            <!-- Action Buttons -->
+            <div class="profile-actions">
+                <a th:href="@{/customer/profile/edit}" class="btn btn-edit btn-success">
+                    <i class="fas fa-edit"></i>
+                    Edit Profile
+                </a>
+                <a th:href="@{/customer/profile/change-password}" class="btn btn-primary">
+                    <i class="fas fa-key"></i>
+                    Change Password
+                </a>
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-home"></i>
+                    Back to Home
+                </a>
             </div>
         </div>
     </div>
+</div>
 
-    <div th:replace="fragments/footer :: footer"></div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Add loading animation for avatar
-        document.addEventListener('DOMContentLoaded', function () {
-            const avatarImg = document.getElementById('profileAvatar');
-            if (avatarImg) {
-                avatarImg.addEventListener('load', function () {
-                    this.style.opacity = '1';
-                    this.classList.add('loaded');
-                });
+<div th:replace="fragments/footer :: footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Add loading animation for avatar
+    document.addEventListener('DOMContentLoaded', function () {
+        const avatarImg = document.getElementById('profileAvatar');
+        if (avatarImg) {
+            avatarImg.addEventListener('load', function () {
+                this.style.opacity = '1';
+                this.classList.add('loaded');
+            });
 
-                avatarImg.addEventListener('error', function () {
-                    this.src = '/images/default-avatar.svg';
-                    this.style.opacity = '1';
-                    this.classList.add('loaded');
-                });
+            avatarImg.addEventListener('error', function () {
+                this.src = '/images/default-avatar.svg';
+                this.style.opacity = '1';
+                this.classList.add('loaded');
+            });
 
-                // If image is already loaded (cached)
-                if (avatarImg.complete) {
-                    avatarImg.style.opacity = '1';
-                    avatarImg.classList.add('loaded');
+            // If image is already loaded (cached)
+            if (avatarImg.complete) {
+                avatarImg.style.opacity = '1';
+                avatarImg.classList.add('loaded');
+            }
+        }
+
+        const membershipTierLabel = document.getElementById('membershipTierLabel');
+        const totalSpendingDetail = document.getElementById('totalSpendingDetail');
+
+        if (membershipTierLabel && totalSpendingDetail) {
+            membershipTierLabel.style.cursor = 'pointer';
+            membershipTierLabel.title = 'Click to see total spending';
+
+            membershipTierLabel.addEventListener('click', function () {
+                if (totalSpendingDetail.style.display === 'none') {
+                    totalSpendingDetail.style.display = 'block';
+                } else {
+                    totalSpendingDetail.style.display = 'none';
                 }
+            });
+        }
+
+        // Create falling stars for VIP
+        if (document.body.classList.contains('tier-Vip') || document.body.classList.contains('tier-VIP')) {
+            createStars();
+        }
+
+        function createStars() {
+            const starsContainer = document.getElementById('starsContainer');
+            const starCount = 100;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+
+                // Random horizontal position
+                const left = Math.random() * 100;
+                star.style.left = left + 'vw';
+
+                // Random starting top position
+                const topStart = -(Math.random() * 20);
+                star.style.top = topStart + 'vh';
+
+                // Random animation duration
+                const duration = 5 + Math.random() * 10;
+                star.style.animationDuration = duration + 's';
+
+                // Random animation delay
+                const delay = Math.random() * 10;
+                star.style.animationDelay = delay + 's';
+
+                // Random size
+                const size = 1 + Math.random() * 2;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+
+                // Random opacity
+                const opacity = 0.3 + Math.random() * 0.7;
+                star.style.opacity = opacity;
+
+                starsContainer.appendChild(star);
             }
-
-            const membershipTierLabel = document.getElementById('membershipTierLabel');
-            const totalSpendingDetail = document.getElementById('totalSpendingDetail');
-
-            if (membershipTierLabel && totalSpendingDetail) {
-                membershipTierLabel.style.cursor = 'pointer';
-                membershipTierLabel.title = 'Click to see total spending';
-
-                membershipTierLabel.addEventListener('click', function () {
-                    if (totalSpendingDetail.style.display === 'none') {
-                        totalSpendingDetail.style.display = 'block';
-                    } else {
-                        totalSpendingDetail.style.display = 'none';
-                    }
-                });
-            }
-        });
-    </script>
+        }
+    });
+</script>
 </body>
 
 </html>

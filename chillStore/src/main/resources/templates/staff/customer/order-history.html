@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Purchase History</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebarStaff.css">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            /* width of sidebar */
+            padding-top: 80px;
+            /* height of header */
+        }
+
+        @media (max-width: 991.98px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 120px;
+            }
+        }
+
+        .order-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-badge {
+            font-size: 0.85em;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background-color: #cff4fc;
+            color: #055160;
+        }
+
+        .status-shipped {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-delivered {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:insert="~{fragments/header :: headerContent}"></div>
+    <div th:insert="~{fragments/sidebarStaff :: sidebarStaff}" class="sidebar border-end h-100"></div>
+    <div class="main-content">
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-history"></i> Purchase History of <span th:text="${customer.name}"></span>
+                        </h2>
+                        <a th:href="@{/staff/customer}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                    <div th:if="${orders == null || #lists.isEmpty(orders)}" class="text-center py-5">
+                        <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No orders found for this customer</h4>
+                    </div>
+                    <div th:unless="${orders == null || #lists.isEmpty(orders)}">
+                        <div th:each="order : ${orders}" class="order-card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3">
+                                        <div class="d-flex align-items-center">
+                                            <img th:if="${order.orderItems != null and !#lists.isEmpty(order.orderItems)}"
+                                                th:src="${order.orderItems[0].product.imageUrl != null ? order.orderItems[0].product.imageUrl : '/images/default-product.png'}"
+                                                alt="Product" class="product-thumb me-3"
+                                                style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                            <img th:unless="${order.orderItems != null and !#lists.isEmpty(order.orderItems)}"
+                                                src="/images/default-product.png" alt="Product"
+                                                class="product-thumb me-3"
+                                                style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                            <div>
+                                                <h6 class="mb-1"
+                                                    th:if="${order.orderItems != null and !#lists.isEmpty(order.orderItems)}"
+                                                    th:text="${order.orderItems[0].product.name}"></h6>
+                                                <h6 class="mb-1"
+                                                    th:unless="${order.orderItems != null and !#lists.isEmpty(order.orderItems)}">
+                                                    Product
+                                                </h6>
+                                                <small class="text-muted"
+                                                    th:if="${order.orderItems != null and order.orderItems.size() > 1}"
+                                                    th:text="|+${order.orderItems.size() - 1} more items|"></small>
+                                                <small class="text-muted"
+                                                    th:if="${order.orderItems != null and order.orderItems.size() == 1}"
+                                                    th:text="|${order.orderItems.size()} item|"></small>
+                                                <small class="text-muted"
+                                                    th:unless="${order.orderItems != null and order.orderItems.size() > 0}">0
+                                                    item</small>
+                                                <br><small class="text-muted">Order #<span
+                                                        th:text="${order.orderId}"></span></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span class="fw-bold text-primary"
+                                            th:text="|₫${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}|"></span>
+                                        <br><small class="text-muted"
+                                            th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></small>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span class="status-badge"
+                                            th:classappend="|status-${#strings.toLowerCase(order.status)}|"
+                                            th:text="${order.status}"></span>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <small class="text-muted">Payment:</small><br>
+                                        <span th:text="${order.paymentMethod}"></span>
+                                    </div>
+                                    <div class="col-md-3 text-end">
+                                        <button type="button" class="btn btn-info btn-sm ms-1"
+                                            th:onclick="'showOrderDetail(' + ${order.orderId} + ')'">
+                                            <i class="fas fa-info-circle"></i> View Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Order Detail Modal -->
+    <div class="modal fade" id="orderDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle"></i> Order Details
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="orderDetailContent">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Order Items Modal -->
+    <div class="modal fade" id="orderItemsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Order Items</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="orderItemsContent">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showOrderDetail(orderId) {
+            fetch('/staff/orders/' + orderId + '/items')
+                .then(response => response.json())
+                .then(items => {
+                    let content = '<div class="table-responsive"><table class="table table-striped">';
+                    content += '<thead><tr><th>Product</th><th>Category</th><th>Quantity</th><th>Price</th><th>Total</th></tr></thead><tbody>';
+                    items.forEach(item => {
+                        content += `<tr>
+                        <td>${item.productName}</td>
+                        <td>${item.categoryName}</td>
+                        <td>${item.quantity}</td>
+                        <td>₫${item.priceEach.toLocaleString('vi-VN')}</td>
+                        <td>₫${(item.priceEach * item.quantity).toLocaleString('vi-VN')}</td>
+                    </tr>`;
+                    });
+                    content += '</tbody></table></div>';
+                    document.getElementById('orderItemsContent').innerHTML = content;
+                    new bootstrap.Modal(document.getElementById('orderItemsModal')).show();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('orderItemsContent').innerHTML = '<p class="text-danger">Failed to load order items</p>';
+                });
+        }
+    </script>
+</body>
+
+</html>

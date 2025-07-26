@@ -5,9 +5,10 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
-    padding-top: 130px;
+    padding-top: 80px;
+    /* Đồng bộ với chiều cao nav thực tế */
     padding-bottom: 50px;
 }
 
@@ -21,7 +22,7 @@ body {
     background-color: white;
     border-radius: 10px;
     padding: 25px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     margin-bottom: 30px;
 }
 
@@ -81,6 +82,7 @@ body {
 .nav-left::-webkit-scrollbar {
     display: none;
 }
+
 .nav-left ul li {
     display: flex;
     align-items: center;
@@ -251,7 +253,7 @@ body {
     top: calc(100% + 15px);
     background: white;
     min-width: 220px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     padding: 8px 0;
     z-index: 10000;
@@ -319,7 +321,8 @@ body {
     object-fit: contain;
 }
 
-.btn-login, .btn-register {
+.btn-login,
+.btn-register {
     padding: 8px 16px;
     border-radius: 6px;
     text-decoration: none;
@@ -382,7 +385,7 @@ body {
     width: 280px;
     height: 100vh;
     background: white;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
     z-index: 1050;
     padding: 80px 20px 20px;
     transition: right 0.4s ease;
@@ -429,7 +432,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 1040;
     opacity: 0;
     visibility: hidden;
@@ -452,7 +455,8 @@ body {
         font-size: 14px;
     }
 
-    .btn-login, .btn-register {
+    .btn-login,
+    .btn-register {
         padding: 6px 12px;
         font-size: 14px;
     }

@@ -683,9 +683,9 @@ body {
     }
 }
 
-.footer {
-    background: linear-gradient(120deg, #1976d2 0%, #113F67 100%) !important;
-}
+/*.footer {*/
+/*    background: linear-gradient(120deg, #1976d2 0%, #113F67 100%) !important;*/
+/*}*/
 .discount-badge {
     position: absolute;
     top: 10px;

@@ -630,4 +630,20 @@ document.addEventListener('DOMContentLoaded', function() {
         checkCanReview();
     }
     setupRatingStars();
+    
+    // Check if URL has review parameter or feedback anchor and scroll to feedback section
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasReviewParam = urlParams.get('review') === '1';
+    const hasFeedbackAnchor = window.location.hash === '#feedback-section';
+    
+    if (hasReviewParam || hasFeedbackAnchor) {
+        setTimeout(() => {
+            const feedbackSection = document.getElementById('feedback-section');
+            if (feedbackSection) {
+                feedbackSection.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        }, 1500); // Wait for feedback section to load
+    }
 }); 

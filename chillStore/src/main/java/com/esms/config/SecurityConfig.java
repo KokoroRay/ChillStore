@@ -51,6 +51,9 @@ public class SecurityConfig {
                         .requestMatchers("/", "/home",
                                 "/Product", "/Product/**", "/DiscountProducts",
                                 "/product/view/**", "/customer/product/view/**",
+                                "/searchProduct", "/autocomplete", "/search", "/api/search/autocomplete",
+                                "/products/category/**", "/products/brand/**",
+                                "/api/product/*/feedbacks", "/api/feedback/*/reply",
                                 "/css/**", "/js/**", "/videos/**", "/img/**", "/images/**",
                                 "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
                                 "/auth/login", "/auth/register", "/auth/resend-otp"

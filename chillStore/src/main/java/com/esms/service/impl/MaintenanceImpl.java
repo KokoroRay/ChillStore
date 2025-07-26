@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class MaintenanceImpl implements MaintenanceService {
+public class   MaintenanceImpl implements MaintenanceService {
     @Autowired
     private MaintenanceRepository maintenanceRepository;
     

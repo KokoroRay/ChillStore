@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -260,9 +261,28 @@ public class ProductController {
         if (priceParam != null && !priceParam.isEmpty()) {
             String numericPrice = priceParam.replaceAll("[^\\d]", "");
             try {
-                product.setPrice(new java.math.BigDecimal(numericPrice));
+                BigDecimal price = new java.math.BigDecimal(numericPrice);
+                // Kiểm tra giá trị không vượt quá giới hạn
+                if (price.compareTo(new java.math.BigDecimal("999999999")) > 0) {
+                    model.addAttribute("priceError", "Product price cannot exceed 999,999,999 VND!");
+                    model.addAttribute("product", productService.getProductById(id));
+                    model.addAttribute("categories", categoryService.getAllCategory());
+                    model.addAttribute("brands", brandService.getAllBrands());
+                    model.addAttribute("currentPage", page);
+                    model.addAttribute("size", size);
+                    model.addAttribute("keyword", keyword);
+                    model.addAttribute("categoryId", categoryId);
+                    model.addAttribute("brandId", brandId);
+                    model.addAttribute("filterStatus", filterStatus);
+                    model.addAttribute("minPrice", minPrice);
+                    model.addAttribute("maxPrice", maxPrice);
+                    model.addAttribute("minStock", minStock);
+                    model.addAttribute("sortOption", sortOption);
+                    return "admin/ManageProduct/ProductForm";
+                }
+                product.setPrice(price);
             } catch (Exception e) {
-                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
+                model.addAttribute("priceError", "Invalid product price!");
                 model.addAttribute("product", productService.getProductById(id));
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
@@ -284,13 +304,40 @@ public class ProductController {
         if (product.getPriceString() != null && !product.getPriceString().isEmpty()) {
             String numericPrice = product.getPriceString().replaceAll("[^\\d]", "");
             try {
-                product.setPrice(new java.math.BigDecimal(numericPrice));
+                BigDecimal price = new java.math.BigDecimal(numericPrice);
+                // Kiểm tra giá trị không vượt quá giới hạn
+                if (price.compareTo(new java.math.BigDecimal("999999999")) > 0) {
+                    model.addAttribute("priceError", "Product price cannot exceed 999,999,999 VND!");
+                    model.addAttribute("categories", categoryService.getAllCategory());
+                    model.addAttribute("brands", brandService.getAllBrands());
+                    return "admin/ManageProduct/ProductForm";
+                }
+                product.setPrice(price);
             } catch (Exception e) {
-                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
+                model.addAttribute("priceError", "Invalid product price!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
             }
+        }
+
+        // Kiểm tra giá trị price không được null hoặc âm
+        if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            model.addAttribute("priceError", "Product price must be greater than 0!");
+            model.addAttribute("product", productService.getProductById(id));
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("size", size);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("categoryId", categoryId);
+            model.addAttribute("brandId", brandId);
+            model.addAttribute("filterStatus", filterStatus);
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
+            model.addAttribute("minStock", minStock);
+            model.addAttribute("sortOption", sortOption);
+            return "admin/ManageProduct/ProductForm";
         }
         if (imageUrl != null && !imageUrl.isEmpty()) {
             product.setImageUrl(imageUrl);
@@ -472,9 +519,17 @@ public class ProductController {
         if (priceParam != null && !priceParam.isEmpty()) {
             String numericPrice = priceParam.replaceAll("[^\\d]", "");
             try {
-                product.setPrice(new java.math.BigDecimal(numericPrice));
+                BigDecimal price = new java.math.BigDecimal(numericPrice);
+                // Kiểm tra giá trị không vượt quá giới hạn
+                if (price.compareTo(new java.math.BigDecimal("999999999")) > 0) {
+                    model.addAttribute("priceError", "Product price cannot exceed 999,999,999 VND!");
+                    model.addAttribute("categories", categoryService.getAllCategory());
+                    model.addAttribute("brands", brandService.getAllBrands());
+                    return "admin/ManageProduct/ProductForm";
+                }
+                product.setPrice(price);
             } catch (Exception e) {
-                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
+                model.addAttribute("priceError", "Invalid product price!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
@@ -485,13 +540,29 @@ public class ProductController {
         if (product.getPriceString() != null && !product.getPriceString().isEmpty()) {
             String numericPrice = product.getPriceString().replaceAll("[^\\d]", "");
             try {
-                product.setPrice(new java.math.BigDecimal(numericPrice));
+                BigDecimal price = new java.math.BigDecimal(numericPrice);
+                // Kiểm tra giá trị không vượt quá giới hạn
+                if (price.compareTo(new java.math.BigDecimal("999999999")) > 0) {
+                    model.addAttribute("priceError", "Product price cannot exceed 999,999,999 VND!");
+                    model.addAttribute("categories", categoryService.getAllCategory());
+                    model.addAttribute("brands", brandService.getAllBrands());
+                    return "admin/ManageProduct/ProductForm";
+                }
+                product.setPrice(price);
             } catch (Exception e) {
-                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
+                model.addAttribute("priceError", "Invalid product price!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
             }
+        }
+
+        // Kiểm tra giá trị price không được null hoặc âm
+        if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            model.addAttribute("priceError", "Product price must be greater than 0!");
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            return "admin/ManageProduct/ProductForm";
         }
 
         if (categoryId != null) {

@@ -2,6 +2,8 @@ package com.esms.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,8 @@ public class Product {
     private String description; // Mô tả chi tiết sản phẩm
 
     @Column(name = "price")
+    @NotNull(message = "Product price cannot be empty")
+    @DecimalMin(value = "0.01", message = "Product price must be greater than 0")
     private BigDecimal price; //price of the product(Dùng Bigdecimal để xác định số thapaj phân )
 
     @Column(name = "stock_qty")

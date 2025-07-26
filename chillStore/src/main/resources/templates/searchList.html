@@ -44,8 +44,6 @@
             <span th:if="${product.discountPercent != null}" class="text-decoration-line-through"
                   th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'"></span>
             <!-- Nếu không có giảm thì bỏ trống (ẩn giá gốc) -->
-            <span th:unless="${product.discountPercent != null}" class="text-decoration-line-through">&nbsp;</span>
-
             <!-- Giá đã giảm hoặc giá thường -->
             <span class="discounted-price"
                   th:text="${product.discountPercent != null ?

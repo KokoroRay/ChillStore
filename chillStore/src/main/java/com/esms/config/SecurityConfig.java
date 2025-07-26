@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/home",
                                 "/Product", "/Product/**", "/DiscountProducts",
-                                "/product/view/**", "/customer/product/view/**",
+                                "/product/view/**", "/customer/product/view/**","/searchPro duct",
                                 "/css/**", "/js/**", "/videos/**", "/img/**", "/images/**",
                                 "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
                                 "/auth/login", "/auth/register", "/auth/resend-otp"

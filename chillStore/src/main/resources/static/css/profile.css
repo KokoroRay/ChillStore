@@ -24,6 +24,17 @@
     box-sizing: border-box;
 }
 
+/* Ensure all form elements use border-box */
+.form-input,
+.form-group,
+.form-section,
+.form-sections,
+.edit-form,
+.profile-card,
+.profile-container {
+    box-sizing: border-box;
+}
+
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -242,6 +253,10 @@ body {
     background: var(--light-bg);
     border-radius: var(--radius-sm);
     border: 2px dashed var(--border-color);
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
 }
 
 .avatar-preview-container {
@@ -527,10 +542,15 @@ body {
 /* Form Styles */
 .edit-form {
     max-width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 .form-sections {
     margin-bottom: 2rem;
+    width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 .form-section {
@@ -541,12 +561,28 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
+    width: 100%;
+}
+
+/* Ensure form groups don't overlap */
+.form-grid .form-group {
+    width: 100%;
+    min-width: 0; /* Prevent overflow */
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
     position: relative;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+/* Ensure form inputs don't overflow */
+.form-group .form-input {
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .form-label {
@@ -648,6 +684,9 @@ select.form-input {
     justify-content: center;
     padding-top: 2rem;
     border-top: 1px solid var(--border-color);
+    position: relative;
+    z-index: 1;
+    width: 100%;
 }
 
 /* Responsive Design */
@@ -674,6 +713,12 @@ select.form-input {
     .info-grid,
     .form-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Ensure address selector works properly on mobile */
+    #address-selector-container {
+        width: 100%;
     }
 
     .profile-actions,
@@ -689,6 +734,36 @@ select.form-input {
 
     .profile-card {
         padding: 1.5rem;
+    }
+    
+    /* Fix potential overlap issues */
+    .form-section {
+        margin-bottom: 2rem;
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Ensure proper spacing between form sections */
+    .form-section:not(:last-child) {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(229, 231, 235, 0.3);
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    /* Improve avatar preview section on mobile */
+    .avatar-preview-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .avatar-preview-container {
+        width: 100px;
+        height: 100px;
     }
 }
 
@@ -707,6 +782,25 @@ select.form-input {
 
     .section-title {
         font-size: 1.125rem;
+    }
+    
+    /* Ensure proper spacing on very small screens */
+    .form-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-section:not(:last-child) {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+    }
+    
+    .form-grid {
+        gap: 0.75rem;
+    }
+    
+    .avatar-preview-section {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
     }
 }
 
@@ -863,4 +957,96 @@ body.tier-VIP {
     50% {
         transform: translateY(-5px);
     }
+}
+
+/* Additional fixes to prevent overlap issues */
+.form-group {
+    overflow: visible !important;
+}
+
+.form-input {
+    overflow: visible !important;
+}
+
+/* Ensure proper stacking context */
+.profile-container {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-content {
+    position: relative;
+    z-index: 1;
+}
+
+/* Fix for any potential floating issues */
+.form-grid::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+/* Ensure address selector doesn't break layout */
+#address-selector-container {
+    clear: both;
+    overflow: visible;
+}
+
+/* Additional responsive fixes */
+@media (max-width: 1024px) {
+    .form-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .address-selector-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Ensure proper form validation display */
+.form-error {
+    position: relative;
+    z-index: 2;
+    margin-top: 0.25rem;
+}
+
+.form-help {
+    position: relative;
+    z-index: 2;
+    margin-top: 0.25rem;
+}
+
+/* Fix for any potential absolute positioning issues */
+.form-group {
+    position: relative;
+}
+
+/* Ensure proper spacing for all form elements */
+.form-section .form-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Additional safety measures */
+.profile-card * {
+    max-width: 100%;
+}
+
+/* Ensure proper form submission */
+.edit-form {
+    overflow: visible;
+}
+
+/* Fix for any potential transform issues */
+.form-input:focus {
+    transform: translateY(-1px);
+    z-index: 2;
 }

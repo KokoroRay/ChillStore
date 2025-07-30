@@ -131,7 +131,7 @@ public class ProductServiceImpl implements ProductService {
                         product.getImageUrl(),
                         product.getPrice()
                 ))
-                .collect(Collectors.toList());
+                .collect(Collectors.toLisn t());
     }
     @Override
     public Page<ProductDTO> getProductDTOsPaginated(Pageable pageable) {

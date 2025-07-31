@@ -1,4 +1,4 @@
- package com.esms.controller;
+package com.esms.controller;
 
 import com.esms.model.entity.Brand;
 import com.esms.model.entity.Category;
@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,8 +66,8 @@ public class ProductController {
             priceError = "Minimum price must be at least 1,000 VND";
             minPrice = null; // Reset to null to ignore invalid input
         }
-        if (maxPrice != null && maxPrice > 1000000000) {
-            priceError = "Maximum price cannot exceed 1,000,000,000 VND";
+        if (maxPrice != null && maxPrice > 99999999.99) {
+            priceError = "Maximum price cannot exceed 99,999,999.99 VND";
             maxPrice = null; // Reset to null to ignore invalid input
         }
         if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
@@ -260,9 +261,28 @@ public class ProductController {
         if (priceParam != null && !priceParam.isEmpty()) {
             String numericPrice = priceParam.replaceAll("[^\\d]", "");
             try {
-                product.setPrice(new java.math.BigDecimal(numericPrice));
+                BigDecimal price = new java.math.BigDecimal(numericPrice);
+                // Kiểm tra giá trị không vượt quá giới hạn (decimal(10,2) = max 99,999,999.99)
+                if (price.compareTo(new java.math.BigDecimal("99999999.99")) > 0) {
+                    model.addAttribute("priceError", "Product price cannot exceed 99,999,999.99 VND!");
+                    model.addAttribute("product", productService.getProductById(id));
+                    model.addAttribute("categories", categoryService.getAllCategory());
+                    model.addAttribute("brands", brandService.getAllBrands());
+                    model.addAttribute("currentPage", page);
+                    model.addAttribute("size", size);
+                    model.addAttribute("keyword", keyword);
+                    model.addAttribute("categoryId", categoryId);
+                    model.addAttribute("brandId", brandId);
+                    model.addAttribute("filterStatus", filterStatus);
+                    model.addAttribute("minPrice", minPrice);
+                    model.addAttribute("maxPrice", maxPrice);
+                    model.addAttribute("minStock", minStock);
+                    model.addAttribute("sortOption", sortOption);
+                    return "admin/ManageProduct/ProductForm";
+                }
+                product.setPrice(price);
             } catch (Exception e) {
-                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
+                model.addAttribute("priceError", "Invalid product price!");
                 model.addAttribute("product", productService.getProductById(id));
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
@@ -284,13 +304,40 @@ public class ProductController {
         if (product.getPriceString() != null && !product.getPriceString().isEmpty()) {
             String numericPrice = product.getPriceString().replaceAll("[^\\d]", "");
             try {
-                product.setPrice(new java.math.BigDecimal(numericPrice));
+                BigDecimal price = new java.math.BigDecimal(numericPrice);
+                // Kiểm tra giá trị không vượt quá giới hạn (decimal(10,2) = max 99,999,999.99)
+                if (price.compareTo(new java.math.BigDecimal("99999999.99")) > 0) {
+                    model.addAttribute("priceError", "Product price cannot exceed 99,999,999.99 VND!");
+                    model.addAttribute("categories", categoryService.getAllCategory());
+                    model.addAttribute("brands", brandService.getAllBrands());
+                    return "admin/ManageProduct/ProductForm";
+                }
+                product.setPrice(price);
             } catch (Exception e) {
-                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
+                model.addAttribute("priceError", "Invalid product price!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
             }
+        }
+
+        // Kiểm tra giá trị price không được null hoặc âm
+        if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            model.addAttribute("priceError", "Product price must be greater than 0!");
+            model.addAttribute("product", productService.getProductById(id));
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("size", size);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("categoryId", categoryId);
+            model.addAttribute("brandId", brandId);
+            model.addAttribute("filterStatus", filterStatus);
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
+            model.addAttribute("minStock", minStock);
+            model.addAttribute("sortOption", sortOption);
+            return "admin/ManageProduct/ProductForm";
         }
         if (imageUrl != null && !imageUrl.isEmpty()) {
             product.setImageUrl(imageUrl);
@@ -303,17 +350,17 @@ public class ProductController {
                 String originalFilename = image.getOriginalFilename();
                 String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String filename = "product_" + System.currentTimeMillis() + fileExtension;
-                
+
                 // Save file to static/images directory
                 String uploadDir = "src/main/resources/static/images/";
                 java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
                 if (!java.nio.file.Files.exists(uploadPath)) {
                     java.nio.file.Files.createDirectories(uploadPath);
                 }
-                
+
                 java.nio.file.Path filePath = uploadPath.resolve(filename);
                 java.nio.file.Files.copy(image.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                
+
                 // Set image URL for product
                 product.setImageUrl("/images/" + filename);
             } catch (Exception e) {
@@ -335,7 +382,7 @@ public class ProductController {
                 return "admin/ManageProduct/ProductForm";
             }
         }
-        
+
         // Xử lý gallery images (file upload)
         List<ProductImage> images = new ArrayList<>();
         if (galleryImages != null && galleryImages.length > 0) {
@@ -380,7 +427,7 @@ public class ProductController {
         Product existing = productService.getProductById(id);
         existing.getImages().clear();
         product.setImages(images);
-        
+
         // Xử lý thông số kỹ thuật
         if (specKeys != null && specValues != null && specKeys.length == specValues.length) {
             List<ProductSpecification> specs = new ArrayList<>();
@@ -395,7 +442,7 @@ public class ProductController {
             }
             product.setSpecifications(specs);
         }
-        
+
         productService.updateProduct(id, product);
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
                 page, size,
@@ -472,9 +519,17 @@ public class ProductController {
         if (priceParam != null && !priceParam.isEmpty()) {
             String numericPrice = priceParam.replaceAll("[^\\d]", "");
             try {
-                product.setPrice(new java.math.BigDecimal(numericPrice));
+                BigDecimal price = new java.math.BigDecimal(numericPrice);
+                // Kiểm tra giá trị không vượt quá giới hạn (decimal(10,2) = max 99,999,999.99)
+                if (price.compareTo(new java.math.BigDecimal("99999999.99")) > 0) {
+                    model.addAttribute("priceError", "Product price cannot exceed 99,999,999.99 VND!");
+                    model.addAttribute("categories", categoryService.getAllCategory());
+                    model.addAttribute("brands", brandService.getAllBrands());
+                    return "admin/ManageProduct/ProductForm";
+                }
+                product.setPrice(price);
             } catch (Exception e) {
-                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
+                model.addAttribute("priceError", "Invalid product price!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
@@ -485,13 +540,29 @@ public class ProductController {
         if (product.getPriceString() != null && !product.getPriceString().isEmpty()) {
             String numericPrice = product.getPriceString().replaceAll("[^\\d]", "");
             try {
-                product.setPrice(new java.math.BigDecimal(numericPrice));
+                BigDecimal price = new java.math.BigDecimal(numericPrice);
+                // Kiểm tra giá trị không vượt quá giới hạn (decimal(10,2) = max 99,999,999.99)
+                if (price.compareTo(new java.math.BigDecimal("99999999.99")) > 0) {
+                    model.addAttribute("priceError", "Product price cannot exceed 99,999,999.99 VND!");
+                    model.addAttribute("categories", categoryService.getAllCategory());
+                    model.addAttribute("brands", brandService.getAllBrands());
+                    return "admin/ManageProduct/ProductForm";
+                }
+                product.setPrice(price);
             } catch (Exception e) {
-                model.addAttribute("priceError", "Giá sản phẩm không hợp lệ!");
+                model.addAttribute("priceError", "Invalid product price!");
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
             }
+        }
+
+        // Kiểm tra giá trị price không được null hoặc âm
+        if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            model.addAttribute("priceError", "Product price must be greater than 0!");
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            return "admin/ManageProduct/ProductForm";
         }
 
         if (categoryId != null) {
@@ -580,7 +651,7 @@ public class ProductController {
         if (!images.isEmpty()) {
             product.setImages(images);
         }
-        
+
         // Xử lý thông số kỹ thuật
         if (specKeys != null && specValues != null && specKeys.length == specValues.length) {
             List<ProductSpecification> specs = new ArrayList<>();
@@ -595,7 +666,7 @@ public class ProductController {
             }
             product.setSpecifications(specs);
         }
-        
+
         productService.saveProduct(product);
         return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
                 page, size,

@@ -44,18 +44,12 @@
             <span th:if="${product.discountPercent != null}" class="text-decoration-line-through"
                   th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'"></span>
             <!-- Nếu không có giảm thì bỏ trống (ẩn giá gốc) -->
-
             <!-- Giá đã giảm hoặc giá thường -->
             <span class="discounted-price"
-                  th:if="${product.discountPercent != null}"
-                  th:text="${#numbers.formatDecimal(product.price * (100 - product.discountPercent) / 100, 0, 'POINT', 0, 'COMMA')}">
-</span>
-            <span class="discounted-price"
-                  th:unless="${product.discountPercent != null}"
-                  th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}">
-</span>
-
-
+                  th:text="${product.discountPercent != null ?
+                    #numbers.formatDecimal(product.price * (100 - product.discountPercent) / 100, 0, 'POINT', 0, 'COMMA') :
+                    #numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}">
+          </span>
             <span class="vnd">VND</span>
           </div>
         </a>

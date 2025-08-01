@@ -162,16 +162,16 @@
                         <h5 class="product-name" th:text="${product.name}"></h5>
                         <div class="product-details">
                             <span class="detail-item">
-                                <i class="fas fa-tag"></i> 
+                                <i class="fas fa-tag"></i>
                                 <strong>Price:</strong> <span
                                     th:text="${#numbers.formatCurrency(product.price)}"></span>
                             </span>
                             <span class="detail-item">
-                                <i class="fas fa-box"></i> 
+                                <i class="fas fa-box"></i>
                                 <strong>Stock:</strong> <span th:text="${product.stockQty}"></span>
                             </span>
                             <span class="detail-item">
-                                <i class="fas fa-toggle-on"></i> 
+                                <i class="fas fa-toggle-on"></i>
                                 <strong>Status:</strong>
                                 <span th:if="${product.status}" class="badge bg-success">Active</span>
                                 <span th:unless="${product.status}" class="badge bg-danger">Inactive</span>

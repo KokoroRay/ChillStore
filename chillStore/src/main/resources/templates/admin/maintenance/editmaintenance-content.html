@@ -1,8 +1,10 @@
 <div th:fragment="content">
-    <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh; margin-left: 250px;">
+    <div class="container-fluid d-flex justify-content-center align-items-center"
+        style="min-height: 80vh; margin-left: 250px;">
         <div class="card shadow p-4" style="max-width: 600px; width: 100%;">
             <h2 class="mb-4 text-center">Update Maintenance</h2>
-            <form th:action="@{'/admin/maintenance/update/' + ${maintenanceDto.requestId}}" th:object="${maintenanceDto}" method="post">
+            <form th:action="@{'/admin/maintenance/update/' + ${maintenanceDto.requestId}}"
+                th:object="${maintenanceDto}" method="post">
                 <input type="hidden" th:field="*{status}">
                 <div class="row g-3">
                     <!-- Order readonly + giữ select -->
@@ -10,24 +12,26 @@
                         <label class="form-label" for="orderId">Order</label>
                         <span th:each="order : ${orders}" th:if="${order.orderId == maintenanceDto.orderId}">
                             <input type="text" class="form-control mb-2"
-                                   th:value="'Order #' + ${order.orderId} + ' - ' + ${order.customer.name} + ' (' + ${#dates.format(order.orderDate, 'dd/MM/yyyy')} + ' - ' + ${order.status} + ')'"
-                                   readonly>
+                                th:value="'Order #' + ${order.orderId} + ' - ' + (${order.customer != null ? order.customer.name : 'No Customer'}) + ' (' + ${#dates.format(order.orderDate, 'dd/MM/yyyy')} + ' - ' + ${order.status} + ')'"
+                                readonly>
                         </span>
                         <input type="hidden" th:field="*{orderId}">
                         <select class="form-select d-none" id="orderId" th:field="*{orderId}" required>
                             <option value="">Select an order</option>
-                            <option th:each="order : ${orders}"
-                                    th:value="${order.orderId}"
-                                    th:text="'Order #' + ${order.orderId} + ' - ' + ${order.customer.name} + ' (' + ${#dates.format(order.orderDate, 'dd/MM/yyyy')} + ' - ' + ${order.status} + ')'">
+                            <option th:each="order : ${orders}" th:value="${order.orderId}"
+                                th:text="'Order #' + ${order.orderId} + ' - ' + (${order.customer != null ? order.customer.name : 'No Customer'}) + ' (' + ${#dates.format(order.orderDate, 'dd/MM/yyyy')} + ' - ' + ${order.status} + ')'">
                             </option>
                         </select>
-                        <div class="text-danger small mt-1" th:errors="*{orderId}" th:if="${#fields.hasErrors('orderId')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{orderId}"
+                            th:if="${#fields.hasErrors('orderId')}"></div>
                         <small class="text-muted">Select an existing order from the list</small>
                     </div>
                     <div class="col-12 col-md-6" th:if="${isAdmin}">
                         <label class="form-label" for="requestDate">Maintenance Date</label>
-                        <input class="form-control" id="requestDate" th:field="*{requestDate}" type="datetime-local" required>
-                        <div class="text-danger small mt-1" th:errors="*{requestDate}" th:if="${#fields.hasErrors('requestDate')}"></div>
+                        <input class="form-control" id="requestDate" th:field="*{requestDate}" type="datetime-local"
+                            required>
+                        <div class="text-danger small mt-1" th:errors="*{requestDate}"
+                            th:if="${#fields.hasErrors('requestDate')}"></div>
                         <small class="text-muted">Maintenance date and time must be today or in the future</small>
                     </div>
                     <!-- Product readonly + giữ select -->
@@ -35,66 +39,71 @@
                         <label class="form-label" for="productId">Product</label>
                         <span th:each="product : ${products}" th:if="${product.productId == maintenanceDto.productId}">
                             <input type="text" class="form-control mb-2"
-                                   th:value="${product.name} + ' - ' + ${product.category.name} + ' (' + (${product.brand != null ? product.brand.name : 'No Brand'}) + ')'"
-                                   readonly>
+                                th:value="${product.name} + ' - ' + (${product.category != null ? product.category.name : 'No Category'}) + ' (' + (${product.brand != null ? product.brand.name : 'No Brand'}) + ')'"
+                                readonly>
                         </span>
                         <input type="hidden" th:field="*{productId}">
                         <select class="form-select d-none" id="productId" th:field="*{productId}" required>
                             <option value="">Select a product</option>
-                            <option th:each="product : ${products}"
-                                    th:value="${product.productId}"
-                                    th:text="${product.name} + ' - ' + ${product.category.name} + ' (' + (${product.brand != null ? product.brand.name : 'No Brand'}) + ')'">
+                            <option th:each="product : ${products}" th:value="${product.productId}"
+                                th:text="${product.name} + ' - ' + (${product.category != null ? product.category.name : 'No Category'}) + ' (' + (${product.brand != null ? product.brand.name : 'No Brand'}) + ')'">
                             </option>
                         </select>
-                        <div class="text-danger small mt-1" th:errors="*{productId}" th:if="${#fields.hasErrors('productId')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{productId}"
+                            th:if="${#fields.hasErrors('productId')}"></div>
                         <small class="text-muted">Select an existing product from the list</small>
                     </div>
                     <!-- Customer readonly + giữ select -->
                     <div class="col-12 col-md-6">
                         <label class="form-label" for="customerId">Customer</label>
-                        <span th:each="customer : ${customers}" th:if="${customer.customerId == maintenanceDto.customerId}">
+                        <span th:each="customer : ${customers}"
+                            th:if="${customer.customerId == maintenanceDto.customerId}">
                             <input type="text" class="form-control mb-2"
-                                   th:value="${customer.name} + ' (' + ${customer.phone} + ')'"
-                                   readonly>
+                                th:value="${customer.name} + ' (' + (${customer.phone != null ? customer.phone : 'No Phone'}) + ')'"
+                                readonly>
                         </span>
                         <input type="hidden" th:field="*{customerId}">
                         <select class="form-select d-none" id="customerId" th:field="*{customerId}" required>
                             <option value="">Select a customer</option>
-                            <option th:each="customer : ${customers}"
-                                    th:value="${customer.customerId}"
-                                    th:text="${customer.name} + ' (' + ${customer.phone} + ')'">
+                            <option th:each="customer : ${customers}" th:value="${customer.customerId}"
+                                th:text="${customer.name} + ' (' + (${customer.phone != null ? customer.phone : 'No Phone'}) + ')'">
                             </option>
                         </select>
-                        <div class="text-danger small mt-1" th:errors="*{customerId}" th:if="${#fields.hasErrors('customerId')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{customerId}"
+                            th:if="${#fields.hasErrors('customerId')}"></div>
                         <small class="text-muted">Select an existing customer from the list</small>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label" for="reason">Maintenance Reason</label>
-                        <textarea class="form-control" id="reason" th:field="*{reason}" rows="2" required readonly></textarea>
-                        <div class="text-danger small mt-1" th:errors="*{reason}" th:if="${#fields.hasErrors('reason')}"></div>
+                        <textarea class="form-control" id="reason" th:field="*{reason}" rows="2" required
+                            readonly></textarea>
+                        <div class="text-danger small mt-1" th:errors="*{reason}"
+                            th:if="${#fields.hasErrors('reason')}"></div>
                     </div>
                     <!-- Request Type readonly + giữ select -->
                     <div class="col-12 col-md-6">
                         <label class="form-label" for="requestType">Request Type</label>
                         <input type="text" class="form-control mb-2"
-                               th:value="${maintenanceDto.requestType == 'maintenance' ? 'Maintenance' : (maintenanceDto.requestType == 'warranty' ? 'Warranty' : '')}" readonly>
+                            th:value="${maintenanceDto.requestType == 'maintenance' ? 'Maintenance' : (maintenanceDto.requestType == 'warranty' ? 'Warranty' : '')}"
+                            readonly>
                         <select class="form-select d-none" id="requestType" th:field="*{requestType}" required>
                             <option value="">Select request type</option>
                             <option value="maintenance">Maintenance</option>
                             <option value="warranty">Warranty</option>
                         </select>
-                        <div class="text-danger small mt-1" th:errors="*{requestType}" th:if="${#fields.hasErrors('requestType')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{requestType}"
+                            th:if="${#fields.hasErrors('requestType')}"></div>
                     </div>
                     <div class="col-12 col-md-6" th:if="${isAdmin}">
                         <label class="form-label" for="staffId">Staff</label>
                         <select class="form-select" id="staffId" th:field="*{staffId}" required>
                             <option value="">Select a staff</option>
-                            <option th:each="staff : ${staffList}"
-                                    th:value="${staff.id}"
-                                    th:text="${staff.name} + ' (' + staff.email + ')'">
+                            <option th:each="staff : ${staffList}" th:value="${staff.id}"
+                                th:text="(${staff.name != null ? staff.name : 'No Name'}) + ' (' + (${staff.email != null ? staff.email : 'No Email'}) + ')'">
                             </option>
                         </select>
-                        <div class="text-danger small mt-1" th:errors="*{staffId}" th:if="${#fields.hasErrors('staffId')}"></div>
+                        <div class="text-danger small mt-1" th:errors="*{staffId}"
+                            th:if="${#fields.hasErrors('staffId')}"></div>
                         <small class="text-muted">Select a staff to assign this maintenance</small>
                     </div>
                     <!-- Status readonly cho admin -->
@@ -110,65 +119,66 @@
             </form>
         </div>
     </div>
-</div> 
-<div th:with="orderProductJson=${orders.stream().collect(T(java.util.stream.Collectors).toMap(o -> o.orderId, o -> o.orderItems.stream().map(oi -> oi.product.productId).collect(T(java.util.stream.Collectors).toList()))}, orderCustomerJson=${orders.stream().collect(T(java.util.stream.Collectors).toMap(o -> o.orderId, o -> o.customer.customerId))}">
-<script th:inline="javascript">
-    var orderProductMap = /*[[${orderProductJson}]]*/ {};
-    var orderCustomerMap = /*[[${orderCustomerJson}]]*/ {};
-    var allProductOptions = [];
-    var allCustomerOptions = [];
-    document.addEventListener('DOMContentLoaded', function() {
-        var productSelect = document.getElementById('productId');
-        var customerSelect = document.getElementById('customerId');
-        var orderSelect = document.getElementById('orderId');
-        allProductOptions = Array.from(productSelect.options);
-        allCustomerOptions = Array.from(customerSelect.options);
-        function filterByOrder(orderId) {
-            // Product filter
-            if (orderProductMap[orderId]) {
-                var allowedProducts = orderProductMap[orderId].map(String);
-                productSelect.innerHTML = '';
-                allProductOptions.forEach(function(opt) {
-                    if (opt.value === '' || allowedProducts.includes(opt.value)) {
+</div>
+<div
+    th:with="orderProductJson=${orders.stream().collect(T(java.util.stream.Collectors).toMap(o -> o.orderId, o -> o.orderItems.stream().map(oi -> oi.product.productId).collect(T(java.util.stream.Collectors).toList()))}, orderCustomerJson=${orders.stream().collect(T(java.util.stream.Collectors).toMap(o -> o.orderId, o -> o.customer.customerId))}">
+    <script th:inline="javascript">
+        var orderProductMap = /*[[${orderProductJson}]]*/ {};
+        var orderCustomerMap = /*[[${orderCustomerJson}]]*/ {};
+        var allProductOptions = [];
+        var allCustomerOptions = [];
+        document.addEventListener('DOMContentLoaded', function () {
+            var productSelect = document.getElementById('productId');
+            var customerSelect = document.getElementById('customerId');
+            var orderSelect = document.getElementById('orderId');
+            allProductOptions = Array.from(productSelect.options);
+            allCustomerOptions = Array.from(customerSelect.options);
+            function filterByOrder(orderId) {
+                // Product filter
+                if (orderProductMap[orderId]) {
+                    var allowedProducts = orderProductMap[orderId].map(String);
+                    productSelect.innerHTML = '';
+                    allProductOptions.forEach(function (opt) {
+                        if (opt.value === '' || allowedProducts.includes(opt.value)) {
+                            productSelect.appendChild(opt.cloneNode(true));
+                        }
+                    });
+                } else {
+                    productSelect.innerHTML = '';
+                    allProductOptions.forEach(function (opt) {
                         productSelect.appendChild(opt.cloneNode(true));
-                    }
-                });
-            } else {
-                productSelect.innerHTML = '';
-                allProductOptions.forEach(function(opt) {
-                    productSelect.appendChild(opt.cloneNode(true));
-                });
-            }
-            // Customer filter
-            if (orderCustomerMap[orderId]) {
-                var allowedCustomer = String(orderCustomerMap[orderId]);
-                customerSelect.innerHTML = '';
-                allCustomerOptions.forEach(function(opt) {
-                    if (opt.value === '' || opt.value === allowedCustomer) {
+                    });
+                }
+                // Customer filter
+                if (orderCustomerMap[orderId]) {
+                    var allowedCustomer = String(orderCustomerMap[orderId]);
+                    customerSelect.innerHTML = '';
+                    allCustomerOptions.forEach(function (opt) {
+                        if (opt.value === '' || opt.value === allowedCustomer) {
+                            customerSelect.appendChild(opt.cloneNode(true));
+                        }
+                    });
+                } else {
+                    customerSelect.innerHTML = '';
+                    allCustomerOptions.forEach(function (opt) {
                         customerSelect.appendChild(opt.cloneNode(true));
-                    }
-                });
-            } else {
-                customerSelect.innerHTML = '';
-                allCustomerOptions.forEach(function(opt) {
-                    customerSelect.appendChild(opt.cloneNode(true));
-                });
+                    });
+                }
+                // Debug
+                console.log('Order:', orderId, 'Allowed products:', orderProductMap[orderId], 'Allowed customer:', orderCustomerMap[orderId]);
             }
-            // Debug
-            console.log('Order:', orderId, 'Allowed products:', orderProductMap[orderId], 'Allowed customer:', orderCustomerMap[orderId]);
-        }
-        if (orderSelect) {
-            orderSelect.addEventListener('change', function() {
-                filterByOrder(orderSelect.value);
-            });
-            // Filter on page load if order is pre-selected
-            if (orderSelect.value) {
-                filterByOrder(orderSelect.value);
+            if (orderSelect) {
+                orderSelect.addEventListener('change', function () {
+                    filterByOrder(orderSelect.value);
+                });
+                // Filter on page load if order is pre-selected
+                if (orderSelect.value) {
+                    filterByOrder(orderSelect.value);
+                }
             }
-        }
-    });
-</script>
-</div> 
+        });
+    </script>
+</div>
 <style>
     div.card input[readonly].form-control,
     div.card textarea[readonly].form-control {
@@ -178,14 +188,14 @@
         cursor: not-allowed !important;
         border-color: #e0e0e0 !important;
     }
-</style> 
+</style>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var select = document.getElementById('requestType');
-    var display = document.getElementById('requestTypeDisplay');
-    if (select && display) {
-        var selected = select.options[select.selectedIndex];
-        display.value = selected && selected.value ? selected.text : '';
-    }
-});
-</script> 
+    document.addEventListener('DOMContentLoaded', function () {
+        var select = document.getElementById('requestType');
+        var display = document.getElementById('requestTypeDisplay');
+        if (select && display) {
+            var selected = select.options[select.selectedIndex];
+            display.value = selected && selected.value ? selected.text : '';
+        }
+    });
+</script>

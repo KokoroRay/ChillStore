@@ -146,8 +146,127 @@ public class CustomerProductController {
 
     @GetMapping("/Customer/Wishlist")
     @PreAuthorize("hasAnyRole('CUSTOMER')")
-    public String wishlistPage() {
+    public String wishlistPage(Model model) {
+        Customer customer = getCurrentCustomer();
+        if (customer != null) {
+            List<Integer> wishlistProductIds = customerService.getWishlistProductIds(customer.getCustomerId());
+            model.addAttribute("wishlistProductIds", wishlistProductIds);
+        }
         return "customer/wishlist/Wishlist";
+    }
+
+    // API endpoints for wishlist management
+    @GetMapping("/api/wishlist")
+    @ResponseBody
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
+    public Map<String, Object> getWishlist() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Customer customer = getCurrentCustomer();
+            if (customer != null) {
+                List<Integer> wishlistProductIds = customerService.getWishlistProductIds(customer.getCustomerId());
+                response.put("success", true);
+                response.put("wishlistProductIds", wishlistProductIds);
+            } else {
+                response.put("success", false);
+                response.put("message", "Customer not found");
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error retrieving wishlist: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @PostMapping("/api/wishlist/add/{productId}")
+    @ResponseBody
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
+    public Map<String, Object> addToWishlist(@PathVariable("productId") Integer productId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Customer customer = getCurrentCustomer();
+            if (customer != null) {
+                customerService.addProductToWishlist(customer.getCustomerId(), productId);
+                response.put("success", true);
+                response.put("message", "Product added to wishlist successfully");
+            } else {
+                response.put("success", false);
+                response.put("message", "Customer not found");
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error adding to wishlist: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @DeleteMapping("/api/wishlist/remove/{productId}")
+    @ResponseBody
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
+    public Map<String, Object> removeFromWishlist(@PathVariable("productId") Integer productId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Customer customer = getCurrentCustomer();
+            if (customer != null) {
+                customerService.removeProductFromWishlist(customer.getCustomerId(), productId);
+                response.put("success", true);
+                response.put("message", "Product removed from wishlist successfully");
+            } else {
+                response.put("success", false);
+                response.put("message", "Customer not found");
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error removing from wishlist: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("/api/wishlist/check/{productId}")
+    @ResponseBody
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
+    public Map<String, Object> checkWishlistStatus(@PathVariable("productId") Integer productId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Customer customer = getCurrentCustomer();
+            if (customer != null) {
+                boolean isInWishlist = customerService.isProductInWishlist(customer.getCustomerId(), productId);
+                response.put("success", true);
+                response.put("isInWishlist", isInWishlist);
+            } else {
+                response.put("success", false);
+                response.put("message", "Customer not found");
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error checking wishlist status: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @GetMapping("/api/product/{productId}")
+    @ResponseBody
+    public Map<String, Object> getProductById(@PathVariable("productId") Integer productId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Product product = productService.getProductById(productId);
+            if (product != null) {
+                response.put("success", true);
+                response.put("productId", product.getProductId());
+                response.put("name", product.getName());
+                response.put("price", product.getPrice());
+                response.put("imageUrl", product.getImageUrl());
+                response.put("description", product.getDescription());
+                response.put("stockQty", product.getStockQty());
+            } else {
+                response.put("success", false);
+                response.put("message", "Product not found");
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Error retrieving product: " + e.getMessage());
+        }
+        return response;
     }
 
     @GetMapping("/Product/{id}")
@@ -228,13 +347,13 @@ public class CustomerProductController {
 
         // List of northern provinces (simplified)
         String[] northernProvinces = {
-            "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
-            "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
-            "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
-            "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
-            "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
-            "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
-            "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
+                "hà nội", "hanoi", "hải phòng", "haiphong", "bắc ninh", "bắc giang", "lào cai",
+                "lao cai", "điện biên", "dien bien", "hòa bình", "hoa binh", "lai châu", "lai chau",
+                "sơn la", "son la", "hà giang", "ha giang", "cao bằng", "cao bang", "bắc kạn", "bac kan",
+                "lạng sơn", "lang son", "tuyên quang", "tuyen quang", "thái nguyên", "thai nguyen",
+                "phú thọ", "phu tho", "vĩnh phúc", "vinh phuc", "quảng ninh", "quang ninh",
+                "hải dương", "hai duong", "hưng yên", "hung yen", "thái bình", "thai binh",
+                "hà nam", "ha nam", "nam định", "nam dinh", "ninh bình", "ninh binh", "thanh hóa", "thanh hoa"
         };
 
         // Check if address contains any northern province
@@ -258,9 +377,9 @@ public class CustomerProductController {
     public String viewProductsByCategory(
             @PathVariable("categoryId") Integer categoryId,
             Model model) {
-                Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
-                Page<ProductDTO> productDTOsPage = productService.getProductsByCategory(categoryId.toString(), pageable);
-                List<ProductDTO> products = productDTOsPage.getContent();
+        Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
+        Page<ProductDTO> productDTOsPage = productService.getProductsByCategory(categoryId.toString(), pageable);
+        List<ProductDTO> products = productDTOsPage.getContent();
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
@@ -276,11 +395,11 @@ public class CustomerProductController {
     public String viewProductsByBrand(
             @PathVariable("brandId") Integer brandId,
             Model model) {
-                // Get products by brand using the searchProductsWithFilters method
-                Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
-                Page<Product> productsPage = productService.searchProductsWithFilters(
-                    null, null, brandId, null, null, null, null, null, pageable, true);
-                List<Product> products = productsPage.getContent();
+        // Get products by brand using the searchProductsWithFilters method
+        Pageable pageable = PageRequest.of(0, 100); // Get a reasonable number of products
+        Page<Product> productsPage = productService.searchProductsWithFilters(
+                null, null, brandId, null, null, null, null, null, pageable, true);
+        List<Product> products = productsPage.getContent();
 
         Brand brand = brandRepository.findById(brandId)
                 .orElseThrow(() -> new RuntimeException("Brand not found"));
@@ -343,7 +462,7 @@ public class CustomerProductController {
             int lastPage = products.getTotalPages() - 1;
             pageable = PageRequest.of(lastPage, size, pageable.getSort());
             products = productService.searchDiscountProductsWithFilters(
-                keyword, categoryId, brandId, minPrice, maxPrice, sortBy, sortDir, pageable);
+                    keyword, categoryId, brandId, minPrice, maxPrice, sortBy, sortDir, pageable);
             page = lastPage;
         }
         List<Category> categories = categoryService.getAllCategory();
@@ -492,7 +611,7 @@ public class CustomerProductController {
         if (isAdmin) {
             // Lấy staff đầu tiên trong DB để dùng làm staffId
             Staff anyStaff = staffRepository.findAll().stream().findFirst()
-                .orElseThrow(() -> new RuntimeException("No staff found!"));
+                    .orElseThrow(() -> new RuntimeException("No staff found!"));
             staffIdToLog = anyStaff.getId();
         } else {
             Staff staff = staffRepository.findByEmail(username)
@@ -517,7 +636,7 @@ public class CustomerProductController {
                 .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
         if (isAdmin) {
             Staff anyStaff = staffRepository.findAll().stream().findFirst()
-                .orElseThrow(() -> new RuntimeException("No staff found!"));
+                    .orElseThrow(() -> new RuntimeException("No staff found!"));
             staffIdToLog = anyStaff.getId();
         } else {
             Staff staff = staffRepository.findByEmail(username)

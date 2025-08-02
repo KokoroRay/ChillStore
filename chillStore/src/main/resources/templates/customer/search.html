@@ -13,7 +13,7 @@
         </div>
         <div class="product-list" th:if="${products.totalElements > 0}">
             <div class="product-item" th:each="product : ${products.content}">
-                <a th:href="@{'/Product/' + ${product.productId}}">
+                <a th:href="@{'/customer/product/viewProductDetail/' + ${product.productId}}">
                     <img th:src="@{'/static/images/' + ${product.image}}" alt="Ảnh sản phẩm" />
                     <h3 th:text="${product.name}"></h3>
                     <p th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></p>

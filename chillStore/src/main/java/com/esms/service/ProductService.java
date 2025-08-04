@@ -77,7 +77,16 @@ public interface ProductService {
     List<ProductDTO> getProductsByCategoryId(Long categoryId);
     List<ProductDTO> getProductsByBrandId(Long brandId);
     List<String> suggestProductNames(String term);
-
+    
+    /**
+     * Lấy số đánh giá trung bình của sản phẩm
+     */
+    Double getAverageRating(Integer productId);
+    
+    /**
+     * Lấy số lượng đã bán của sản phẩm
+     */
+    Integer getSoldQuantity(Integer productId);
 
 }
 

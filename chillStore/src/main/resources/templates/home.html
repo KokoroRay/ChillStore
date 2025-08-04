@@ -149,19 +149,41 @@
     <a th:href="@{/home}" class="btn btn-secondary ms-1" style="height: 44px; min-width: 90px;"><i class="fas fa-sync-alt me-1"></i>Đặt lại</a>
   </form>
 </div>
-<div class="product-container"  id="product-list">
-  <div class="product-grid">
-    <div class="product-card" th:each="product : ${products}">
-      <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration: none; color: inherit; display: block;">
-        <img th:src="@{${product.imageUrl}}" alt="Ảnh sản phẩm">
-        <h3 th:text="${product.name}" style="color: #2196f3;">Tên sản phẩm</h3>
-        <p style=""
-           th:text="'Price: ' + ${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'">
-        </p>
-      </a>
-    </div>
+  <div class="product-container" id="product-list">
+    <div class="product-grid">
+      <div class="product-card" th:each="product : ${products}">
+        <a th:href="@{'/Product/' + ${product.productId}}" style="text-decoration: none; color: inherit; display: block;">
+          <img th:src="@{${product.imageUrl}}" alt="Ảnh sản phẩm">
+          <h3 th:text="${product.name}" style="color: #2196f3; margin: 10px 0 5px;"></h3>
+          <p style="color: #e53935; font-weight: bold;"
+             th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')} + ' VND'">
+          </p>
 
+          <!-- Phần metadata mới - chuyên nghiệp hơn -->
+          <div class="product-meta">
+            <!-- Rating -->
+            <div class="rating-badge">
+              <i class="fas fa-star"></i>
+              <span th:text="${productRatings[product.productId] != null ?
+                             #numbers.formatDecimal(productRatings[product.productId], 1, 1) : ''}">
+            </span>
+            </div>
+
+            <!-- Sold -->
+            <div class="sold-badge">
+              <i class="fas fa-shopping-cart"></i>
+              <span th:text="${productSoldQuantities[product.productId] != null ?
+                            productSoldQuantities[product.productId] : 0}">
+            </span>
+              sold
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
   </div>
+
+
 </div>
   <div class="pagination">
     <th:block th:with="baseUrl=@{/home(

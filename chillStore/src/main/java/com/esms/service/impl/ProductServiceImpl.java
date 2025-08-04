@@ -462,6 +462,17 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Double getAverageRating(Integer productId) {
+        return productRepository.getAverageRatingByProductId(productId);
+    }
+    
+    @Override
+    public Integer getSoldQuantity(Integer productId) {
+        Integer count = orderItemRepository.countTotalSoldByProductId(productId);
+        return count != null ? count : 0;
+    }
+
     private List<ProductDTO> convertToProductDTOs(List<Product> products) {
         return products.stream().map(product -> {
             ProductDTO dto = new ProductDTO();

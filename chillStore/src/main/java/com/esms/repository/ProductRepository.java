@@ -58,6 +58,16 @@ List<Product> findByNameContainingIgnoreCase(String keyword);
             "ORDER BY d.discountPct DESC")
     List<Product> findTop10ByNameContainingIgnoreCaseOrderByDiscountDesc(@Param("term") String term);
     @Query("SELECT oi.product FROM OrderItem oi WHERE oi.order.orderId = :orderId")
-
     List<Product> findProductsByOrderId(Integer orderId);
+    
+    /**
+     * Lấy điểm đánh giá trung bình của sản phẩm
+     */
+    @Query("SELECT AVG(CAST(f.rating AS double)) FROM Feedback f WHERE f.product.productId = :productId AND f.rating IS NOT NULL")
+    Double getAverageRatingByProductId(@Param("productId") Integer productId);
+    
+    /**
+     * Kiểm tra xem category có sản phẩm nào không
+     */
+    boolean existsByCategoryId(Integer categoryId);
 }

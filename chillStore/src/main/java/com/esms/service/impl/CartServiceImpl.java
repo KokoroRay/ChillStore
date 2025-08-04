@@ -159,19 +159,21 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public double calculateTotal(List<CartItemDTO> cartItems, Double voucherDiscountPct, Double voucherDiscountAmount) {
-        double total = 0.0;
+        double subtotal = 0.0;
         for (CartItemDTO item : cartItems) {
-            double priceAfterDiscount = item.getPrice() * (1 - item.getDiscount());
-            total += priceAfterDiscount * item.getQuantity();
+            // item.getPrice() đã bao gồm discount của sản phẩm rồi
+            subtotal += item.getTotalPrice();
         }
 
+        // Áp dụng voucher discount
         if (voucherDiscountAmount != null && voucherDiscountAmount > 0) {
-            total -= voucherDiscountAmount;
+            subtotal -= voucherDiscountAmount;
         } else if (voucherDiscountPct != null && voucherDiscountPct > 0) {
-            total = total * (1 - voucherDiscountPct);
+            // voucherDiscountPct đã được chia cho 100 rồi (0.1 = 10%)
+            subtotal = subtotal * (1 - voucherDiscountPct);
         }
 
-        return Math.max(total, 0);
+        return Math.max(subtotal, 0);
     }
 
     @Override

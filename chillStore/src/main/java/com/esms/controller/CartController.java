@@ -77,7 +77,7 @@ public class CartController {
         double total = cartService.calculateTotal(
                 cartItems,
                 selectedVoucher != null && selectedVoucher.getDiscount_pct() != null
-                        ? selectedVoucher.getDiscount_pct().doubleValue()
+                        ? selectedVoucher.getDiscount_pct().doubleValue() / 100.0
                         : null,
                 selectedVoucher != null && selectedVoucher.getDiscount_amount() != null
                         ? selectedVoucher.getDiscount_amount().doubleValue()

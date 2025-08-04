@@ -77,7 +77,7 @@
                 <select name="voucherCode" id="voucher" class="form-select">
                     <option value="">-- Select a voucher --</option>
                     <option th:each="v : ${vouchers}" th:value="${v.code}"
-                        th:text="${v.code + ' - ' + (v.discount_pct != null ? (v.discount_pct * 100) + '%' : v.discount_amount + ' đ')}"
+                        th:text="${v.code + ' - ' + (v.discount_pct != null ? v.discount_pct + '%' : v.discount_amount + ' đ')}"
                         th:selected="${selectedVoucher != null and v.code == selectedVoucher.code}">
                     </option>
                 </select>
@@ -105,7 +105,7 @@
                     <tr th:if="${selectedVoucher != null}">
                         <th>Voucher Discount:</th>
                         <td
-                            th:text="${selectedVoucher.discount_pct != null ? (selectedVoucher.discount_pct * 100) + '%' : selectedVoucher.discount_amount + ' đ'}">
+                            th:text="${selectedVoucher.discount_pct != null ? selectedVoucher.discount_pct + '%' : selectedVoucher.discount_amount + ' đ'}">
                         </td>
                     </tr>
                     <tr class="fw-bold">

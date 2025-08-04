@@ -67,12 +67,22 @@ public class CustomerOrderController {
 
     @GetMapping("/order")
     public String currentOrders(Model model, Authentication authentication, 
-                               @RequestParam(defaultValue = "all") String status) {
+                               @RequestParam(defaultValue = "all") String status,
+                               @RequestParam(required = false) String startDate,
+                               @RequestParam(required = false) String endDate) {
         try {
             String email = authentication.getName();
             Integer customerId = customerService.getCustomerByEmail(email).getCustomerId();
             
-            List<OrderDTO> orders = orderService.getOrderByCustomerId(customerId);
+            List<OrderDTO> orders;
+            
+            // Use date filter if provided
+            if ((startDate != null && !startDate.trim().isEmpty()) || 
+                (endDate != null && !endDate.trim().isEmpty())) {
+                orders = orderService.getOrderByCustomerIdWithDateFilter(customerId, startDate, endDate);
+            } else {
+                orders = orderService.getOrderByCustomerId(customerId);
+            }
             
             // Filter by status if specified
             if (!"all".equals(status)) {
@@ -88,6 +98,8 @@ public class CustomerOrderController {
             
             model.addAttribute("orders", orders);
             model.addAttribute("selectedStatus", status);
+            model.addAttribute("startDate", startDate);
+            model.addAttribute("endDate", endDate);
             
             return "customer/order/current-orders";
         } catch (Exception e) {
@@ -99,12 +111,22 @@ public class CustomerOrderController {
     @GetMapping("/api/orders")
     @ResponseBody
     public ResponseEntity<?> getOrdersAjax(Authentication authentication, 
-                                          @RequestParam(defaultValue = "all") String status) {
+                                          @RequestParam(defaultValue = "all") String status,
+                                          @RequestParam(required = false) String startDate,
+                                          @RequestParam(required = false) String endDate) {
         try {
             String email = authentication.getName();
             Integer customerId = customerService.getCustomerByEmail(email).getCustomerId();
             
-            List<OrderDTO> orders = orderService.getOrderByCustomerId(customerId);
+            List<OrderDTO> orders;
+            
+            // Use date filter if provided
+            if ((startDate != null && !startDate.trim().isEmpty()) || 
+                (endDate != null && !endDate.trim().isEmpty())) {
+                orders = orderService.getOrderByCustomerIdWithDateFilter(customerId, startDate, endDate);
+            } else {
+                orders = orderService.getOrderByCustomerId(customerId);
+            }
             
             // Filter by status if specified
             if (!"all".equals(status)) {

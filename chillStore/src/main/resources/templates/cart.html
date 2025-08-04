@@ -19,8 +19,10 @@
     <div class="container mt-4">
         <h1 class="text-center mb-4">Your Shopping Cart</h1>
 
-        <!-- Hiển thị thông báo lỗi nếu có -->
+        <!-- Hiển thị các thông báo -->
         <div th:if="${cartError}" class="alert alert-danger" th:text="${cartError}"></div>
+        <div th:if="${cartWarning}" class="alert alert-warning" th:text="${cartWarning}"></div>
+        <div th:if="${cartSuccess}" class="alert alert-success" th:text="${cartSuccess}"></div>
 
         <!-- Table of Cart Items -->
         <table class="table table-bordered shopping-cart">
@@ -160,6 +162,14 @@
                             if (totalCell) {
                                 totalCell.textContent = data.formattedTotal || (data.totalPrice + ' đ');
                             }
+                            
+                            // Cập nhật số lượng thực tế trong input
+                            if (data.actualQuantity) {
+                                const quantityInput = row.querySelector('input[type="number"]');
+                                if (quantityInput) {
+                                    quantityInput.value = data.actualQuantity;
+                                }
+                            }
                         }
 
                         // Update summary
@@ -170,9 +180,14 @@
                             window.updateCartCount();
                         }
 
-                        showMessage('Quantity updated successfully!', 'success');
+                        // Hiển thị thông báo phù hợp
+                        if (data.warning) {
+                            showMessage(data.warning, 'warning');
+                        } else {
+                            showMessage('Cập nhật số lượng thành công!', 'success');
+                        }
                     } else {
-                        showMessage('Failed to update quantity: ' + (data.error || 'Unknown error'), 'error');
+                        showMessage('Không thể cập nhật số lượng: ' + (data.error || 'Lỗi không xác định'), 'error');
                     }
                 })
                 .catch(error => {
@@ -248,13 +263,31 @@
             const existingAlerts = document.querySelectorAll('.alert');
             existingAlerts.forEach(alert => alert.remove());
 
+            // Định nghĩa class và icon cho từng loại thông báo
+            let alertClass, iconClass;
+            switch(type) {
+                case 'error':
+                    alertClass = 'alert-danger';
+                    iconClass = 'exclamation-triangle';
+                    break;
+                case 'warning':
+                    alertClass = 'alert-warning';
+                    iconClass = 'exclamation-triangle';
+                    break;
+                case 'success':
+                default:
+                    alertClass = 'alert-success';
+                    iconClass = 'check-circle';
+                    break;
+            }
+
             // Create new alert
             const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type === 'error' ? 'danger' : 'success'} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
             alertDiv.style.zIndex = '1050';
             alertDiv.role = 'alert';
             alertDiv.innerHTML = `
-                <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'} me-2"></i>
+                <i class="fas fa-${iconClass} me-2"></i>
                 <span>${message}</span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             `;

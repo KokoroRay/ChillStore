@@ -38,7 +38,7 @@ public class SecurityConfig {
 
     @Autowired
     private CustomerOAuth2UserService customerOAuth2UserService;
-
+    
     @Autowired
     private CustomOidcUserService customOidcUserService;
 
@@ -56,8 +56,6 @@ public class SecurityConfig {
                                 "/auth/forgot-password", "/auth/verify-otp", "/auth/reset-password",
                                 "/auth/login", "/auth/register", "/auth/resend-otp"
                         ).permitAll()
-                        // Wishlist API endpoints - allow CUSTOMER access
-                        .requestMatchers("/api/wishlist/**").hasAnyRole("CUSTOMER", "STAFF", "ADMIN")
                         // Phân quyền công dân cao nhất
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN") //role cao nhất
                         // giai cấp bị bóc lộ
@@ -96,7 +94,6 @@ public class SecurityConfig {
                                 "/staff/orders/*/update-status",
                                 "/staff/orders/*/confirm-refund",
                                 "/api/feedback/*/reply",
-                                "/api/wishlist/**",
                                 "/customer/api/maintenance",
                                 "/admin/maintenance/**",
                                 "/staff/maintenance/**"
@@ -120,7 +117,7 @@ public class SecurityConfig {
                 // Lấy danh sách quyền của user
                 Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
                 String redirectUrl = "/";
-
+                
                 // Chuyển hướng dựa trên role
                 if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
                     redirectUrl = "/admin/category";   // Admin dashboard
@@ -129,7 +126,7 @@ public class SecurityConfig {
                 } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER"))) {
                     redirectUrl = "/home";             // Customer home page
                 }
-
+                
 
                 // Lưu thông tin người dùng vào session
                 Object principal = authentication.getPrincipal();

@@ -111,6 +111,12 @@ public class CheckoutServiceImpl implements CheckoutService {
         
         // Tính tổng tiền cuối cùng (bao gồm shipping)
         BigDecimal totalAmount = BigDecimal.valueOf(subtotal).subtract(discountAmount).add(BigDecimal.valueOf(shippingCost));
+        
+        // Kiểm tra giới hạn tổng tiền (decimal(15,2) = tối đa 9,999,999,999,999.99)
+        BigDecimal maxAmount = new BigDecimal("9999999999999.99");
+        if (totalAmount.compareTo(maxAmount) > 0) {
+            throw new RuntimeException("Tổng tiền đơn hàng vượt quá giới hạn cho phép (9,999,999,999,999.99 VND). Vui lòng giảm số lượng sản phẩm.");
+        }
 
         // Tạo đơn hàng
         Order order = new Order();

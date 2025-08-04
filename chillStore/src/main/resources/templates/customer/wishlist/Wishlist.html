@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -76,189 +75,133 @@
 </head>
 <body>
 <div th:replace="fragments/navigationBar :: navBar"></div>
-<a href="/#product-list" class="btn btn-outline-secondary position-fixed" style="top:90px;left:30px;z-index:1000;">
-    <i class="fa fa-arrow-left"></i> Back
-</a>
-<div style="position:fixed;top:90px;right:30px;z-index:1000;display:flex;gap:10px;">
-    <!-- Keep both Add to Cart and Remove Selected buttons -->
-    <button id="btn-add-to-cart-selected" class="btn btn-success" style="display:none;">
-        <i class="fa fa-shopping-cart"></i> Add to Cart
-    </button>
-    <a href="#" id="btn-remove-selected" class="btn btn-danger" style="display:none;">
-        <i class="fa fa-trash"></i> Remove
+    <a href="/#product-list" class="btn btn-outline-secondary position-fixed" style="top:90px;left:30px;z-index:1000;">
+        <i class="fa fa-arrow-left"></i> Back
     </a>
-</div>
-<div id="floatingMessage" class="floating-message" style="display: none;">
-    <i class="fas fa-check-circle me-2"></i>
-    <span id="messageText"></span>
-</div>
-<div class="container main-content">
-    <h2 class="text-center mb-4">Wishlist</h2>
-    <div class="row" id="wishlist-products">
-        <!-- Products will be rendered by JS -->
+    <div style="position:fixed;top:90px;right:30px;z-index:1000;display:flex;gap:10px;">
+        <!-- Only keep Remove button -->
+        <button id="btn-add-to-cart-selected" class="btn btn-success" style="display:none;">
+            <i class="fa fa-shopping-cart"></i> Add to Cart
+        </button>
+        <a href="#" id="btn-remove-selected" class="btn btn-danger" style="display:none;">
+            <i class="fa fa-trash"></i> Remove
+        </a>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script th:inline="javascript">
-    // Get wishlist product IDs from server
-    const wishlistProductIds = /*[[${wishlistProductIds}]]*/ [];
-
-    // Render sản phẩm wishlist từ database
-    async function renderWishlist() {
+    <div id="floatingMessage" class="floating-message" style="display: none;">
+        <i class="fas fa-check-circle me-2"></i>
+        <span id="messageText"></span>
+    </div>
+    <div class="container main-content">
+        <h2 class="text-center mb-4">Wishlist</h2>
+        <div class="row" id="wishlist-products">
+            <!-- Products will be rendered by JS -->
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Render sản phẩm wishlist từ localStorage
+    function renderWishlist() {
+        const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
         const container = document.getElementById('wishlist-products');
-        container.innerHTML = '<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-3x text-muted mb-3"></i><h5 class="text-muted">Loading wishlist...</h5></div>';
-
-        try {
-            // Fetch wishlist from database
-            const response = await fetch('/api/wishlist', {
-                method: 'GET',
-                credentials: 'same-origin'
-            });
-
-            console.log('Wishlist API response status:', response.status);
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch wishlist');
-            }
-
-            const data = await response.json();
-            console.log('Wishlist API response data:', data);
-
-            if (!data.success) {
-                throw new Error(data.message || 'Failed to load wishlist');
-            }
-
-            const wishlistProductIds = data.wishlistProductIds || [];
-            console.log('Wishlist product IDs:', wishlistProductIds);
-
-            if (wishlistProductIds.length === 0) {
-                container.innerHTML = `<div class='text-center py-5'><i class='fas fa-heart-broken fa-3x text-muted mb-3'></i><h5 class='text-muted'>No favorite products yet</h5></div>`;
-                return;
-            }
-
-            // Fetch product details for each wishlist item
-            const products = [];
-            for (const productId of wishlistProductIds) {
-                try {
-                    const productResponse = await fetch(`/api/product/${productId}`, {
-                        method: 'GET',
-                        credentials: 'same-origin'
-                    });
-
-                    if (productResponse.ok) {
-                        const productData = await productResponse.json();
-                        console.log(`Product data for ID ${productId}:`, productData);
-
-                        if (productData.success && productData.productId) {
-                            products.push(productData);
-                        } else {
-                            console.error(`Invalid product data for ID ${productId}:`, productData);
-                        }
-                    } else {
-                        console.error(`Failed to fetch product ${productId}:`, productResponse.status);
-                    }
-                } catch (error) {
-                    console.error(`Error fetching product ${productId}:`, error);
-                }
-            }
-
-            console.log('Final products array:', products);
-
-            // Render products
-            container.innerHTML = '';
-            console.log('Rendering products:', products.length);
-
-            products.forEach((product, index) => {
-                console.log(`Rendering product ${index}:`, product);
-
-                const col = document.createElement('div');
-                col.className = 'col-6 col-sm-4 col-md-3 mb-3 d-flex';
-
-                col.innerHTML = `
-                    <div class="product-card w-100 position-relative" style="cursor:pointer;" data-product-id="${product.productId}">
-                        <span class="custom-checkbox">
-                            <i class="fa fa-check"></i>
-                        </span>
-                        <img src="${product.imageUrl || '/images/default-product.png'}" alt="${product.name}" class="product-img">
-                        <h5 class="product-title" style="color: #2196f3;">${product.name}</h5>
-                        <p class="mb-2 text-center"><span style="font-weight: bold;">Price:</span> <span style="font-weight: bold;">${Number(product.price).toLocaleString('vi-VN')} VND</span></p>
-                        <div class="product-actions mt-auto gap-2">
-                            <!-- Remove button removed -->
-                        </div>
-                    </div>
-                `;
-
-                // Gán sự kiện click cho card
-                const card = col.querySelector('.product-card');
-                card.addEventListener('click', function(e) {
-                    // Don't navigate if clicking on buttons
-                    if (e.target.closest('.product-actions')) {
-                        return;
-                    }
-                    window.location = '/Product/' + product.productId;
-                });
-
-                // Gán sự kiện cho checkbox
-                const checkbox = col.querySelector('.custom-checkbox');
-                checkbox.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                    this.classList.toggle('selected');
-                    updateBuySelectedAndRemoveButtons();
-                });
-
-                container.appendChild(col);
-            });
-
-        } catch (error) {
-            console.error('Error loading wishlist:', error);
-            container.innerHTML = `<div class='text-center py-5'><i class='fas fa-exclamation-triangle fa-3x text-danger mb-3'></i><h5 class='text-danger'>Error loading wishlist</h5><p class='text-muted'>${error.message}</p></div>`;
+        container.innerHTML = '';
+        if (wishlist.length === 0) {
+            container.innerHTML = `<div class='text-center py-5'><i class='fas fa-heart-broken fa-3x text-muted mb-3'></i><h5 class='text-muted'>No favorite products yet</h5></div>`;
+            return;
         }
+        wishlist.forEach(product => {
+            const col = document.createElement('div');
+            col.className = 'col-6 col-sm-4 col-md-3 mb-3 d-flex';
+            // Format price
+            let priceHtml = 'N/A';
+            if (product.price !== undefined && product.price !== null && !isNaN(product.price)) {
+                priceHtml = `Price: ${Number(product.price).toLocaleString('en-US')} VND`;
+            }
+            col.innerHTML = `
+                <div class="product-card w-100 position-relative" style="cursor:pointer;" data-product-id="${product.productId}">
+                    <span class="custom-checkbox">
+                        <i class="fa fa-check"></i>
+                    </span>
+                    <img src="${product.imageUrl}" alt="${product.name}" class="product-img">
+                    <h5 class="product-title" style="color: #2196f3;">${product.name}</h5>
+                    <p class="mb-2 text-center"><span style="font-weight: bold;">Price:</span> <span style="font-weight: bold;">${Number(product.price).toLocaleString('vi-VN')} VND</span></p>
+                    <div class="product-actions mt-auto gap-2">
+                    </div>
+                </div>
+            `;
+            // Gán sự kiện click cho card
+            const card = col.querySelector('.product-card');
+            card.addEventListener('click', function() {
+                window.location = '/Product/' + product.productId;
+            });
+            // Gán sự kiện cho checkbox
+            const checkbox = col.querySelector('.custom-checkbox');
+            checkbox.addEventListener('click', function(event) {
+                event.stopPropagation();
+                this.classList.toggle('selected');
+                updateBuySelectedAndRemoveButtons();
+            });
+            // Gán sự kiện cho các nút trong product-actions để không trigger card
+            col.querySelectorAll('.product-actions button, .wishlist-btn').forEach(btn => {
+                btn.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
+            });
+            container.appendChild(col);
+        });
     }
     // Hàm cập nhật hiển thị nút buy selected và remove
     function updateBuySelectedAndRemoveButtons() {
         const anySelected = document.querySelector('.custom-checkbox.selected');
-        const btnAddToCartSelected = document.getElementById('btn-add-to-cart-selected');
         const btnRemoveSelected = document.getElementById('btn-remove-selected');
+        const btnAddToCartSelected = document.getElementById('btn-add-to-cart-selected');
         if (anySelected) {
-            btnAddToCartSelected.style.display = '';
             btnRemoveSelected.style.display = '';
+            btnAddToCartSelected.style.display = '';
         } else {
-            btnAddToCartSelected.style.display = 'none';
             btnRemoveSelected.style.display = 'none';
+            btnAddToCartSelected.style.display = 'none';
         }
     }
     renderWishlist();
-
+    
     // Function to buy now - redirect to product detail page
     function buyNow(productId) {
         window.location.href = '/Product/' + productId;
     }
-
+    
     // Function to remove from wishlist
-    async function removeFromWishlist(productId) {
-        try {
-            const response = await fetch(`/api/wishlist/remove/${productId}`, {
-                method: 'DELETE',
-                credentials: 'same-origin'
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to remove from wishlist');
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-                showFloatingMessage('Product removed from wishlist successfully');
-                renderWishlist(); // Reload the wishlist
-            } else {
-                showFloatingMessage('Error: ' + data.message);
-            }
-        } catch (error) {
-            console.error('Error removing from wishlist:', error);
-            showFloatingMessage('Error removing product from wishlist');
-        }
+    function removeFromWishlist(productId) {
+        let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        wishlist = wishlist.filter(p => p.productId !== productId);
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        window.dispatchEvent(new Event('wishlist-updated'));
+        renderWishlist();
     }
+    
+    // Sự kiện xóa các sản phẩm được chọn
+    document.getElementById('btn-remove-selected').addEventListener('click', function(e) {
+        e.preventDefault();
+        const cards = document.querySelectorAll('.product-card');
+        let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        const selectedProductIds = [];
+        
+        cards.forEach(card => {
+            const checkbox = card.querySelector('.custom-checkbox');
+            if (checkbox && checkbox.classList.contains('selected')) {
+                const productId = card.getAttribute('data-product-id');
+                if (productId) {
+                    selectedProductIds.push(parseInt(productId));
+                }
+            }
+        });
+        
+        // Remove selected products by productId
+        wishlist = wishlist.filter(p => !selectedProductIds.includes(p.productId));
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        window.dispatchEvent(new Event('wishlist-updated'));
+        renderWishlist();
+        updateBuySelectedAndRemoveButtons();
+    });
 
     // Thêm sự kiện cho nút Add to Cart Selected
     document.getElementById('btn-add-to-cart-selected').addEventListener('click', async function(e) {
@@ -308,91 +251,12 @@
             }
         }
         if (successCount > 0) {
-            showFloatingMessage(`Added ${successCount} product${successCount > 1 ? 's' : ''} to cart!`);
+            showFloatingMessage(`Đã thêm ${successCount} sản phẩm vào giỏ hàng!`);
             if (window.updateCartCount) window.updateCartCount();
             document.dispatchEvent(new Event('cartUpdated'));
         }
         if (failCount > 0) {
-            showFloatingMessage(`${failCount} product${failCount > 1 ? 's' : ''} could not be added to cart!`);
-        }
-    });
-
-    // Thêm sự kiện cho nút Remove Selected
-    document.getElementById('btn-remove-selected').addEventListener('click', async function(e) {
-        e.preventDefault();
-        console.log('=== REMOVE SELECTED BUTTON CLICKED ===');
-
-        const cards = document.querySelectorAll('.product-card');
-        console.log('Total product cards found:', cards.length);
-
-        let successCount = 0;
-        let failCount = 0;
-        let total = 0;
-        const selectedProducts = [];
-
-        cards.forEach(card => {
-            const checkbox = card.querySelector('.custom-checkbox');
-            if (checkbox && checkbox.classList.contains('selected')) {
-                const productId = card.getAttribute('data-product-id');
-                console.log('Selected product ID:', productId);
-                if (productId) {
-                    selectedProducts.push(productId);
-                }
-            }
-        });
-
-        total = selectedProducts.length;
-        console.log('Total selected products:', total);
-        console.log('Selected product IDs:', selectedProducts);
-
-        if (total === 0) {
-            showFloatingMessage('Please select at least one product to remove!');
-            return;
-        }
-
-        for (const productId of selectedProducts) {
-            try {
-                console.log(`Attempting to remove product ID: ${productId}`);
-                const response = await fetch(`/api/wishlist/remove/${productId}`, {
-                    method: 'DELETE',
-                    credentials: 'same-origin',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-                console.log(`Remove response status for product ${productId}:`, response.status);
-                console.log(`Remove response headers for product ${productId}:`, response.headers);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(`Remove response data for product ${productId}:`, data);
-                    if (data.success) {
-                        successCount++;
-                        console.log(`Successfully removed product ${productId}`);
-                    } else {
-                        failCount++;
-                        console.error(`Failed to remove product ${productId}:`, data.message);
-                    }
-                } else {
-                    const errorText = await response.text();
-                    console.error(`HTTP error removing product ${productId}:`, response.status, errorText);
-                    failCount++;
-                }
-            } catch (err) {
-                failCount++;
-                console.error(`Exception removing product ${productId}:`, err);
-                console.error(`Error stack:`, err.stack);
-            }
-        }
-
-        console.log(`Final result: ${successCount} successful, ${failCount} failed`);
-
-        if (successCount > 0) {
-            showFloatingMessage(`Removed ${successCount} product${successCount > 1 ? 's' : ''} from wishlist!`);
-            renderWishlist(); // Reload the wishlist
-        }
-        if (failCount > 0) {
-            showFloatingMessage(`${failCount} product${failCount > 1 ? 's' : ''} could not be removed from wishlist!`);
+            showFloatingMessage(`${failCount} sản phẩm không thể thêm vào giỏ hàng!`);
         }
     });
 
@@ -406,8 +270,8 @@
     }
 
     // Remove all JS related to btn-buy-selected
-</script>
+    </script>
 <div th:replace="fragments/footer :: footer"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+</html> 

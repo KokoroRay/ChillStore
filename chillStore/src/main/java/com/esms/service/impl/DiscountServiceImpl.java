@@ -79,8 +79,7 @@ public class DiscountServiceImpl implements DiscountService {
         // Chuyển đổi thành DTO và trả về
         return convertToDto(discount);
     }
-
-
+    
     /**
      * Lấy tất cả discount đang hoạt động
      * @return List<DiscountDTO>

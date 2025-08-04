@@ -52,4 +52,10 @@ public interface CustomerService {
     Customer getCustomerByUsername(String username);
 
     BigDecimal calculateTotalSpending(Integer customerId);
+
+    // Wishlist methods
+    List<Integer> getWishlistProductIds(Integer customerId);
+    void addProductToWishlist(Integer customerId, Integer productId);
+    void removeProductFromWishlist(Integer customerId, Integer productId);
+    boolean isProductInWishlist(Integer customerId, Integer productId);
 }

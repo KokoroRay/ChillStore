@@ -34,6 +34,20 @@
                 </div>
             </div>
 
+            <!-- Success Alert -->
+            <div th:if="${successMessage != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Error Alert -->
+            <div th:if="${errorMessage != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
             <!-- Search and Filter Section -->
             <div class="filter-section">
                 <form th:action="@{/admin/products}" method="get" class="row g-3 align-items-end">

@@ -58,6 +58,7 @@ public class ProductController {
             @RequestParam(value = "sortOption", required = false, defaultValue = "default") String sortOption,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size,
+            @RequestParam(value = "successMessage", required = false) String successMessage,
             Model model, HttpServletRequest request) {
 
         // Validation logic for price range
@@ -133,6 +134,18 @@ public class ProductController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("priceError", priceError);
+
+        // Decode success message from URL parameter
+        String decodedSuccessMessage = null;
+        if (successMessage != null && !successMessage.isEmpty()) {
+            try {
+                decodedSuccessMessage = java.net.URLDecoder.decode(successMessage, java.nio.charset.StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                decodedSuccessMessage = successMessage; // Fallback to original if decode fails
+            }
+        }
+        model.addAttribute("successMessage", decodedSuccessMessage);
+
         String requestURI = request.getRequestURI();
         if(requestURI.startsWith("/staff")){
             return "staff/ManageProduct/Product";
@@ -256,6 +269,82 @@ public class ProductController {
             Model model,
             HttpServletRequest request
     ) {
+        // Validation cho tên sản phẩm
+        if (product.getName() == null || product.getName().trim().isEmpty()) {
+            model.addAttribute("errorMessage", "Tên sản phẩm không được để trống!");
+            model.addAttribute("product", productService.getProductById(id));
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("size", size);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("categoryId", categoryId);
+            model.addAttribute("brandId", brandId);
+            model.addAttribute("filterStatus", filterStatus);
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
+            model.addAttribute("minStock", minStock);
+            model.addAttribute("sortOption", sortOption);
+            return "admin/ManageProduct/ProductForm";
+        }
+
+        // Validation cho mô tả sản phẩm
+        if (product.getDescription() == null || product.getDescription().trim().isEmpty()) {
+            model.addAttribute("errorMessage", "Mô tả sản phẩm không được để trống!");
+            model.addAttribute("product", productService.getProductById(id));
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("size", size);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("categoryId", categoryId);
+            model.addAttribute("brandId", brandId);
+            model.addAttribute("filterStatus", filterStatus);
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
+            model.addAttribute("minStock", minStock);
+            model.addAttribute("sortOption", sortOption);
+            return "admin/ManageProduct/ProductForm";
+        }
+
+        // Validation cho Category
+        if (categoryId == null || categoryId <= 0) {
+            model.addAttribute("errorMessage", "Vui lòng chọn Category!");
+            model.addAttribute("product", productService.getProductById(id));
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("size", size);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("categoryId", categoryId);
+            model.addAttribute("brandId", brandId);
+            model.addAttribute("filterStatus", filterStatus);
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
+            model.addAttribute("minStock", minStock);
+            model.addAttribute("sortOption", sortOption);
+            return "admin/ManageProduct/ProductForm";
+        }
+
+        // Validation cho Brand
+        if (brandId == null || brandId <= 0) {
+            model.addAttribute("errorMessage", "Vui lòng chọn Brand!");
+            model.addAttribute("product", productService.getProductById(id));
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("size", size);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("categoryId", categoryId);
+            model.addAttribute("brandId", brandId);
+            model.addAttribute("filterStatus", filterStatus);
+            model.addAttribute("minPrice", minPrice);
+            model.addAttribute("maxPrice", maxPrice);
+            model.addAttribute("minStock", minStock);
+            model.addAttribute("sortOption", sortOption);
+            return "admin/ManageProduct/ProductForm";
+        }
+
         // Xử lý giá trị price nếu là String có dấu chấm hoặc phẩy
         String priceParam = request.getParameter("price");
         if (priceParam != null && !priceParam.isEmpty()) {
@@ -339,10 +428,20 @@ public class ProductController {
             model.addAttribute("sortOption", sortOption);
             return "admin/ManageProduct/ProductForm";
         }
+
+        // Set Category và Brand cho product
+        Category category = new Category();
+        category.setId(categoryId);
+        product.setCategory(category);
+
+        Brand brand = new Brand();
+        brand.setId(brandId);
+        product.setBrand(brand);
+
         if (imageUrl != null && !imageUrl.isEmpty()) {
             product.setImageUrl(imageUrl);
-
         }
+
         // Handle image upload
         if (image != null && !image.isEmpty()) {
             try {
@@ -365,7 +464,7 @@ public class ProductController {
                 product.setImageUrl("/images/" + filename);
             } catch (Exception e) {
                 // Handle file upload error
-                model.addAttribute("priceError", "Error uploading image: " + e.getMessage());
+                model.addAttribute("errorMessage", "Lỗi khi upload ảnh: " + e.getMessage());
                 model.addAttribute("product", productService.getProductById(id));
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
@@ -444,7 +543,12 @@ public class ProductController {
         }
 
         productService.updateProduct(id, product);
-        return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
+
+        // Encode thông báo thành công để tránh lỗi Unicode trong URL
+        String successMessage = "Sản phẩm đã được cập nhật thành công!";
+        String encodedMessage = java.net.URLEncoder.encode(successMessage, java.nio.charset.StandardCharsets.UTF_8);
+
+        return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s&successMessage=%s",
                 page, size,
                 keyword != null ? keyword : "",
                 categoryId != null ? categoryId : "",
@@ -453,7 +557,8 @@ public class ProductController {
                 minPrice != null ? minPrice : "",
                 maxPrice != null ? maxPrice : "",
                 minStock != null ? minStock : "",
-                sortOption != null ? sortOption : "");
+                sortOption != null ? sortOption : "",
+                encodedMessage);
     }
 
     @PostMapping("/{id}/delete")
@@ -471,7 +576,12 @@ public class ProductController {
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption) {
         productService.deleteProduct(id);
-        return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
+
+        // Encode thông báo thành công để tránh lỗi Unicode trong URL
+        String successMessage = "Sản phẩm đã được xóa thành công!";
+        String encodedMessage = java.net.URLEncoder.encode(successMessage, java.nio.charset.StandardCharsets.UTF_8);
+
+        return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s&successMessage=%s",
                 page, size,
                 keyword != null ? keyword : "",
                 categoryId != null ? categoryId : "",
@@ -480,7 +590,8 @@ public class ProductController {
                 minPrice != null ? minPrice : "",
                 maxPrice != null ? maxPrice : "",
                 minStock != null ? minStock : "",
-                sortOption != null ? sortOption : "");
+                sortOption != null ? sortOption : "",
+                encodedMessage);
     }
 
     @GetMapping("/add")
@@ -514,6 +625,42 @@ public class ProductController {
             Model model,
             HttpServletRequest request
     ) {
+        // Validation cho tên sản phẩm
+        if (product.getName() == null || product.getName().trim().isEmpty()) {
+            model.addAttribute("errorMessage", "Tên sản phẩm không được để trống!");
+            model.addAttribute("product", product);
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            return "admin/ManageProduct/ProductForm";
+        }
+
+        // Validation cho mô tả sản phẩm
+        if (product.getDescription() == null || product.getDescription().trim().isEmpty()) {
+            model.addAttribute("errorMessage", "Mô tả sản phẩm không được để trống!");
+            model.addAttribute("product", product);
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            return "admin/ManageProduct/ProductForm";
+        }
+
+        // Validation cho Category
+        if (categoryId == null || categoryId <= 0) {
+            model.addAttribute("errorMessage", "Vui lòng chọn Category!");
+            model.addAttribute("product", product);
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            return "admin/ManageProduct/ProductForm";
+        }
+
+        // Validation cho Brand
+        if (brandId == null || brandId <= 0) {
+            model.addAttribute("errorMessage", "Vui lòng chọn Brand!");
+            model.addAttribute("product", product);
+            model.addAttribute("categories", categoryService.getAllCategory());
+            model.addAttribute("brands", brandService.getAllBrands());
+            return "admin/ManageProduct/ProductForm";
+        }
+
         // Xử lý giá trị price nếu là String có dấu chấm hoặc phẩy
         String priceParam = request.getParameter("price");
         if (priceParam != null && !priceParam.isEmpty()) {
@@ -523,6 +670,7 @@ public class ProductController {
                 // Kiểm tra giá trị không vượt quá giới hạn (decimal(10,2) = max 99,999,999.99)
                 if (price.compareTo(new java.math.BigDecimal("99999999.99")) > 0) {
                     model.addAttribute("priceError", "Product price cannot exceed 99,999,999.99 VND!");
+                    model.addAttribute("product", product);
                     model.addAttribute("categories", categoryService.getAllCategory());
                     model.addAttribute("brands", brandService.getAllBrands());
                     return "admin/ManageProduct/ProductForm";
@@ -530,6 +678,7 @@ public class ProductController {
                 product.setPrice(price);
             } catch (Exception e) {
                 model.addAttribute("priceError", "Invalid product price!");
+                model.addAttribute("product", product);
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
@@ -544,6 +693,7 @@ public class ProductController {
                 // Kiểm tra giá trị không vượt quá giới hạn (decimal(10,2) = max 99,999,999.99)
                 if (price.compareTo(new java.math.BigDecimal("99999999.99")) > 0) {
                     model.addAttribute("priceError", "Product price cannot exceed 99,999,999.99 VND!");
+                    model.addAttribute("product", product);
                     model.addAttribute("categories", categoryService.getAllCategory());
                     model.addAttribute("brands", brandService.getAllBrands());
                     return "admin/ManageProduct/ProductForm";
@@ -551,6 +701,7 @@ public class ProductController {
                 product.setPrice(price);
             } catch (Exception e) {
                 model.addAttribute("priceError", "Invalid product price!");
+                model.addAttribute("product", product);
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
@@ -560,21 +711,20 @@ public class ProductController {
         // Kiểm tra giá trị price không được null hoặc âm
         if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
             model.addAttribute("priceError", "Product price must be greater than 0!");
+            model.addAttribute("product", product);
             model.addAttribute("categories", categoryService.getAllCategory());
             model.addAttribute("brands", brandService.getAllBrands());
             return "admin/ManageProduct/ProductForm";
         }
 
-        if (categoryId != null) {
-            Category category = new Category();
-            category.setId(categoryId);
-            product.setCategory(category);
-        }
-        if (brandId != null) {
-            Brand brand = new Brand();
-            brand.setId(brandId);
-            product.setBrand(brand);
-        }
+        // Set Category và Brand cho product
+        Category category = new Category();
+        category.setId(categoryId);
+        product.setCategory(category);
+
+        Brand brand = new Brand();
+        brand.setId(brandId);
+        product.setBrand(brand);
 
         // Handle image upload or link
         if (image != null && !image.isEmpty()) {
@@ -598,7 +748,8 @@ public class ProductController {
                 product.setImageUrl("/images/" + filename);
             } catch (Exception e) {
                 // Handle file upload error
-                model.addAttribute("priceError", "Error uploading image: " + e.getMessage());
+                model.addAttribute("errorMessage", "Lỗi khi upload ảnh: " + e.getMessage());
+                model.addAttribute("product", product);
                 model.addAttribute("categories", categoryService.getAllCategory());
                 model.addAttribute("brands", brandService.getAllBrands());
                 return "admin/ManageProduct/ProductForm";
@@ -668,7 +819,12 @@ public class ProductController {
         }
 
         productService.saveProduct(product);
-        return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s",
+
+        // Encode thông báo thành công để tránh lỗi Unicode trong URL
+        String successMessage = "Sản phẩm đã được thêm thành công!";
+        String encodedMessage = java.net.URLEncoder.encode(successMessage, java.nio.charset.StandardCharsets.UTF_8);
+
+        return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s&successMessage=%s",
                 page, size,
                 keyword != null ? keyword : "",
                 categoryId != null ? categoryId : "",
@@ -677,6 +833,7 @@ public class ProductController {
                 minPrice != null ? minPrice : "",
                 maxPrice != null ? maxPrice : "",
                 minStock != null ? minStock : "",
-                sortOption != null ? sortOption : "");
+                sortOption != null ? sortOption : "",
+                encodedMessage);
     }
 }

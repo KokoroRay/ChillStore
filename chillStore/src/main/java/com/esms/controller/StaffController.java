@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin")
@@ -77,10 +78,17 @@ public class StaffController {
 
     // Xử lý xoá staff
     @GetMapping("/deleteStaff/{id}")
-    public String deleteStaff(@PathVariable("id") int id) {
-        staffService.deleteStaff(id);
+    public String deleteStaff(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
+        boolean deleted = staffService.deleteStaff(id);
+        if (deleted) {
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa nhân viên thành công.");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa nhân viên (đã có đơn hàng liên quan hoặc không tồn tại).");
+        }
         return "redirect:/admin/ManageStaff";
     }
+
+
 
     // Hiển thị danh sách staff
     @GetMapping("/ManageStaff")

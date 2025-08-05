@@ -15,6 +15,7 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
+
     @Query("SELECT o FROM Order o WHERE " +
             "(:keyword IS NULL OR :keyword = '' OR str(o.orderId) LIKE %:keyword% OR lower(o.customer.name) LIKE lower(concat('%', :keyword, '%'))) AND " +
             "(:status IS NULL OR :status = '' OR o.status = :status)")
@@ -186,4 +187,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderItems oi LEFT JOIN FETCH oi.product")
     List<Order> findAllForMaintenance();
+
+
 }

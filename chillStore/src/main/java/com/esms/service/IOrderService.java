@@ -15,5 +15,6 @@ public interface IOrderService {
     void updateOrderStatus(Integer orderId, String status, String refundReason);
     void confirmRefund(Integer orderId);
     List<OrderDTO> getOrderByCustomerId(Integer customerId);
+    List<OrderDTO> getOrderByCustomerIdWithDateFilter(Integer customerId, String startDate, String endDate);
     CustomerOrderDetailDTO getCustomerOrderDetail(Integer customerId, Integer orderId);
 } 

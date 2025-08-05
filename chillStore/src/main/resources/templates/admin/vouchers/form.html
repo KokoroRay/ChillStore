@@ -166,6 +166,11 @@
 
         /* Nếu muốn nút Save/Cancel luôn ở cuối form, có thể sticky */
         /* .form-actions { position: sticky; bottom: 0; background: white; padding-top: 10px; } */
+        
+        /* Hide discount fields by default */
+        #discountPctField, #discountAmountField {
+            display: none;
+        }
     </style>
 </head>
 
@@ -408,7 +413,7 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script th:inline="javascript">
             /*<![CDATA[*/
-            var contextPath = /*[[${#httpServletRequest.contextPath}]]*/ '';
+            var contextPath = /*[[@{/}]]*/ '';
             /*]]>*/
         </script>
         <script>

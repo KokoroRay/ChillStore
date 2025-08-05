@@ -216,7 +216,6 @@ public class WarehouseController {
         }
     }
 
-
     // Chuyển đổi từ Entity sang DTO
     private WarehouseDTO convertToDTO(Warehouse warehouse) {
         WarehouseDTO dto = new WarehouseDTO();

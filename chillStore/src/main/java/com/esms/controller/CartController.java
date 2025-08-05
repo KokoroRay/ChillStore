@@ -2,6 +2,10 @@ package com.esms.controller;
 
 import com.esms.model.dto.CartItemDTO;
 import com.esms.model.entity.Voucher;
+import com.esms.model.entity.Product;
+import com.esms.model.entity.Cart;
+import com.esms.repository.ProductRepository;
+import com.esms.repository.CartRepository;
 import com.esms.service.CartService;
 import com.esms.service.VoucherService;
 import jakarta.servlet.http.HttpSession;
@@ -26,6 +30,12 @@ public class CartController {
 
     @Autowired
     private VoucherService voucherService;
+    
+    @Autowired
+    private ProductRepository productRepository;
+    
+    @Autowired
+    private CartRepository cartRepository;
 
     @GetMapping("")
     public String viewCart(@RequestParam(value = "voucher", required = false) String voucherCode,
@@ -67,7 +77,7 @@ public class CartController {
         double total = cartService.calculateTotal(
                 cartItems,
                 selectedVoucher != null && selectedVoucher.getDiscount_pct() != null
-                        ? selectedVoucher.getDiscount_pct().doubleValue()
+                        ? selectedVoucher.getDiscount_pct().doubleValue() / 100.0
                         : null,
                 selectedVoucher != null && selectedVoucher.getDiscount_amount() != null
                         ? selectedVoucher.getDiscount_amount().doubleValue()
@@ -95,10 +105,37 @@ public class CartController {
             return "redirect:/auth/login";
         }
         try {
+            // Lấy thông tin sản phẩm để kiểm tra số lượng ban đầu
+            Product product = productRepository.findById(productId).orElse(null);
+            if (product == null) {
+                redirectAttributes.addFlashAttribute("cartError", "Sản phẩm không tồn tại");
+                return "redirect:/cart";
+            }
+            
+            int originalQuantity = quantity;
             cartService.addToCart(customerId, productId, quantity);
+            
+            // Kiểm tra xem số lượng có bị điều chỉnh không
+            double estimatedTotal = originalQuantity * product.getPrice().doubleValue();
+            int maxByStock = Math.min(product.getStockQty(), 99);
+            int maxByPrice = (int) (9999999999999.99 / product.getPrice().doubleValue());
+            int actualMax = Math.min(maxByStock, maxByPrice);
+            
+            if (estimatedTotal > 9999999999999.99) {
+                redirectAttributes.addFlashAttribute("cartWarning", 
+                    "Số lượng yêu cầu vượt quá giới hạn tổng tiền. Đã thêm " + actualMax + " sản phẩm vào giỏ hàng.");
+            } else if (originalQuantity > product.getStockQty()) {
+                redirectAttributes.addFlashAttribute("cartWarning", 
+                    "Số lượng yêu cầu (" + originalQuantity + ") vượt quá tồn kho. Đã thêm " + 
+                    Math.min(product.getStockQty(), 99) + " sản phẩm vào giỏ hàng.");
+            } else if (originalQuantity > 99) {
+                redirectAttributes.addFlashAttribute("cartWarning", 
+                    "Số lượng tối đa cho mỗi sản phẩm là 99. Đã thêm 99 sản phẩm vào giỏ hàng.");
+            } else {
+                redirectAttributes.addFlashAttribute("cartSuccess", "Thêm sản phẩm vào giỏ hàng thành công!");
+            }
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("cartError", e.getMessage());
-            return "redirect:/cart";
         }
         return "redirect:/cart";
     }
@@ -113,10 +150,30 @@ public class CartController {
             return "redirect:/auth/login";
         }
         try {
-            cartService.updateQuantity(cartId, quantity);
+            // Lấy thông tin cart item để kiểm tra
+            Cart cart = cartRepository.findById(cartId).orElse(null);
+            if (cart != null) {
+                Product product = cart.getProduct();
+                int originalQuantity = quantity;
+                
+                cartService.updateQuantity(cartId, quantity);
+                
+                // Kiểm tra xem số lượng có bị điều chỉnh không
+                if (originalQuantity > product.getStockQty()) {
+                    redirectAttributes.addFlashAttribute("cartWarning", 
+                        "Số lượng yêu cầu (" + originalQuantity + ") vượt quá tồn kho. Đã cập nhật thành " + 
+                        Math.min(product.getStockQty(), 99) + " sản phẩm.");
+                } else if (originalQuantity > 99) {
+                    redirectAttributes.addFlashAttribute("cartWarning", 
+                        "Số lượng tối đa cho mỗi sản phẩm là 99. Đã cập nhật thành 99 sản phẩm.");
+                } else {
+                    redirectAttributes.addFlashAttribute("cartSuccess", "Cập nhật giỏ hàng thành công!");
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("cartError", "Không tìm thấy sản phẩm trong giỏ hàng");
+            }
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("cartError", e.getMessage());
-            return "redirect:/cart";
         }
         return "redirect:/cart";
     }
@@ -208,6 +265,18 @@ public class CartController {
         }
 
         try {
+            // Lấy thông tin cart item trước khi cập nhật
+            Cart cart = cartRepository.findById(cartId).orElse(null);
+            if (cart == null) {
+                response.put("success", false);
+                response.put("error", "Cart item not found");
+                return response;
+            }
+            
+            Product product = cart.getProduct();
+            int originalQuantity = quantity;
+            int maxAvailable = Math.min(product.getStockQty(), 99);
+            
             cartService.updateQuantity(cartId, quantity);
             
             // Recalculate totals
@@ -225,8 +294,15 @@ public class CartController {
             response.put("success", true);
             response.put("subtotal", String.format("%,.0f đ", subtotal));
             response.put("total", String.format("%,.0f đ", subtotal));
+            
             if (updatedItem != null) {
                 response.put("formattedTotal", String.format("%,.0f đ", updatedItem.getTotalPrice()));
+                response.put("actualQuantity", updatedItem.getQuantity());
+            }
+            
+            // Thêm thông báo nếu số lượng bị điều chỉnh
+            if (originalQuantity > maxAvailable) {
+                response.put("warning", "Số lượng yêu cầu vượt quá giới hạn. Đã điều chỉnh thành " + maxAvailable);
             }
             
         } catch (Exception e) {

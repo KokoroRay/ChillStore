@@ -91,7 +91,7 @@ public class CheckoutController {
         double total = cartService.calculateTotal(
                 cartItems,
                 selectedVoucher != null && selectedVoucher.getDiscount_pct() != null
-                        ? selectedVoucher.getDiscount_pct().doubleValue()
+                        ? selectedVoucher.getDiscount_pct().doubleValue() / 100.0
                         : null,
                 selectedVoucher != null && selectedVoucher.getDiscount_amount() != null
                         ? selectedVoucher.getDiscount_amount().doubleValue()
@@ -227,7 +227,7 @@ public class CheckoutController {
             double discountAmount = 0.0;
             if (voucher != null) {
                 if (voucher.getDiscount_pct() != null) {
-                    discountAmount = subtotal * voucher.getDiscount_pct().doubleValue() / 100;
+                    discountAmount = subtotal * (voucher.getDiscount_pct().doubleValue() / 100.0);
                 } else if (voucher.getDiscount_amount() != null) {
                     discountAmount = voucher.getDiscount_amount().doubleValue();
                 }

@@ -15,7 +15,6 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-
     @Query("SELECT o FROM Order o WHERE " +
             "(:keyword IS NULL OR :keyword = '' OR str(o.orderId) LIKE %:keyword% OR lower(o.customer.name) LIKE lower(concat('%', :keyword, '%'))) AND " +
             "(:status IS NULL OR :status = '' OR o.status = :status)")
@@ -185,8 +184,16 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByCustomer_CustomerIdAndStatus(Integer customerId, String status);
 
+    List<Order> findByCustomerCustomerIdOrderByOrderDateDesc(Integer customerId);
+
     @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderItems oi LEFT JOIN FETCH oi.product")
     List<Order> findAllForMaintenance();
 
-
+    @Query("SELECT o FROM Order o WHERE o.customer.customerId = :customerId " +
+            "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
+            "AND (:endDate IS NULL OR o.orderDate <= :endDate) " +
+            "ORDER BY o.orderDate DESC")
+    List<Order> findByCustomerIdAndDateRange(@Param("customerId") Integer customerId,
+                                             @Param("startDate") Date startDate,
+                                             @Param("endDate") Date endDate);
 }

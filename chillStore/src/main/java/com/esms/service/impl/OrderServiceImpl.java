@@ -206,7 +206,28 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public List<OrderDTO> getOrderByCustomerId(Integer customerId) {
-        return orderRepository.findByCustomerCustomerId(customerId).stream()
+        return orderRepository.findByCustomerCustomerIdOrderByOrderDateDesc(customerId).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<OrderDTO> getOrderByCustomerIdWithDateFilter(Integer customerId, String startDate, String endDate) {
+        java.util.Date start = null;
+        java.util.Date end = null;
+        
+        try {
+            if (startDate != null && !startDate.trim().isEmpty()) {
+                start = java.sql.Date.valueOf(startDate);
+            }
+            if (endDate != null && !endDate.trim().isEmpty()) {
+                end = java.sql.Date.valueOf(endDate);
+            }
+        } catch (Exception e) {
+            // Invalid date format, use null values
+        }
+        
+        return orderRepository.findByCustomerIdAndDateRange(customerId, start, end).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }

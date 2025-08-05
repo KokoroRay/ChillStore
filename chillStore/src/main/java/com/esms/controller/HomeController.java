@@ -101,9 +101,25 @@ public class HomeController {
             productsPage = productService.searchProductsWithFilters(keyword, categoryId, brandId, minPrice, maxPrice, null, sortBy, sortDir, pageable, null);
         } else {
             // Random sản phẩm
-            var products = productService.getRandomProductsPaged(page, size);
+            var productDTOs = productService.getRandomProductsPaged(page, size);
+            // Chuyển đổi từ ProductDTO sang Product để lấy thêm thông tin
+            var products = productDTOs.stream()
+                .map(dto -> productService.getProductById(dto.getProductId()))
+                .collect(java.util.stream.Collectors.toList());
+            
             int total = productService.getRandomProductsTotalPages(size);
             model.addAttribute("products", products);
+            
+            // Thêm dữ liệu rating và số lượng bán
+            java.util.Map<Integer, Double> productRatings = new java.util.HashMap<>();
+            java.util.Map<Integer, Integer> productSoldQuantities = new java.util.HashMap<>();
+            for (var product : products) {
+                productRatings.put(product.getProductId(), productService.getAverageRating(product.getProductId()));
+                productSoldQuantities.put(product.getProductId(), productService.getSoldQuantity(product.getProductId()));
+            }
+            model.addAttribute("productRatings", productRatings);
+            model.addAttribute("productSoldQuantities", productSoldQuantities);
+            
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", total);
             model.addAttribute("nextPage", Math.min(page + 1, total - 1));
@@ -119,7 +135,19 @@ public class HomeController {
             return "home";
         }
         // Nếu có filter, truyền Page<Product> ra view
-        model.addAttribute("products", productsPage.getContent());
+        var products = productsPage.getContent();
+        model.addAttribute("products", products);
+        
+        // Thêm dữ liệu rating và số lượng bán
+        java.util.Map<Integer, Double> productRatings = new java.util.HashMap<>();
+        java.util.Map<Integer, Integer> productSoldQuantities = new java.util.HashMap<>();
+        for (var product : products) {
+            productRatings.put(product.getProductId(), productService.getAverageRating(product.getProductId()));
+            productSoldQuantities.put(product.getProductId(), productService.getSoldQuantity(product.getProductId()));
+        }
+        model.addAttribute("productRatings", productRatings);
+        model.addAttribute("productSoldQuantities", productSoldQuantities);
+        
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productsPage.getTotalPages());
         model.addAttribute("nextPage", Math.min(page + 1, Math.max(productsPage.getTotalPages() - 1, 0)));

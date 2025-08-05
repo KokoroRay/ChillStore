@@ -1,0 +1,31 @@
+/* Footer positioning fix */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container, .main-content {
+    flex: 1;
+}
+
+.footer {
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+/* Ensure proper spacing */
+.footer {
+    margin-top: 2rem !important;
+}
+
+/* Fix for pages with long content */
+.main-content {
+    padding-bottom: 2rem;
+}

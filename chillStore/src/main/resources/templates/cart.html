@@ -44,15 +44,27 @@
                     <td th:text="${#numbers.formatDecimal(item.price, 0, 'POINT', 0, 'NONE')} + ' đ'"></td>
                     <td th:text="${item.discount * 100} + '%'"></td>
                     <td>
-                        <div class="d-flex">
-                            <input type="number" th:value="${item.quantity}" class="form-control form-control-sm me-2"
-                                style="width: 70px;" min="1" th:attr="max=${item.stockQty}"
-                                th:disabled="${item.quantity} >= ${item.stockQty}"
-                                th:onchange="'updateQuantity(' + ${item.cartItemId} + ', this.value)'">
-
+                        <div class="d-flex align-items-center">
+                            <button type="button" class="btn btn-outline-secondary btn-sm me-1" 
+                                th:onclick="'decreaseQuantity(' + ${item.cartItemId} + ')'">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" th:value="${item.quantity}" class="form-control form-control-sm me-1 text-center"
+                                style="width: 60px;" min="1" th:attr="max=${item.stockQty},data-stock=${item.stockQty},data-cart-id=${item.cartItemId}"
+                                th:onchange="'updateQuantity(' + ${item.cartItemId} + ', this.value)'"
+                                readonly>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" 
+                                th:onclick="'increaseQuantity(' + ${item.cartItemId} + ')'"
+                                th:attr="data-cart-id=${item.cartItemId},data-stock=${item.stockQty}"
+                                th:disabled="${item.quantity} >= ${item.stockQty}">
+                                <i class="fas fa-plus"></i>
+                            </button>
                         </div>
-                        <div th:if="${item.quantity} >= ${item.stockQty}" class="text-danger small mt-1">
-                            Thêm sản phẩm không thành công: đã đạt số lượng tối đa trong kho
+                        <div th:if="${item.quantity} > ${item.stockQty}" class="text-danger small mt-1">
+                            <i class="fas fa-exclamation-triangle"></i> Vượt quá kho hàng! Chỉ có thể giảm số lượng.
+                        </div>
+                        <div th:if="${item.quantity} == ${item.stockQty}" class="text-warning small mt-1">
+                            <i class="fas fa-info-circle"></i> Đã đạt số lượng tối đa trong kho.
                         </div>
                     </td>
                     <!-- THÊM CLASS item-total -->
@@ -139,6 +151,29 @@
             };
         }
 
+        // Increase quantity function
+        function increaseQuantity(cartId) {
+            const row = document.querySelector(`tr[data-cart-id="${cartId}"]`);
+            const input = row.querySelector('input[type="number"]');
+            const currentQty = parseInt(input.value);
+            const stock = parseInt(input.getAttribute('data-stock'));
+            
+            if (currentQty < stock) {
+                updateQuantity(cartId, currentQty + 1);
+            }
+        }
+        
+        // Decrease quantity function
+        function decreaseQuantity(cartId) {
+            const row = document.querySelector(`tr[data-cart-id="${cartId}"]`);
+            const input = row.querySelector('input[type="number"]');
+            const currentQty = parseInt(input.value);
+            
+            if (currentQty > 1) {
+                updateQuantity(cartId, currentQty - 1);
+            }
+        }
+
         // Update quantity without page reload
         function updateQuantity(cartId, quantity) {
             const csrf = getCsrfToken();
@@ -149,39 +184,40 @@
             fetch('/cart/update-ajax', {
                 method: 'POST',
                 headers: {
-                    [csrf.header]: csrf.token // THÊM CSRF TOKEN
+                    [csrf.header]: csrf.token
                 },
                 body: formData
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update the total price for this item
                         const row = document.querySelector(`tr[data-cart-id="${cartId}"]`);
                         if (row) {
                             const totalCell = row.querySelector('.item-total');
+                            const quantityInput = row.querySelector('input[type="number"]');
+                            const increaseBtn = row.querySelector('button[onclick*="increaseQuantity"]');
+                            
                             if (totalCell) {
                                 totalCell.textContent = data.formattedTotal || (data.totalPrice + ' đ');
                             }
                             
-                            // Cập nhật số lượng thực tế trong input
-                            if (data.actualQuantity) {
-                                const quantityInput = row.querySelector('input[type="number"]');
-                                if (quantityInput) {
-                                    quantityInput.value = data.actualQuantity;
+                            if (quantityInput && data.actualQuantity) {
+                                quantityInput.value = data.actualQuantity;
+                                const stock = parseInt(quantityInput.getAttribute('data-stock'));
+                                
+                                // Enable/disable increase button based on stock
+                                if (increaseBtn) {
+                                    increaseBtn.disabled = data.actualQuantity >= stock;
                                 }
                             }
                         }
 
-                        // Update summary
                         updateSummary(data.subtotal, data.total);
-
-                        // Update cart count in navigation
+                        
                         if (window.updateCartCount) {
                             window.updateCartCount();
                         }
 
-                        // Hiển thị thông báo phù hợp
                         if (data.warning) {
                             showMessage(data.warning, 'warning');
                         } else {
@@ -193,7 +229,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    showMessage('Error updating quantity: ' + error.message, 'error');
+                    showMessage('Lỗi khi cập nhật số lượng', 'error');
                 });
         }
 

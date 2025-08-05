@@ -18,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.LockedException;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -71,7 +73,16 @@ public class SecurityConfig {
                         .loginPage("/auth/login") // Trang đăng nhập tùy chỉnh
                         .loginProcessingUrl("/auth/login") // URL mà form đăng nhập POST đến
                         .successHandler(authenticationSuccessHandler())
-                        .failureUrl("/auth/login?error=true") // Khi đăng nhập thất bại
+                        .failureHandler((request, response, exception) -> {
+                            String errorUrl = "/auth/login?error=true";
+                            if (exception instanceof LockedException) {
+                                errorUrl = "/auth/login?locked=true";
+                            }
+                            if (exception instanceof UsernameNotFoundException) {
+                                errorUrl = "/auth/login?error=true";
+                            }
+                            response.sendRedirect(errorUrl);
+                        })
                         .permitAll() // Cho phép tất cả truy cập trang login
                 )
                 // Cấu hình đăng nhập OAuth2/Google
@@ -103,6 +114,8 @@ public class SecurityConfig {
     }
 
     //đã chuyển passwordEncoder qua AppConfig để trách phụ thuộc
+
+
 
 
     /**

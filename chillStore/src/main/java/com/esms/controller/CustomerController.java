@@ -110,7 +110,7 @@ public class CustomerController {
         }
         try {
             customerService.createCustomer(convertToEntity(customerDto));
-            redirectAttributes.addFlashAttribute("success", "Thêm người dùng thành công!");
+            redirectAttributes.addFlashAttribute("success", "User added successfully!");
         } catch (EmailAlreadyUsedException e) {
             model.addAttribute("error", e.getMessage());
             return "admin/customer/addform";
@@ -140,7 +140,7 @@ public class CustomerController {
             Customer customer = convertToEntity(customerDto);
             customer.setCustomerId(customerId);
             customerService.updateCustomer(customerId, customerDto);
-            redirectAttributes.addFlashAttribute("success", "Cập nhật thành công!");
+            redirectAttributes.addFlashAttribute("success", "Update successful!");
         } catch (NumberFormatException e) {
             redirectAttributes.addFlashAttribute("error", "Invalid customer ID format");
             return "redirect:/admin/customer";

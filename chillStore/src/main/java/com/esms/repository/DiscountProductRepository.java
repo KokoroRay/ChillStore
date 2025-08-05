@@ -42,4 +42,9 @@ public interface DiscountProductRepository extends JpaRepository<DiscountProduct
     @Transactional
     @Query("DELETE FROM DiscountProduct dp WHERE dp.discount.promoId = :promoId")
     void deleteByPromoId(@Param("promoId") Integer promoId);
+    
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM DiscountProduct dp WHERE dp.product.productId = :productId")
+    void deleteByProductId(@Param("productId") Integer productId);
 } 

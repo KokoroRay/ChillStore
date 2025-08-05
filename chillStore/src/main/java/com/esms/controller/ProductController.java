@@ -59,6 +59,7 @@ public class ProductController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size,
             @RequestParam(value = "successMessage", required = false) String successMessage,
+            @RequestParam(value = "errorMessage", required = false) String errorMessage,
             Model model, HttpServletRequest request) {
 
         // Validation logic for price range
@@ -145,6 +146,17 @@ public class ProductController {
             }
         }
         model.addAttribute("successMessage", decodedSuccessMessage);
+        
+        // Decode error message from URL parameter
+        String decodedErrorMessage = null;
+        if (errorMessage != null && !errorMessage.isEmpty()) {
+            try {
+                decodedErrorMessage = java.net.URLDecoder.decode(errorMessage, java.nio.charset.StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                decodedErrorMessage = errorMessage;
+            }
+        }
+        model.addAttribute("errorMessage", decodedErrorMessage);
 
         String requestURI = request.getRequestURI();
         if(requestURI.startsWith("/staff")){
@@ -575,23 +587,41 @@ public class ProductController {
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
             @RequestParam(value = "minStock", required = false) Integer minStock,
             @RequestParam(value = "sortOption", required = false) String sortOption) {
-        productService.deleteProduct(id);
-
-        // Encode thông báo thành công để tránh lỗi Unicode trong URL
-        String successMessage = "Sản phẩm đã được xóa thành công!";
-        String encodedMessage = java.net.URLEncoder.encode(successMessage, java.nio.charset.StandardCharsets.UTF_8);
-
-        return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s&successMessage=%s",
-                page, size,
-                keyword != null ? keyword : "",
-                categoryId != null ? categoryId : "",
-                brandId != null ? brandId : "",
-                filterStatus != null ? filterStatus : "",
-                minPrice != null ? minPrice : "",
-                maxPrice != null ? maxPrice : "",
-                minStock != null ? minStock : "",
-                sortOption != null ? sortOption : "",
-                encodedMessage);
+        
+        try {
+            productService.deleteProduct(id);
+            
+            String successMessage = "Sản phẩm đã được xóa thành công!";
+            String encodedMessage = java.net.URLEncoder.encode(successMessage, java.nio.charset.StandardCharsets.UTF_8);
+            
+            return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s&successMessage=%s",
+                    page, size,
+                    keyword != null ? keyword : "",
+                    categoryId != null ? categoryId : "",
+                    brandId != null ? brandId : "",
+                    filterStatus != null ? filterStatus : "",
+                    minPrice != null ? minPrice : "",
+                    maxPrice != null ? maxPrice : "",
+                    minStock != null ? minStock : "",
+                    sortOption != null ? sortOption : "",
+                    encodedMessage);
+                    
+        } catch (RuntimeException e) {
+            String errorMessage = e.getMessage();
+            String encodedErrorMessage = java.net.URLEncoder.encode(errorMessage, java.nio.charset.StandardCharsets.UTF_8);
+            
+            return String.format("redirect:/admin/products?page=%d&size=%d&keyword=%s&categoryId=%s&brandId=%s&filterStatus=%s&minPrice=%s&maxPrice=%s&minStock=%s&sortOption=%s&errorMessage=%s",
+                    page, size,
+                    keyword != null ? keyword : "",
+                    categoryId != null ? categoryId : "",
+                    brandId != null ? brandId : "",
+                    filterStatus != null ? filterStatus : "",
+                    minPrice != null ? minPrice : "",
+                    maxPrice != null ? maxPrice : "",
+                    minStock != null ? minStock : "",
+                    sortOption != null ? sortOption : "",
+                    encodedErrorMessage);
+        }
     }
 
     @GetMapping("/add")

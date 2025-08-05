@@ -79,10 +79,23 @@ public class CustomerController {
 
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public String showEditForm(@PathVariable Integer id, Model model) {
-        Customer customer = customerService.getCustomerById(id);
-        model.addAttribute("customerDto", convertToDto(customer));
-        return "admin/customer/editform";
+    public String showEditForm(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            if (id == null || id.equals("null") || id.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Invalid customer ID");
+                return "redirect:/admin/customer";
+            }
+            Integer customerId = Integer.parseInt(id);
+            Customer customer = customerService.getCustomerById(customerId);
+            model.addAttribute("customerDto", convertToDto(customer));
+            return "admin/customer/editform";
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("error", "Invalid customer ID format");
+            return "redirect:/admin/customer";
+        } catch (UserNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", "Customer not found");
+            return "redirect:/admin/customer";
+        }
     }
 
     @PostMapping("/save")
@@ -97,7 +110,7 @@ public class CustomerController {
         }
         try {
             customerService.createCustomer(convertToEntity(customerDto));
-            redirectAttributes.addFlashAttribute("success", "Thêm người dùng thành công!");
+            redirectAttributes.addFlashAttribute("success", "User added successfully!");
         } catch (EmailAlreadyUsedException e) {
             model.addAttribute("error", e.getMessage());
             return "admin/customer/addform";
@@ -108,22 +121,35 @@ public class CustomerController {
     @PostMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public String updateCustomer(
-            @PathVariable Integer id,
+            @PathVariable String id,
             @Valid @ModelAttribute("customerDto") CustomerDTO customerDto,
             BindingResult result,
             Model model,
             RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
-            return "admin/customer/editform";
-        }
         try {
+            if (id == null || id.equals("null") || id.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Invalid customer ID");
+                return "redirect:/admin/customer";
+            }
+            Integer customerId = Integer.parseInt(id);
+            
+            if (result.hasErrors()) {
+                return "admin/customer/editform";
+            }
+            
             Customer customer = convertToEntity(customerDto);
-            customer.setCustomerId(id);
-            customerService.updateCustomer(id, customerDto);
-            redirectAttributes.addFlashAttribute("success", "Cập nhật thành công!");
+            customer.setCustomerId(customerId);
+            customerService.updateCustomer(customerId, customerDto);
+            redirectAttributes.addFlashAttribute("success", "Update successful!");
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("error", "Invalid customer ID format");
+            return "redirect:/admin/customer";
         } catch (EmailAlreadyUsedException e) {
             model.addAttribute("error", e.getMessage());
             return "admin/customer/editform";
+        } catch (UserNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", "Customer not found");
+            return "redirect:/admin/customer";
         }
         return "redirect:/admin/customer";
     }
@@ -131,11 +157,19 @@ public class CustomerController {
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public String deleteCustomer(
-            @PathVariable Integer id,
+            @PathVariable String id,
             RedirectAttributes redirectAttributes) {
         try {
-            customerService.deleteCustomer(id);
+            if (id == null || id.equals("null") || id.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Invalid customer ID");
+                return "redirect:/admin/customer";
+            }
+            Integer customerId = Integer.parseInt(id);
+            customerService.deleteCustomer(customerId);
             redirectAttributes.addFlashAttribute("success", "Account locked successfully!");
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("error", "Invalid customer ID format");
+            return "redirect:/admin/customer";
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -159,12 +193,20 @@ public class CustomerController {
 
     @GetMapping("/unlock/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public String unlockCustomer(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+    public String unlockCustomer(@PathVariable String id, RedirectAttributes redirectAttributes) {
         try {
-            Customer customer = customerService.getCustomerById(id);
+            if (id == null || id.equals("null") || id.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Invalid customer ID");
+                return "redirect:/admin/customer";
+            }
+            Integer customerId = Integer.parseInt(id);
+            Customer customer = customerService.getCustomerById(customerId);
             customer.setLocked(false);
-            customerService.updateCustomer(id, convertToDto(customer));
+            customerService.updateCustomer(customerId, convertToDto(customer));
             redirectAttributes.addFlashAttribute("success", "Account unlocked successfully!");
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("error", "Invalid customer ID format");
+            return "redirect:/admin/customer";
         } catch (UserNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -173,11 +215,24 @@ public class CustomerController {
 
     @GetMapping("/{id}/orders")
     @PreAuthorize("hasAnyRole('STAFF', 'ADMIN')")
-    public String viewCustomerOrders(@PathVariable("id") Integer customerId, Model model) {
-        List<com.esms.model.entity.Order> orders = orderRepository.findByCustomerCustomerId(customerId);
-        model.addAttribute("orders", orders);
-        model.addAttribute("customer", customerService.getCustomerById(customerId));
-        return "staff/customer/order-history";
+    public String viewCustomerOrders(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            if (id == null || id.equals("null") || id.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Invalid customer ID");
+                return "redirect:/admin/customer";
+            }
+            Integer customerId = Integer.parseInt(id);
+            List<com.esms.model.entity.Order> orders = orderRepository.findByCustomerCustomerId(customerId);
+            model.addAttribute("orders", orders);
+            model.addAttribute("customer", customerService.getCustomerById(customerId));
+            return "staff/customer/order-history";
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("error", "Invalid customer ID format");
+            return "redirect:/admin/customer";
+        } catch (UserNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", "Customer not found");
+            return "redirect:/admin/customer";
+        }
     }
 
     private CustomerDTO convertToDto(Customer customer) {

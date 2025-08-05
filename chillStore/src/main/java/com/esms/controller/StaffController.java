@@ -79,14 +79,15 @@ public class StaffController {
     // Xử lý xoá staff
     @GetMapping("/deleteStaff/{id}")
     public String deleteStaff(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
-        boolean result = staffService.deleteStaff(id);
-        if (result) {
+        boolean deleted = staffService.deleteStaff(id);
+        if (deleted) {
             redirectAttributes.addFlashAttribute("successMessage", "Xóa nhân viên thành công.");
         } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa nhân viên. Có thể nhân viên đã có đơn hàng liên quan hoặc không tồn tại.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa nhân viên (đã có đơn hàng liên quan hoặc không tồn tại).");
         }
         return "redirect:/admin/ManageStaff";
     }
+
 
 
     // Hiển thị danh sách staff

@@ -1,6 +1,7 @@
 package com.esms.service.impl;
 
 import com.esms.model.entity.Staff;
+import com.esms.repository.MaintenanceRepository;
 import com.esms.repository.OrderRepository;
 import com.esms.repository.StaffRepository;
 import com.esms.service.StaffService;
@@ -20,7 +21,7 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private OrderRepository orderRepository;
+    private MaintenanceRepository maintenanceRepository;
 
 
     @Override
@@ -59,16 +60,19 @@ public class StaffServiceImpl implements StaffService {
         if (id >= 1) {
             Optional<Staff> staffOpt = staffRepository.findById(id);
             if (staffOpt.isPresent()) {
-                boolean hasOrders = orderRepository.existsByStaffId(id);
-                if (hasOrders) {
+                // Kiểm tra nếu staff có đơn bảo trì thì không cho xóa
+                boolean hasMaintenance = maintenanceRepository.existsByStaffId(id);
+                if (hasMaintenance) {
                     return false;
                 }
+
                 staffRepository.delete(staffOpt.get());
                 return true;
             }
         }
         return false;
     }
+
 
 
     @Override

@@ -112,7 +112,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Integer productId) {
+        // Kiểm tra xem product có đang được tham chiếu không
+        boolean hasOrderItems = orderItemRepository.existsByIdProductId(productId);
+        
+        if (hasOrderItems) {
+            throw new RuntimeException("Cannot delete product: This product has been ordered by customers. " +
+                "Products with order history cannot be deleted to maintain data integrity for warranty and support purposes. " +
+                "Consider deactivating the product instead.");
+        }
+        
+        // Xóa các liên kết discount trước
+        discountProductRepository.deleteByProductId(productId);
+        
+        // Sau đó mới xóa product
         productRepository.deleteById(productId);
     }
 

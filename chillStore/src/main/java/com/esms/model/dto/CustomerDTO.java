@@ -2,6 +2,8 @@ package com.esms.model.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.esms.validation.StrongPassword;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
@@ -15,6 +17,7 @@ public class CustomerDTO {
 
     private String email;
 
+    @StrongPassword
     private String password;
 
     private String phone;

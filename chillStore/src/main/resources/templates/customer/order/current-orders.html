@@ -613,4 +613,46 @@
                             </div>
                             ` : ''}
                         </div>
-                    </div
+                    </div>
+                `;
+            });
+
+            ordersContainer.innerHTML = html;
+        }
+    });
+    
+    function showOrderItems(orderId) {
+        fetch(`/customer/api/order/${orderId}/items`)
+            .then(response => response.json())
+            .then(items => {
+                let content = '<div class="table-responsive"><table class="table table-striped">';
+                content += '<thead><tr><th>Product</th><th>Category</th><th>Quantity</th><th>Price</th><th>Total</th></tr></thead><tbody>';
+
+                items.forEach(item => {
+                    content += `<tr>
+                        <td>${item.productName}</td>
+                        <td>${item.categoryName}</td>
+                        <td>${item.quantity}</td>
+                        <td>$${item.priceEach.toFixed(2)}</td>
+                        <td>$${(item.priceEach * item.quantity).toFixed(2)}</td>
+                    </tr>`;
+                });
+
+                content += '</tbody></table></div>';
+                document.getElementById('orderItemsContent').innerHTML = content;
+                new bootstrap.Modal(document.getElementById('orderItemsModal')).show();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('orderItemsContent').innerHTML = '<p class="text-danger">Error loading order items</p>';
+            });
+    }
+    
+    function cancelOrder(orderId) {
+        document.getElementById('cancelOrderForm').action = `/customer/order/${orderId}/cancel`;
+        new bootstrap.Modal(document.getElementById('cancelOrderModal')).show();
+    }
+</script>
+</body>
+
+</html>

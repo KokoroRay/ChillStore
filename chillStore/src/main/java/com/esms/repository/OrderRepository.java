@@ -186,20 +186,4 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderItems oi LEFT JOIN FETCH oi.product")
     List<Order> findAllForMaintenance();
-    
-    /**
-     * Lấy orders của customer với sắp xếp theo ngày (mới nhất trước)
-     */
-    List<Order> findByCustomerCustomerIdOrderByOrderDateDesc(Integer customerId);
-    
-    /**
-     * Lấy orders của customer theo khoảng thời gian và sắp xếp theo ngày
-     */
-    @Query("SELECT o FROM Order o WHERE o.customer.customerId = :customerId " +
-           "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
-           "AND (:endDate IS NULL OR o.orderDate <= :endDate) " +
-           "ORDER BY o.orderDate DESC")
-    List<Order> findByCustomerIdAndDateRange(@Param("customerId") Integer customerId,
-                                           @Param("startDate") Date startDate,
-                                           @Param("endDate") Date endDate);
 }

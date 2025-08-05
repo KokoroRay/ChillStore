@@ -31,16 +31,10 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<FeedbackDTO> getAllFeedbacks() {
-        return fakeData();
-
-    }
-    private List<FeedbackDTO> fakeData() {
-        List<FeedbackDTO> list = new ArrayList<>();
-        Customer customer = new Customer();
-        customer.setName("Nguyễn Văn A");
-        list.add(new FeedbackDTO(1, customer, "Máy lạnh", (byte) 5, "Sản phẩm rất tốt", "New", LocalDateTime.now()));
-        list.add(new FeedbackDTO(2, customer, "Máy giặt", (byte) 4, "Tốt nhưng hơi ồn", "Replied", LocalDateTime.now().minusDays(1)));
-        return list;
+        List<Feedback> feedbacks = feedbackRepository.findAll();
+        return feedbacks.stream()
+                .map(this::convertToDTO)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override

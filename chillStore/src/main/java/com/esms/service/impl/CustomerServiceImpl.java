@@ -352,6 +352,12 @@ public class CustomerServiceImpl implements CustomerService {
         if (existingCustomer.isPresent()) {
             // Nếu đã tồn tại: cập nhật thông tin provider
             customer = existingCustomer.get();
+            
+            // Kiểm tra trạng thái locked của customer
+            if (customer.isLocked()) {
+                throw new RuntimeException("Account is locked. Please contact administrator.");
+            }
+            
             customer.setName(name);
             customer.setDisplay_name(name);
             customer.setProvider(provider);

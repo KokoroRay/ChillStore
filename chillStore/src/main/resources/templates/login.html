@@ -12,9 +12,13 @@
 
 <!-- Notification outside main container -->
 <div class="notification-container">
-  <div th:if="${param.error}" class="notification error">
+  <div th:if="${locked}" class="notification error">
     <i class="fas fa-exclamation-circle"></i>
-    <span>Invalid email or password</span>
+    <span th:text="${lockedMessage}">Account is locked. Please contact administrator</span>
+  </div>
+  <div th:if="${error}" class="notification error">
+    <i class="fas fa-exclamation-circle"></i>
+    <span th:text="${error}">Invalid email or password</span>
   </div>
   <div th:if="${param.logout}" class="notification success">
     <i class="fas fa-check-circle"></i>

@@ -1,4 +1,3 @@
-
 package com.esms.service.impl;
 
 import com.esms.config.CacheConfig;
@@ -9,13 +8,9 @@ import com.esms.model.dto.*;
 import com.esms.model.entity.Customer;
 import com.esms.model.entity.Order;
 import com.esms.model.entity.Voucher;
-import com.esms.model.entity.Wishlist;
 import com.esms.repository.CustomerRepository;
 import com.esms.repository.OrderRepository;
 import com.esms.repository.VoucherRepository;
-import com.esms.repository.WishlistRepository;
-import com.esms.repository.ProductRepository;
-import com.esms.model.entity.Product;
 import com.esms.service.CustomerService;
 import com.esms.util.MapperUtils.CustomerMapper;
 import jakarta.transaction.Transactional;
@@ -54,12 +49,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private VoucherRepository voucherRepository;
-
-    @Autowired
-    private WishlistRepository wishlistRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
 
     @Autowired
     public CustomerServiceImpl(CustomerRepository customerRepository, CustomerMapper customerMapper,
@@ -213,9 +202,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Page<Customer> searchCustomersWithFilters(String keyword, Boolean locked, Pageable pageable) {
         return customerRepository.searchCustomersWithFilters(
-                (keyword == null || keyword.isBlank()) ? null : keyword.trim(),
-                locked,
-                pageable
+            (keyword == null || keyword.isBlank()) ? null : keyword.trim(),
+            locked,
+            pageable
         );
     }
 
@@ -291,8 +280,8 @@ public class CustomerServiceImpl implements CustomerService {
         Pageable pageable = PageRequest.of(0, limit);
         Page<Customer> page = customerRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
         return page.getContent().stream()
-                .map(c -> c.getDisplay_name() + " (" + c.getEmail() + ")")
-                .collect(Collectors.toList());
+            .map(c -> c.getDisplay_name() + " (" + c.getEmail() + ")")
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -386,7 +375,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer getCustomerByEmail(String email) {
         return customerRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng với email: " + email));
+            .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng với email: " + email));
     }
 
     @Override
@@ -427,41 +416,5 @@ public class CustomerServiceImpl implements CustomerService {
             }
         }
         return totalSpending;
-    }
-
-    // Wishlist methods
-    @Override
-    public List<Integer> getWishlistProductIds(Integer customerId) {
-        return wishlistRepository.findByCustomerCustomerId(customerId)
-                .stream()
-                .map(w -> w.getProduct().getProductId())
-                .toList();
-    }
-
-    @Override
-    @Transactional
-    public void addProductToWishlist(Integer customerId, Integer productId) {
-        if (!wishlistRepository.existsByCustomerCustomerIdAndProductProductId(customerId, productId)) {
-            Wishlist wishlist = new Wishlist();
-            Customer customer = customerRepository.findById(customerId)
-                    .orElseThrow(() -> new UserNotFoundException("Customer not found"));
-            Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
-            wishlist.setCustomer(customer);
-            wishlist.setProduct(product);
-            wishlist.setCreatedAt(LocalDateTime.now());
-            wishlistRepository.save(wishlist);
-        }
-    }
-
-    @Override
-    @Transactional
-    public void removeProductFromWishlist(Integer customerId, Integer productId) {
-        wishlistRepository.deleteByCustomerCustomerIdAndProductProductId(customerId, productId);
-    }
-
-    @Override
-    public boolean isProductInWishlist(Integer customerId, Integer productId) {
-        return wishlistRepository.existsByCustomerCustomerIdAndProductProductId(customerId, productId);
     }
 }

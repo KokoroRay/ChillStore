@@ -10,195 +10,237 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link th:href="@{/css/admin.css}" rel="stylesheet">
-    <link th:href="@{/css/sidebar.css}" rel="stylesheet">
-    <link th:href="@{/css/header.css}" rel="stylesheet">
     <link th:href="@{/css/discount.css}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+
+    <!-- Custom styles to fix layout -->
+    <style>
+        /* Fix layout for discount detail page */
+        .main-content {
+            margin-left: 220px !important;
+            width: calc(100% - 220px) !important;
+            padding: 20px;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .content-wrapper {
+            margin-top: 80px;
+            padding: 20px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 10px;
+            }
+
+            .content-wrapper {
+                margin-top: 60px;
+                padding: 10px;
+            }
+        }
+
+        /* Ensure proper spacing */
+        .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    </style>
 </head>
 <body>
     <!-- Include Header -->
-    <div th:replace="~{fragments/header :: header}"></div>
-    
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Include Sidebar -->
-            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
-            
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">
-                        <i class="fas fa-percentage text-primary"></i>
-                        Discount Details
-                    </h1>
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <a href="/admin/discount" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left"></i>
-                            Back to List
-                        </a>
-                    </div>
+    <div th:insert="~{fragments/header :: headerContent}"></div>
+
+    <!-- Include Sidebar -->
+    <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    <i class="fas fa-percentage text-primary"></i>
+                    Discount Details
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="/admin/discount/list" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to List
+                    </a>
                 </div>
-                
-                <!-- Discount Detail Card -->
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="detail-card">
-                            <!-- Header -->
-                            <div class="detail-header">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h2 class="mb-2" th:text="${discount.code}">DISCOUNT_CODE</h2>
-                                        <p class="mb-0" th:text="${discount.description}">Description</p>
+            </div>
+
+            <!-- Discount Detail Card -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="detail-card">
+                        <!-- Header -->
+                        <div class="detail-header">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h2 class="mb-2" th:text="${discount.code}">DISCOUNT_CODE</h2>
+                                    <p class="mb-0" th:text="${discount.description}">Description</p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <span class="status-badge"
+                                          th:classappend="${discount.active ? 'active' : 'inactive'}"
+                                          th:text="${discount.active ? 'Active' : 'Inactive'}">
+                                        Status
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Body -->
+                        <div class="detail-body">
+                            <!-- Discount Percentage -->
+                            <div class="text-center mb-4">
+                                <div class="percentage-display" th:text="${discount.discountPct + '%'}">10%</div>
+                                <p class="text-muted">Discount Percentage</p>
+                            </div>
+
+                            <!-- Date Information -->
+                            <div class="date-info">
+                                <h5 class="mb-3"><i class="fas fa-calendar-alt"></i> Validity Period</h5>
+                                <div class="date-item">
+                                    <div class="d-flex align-items-center">
+                                        <div class="date-icon start me-3">
+                                            <i class="fas fa-play"></i>
+                                        </div>
+                                        <div>
+                                            <strong>Start Date</strong>
+                                            <div class="text-muted" th:text="${#temporals.format(discount.startDate, 'EEEE, dd MMMM yyyy')}">Monday, 01 January 2025</div>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4 text-end">
-                                        <span class="status-badge" 
+                                </div>
+                                <div class="date-item">
+                                    <div class="d-flex align-items-center">
+                                        <div class="date-icon end me-3">
+                                            <i class="fas fa-stop"></i>
+                                        </div>
+                                        <div>
+                                            <strong>End Date</strong>
+                                            <div class="text-muted" th:text="${#temporals.format(discount.endDate, 'EEEE, dd MMMM yyyy')}">Wednesday, 31 December 2025</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Basic Information -->
+                            <div class="mt-4">
+                                <h5 class="mb-3"><i class="fas fa-info-circle"></i> Basic Information</h5>
+
+                                <div class="info-row">
+                                    <span class="info-label">Discount Code:</span>
+                                    <span class="info-value" th:text="${discount.code}">CODE</span>
+                                </div>
+
+                                <div class="info-row">
+                                    <span class="info-label">Description:</span>
+                                    <span class="info-value" th:text="${discount.description}">Description</span>
+                                </div>
+
+                                <div class="info-row">
+                                    <span class="info-label">Apply Type:</span>
+                                    <span class="info-value">
+                                        <span class="type-badge"
+                                              th:classappend="${discount.applyType == 'product' ? 'product' : 
+                                                              discount.applyType == 'brand' ? 'brand' : 'category'}"
+                                              th:text="${discount.applyType}">
+                                            Type
+                                        </span>
+                                    </span>
+                                </div>
+
+                                <div class="info-row">
+                                    <span class="info-label">Status:</span>
+                                    <span class="info-value">
+                                        <span class="status-badge"
                                               th:classappend="${discount.active ? 'active' : 'inactive'}"
                                               th:text="${discount.active ? 'Active' : 'Inactive'}">
                                             Status
                                         </span>
+                                    </span>
+                                </div>
+
+                                <div class="info-row" th:if="${discount.adminName != null}">
+                                    <span class="info-label">Created By:</span>
+                                    <span class="info-value" th:text="${discount.adminName}">Admin</span>
+                                </div>
+
+                                <div class="info-row" th:if="${discount.productCount > 0}">
+                                    <span class="info-label">Products Applied:</span>
+                                    <span class="info-value" th:text="${discount.productCount + ' products'}">0 products</span>
+                                </div>
+                            </div>
+
+                            <!-- Product List Section -->
+                            <div class="product-section" th:if="${discount.productNames != null && !discount.productNames.empty}">
+                                <h5 class="mb-3"><i class="fas fa-box"></i> Applied Products</h5>
+                                <div class="product-item" th:each="productName : ${discount.productNames}">
+                                    <div>
+                                        <div class="product-name" th:text="${productName}">Product Name</div>
+                                        <div class="product-category">Product Category</div>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-tag text-primary"></i>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Body -->
-                            <div class="detail-body">
-                                <!-- Discount Percentage -->
-                                <div class="text-center">
-                                    <div class="percentage-display" th:text="${discount.discountPct + '%'}">10%</div>
-                                    <p class="text-muted">Discount Percentage</p>
-                                </div>
-                                
-                                <!-- Date Information -->
-                                <div class="date-info">
-                                    <h5 class="mb-3"><i class="fas fa-calendar-alt"></i> Validity Period</h5>
-                                    <div class="date-item">
-                                        <div class="d-flex align-items-center">
-                                            <div class="date-icon start me-3">
-                                                <i class="fas fa-play"></i>
-                                            </div>
-                                            <div>
-                                                <strong>Start Date</strong>
-                                                <div class="text-muted" th:text="${#temporals.format(discount.startDate, 'EEEE, dd MMMM yyyy')}">Monday, 01 January 2025</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="date-item">
-                                        <div class="d-flex align-items-center">
-                                            <div class="date-icon end me-3">
-                                                <i class="fas fa-stop"></i>
-                                            </div>
-                                            <div>
-                                                <strong>End Date</strong>
-                                                <div class="text-muted" th:text="${#temporals.format(discount.endDate, 'EEEE, dd MMMM yyyy')}">Wednesday, 31 December 2025</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Basic Information -->
-                                <div class="mt-4">
-                                    <h5 class="mb-3"><i class="fas fa-info-circle"></i> Basic Information</h5>
-                                    
-                                    <div class="info-row">
-                                        <span class="info-label">Discount Code:</span>
-                                        <span class="info-value" th:text="${discount.code}">CODE</span>
-                                    </div>
-                                    
-                                    <div class="info-row">
-                                        <span class="info-label">Description:</span>
-                                        <span class="info-value" th:text="${discount.description}">Description</span>
-                                    </div>
-                                    
-                                    <div class="info-row">
-                                        <span class="info-label">Apply Type:</span>
-                                        <span class="info-value">
-                                            <span class="type-badge" 
-                                                  th:classappend="${discount.applyType == 'product' ? 'product' : 
-                                                                  discount.applyType == 'brand' ? 'brand' : 'category'}"
-                                                  th:text="${discount.applyType}">
-                                                Type
-                                            </span>
-                                        </span>
-                                    </div>
-                                    
-                                    <div class="info-row">
-                                        <span class="info-label">Status:</span>
-                                        <span class="info-value">
-                                            <span class="status-badge" 
-                                                  th:classappend="${discount.active ? 'active' : 'inactive'}"
-                                                  th:text="${discount.active ? 'Active' : 'Inactive'}">
-                                                Status
-                                            </span>
-                                        </span>
-                                    </div>
-                                    
-                                    <div class="info-row" th:if="${discount.adminName != null}">
-                                        <span class="info-label">Created By:</span>
-                                        <span class="info-value" th:text="${discount.adminName}">Admin</span>
-                                    </div>
-                                    
-                                    <div class="info-row" th:if="${discount.productCount > 0}">
-                                        <span class="info-label">Products Applied:</span>
-                                        <span class="info-value" th:text="${discount.productCount + ' products'}">0 products</span>
-                                    </div>
-                                </div>
-                                
-                                <!-- Product List Section -->
-                                <div class="product-section" th:if="${discount.productNames != null && !discount.productNames.empty}">
-                                    <h5 class="mb-3"><i class="fas fa-box"></i> Applied Products</h5>
-                                    <div class="product-item" th:each="productName : ${discount.productNames}">
-                                        <div>
-                                            <div class="product-name" th:text="${productName}">Product Name</div>
-                                            <div class="product-category">Product Category</div>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-tag text-primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Action Buttons -->
-                                <div class="action-buttons">
-                                    <a th:href="@{/admin/discount/{id}/edit(id=${discount.promoId})}" 
-                                       class="btn btn-warning btn-lg">
-                                        <i class="fas fa-edit"></i>
-                                        Edit Discount
-                                    </a>
-                                    
-                                    <form th:action="@{/admin/discount/{id}/toggle(id=${discount.promoId})}" 
-                                          method="post" style="display: inline;">
-                                        <input type="hidden" name="active" th:value="${!discount.active}">
-                                        <button type="submit" class="btn btn-success btn-lg" 
-                                                th:if="${discount.active}">
-                                            <i class="fas fa-pause"></i>
-                                            Deactivate
-                                        </button>
-                                        <button type="submit" class="btn btn-success btn-lg" 
-                                                th:unless="${discount.active}">
-                                            <i class="fas fa-play"></i>
-                                            Activate
-                                        </button>
-                                    </form>
-                                    
-                                    <form th:action="@{/admin/discount/{id}/delete(id=${discount.promoId})}" 
-                                          method="post" style="display: inline;"
-                                          onsubmit="return confirm('Are you sure you want to delete this discount? This action cannot be undone.')">
-                                        <button type="submit" class="btn btn-danger btn-lg">
-                                            <i class="fas fa-trash"></i>
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
+
+                            <!-- Action Buttons -->
+                            <div class="action-buttons">
+                                <a th:href="@{/admin/discount/{id}/edit(id=${discount.promoId})}"
+                                   class="btn btn-warning btn-lg">
+                                    <i class="fas fa-edit"></i>
+                                    Edit Discount
+                                </a>
+
+                                <form th:action="@{/admin/discount/{id}/toggle(id=${discount.promoId})}"
+                                      method="post" style="display: inline;">
+                                    <input type="hidden" name="active" th:value="${!discount.active}">
+                                    <button type="submit" class="btn btn-success btn-lg"
+                                            th:if="${discount.active}">
+                                        <i class="fas fa-pause"></i>
+                                        Deactivate
+                                    </button>
+                                    <button type="submit" class="btn btn-success btn-lg"
+                                            th:unless="${discount.active}">
+                                        <i class="fas fa-play"></i>
+                                        Activate
+                                    </button>
+                                </form>
+
+                                <form th:action="@{/admin/discount/{id}/delete(id=${discount.promoId})}"
+                                      method="post" style="display: inline;"
+                                      onsubmit="return confirm('Are you sure you want to delete this discount? This action cannot be undone.')">
+                                    <button type="submit" class="btn btn-danger btn-lg">
+                                        <i class="fas fa-trash"></i>
+                                        Delete
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
         </div>
     </div>
-    
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Custom JS -->
     <script th:src="@{/js/admin.js}"></script>
 </body>

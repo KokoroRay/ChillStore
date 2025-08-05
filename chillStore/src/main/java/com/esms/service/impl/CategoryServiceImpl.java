@@ -3,6 +3,7 @@ package com.esms.service.impl;
 import com.esms.model.dto.CategoryDTO;
 import com.esms.model.entity.Category;
 import com.esms.repository.CategoryRepository;
+import com.esms.repository.ProductRepository;
 import com.esms.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +21,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+    
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -82,13 +86,17 @@ public class CategoryServiceImpl implements CategoryService {
         if (category.isPresent()) {
             Category cat = category.get();
             if (cat.getChildren() != null && !cat.getChildren().isEmpty()) {
-                throw new RuntimeException("Không thể xóa thư mục chứa thư mục con");
+                throw new RuntimeException("Cannot delete folder containing subfolders");
+            }
+            // Kiểm tra xem category có sản phẩm nào liên kết không
+            if (productRepository.existsByCategoryId(id)) {
+                throw new RuntimeException("This category cannot be deleted because a product is already using this category.");
             }
             categoryRepository.delete(cat);
             Integer maxId = categoryRepository.findMaxId();
             reseedIdentityTo(maxId);
         }else {
-            throw new RuntimeException("Category không tồn tại id" + id);
+            throw new RuntimeException("Category id does not exist" + id);
         }
     }
 

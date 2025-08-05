@@ -1,6 +1,7 @@
 package com.esms.service.impl;
 
 import com.esms.model.entity.Staff;
+import com.esms.repository.OrderRepository;
 import com.esms.repository.StaffRepository;
 import com.esms.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class StaffServiceImpl implements StaffService {
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private OrderRepository orderRepository;
 
 
     @Override
@@ -51,16 +56,20 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public boolean deleteStaff(int id) {
-        if(id >= 1) {
-            Staff staff = staffRepository.getById(id);
-            if(staff != null) {
-                staffRepository.delete(staff);
+        if (id >= 1) {
+            Optional<Staff> staffOpt = staffRepository.findById(id);
+            if (staffOpt.isPresent()) {
+                boolean hasOrders = orderRepository.existsByStaffId(id);
+                if (hasOrders) {
+                    return false;
+                }
+                staffRepository.delete(staffOpt.get());
                 return true;
             }
-
         }
         return false;
     }
+
 
     @Override
     public List<Staff> getAllStaff() {

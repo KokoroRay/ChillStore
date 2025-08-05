@@ -28,6 +28,20 @@
     <main class="col main-content">
 
       <div class="staff-management">
+        <!-- Flash Messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="fas fa-check-circle me-2"></i>
+          <span th:text="${successMessage}">Xóa thành công.</span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="fas fa-exclamation-circle me-2"></i>
+          <span th:text="${errorMessage}">Xóa thất bại.</span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+
         <!-- Header with Title and Add Button -->
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h2 class="mb-0"><i class="fas fa-users me-2"></i>Staff Management</h2>

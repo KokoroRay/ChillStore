@@ -1,6 +1,7 @@
 package com.esms.service.impl;
 
 import com.esms.model.entity.Staff;
+import com.esms.repository.OrderRepository;
 import com.esms.repository.StaffRepository;
 import com.esms.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +11,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class StaffServiceImpl implements StaffService {
     @Autowired
     private StaffRepository staffRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private OrderRepository orderRepository;
 
 
     @Override
     public Staff addStaff(Staff staff) {
         if (staff != null) {
+            // Mã hóa mật khẩu trước khi lưu vào DB
             staff.setPassword(passwordEncoder.encode(staff.getPassword()));
             return staffRepository.save(staff);
         }
@@ -34,6 +40,7 @@ public class StaffServiceImpl implements StaffService {
             if (existingStaff != null) {
                 existingStaff.setName(staff.getName());
                 existingStaff.setEmail(staff.getEmail());
+                // Nếu người dùng nhập mật khẩu mới, mã hóa rồi cập nhật
                 if (staff.getPassword() != null && !staff.getPassword().isBlank()) {
                     existingStaff.setPassword(passwordEncoder.encode(staff.getPassword()));
                 }
@@ -49,16 +56,20 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public boolean deleteStaff(int id) {
-        if(id >= 1) {
-            Staff staff = staffRepository.getById(id);
-            if(staff != null) {
-                staffRepository.delete(staff);
+        if (id >= 1) {
+            Optional<Staff> staffOpt = staffRepository.findById(id);
+            if (staffOpt.isPresent()) {
+                boolean hasOrders = orderRepository.existsByStaffId(id);
+                if (hasOrders) {
+                    return false;
+                }
+                staffRepository.delete(staffOpt.get());
                 return true;
             }
-
         }
         return false;
     }
+
 
     @Override
     public List<Staff> getAllStaff() {
@@ -74,7 +85,7 @@ public class StaffServiceImpl implements StaffService {
     public List<Staff> searchStaff(String keyword, String genderStr) {
         Staff.Gender gender = null;
         if (genderStr != null && !genderStr.isBlank()) {
-            gender = Staff.Gender.valueOf(genderStr);
+            gender = Staff.Gender.valueOf(genderStr);// Chuyển String về enum Gender
         }
         return staffRepository.findByKeywordAndGender(keyword, gender);
     }

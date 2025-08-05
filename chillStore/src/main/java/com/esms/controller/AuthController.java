@@ -66,9 +66,15 @@ public class AuthController {
     @GetMapping("/login")
     public String showLoginForm(Model model,
                                 @RequestParam(value = "error", required = false) String error,
+                                @RequestParam(value = "locked", required = false) String locked,
                                 @RequestParam(value = "logout", required = false) String logout,
                                 @RequestParam(value = "register", required = false) String register,
                                 @RequestParam(value = "resetSuccess", required = false ) String resetSuccess) {
+
+        if (locked != null) {
+            model.addAttribute("locked", true);
+            model.addAttribute("lockedMessage", "Account is locked. Please contact administrator");
+        }
         if (error != null) {
             model.addAttribute("error", "Invalid email or password");
         }

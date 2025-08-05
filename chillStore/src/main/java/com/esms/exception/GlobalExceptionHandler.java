@@ -41,4 +41,14 @@ class GlobalControllerAdvice {
     return "reset-password";  // quay lại form reset password
   }
 
+  @ExceptionHandler(RuntimeException.class)
+  public String handleRuntimeException(RuntimeException ex, Model model) {
+    if (ex.getMessage().contains("locked")) {
+      model.addAttribute("error", "Account is locked. Please contact administrator.");
+      return "login";
+    }
+    model.addAttribute("error", ex.getMessage());
+    return "login";
+  }
+
 }

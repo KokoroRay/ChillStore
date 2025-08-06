@@ -1,11 +1,11 @@
 # ChillStore - Hệ thống Bán Thiết Bị Điện Tử
 
 <!-- Chèn logo/banner của ChillStore -->
-![ChillStore Logo](images/logo-banner.png)
+![ChillStore Logo](images/logo.png)
 
 ## 📋 Giới thiệu
 
-ChillStore là một hệ thống thương mại điện tử chuyên bán các thiết bị điện tử và gia dụng. Dự án được phát triển bằng Spring Boot với kiến trúc MVC, hỗ trợ đầy đủ các chức năng của một website bán hàng hiện đại.
+ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia dụng. Dự án được phát triển bằng Spring Boot với kiến trúc MVC, hỗ trợ đầy đủ các chức năng của một website bán hàng hiện đại.
 
 <!-- Chèn ảnh chụp màn hình trang chủ -->
 ![Trang chủ ChillStore](images/homepage-screenshot.png)

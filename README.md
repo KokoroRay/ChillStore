@@ -1,18 +1,21 @@
 # ChillStore - Hệ thống Bán Thiết Bị Điện Tử
 
 <!-- Chèn logo/banner của ChillStore -->
-![ChillStore Logo](images/logo.png)
+
+![ChillStore Logo](/images/logo.png)
 
 ## 📋 Giới thiệu
 
 ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia dụng. Dự án được phát triển bằng Spring Boot với kiến trúc MVC, hỗ trợ đầy đủ các chức năng của một website bán hàng hiện đại.
 
 <!-- Chèn ảnh chụp màn hình trang chủ -->
-![Trang chủ ChillStore](images/homepage-screenshot.png)
+
+![Trang chủ ChillStore](images/home.png)
 
 ## 🚀 Tính năng chính
 
 ### Khách hàng (Customer)
+
 - **Đăng ký/Đăng nhập**: Hỗ trợ đăng ký thông thường và OAuth2 (Google)
 - **Quản lý tài khoản**: Chỉnh sửa thông tin cá nhân, đổi mật khẩu
 - **Mua sắm**: Xem sản phẩm, thêm vào giỏ hàng, thanh toán
@@ -22,9 +25,11 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Wishlist**: Danh sách yêu thích
 
 <!-- Chèn ảnh giao diện khách hàng -->
+
 ![Giao diện khách hàng](images/customer-interface.png)
 
 ### Nhân viên (Staff)
+
 - **Quản lý đơn hàng**: Xử lý và cập nhật trạng thái đơn hàng
 - **Quản lý sản phẩm**: Xem thông tin sản phẩm
 - **Quản lý khách hàng**: Xem thông tin khách hàng
@@ -32,9 +37,11 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Bảo trì**: Quản lý yêu cầu bảo trì
 
 <!-- Chèn ảnh dashboard nhân viên -->
+
 ![Dashboard nhân viên](images/staff-dashboard.png)
 
 ### Quản trị viên (Admin)
+
 - **Quản lý sản phẩm**: CRUD sản phẩm, danh mục, thương hiệu
 - **Quản lý người dùng**: Quản lý khách hàng và nhân viên
 - **Quản lý kho**: Nhập/xuất hàng, theo dõi tồn kho
@@ -43,14 +50,17 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Quản lý phản hồi**: Xem và xử lý phản hồi khách hàng
 
 <!-- Chèn ảnh dashboard admin -->
+
 ![Dashboard admin](images/admin-dashboard.png)
 
 ## 🛠️ Công nghệ sử dụng
 
 <!-- Chèn sơ đồ kiến trúc hệ thống -->
+
 ![Kiến trúc hệ thống](images/system-architecture.png)
 
 ### Backend
+
 - **Framework**: Spring Boot 3.5.0
 - **Java**: JDK 17
 - **Database**: SQL Server, MySQL (hỗ trợ), H2 (testing)
@@ -64,18 +74,21 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Build Tool**: Maven
 
 ### Frontend
+
 - **Template Engine**: Thymeleaf
 - **CSS Framework**: Custom CSS
 - **JavaScript**: Vanilla JS
 - **UI Components**: Custom components
 
 ### Tích hợp bên thứ 3
+
 - **Payment**: VNPay
 - **Email**: Gmail SMTP
 - **OAuth2**: Google OAuth2
 - **File Export**: Apache POI (Excel)
 
 <!-- Chèn ảnh tech stack -->
+
 ![Tech Stack](images/tech-stack.png)
 
 ## 📁 Cấu trúc dự án
@@ -103,24 +116,29 @@ chillStore/
 ## ⚙️ Cài đặt và chạy dự án
 
 ### Yêu cầu hệ thống
+
 - Java 17+
 - Maven 3.6+
 - SQL Server 2019+
 - IDE: IntelliJ IDEA hoặc Eclipse
 
 ### Bước 1: Clone dự án
+
 ```bash
 git clone <repository-url>
 cd chillStore
 ```
 
 ### Bước 2: Cấu hình database
+
 1. Tạo database trong SQL Server:
+
 ```sql
 CREATE DATABASE group4_swp_chillStore_Final11;
 ```
 
 2. Cập nhật thông tin database trong `application.properties`:
+
 ```properties
 spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=group4_swp_chillStore_Final11;encrypt=true;trustServerCertificate=true
 spring.datasource.username=your_username
@@ -128,23 +146,29 @@ spring.datasource.password=your_password
 ```
 
 ### Bước 3: Cấu hình email
+
 Cập nhật thông tin email trong `application.properties`:
+
 ```properties
 spring.mail.username=your_email@gmail.com
 spring.mail.password=your_app_password
 ```
 
 ### Bước 4: Cấu hình OAuth2 Google
+
 1. Tạo project trên Google Cloud Console
 2. Tạo OAuth2 credentials
 3. Cập nhật trong `application.properties`:
+
 ```properties
 spring.security.oauth2.client.registration.google.client-id=your_client_id
 spring.security.oauth2.client.registration.google.client-secret=your_client_secret
 ```
 
 ### Bước 5: Cấu hình VNPay
+
 Cập nhật thông tin VNPay trong `application.properties`:
+
 ```properties
 vnpay.tmnCode=your_tmn_code
 vnpay.hashSecret=your_hash_secret
@@ -153,6 +177,7 @@ vnpay.ipnUrl=your_ipn_url
 ```
 
 ### Bước 6: Chạy ứng dụng
+
 ```bash
 mvn clean install
 mvn spring-boot:run
@@ -161,30 +186,36 @@ mvn spring-boot:run
 Ứng dụng sẽ chạy tại: `http://localhost:8080`
 
 <!-- Chèn ảnh ứng dụng đang chạy -->
+
 ![Ứng dụng chạy thành công](images/app-running.png)
 
 ## 🧪 Testing
 
 Chạy unit tests:
+
 ```bash
 mvn test
 ```
 
 Các test cases bao gồm:
+
 - ChangePasswordTest
 - CustomerLockTest
 - EditProfileTest
 - VNPayServiceTest
 
 <!-- Chèn ảnh kết quả test -->
+
 ![Kết quả test](images/test-results.png)
 
 ## 📊 Database Schema
 
 <!-- Chèn ERD diagram -->
+
 ![Database ERD](images/database-erd.png)
 
 Dự án sử dụng các bảng chính:
+
 - `customers` - Thông tin khách hàng
 - `products` - Sản phẩm
 - `categories` - Danh mục sản phẩm
@@ -212,11 +243,13 @@ Dự án sử dụng các bảng chính:
 ## 🚀 Deployment
 
 ### Production Build
+
 ```bash
 mvn clean package -Pprod
 ```
 
 ### Docker (Optional)
+
 ```dockerfile
 FROM openjdk:17-jdk-slim
 COPY target/chillStore-0.0.1-SNAPSHOT.jar app.jar
@@ -227,6 +260,7 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 ## 📝 API Documentation
 
 Các endpoint chính:
+
 - `GET /` - Trang chủ
 - `GET /login` - Đăng nhập
 - `GET /register` - Đăng ký
@@ -237,6 +271,7 @@ Các endpoint chính:
 - `GET /staff/**` - Nhân viên
 
 <!-- Chèn ảnh API documentation hoặc Postman collection -->
+
 ![API Documentation](images/api-docs.png)
 
 ## 🤝 Đóng góp
@@ -259,6 +294,7 @@ Dự án này được phát triển cho mục đích học tập trong khóa SW
 - **Trường**: FPT University
 
 <!-- Chèn ảnh team members hoặc group photo -->
+
 ![Team Members](images/team-photo.png)
 
 ## 📞 Liên hệ
@@ -268,6 +304,7 @@ Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ qua email: kokororay3
 ---
 
 <!-- Chèn ảnh demo các tính năng chính -->
+
 ![Demo Features](images/features-demo.gif)
 
 **ChillStore** - Mang đến trải nghiệm mua sắm thiết bị điện tử tuyệt vời! 🛒✨

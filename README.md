@@ -2,7 +2,7 @@
 
 <!-- Chèn logo/banner của ChillStore -->
 
-![ChillStore Logo](/images/logo.png)
+![ChillStore Logo](/chillStore/src/main/resources/static/images/logo.png)
 
 ## 📋 Giới thiệu
 
@@ -10,7 +10,7 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 
 <!-- Chèn ảnh chụp màn hình trang chủ -->
 
-![Trang chủ ChillStore](images/home.png)
+![Trang chủ ChillStore](/src/main/resources/static/images/home.jpg)
 
 ## 🚀 Tính năng chính
 

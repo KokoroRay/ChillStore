@@ -25,9 +25,16 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Wishlist**: Danh sách yêu thích
 
 <!-- Chèn ảnh giao diện khách hàng -->
-
-![Giao diện khách hàng](images/customer-interface.png)
-
+<div>
+    <img src="/src/main/resources/static/images/sign.png" alt="ChillStore Logo" width="400"/>
+    <img src="/src/main/resources/static/images/login.png" alt="ChillStore Logo" width="400"/>
+</div>
+![Giao diện khách hàng](/src/main/resources/static/images/product_1.png)
+![Giao diện khách hàng](/src/main/resources/static/images/product_2.png)
+![Giao diện khách hàng](/src/main/resources/static/images/view_product_detail.png.png)
+![Giao diện khách hàng](/src/main/resources/static/images/order.png.png)
+![Giao diện khách hàng](/src/main/resources/static/images/cart.png.png)
+![Giao diện khách hàng](/src/main/resources/static/images/profile.png.png)
 ### Nhân viên (Staff)
 
 - **Quản lý đơn hàng**: Xử lý và cập nhật trạng thái đơn hàng
@@ -36,9 +43,10 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Phản hồi**: Trả lời đánh giá của khách hàng
 - **Bảo trì**: Quản lý yêu cầu bảo trì
 
-<!-- Chèn ảnh dashboard nhân viên -->
-
-![Dashboard nhân viên](images/staff-dashboard.png)
+![Dashboard nhân viên](/src/main/resources/static/images/staff_order.png)
+![Dashboard nhân viên](/src/main/resources/static/images/staff_product.png.png)
+![Dashboard nhân viên](/src/main/resources/static/images/staff_customer.png.png)
+![Dashboard nhân viên](/src/main/resources/static/images/staff_maintenance.png.png)
 
 ### Quản trị viên (Admin)
 
@@ -49,9 +57,10 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Báo cáo doanh thu**: Thống kê và phân tích doanh số
 - **Quản lý phản hồi**: Xem và xử lý phản hồi khách hàng
 
-<!-- Chèn ảnh dashboard admin -->
-
-![Dashboard admin](images/admin-dashboard.png)
+![Dashboard admin](/src/main/resources/static/images/admin_revenue.png)
+![Dashboard admin](/src/main/resources/static/images/admin_discount.png.png)
+![Dashboard admin](/src/main/resources/static/images/admin_warehouse.png.png)
+![Dashboard admin](/src/main/resources/static/images/admin_maintenance.png.png)
 
 ## 🛠️ Công nghệ sử dụng
 

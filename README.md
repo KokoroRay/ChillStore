@@ -97,10 +97,9 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 <img src="/src/main/resources/static/images/tech_stack/spring_boot.png" alt="spring_boot" width="200" />
 <img src="/src/main/resources/static/images/tech_stack/java-logo-png_seeklogo-158094.png" alt="Java" width="200" />
 <img src="/src/main/resources/static/images/tech_stack/microsoft-sql-server-logo-svgrepo-com.svg" alt="MySQL" width="200" />
-<img src="/src/main/resources/static/images/tech_stack/thymeleaf.png" alt="thymeleaf" width="200" />
+<img src="/src/main/resources/static/images/tech_stack/thymeleaf.png.png" alt="thymeleaf" width="200" />
 <img src="/src/main/resources/static/images/tech_stack/vnpay-logo-vinadesign-25-12-59-16.jpg" alt="VNPay" width="200" />
 <img src="/src/main/resources/static/images/tech_stack/Google__G__logo.svg" alt="Google" width="200" />
-
 </p>
 
 ## 📁 Cấu trúc dự án
@@ -261,12 +260,16 @@ Dự án này được phát triển phụ vụ cho môn SWP391.
 - **Học kỳ**: Spring 2025
 - **Trường**: FPT University
 
-_Team members_
+**Team members**
 
 Nguyễn Minh Tâm
+
 Trương Thị Vũ Hà
+
 Huỳnh Lê Công Biên
+
 Nguyễn Quốc Bảo
+
 Lê Trần Tấn
 
 ## 📞 Liên hệ

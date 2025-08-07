@@ -24,15 +24,17 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Voucher**: Sử dụng mã giảm giá
 - **Wishlist**: Danh sách yêu thích
 
-<img src="/src/main/resources/static/images/sign.png" alt="Sign" width="350" style="display:inline-block; margin-right:10px;" />
-<img src="/src/main/resources/static/images/login.png" alt="Login" width="350" style="display:inline-block;" />
+<p>
+  <img src="/src/main/resources/static/images/sign.png" alt="Sign" width="400" />
+  <img src="/src/main/resources/static/images/login.png" alt="Login" width="400" />
+</p>
 
 ![Giao diện khách hàng](/src/main/resources/static/images/product_1.png)
 ![Giao diện khách hàng](/src/main/resources/static/images/product_2.png)
-![Giao diện khách hàng](/src/main/resources/static/images/view_product_detail.png.png)
-![Giao diện khách hàng](/src/main/resources/static/images/order.png.png)
-![Giao diện khách hàng](/src/main/resources/static/images/cart.png.png)
-![Giao diện khách hàng](/src/main/resources/static/images/profile.png.png)
+![Giao diện khách hàng](/src/main/resources/static/images/view_product_detail.png)
+![Giao diện khách hàng](/src/main/resources/static/images/order.png)
+![Giao diện khách hàng](/src/main/resources/static/images/cart.png)
+![Giao diện khách hàng](/src/main/resources/static/images/profile.png)
 
 ### Nhân viên (Staff)
 
@@ -43,9 +45,9 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Bảo trì**: Quản lý yêu cầu bảo trì
 
 ![Dashboard nhân viên](/src/main/resources/static/images/staff_order.png)
-![Dashboard nhân viên](/src/main/resources/static/images/staff_product.png.png)
-![Dashboard nhân viên](/src/main/resources/static/images/staff_customer.png.png)
-![Dashboard nhân viên](/src/main/resources/static/images/staff_maintenance.png.png)
+![Dashboard nhân viên](/src/main/resources/static/images/staff_product.png)
+![Dashboard nhân viên](/src/main/resources/static/images/staff_customer.png)
+![Dashboard nhân viên](/src/main/resources/static/images/staff_maintenance.png)
 
 ### Quản trị viên (Admin)
 
@@ -57,15 +59,9 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Quản lý phản hồi**: Xem và xử lý phản hồi khách hàng
 
 ![Dashboard admin](/src/main/resources/static/images/admin_revenue.png)
-![Dashboard admin](/src/main/resources/static/images/admin_discount.png.png)
-![Dashboard admin](/src/main/resources/static/images/admin_warehouse.png.png)
-![Dashboard admin](/src/main/resources/static/images/admin_maintenance.png.png)
-
-## 🛠️ Công nghệ sử dụng
-
-<!-- Chèn sơ đồ kiến trúc hệ thống -->
-
-![Kiến trúc hệ thống](images/system-architecture.png)
+![Dashboard admin](/src/main/resources/static/images/admin_discount.png)
+![Dashboard admin](/src/main/resources/static/images/admin_warehouse.png)
+![Dashboard admin](/src/main/resources/static/images/admin_maintenance.png)
 
 ### Backend
 
@@ -97,7 +93,12 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 
 <!-- Chèn ảnh tech stack -->
 
-![Tech Stack](images/tech-stack.png)
+<img src="/src/main/resources/static/images/spring_boot.png" alt="spring_boot" width="200" />
+<img src="/src/main/resources/static/images/java.jpg" alt="Java" width="200" />
+<img src="/src/main/resources/static/images/microsoft-sql-server-logo-svgrepo-com.svg" alt="MySQL" width="200" />
+<img src="/src/main/resources/static/images/thymeleaf.png" alt="thymeleaf" width="200" />
+<img src="/src/main/resources/static/images/vnpay-logo-vinadesign-25-12-59-16.jpg" alt="VNPay" width="200" />
+<img src="/src/main/resources/static/images/Google__G__logo.svg" alt="Google" width="200" />
 
 ## 📁 Cấu trúc dự án
 

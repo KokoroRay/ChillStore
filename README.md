@@ -1,4 +1,4 @@
-# ChillStore - Hệ thống Bán Thiết Bị Điện Tử
+# ChillStore - Website Chuyên Bán Mặt Hàng Điện Lạnh
 
 <!-- Chèn logo/banner của ChillStore -->
 

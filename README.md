@@ -24,17 +24,16 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 - **Voucher**: Sử dụng mã giảm giá
 - **Wishlist**: Danh sách yêu thích
 
-<!-- Chèn ảnh giao diện khách hàng -->
-<div>
-    <img src="/src/main/resources/static/images/sign.png" alt="ChillStore Logo" width="400"/>
-    <img src="/src/main/resources/static/images/login.png" alt="ChillStore Logo" width="400"/>
-</div>
+<img src="/src/main/resources/static/images/sign.png" alt="Sign" width="350" style="display:inline-block; margin-right:10px;" />
+<img src="/src/main/resources/static/images/login.png" alt="Login" width="350" style="display:inline-block;" />
+
 ![Giao diện khách hàng](/src/main/resources/static/images/product_1.png)
 ![Giao diện khách hàng](/src/main/resources/static/images/product_2.png)
 ![Giao diện khách hàng](/src/main/resources/static/images/view_product_detail.png.png)
 ![Giao diện khách hàng](/src/main/resources/static/images/order.png.png)
 ![Giao diện khách hàng](/src/main/resources/static/images/cart.png.png)
 ![Giao diện khách hàng](/src/main/resources/static/images/profile.png.png)
+
 ### Nhân viên (Staff)
 
 - **Quản lý đơn hàng**: Xử lý và cập nhật trạng thái đơn hàng

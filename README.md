@@ -2,7 +2,7 @@
 
 <!-- Chèn logo/banner của ChillStore -->
 
-![ChillStore Logo](/chillStore/src/main/resources/static/images/logo.png)
+<img src="/chillStore/src/main/resources/static/images/logo.png" alt="ChillStore Logo" width="200"/>
 
 ## 📋 Giới thiệu
 

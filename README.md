@@ -93,12 +93,15 @@ ChillStore là wedsite chuyên kinh doanh các mặt hàng điện lạnh, gia d
 
 <!-- Chèn ảnh tech stack -->
 
-<img src="/src/main/resources/static/images/spring_boot.png" alt="spring_boot" width="200" />
-<img src="/src/main/resources/static/images/java.jpg" alt="Java" width="200" />
-<img src="/src/main/resources/static/images/microsoft-sql-server-logo-svgrepo-com.svg" alt="MySQL" width="200" />
-<img src="/src/main/resources/static/images/thymeleaf.png" alt="thymeleaf" width="200" />
-<img src="/src/main/resources/static/images/vnpay-logo-vinadesign-25-12-59-16.jpg" alt="VNPay" width="200" />
-<img src="/src/main/resources/static/images/Google__G__logo.svg" alt="Google" width="200" />
+<p>
+<img src="/src/main/resources/static/images/tech_stack/spring_boot.png" alt="spring_boot" width="200" />
+<img src="/src/main/resources/static/images/tech_stack/java-logo-png_seeklogo-158094.png" alt="Java" width="200" />
+<img src="/src/main/resources/static/images/tech_stack/microsoft-sql-server-logo-svgrepo-com.svg" alt="MySQL" width="200" />
+<img src="/src/main/resources/static/images/tech_stack/thymeleaf.png" alt="thymeleaf" width="200" />
+<img src="/src/main/resources/static/images/tech_stack/vnpay-logo-vinadesign-25-12-59-16.jpg" alt="VNPay" width="200" />
+<img src="/src/main/resources/static/images/tech_stack/Google__G__logo.svg" alt="Google" width="200" />
+
+</p>
 
 ## 📁 Cấu trúc dự án
 
@@ -194,34 +197,11 @@ mvn spring-boot:run
 
 Ứng dụng sẽ chạy tại: `http://localhost:8080`
 
-<!-- Chèn ảnh ứng dụng đang chạy -->
-
-![Ứng dụng chạy thành công](images/app-running.png)
-
-## 🧪 Testing
-
-Chạy unit tests:
-
-```bash
-mvn test
-```
-
-Các test cases bao gồm:
-
-- ChangePasswordTest
-- CustomerLockTest
-- EditProfileTest
-- VNPayServiceTest
-
-<!-- Chèn ảnh kết quả test -->
-
-![Kết quả test](images/test-results.png)
-
 ## 📊 Database Schema
 
 <!-- Chèn ERD diagram -->
 
-![Database ERD](images/database-erd.png)
+![Database ERD](/src/main/resources/static/images/tech_stack/erd.png)
 
 Dự án sử dụng các bảng chính:
 
@@ -249,23 +229,6 @@ Dự án sử dụng các bảng chính:
 - **SQL Injection**: Prevented by JPA/Hibernate
 - **XSS Protection**: Thymeleaf auto-escaping
 
-## 🚀 Deployment
-
-### Production Build
-
-```bash
-mvn clean package -Pprod
-```
-
-### Docker (Optional)
-
-```dockerfile
-FROM openjdk:17-jdk-slim
-COPY target/chillStore-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
-```
-
 ## 📝 API Documentation
 
 Các endpoint chính:
@@ -279,10 +242,6 @@ Các endpoint chính:
 - `GET /admin/**` - Quản trị
 - `GET /staff/**` - Nhân viên
 
-<!-- Chèn ảnh API documentation hoặc Postman collection -->
-
-![API Documentation](images/api-docs.png)
-
 ## 🤝 Đóng góp
 
 1. Fork dự án
@@ -293,7 +252,7 @@ Các endpoint chính:
 
 ## 📄 License
 
-Dự án này được phát triển cho mục đích học tập trong khóa SWP391.
+Dự án này được phát triển phụ vụ cho môn SWP391.
 
 ## 👥 Nhóm phát triển
 
@@ -302,18 +261,18 @@ Dự án này được phát triển cho mục đích học tập trong khóa SW
 - **Học kỳ**: Spring 2025
 - **Trường**: FPT University
 
-<!-- Chèn ảnh team members hoặc group photo -->
+_Team members_
 
-![Team Members](images/team-photo.png)
+Nguyễn Minh Tâm
+Trương Thị Vũ Hà
+Huỳnh Lê Công Biên
+Nguyễn Quốc Bảo
+Lê Trần Tấn
 
 ## 📞 Liên hệ
 
 Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ qua email: kokororay356@gmail.com
 
 ---
-
-<!-- Chèn ảnh demo các tính năng chính -->
-
-![Demo Features](images/features-demo.gif)
 
 **ChillStore** - Mang đến trải nghiệm mua sắm thiết bị điện tử tuyệt vời! 🛒✨

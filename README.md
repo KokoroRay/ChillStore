@@ -189,9 +189,19 @@ vnpay.ipnUrl=your_ipn_url
 
 ### Bước 6: Chạy ứng dụng
 
+#### Chạy thông thường:
 ```bash
 mvn clean install
 mvn spring-boot:run
+```
+
+#### Chạy với Docker:
+```bash
+# Tạo file .env với mật khẩu SQL Server
+echo SA_PASSWORD=YourStrongPassword123! > .env
+
+# Khởi chạy toàn bộ hệ thống
+docker-compose up -d
 ```
 
 Ứng dụng sẽ chạy tại: `http://localhost:8080`

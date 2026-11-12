@@ -1,32 +1,36 @@
-FROM openjdk:17-jdk-slim
-
-RUN apt-get update && apt-get install -y \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
+# ==========================================
+# STAGE 1: Build
+# ==========================================
+FROM eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /app
 
 COPY pom.xml .
 COPY .mvn .mvn
 COPY mvnw .
 
-RUN ./mvnw dependency:go-offline -B
+RUN sed -i 's/\r$//' mvnw && chmod +x mvnw && ./mvnw dependency:go-offline -B
 
 COPY src ./src
-
 RUN ./mvnw clean package -DskipTests
 
-RUN addgroup --system spring && adduser --system spring --ingroup spring
+# ==========================================
+# STAGE 2: Runtime (Tối ưu RAM và kích thước Image)
+# ==========================================
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+
+RUN groupadd -r spring && useradd -r -g spring spring \
+    && mkdir -p /app/uploads \
+    && chown -R spring:spring /app
+
+COPY --from=build --chown=spring:spring /app/target/chillStore-*.jar app.jar
+
 USER spring:spring
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
-  CMD curl -f http://localhost:8080/ || exit 1
-
-ENV SPRING_PROFILES_ACTIVE=docker
-ENV JAVA_OPTS="-Xmx512m -Xms256m"
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV JAVA_TOOL_OPTIONS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xms32m -Xmx96m -XX:MaxMetaspaceSize=64m -XX:+UseSerialGC -Dspring.main.lazy-initialization=true"
 
 VOLUME ["/app/uploads"]
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar target/chillStore-0.0.1-SNAPSHOT.jar"]
-
+ENTRYPOINT ["sh", "-c", "exec java -jar app.jar"]
